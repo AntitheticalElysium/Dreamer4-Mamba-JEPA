@@ -1,0 +1,5293 @@
+{
+ "provenance": {
+  "sources_sha256": {
+   "artifacts/experiments/20261030_fovea_placement/evaluate.py": "20330a87b93f0a73babbdea976e5cde5965626b217bcec72463778affb4b6571",
+   "artifacts/experiments/20261030_m05_guided_fovea/instruments.py": "113b124a5bd6ea98866d6fb7d159b0beda001dfd92f13a4ba084319ba8e12bfa",
+   "artifacts/experiments/20261030_increment_diagnosis/increment_probe.py": "d30a17a0d8a710244bd54d01783a99040c49b65729ac0729fc54499cd77b4ec6",
+   "artifacts/experiments/20261029_generation_diagnosis/catalogue.py": "e82a7a8e95c97fa50c05cfe45a0c6699b6225b5048841aa1f57a3129e1cf99d2",
+   "artifacts/experiments/20261029_generation_diagnosis/field_calibration.py": "7d54dfc446778036e5f640a98b3effe14836043967531ea2d94b241a0ca1c465",
+   "artifacts/experiments/20261030_fovea_placement/placement_map.py": "20438e083989495c2467f2873cd5bb1d6b165e0243d46dc2aba2d5d262a1d219",
+   "artifacts/experiments/20261030_m05_guided_fovea/evaluate.py": "6b1599bd6d44217c7ef90d15ea47dac4ba51806dea0111b1b2ef54a1c6bc095d",
+   "artifacts/experiments/20261030_fovea_placement/map.json": "b8555379263cb53f2b563c23579421120931be94aa8a667284c4c15cbc90eee5",
+   "artifacts/eda/s0/s0_dev_labels.npz": "80ed73c7ffb7882c5952bdab90a7b27a764c7d41239275f8f70c701450eb1d54",
+   "artifacts/eda/s0/s0_train400_labels.npz": "c71cb2150899997d995b641f05684e71c2cbf8fb5092203c2475592cd8852dc3"
+  },
+  "run": {
+   "git_commit": "97455ec78b11ac4e251ebd4eba6d2ee09483913a",
+   "source_sha256": {
+    "saccade/model.py": "7ea04a4957d2915c5dfbfb9a69ed5e44ae275d555bbea8e629edaa00330db148",
+    "saccade/train.py": "a1f6d55ecaa349e0815e868c184df831e79375ef91b1b1a3e76b68b29c60fa7f",
+    "saccade/data.py": "d4c865124e0cdf8819fb5cc258d519c5dcfb7ec05985eedcf821e2b632907698",
+    "saccade/m0.yaml": "eff1c9143a7397c702c46192bab483ad7d28b7f583a12c0bce5cdbff861796b6"
+   },
+   "manifest_sha256": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
+   "targets_sha256": "f1a79ed7dba730db02b5efb537cc8f44fd580406c2da7894005b4e3e84c87b97",
+   "torch": "2.13.0+cu130"
+  },
+  "episodes": 0,
+  "rows_per_class": 1000
+ },
+ "checkpoints": {
+  "base": {
+   "path": "artifacts/saccade_m0/p1_world1/ckpt_10.pt",
+   "sha256": "74eccc433bf5a785edd6d565edc1a970f8b468510abf2c0b07e24d28b547ebe5",
+   "readers_sha256": "d4d33cf1c5aa2333051d16ddb5633e2d87876cf4426cd573191fb5a11b9eea20",
+   "instrument_qualification": {
+    "p": {
+     "health": {
+      "accuracy": 1.0,
+      "rows": 305907,
+      "qualified": true
+     },
+     "drink": {
+      "accuracy": 1.0,
+      "rows": 305907,
+      "qualified": true
+     },
+     "sapling": {
+      "accuracy": 1.0,
+      "rows": 305902,
+      "qualified": true
+     },
+     "wood": {
+      "accuracy": 1.0,
+      "rows": 305907,
+      "qualified": true
+     }
+    },
+    "g": {
+     "health@55": {
+      "accuracy": 1.0,
+      "rows": 5850,
+      "qualified": true
+     },
+     "health@64": {
+      "accuracy": 1.0,
+      "rows": 18012,
+      "qualified": true
+     },
+     "drink@55": {
+      "accuracy": 0.9998290598290598,
+      "rows": 5850,
+      "qualified": true
+     },
+     "drink@56": {
+      "accuracy": 0.9998149861239592,
+      "rows": 5405,
+      "qualified": true
+     },
+     "drink@57": {
+      "accuracy": 0.9998124179328456,
+      "rows": 5331,
+      "qualified": true
+     },
+     "drink@64": {
+      "accuracy": 0.9999444814568066,
+      "rows": 18012,
+      "qualified": true
+     },
+     "drink@65": {
+      "accuracy": 0.9995084062530725,
+      "rows": 10171,
+      "qualified": true
+     },
+     "drink@66": {
+      "accuracy": 0.9996299722479186,
+      "rows": 5405,
+      "qualified": true
+     },
+     "sapling@57": {
+      "accuracy": 1.0,
+      "rows": 5309,
+      "qualified": true
+     },
+     "sapling@58": {
+      "accuracy": 1.0,
+      "rows": 5370,
+      "qualified": true
+     },
+     "sapling@59": {
+      "accuracy": 1.0,
+      "rows": 5452,
+      "qualified": true
+     },
+     "sapling@66": {
+      "accuracy": 0.9966697502312674,
+      "rows": 5405,
+      "qualified": true
+     },
+     "sapling@67": {
+      "accuracy": 0.9984491114701131,
+      "rows": 15475,
+      "qualified": true
+     },
+     "sapling@68": {
+      "accuracy": 1.0,
+      "rows": 13602,
+      "qualified": true
+     },
+     "wood@58": {
+      "accuracy": 0.9975939292985379,
+      "rows": 5403,
+      "qualified": true
+     },
+     "wood@59": {
+      "accuracy": 0.9976350736765508,
+      "rows": 5497,
+      "qualified": true
+     },
+     "wood@60": {
+      "accuracy": 0.996996996996997,
+      "rows": 5328,
+      "qualified": true
+     },
+     "wood@67": {
+      "accuracy": 0.9975445851641251,
+      "rows": 15476,
+      "qualified": true
+     },
+     "wood@68": {
+      "accuracy": 0.9959742351046699,
+      "rows": 13662,
+      "qualified": true
+     },
+     "wood@69": {
+      "accuracy": 0.9948877122512324,
+      "rows": 5477,
+      "qualified": true
+     }
+    },
+    "table_p": {
+     "recall": 1.0,
+     "specificity": 0.9999397848311299,
+     "tables": 6979,
+     "qualified": true
+    },
+    "table_g": {
+     "recall": 0.9910625620655412,
+     "specificity": 0.9995007289357538,
+     "tables": 3021,
+     "faced_in_window": 53094,
+     "qualified": true
+    }
+   },
+   "separation": {
+    "drink": {
+     "0": {
+      "step": 4.942388534545898,
+      "step_over_spread": 14.419438182952463
+     },
+     "1": {
+      "step": 1.9433674812316895,
+      "step_over_spread": 8.026509594292476
+     },
+     "2": {
+      "step": 1.7447230815887451,
+      "step_over_spread": 7.693458039231868
+     },
+     "3": {
+      "step": 3.5959482192993164,
+      "step_over_spread": 14.829845771324663
+     },
+     "4": {
+      "step": 2.212805986404419,
+      "step_over_spread": 8.179888825395587
+     },
+     "5": {
+      "step": 0.7072399258613586,
+      "step_over_spread": 2.5625806103276245
+     },
+     "6": {
+      "step": 1.3858497142791748,
+      "step_over_spread": 5.593876465543992
+     },
+     "7": {
+      "step": 2.5048317909240723,
+      "step_over_spread": 9.117548699379169
+     },
+     "8": {
+      "step": 1.195595622062683,
+      "step_over_spread": 4.707238234700535
+     }
+    },
+    "wood": {
+     "0": {
+      "step": 5.651615142822266,
+      "step_over_spread": 15.339803114234238
+     },
+     "1": {
+      "step": 1.6774348020553589,
+      "step_over_spread": 6.182907167588137
+     },
+     "2": {
+      "step": 1.592836856842041,
+      "step_over_spread": 6.406726598691281
+     },
+     "3": {
+      "step": 3.443794012069702,
+      "step_over_spread": 13.754301784513158
+     },
+     "4": {
+      "step": 2.0975112915039062,
+      "step_over_spread": 8.37697431840258
+     },
+     "5": {
+      "step": 0.6340342164039612,
+      "step_over_spread": 2.6460150217713636
+     },
+     "6": {
+      "step": 1.0660696029663086,
+      "step_over_spread": 4.995548935420845
+     },
+     "7": {
+      "step": 1.9374935626983643,
+      "step_over_spread": 8.290694308309812
+     },
+     "8": {
+      "step": 0.6520442366600037,
+      "step_over_spread": 2.782785578160672
+     }
+    }
+   },
+   "regression": {
+    "reward_nll": {
+     "est": 0.02513868213052166,
+     "se": 0.0005856384704942549,
+     "n_cond": 304898
+    },
+    "continuation_bce": {
+     "est": 7.251358585065397e-06,
+     "se": 3.900700937803556e-06,
+     "n_cond": 304898
+    },
+    "tsp_nll": {
+     "est": 2.1769390847455474,
+     "se": 0.011859377460001284,
+     "n_cond": 304898
+    }
+   },
+   "prediction": {
+    "guided": {
+     "drink": {
+      "appearance": {
+       "rows": 204,
+       "eligible": 204,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 204
+       },
+       "unknown": {
+        "est": 0.10784313725490197,
+        "se": 0.02256112244230179,
+        "n_cond": 204
+       },
+       "success": {
+        "est": 0.06372549019607843,
+        "se": 0.016653657321488397,
+        "n_cond": 204
+       },
+       "copy": {
+        "est": 0.5686274509803921,
+        "se": 0.04482864594843857,
+        "n_cond": 204
+       },
+       "other": {
+        "est": 0.25980392156862747,
+        "se": 0.03305798181637839,
+        "n_cond": 204
+       },
+       "success_upper_bound": {
+        "est": 0.1715686274509804,
+        "se": 0.02901642068610815,
+        "n_cond": 204
+       },
+       "success_among_readable": {
+        "est": 0.07142857142857142,
+        "se": 0.018922052659127577,
+        "n_cond": 182
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 204
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 204
+       },
+       "glimpse_periphery_coherent": {
+        "est": 0.8208955223880597,
+        "se": 0.03594125350986201,
+        "n_cond": 134
+       }
+      },
+      "increment": {
+       "rows": 1582,
+       "eligible": 1582,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1582
+       },
+       "unknown": {
+        "est": 0.0025284450063211127,
+        "se": 0.0016932595394477926,
+        "n_cond": 1582
+       },
+       "success": {
+        "est": 0.03792667509481669,
+        "se": 0.0051639051324868755,
+        "n_cond": 1582
+       },
+       "copy": {
+        "est": 0.6359039190897599,
+        "se": 0.015686499705773033,
+        "n_cond": 1582
+       },
+       "other": {
+        "est": 0.32364096080910243,
+        "se": 0.014814372436687212,
+        "n_cond": 1582
+       },
+       "success_upper_bound": {
+        "est": 0.040455120101137804,
+        "se": 0.005537193644055379,
+        "n_cond": 1582
+       },
+       "success_among_readable": {
+        "est": 0.03802281368821293,
+        "se": 0.005180263931108051,
+        "n_cond": 1578
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1564
+       },
+       "real_token_unreadable": {
+        "est": 0.011378002528445006,
+        "se": 0.004471483591555948,
+        "n_cond": 1582
+       },
+       "glimpse_periphery_coherent": {
+        "est": 0.7385159010600707,
+        "se": 0.013219787278724734,
+        "n_cond": 1415
+       }
+      }
+     },
+     "wood": {
+      "appearance": {
+       "rows": 456,
+       "eligible": 456,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 456
+       },
+       "unknown": {
+        "est": 0.19078947368421054,
+        "se": 0.018914943209408334,
+        "n_cond": 456
+       },
+       "success": {
+        "est": 0.12280701754385964,
+        "se": 0.01569500199690545,
+        "n_cond": 456
+       },
+       "copy": {
+        "est": 0.6271929824561403,
+        "se": 0.02666578240795195,
+        "n_cond": 456
+       },
+       "other": {
+        "est": 0.05921052631578947,
+        "se": 0.012059693040846333,
+        "n_cond": 456
+       },
+       "success_upper_bound": {
+        "est": 0.31359649122807015,
+        "se": 0.024383367562729415,
+        "n_cond": 456
+       },
+       "success_among_readable": {
+        "est": 0.15176151761517614,
+        "se": 0.019716366165008718,
+        "n_cond": 369
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 446
+       },
+       "real_token_unreadable": {
+        "est": 0.021929824561403508,
+        "se": 0.009449185742334531,
+        "n_cond": 456
+       },
+       "glimpse_periphery_coherent": {
+        "est": 0.8952702702702703,
+        "se": 0.017055060428908905,
+        "n_cond": 296
+       }
+      },
+      "increment": {
+       "rows": 1514,
+       "eligible": 1514,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1514
+       },
+       "unknown": {
+        "est": 0.005284015852047556,
+        "se": 0.002154577868750118,
+        "n_cond": 1514
+       },
+       "success": {
+        "est": 0.08256274768824307,
+        "se": 0.0075213715955323905,
+        "n_cond": 1514
+       },
+       "copy": {
+        "est": 0.7635402906208718,
+        "se": 0.011456808050528618,
+        "n_cond": 1514
+       },
+       "other": {
+        "est": 0.14861294583883752,
+        "se": 0.010474252174172744,
+        "n_cond": 1514
+       },
+       "success_upper_bound": {
+        "est": 0.08784676354029063,
+        "se": 0.007801835671485733,
+        "n_cond": 1514
+       },
+       "success_among_readable": {
+        "est": 0.08300132802124834,
+        "se": 0.007560984087964281,
+        "n_cond": 1506
+       },
+       "real_token_correct": {
+        "est": 0.9986648865153538,
+        "se": 0.0012188133370183356,
+        "n_cond": 1498
+       },
+       "real_token_unreadable": {
+        "est": 0.010568031704095112,
+        "se": 0.004082607914325579,
+        "n_cond": 1514
+       },
+       "glimpse_periphery_coherent": {
+        "est": 0.8293233082706767,
+        "se": 0.010049166946855183,
+        "n_cond": 1330
+       }
+      }
+     },
+     "table": {
+      "all": {
+       "rows": 1918,
+       "eligible": 1918,
+       "recorded": {
+        "est": 0.9895724713242962,
+        "se": 0.003319808448803791,
+        "n_cond": 1918
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1918
+       },
+       "success": {
+        "est": 0.0010427528675703858,
+        "se": 0.0007904243779454524,
+        "n_cond": 1918
+       },
+       "copy": {
+        "est": 0.9989572471324296,
+        "se": 0.0007904243779454539,
+        "n_cond": 1918
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1918
+       },
+       "success_upper_bound": {
+        "est": 0.0010427528675703858,
+        "se": 0.0007904243779454524,
+        "n_cond": 1918
+       },
+       "success_among_readable": {
+        "est": 0.0010427528675703858,
+        "se": 0.0007904243779454524,
+        "n_cond": 1918
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1918
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1918
+       },
+       "glimpse_periphery_coherent": {
+        "est": 0.7252346193952033,
+        "se": 0.011595604057616832,
+        "n_cond": 1918
+       }
+      }
+     },
+     "sapling": {
+      "all": {
+       "rows": 1922,
+       "eligible": 1920,
+       "recorded": {
+        "est": 0.09166666666666666,
+        "se": 0.009755477270209355,
+        "n_cond": 1920
+       },
+       "unknown": {
+        "est": 0.0046875,
+        "se": 0.00156300885053438,
+        "n_cond": 1920
+       },
+       "success": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1920
+       },
+       "copy": {
+        "est": 0.9927083333333333,
+        "se": 0.002167290864983125,
+        "n_cond": 1920
+       },
+       "other": {
+        "est": 0.0026041666666666665,
+        "se": 0.001101936637962801,
+        "n_cond": 1920
+       },
+       "success_upper_bound": {
+        "est": 0.0046875,
+        "se": 0.00156300885053438,
+        "n_cond": 1920
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1911
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1900
+       },
+       "real_token_unreadable": {
+        "est": 0.010416666666666666,
+        "se": 0.00321171764920101,
+        "n_cond": 1920
+       },
+       "glimpse_periphery_coherent": {
+        "est": 0.9973656480505796,
+        "se": 0.001116395877312097,
+        "n_cond": 1898
+       }
+      }
+     },
+     "adjacent": {
+      "all": {
+       "rows": 2220,
+       "eligible": 2220,
+       "recorded": {
+        "est": 0.22162162162162163,
+        "se": 0.01785350028420538,
+        "n_cond": 2220
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 2220
+       },
+       "success": {
+        "est": 0.07162162162162163,
+        "se": 0.007484774075303279,
+        "n_cond": 2220
+       },
+       "copy": {
+        "est": 0.40315315315315314,
+        "se": 0.014855911980762544,
+        "n_cond": 2220
+       },
+       "other": {
+        "est": 0.5252252252252252,
+        "se": 0.01408694594087473,
+        "n_cond": 2220
+       },
+       "success_upper_bound": {
+        "est": 0.07162162162162163,
+        "se": 0.007484774075303279,
+        "n_cond": 2220
+       },
+       "success_among_readable": {
+        "est": 0.07162162162162163,
+        "se": 0.007484774075303279,
+        "n_cond": 2220
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 2204
+       },
+       "real_token_unreadable": {
+        "est": 0.007207207207207207,
+        "se": 0.0036923805464725776,
+        "n_cond": 2220
+       },
+       "glimpse_periphery_coherent": {
+        "est": 0.49511774842044803,
+        "se": 0.015361410116978575,
+        "n_cond": 1741
+       }
+      }
+     },
+     "risky": {
+      "all": {
+       "rows": 2224,
+       "eligible": 2224,
+       "recorded": {
+        "est": 0.20503597122302158,
+        "se": 0.011890916515113302,
+        "n_cond": 2224
+       },
+       "unknown": {
+        "est": 0.007194244604316547,
+        "se": 0.006275197265625457,
+        "n_cond": 2224
+       },
+       "success": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 2224
+       },
+       "copy": {
+        "est": 0.09532374100719425,
+        "se": 0.009247393346766046,
+        "n_cond": 2224
+       },
+       "other": {
+        "est": 0.8974820143884892,
+        "se": 0.010987942898626616,
+        "n_cond": 2224
+       },
+       "success_upper_bound": {
+        "est": 0.007194244604316547,
+        "se": 0.006275197265625457,
+        "n_cond": 2224
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 2208
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 2156
+       },
+       "real_token_unreadable": {
+        "est": 0.030575539568345324,
+        "se": 0.011508309514860404,
+        "n_cond": 2224
+       },
+       "glimpse_periphery_coherent": {
+        "est": 0.13465909090909092,
+        "se": 0.011641762898104433,
+        "n_cond": 1760
+       }
+      }
+     },
+     "drink_fail": {
+      "all": {
+       "rows": 564,
+       "eligible": 564,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 564
+       },
+       "unknown": {
+        "est": 0.010638297872340425,
+        "se": 0.008100208135183305,
+        "n_cond": 564
+       },
+       "false_change": {
+        "est": 0.6595744680851063,
+        "se": 0.04190876851723856,
+        "n_cond": 564
+       },
+       "false_change_upper_bound": {
+        "est": 0.6702127659574468,
+        "se": 0.0411057535529187,
+        "n_cond": 564
+       },
+       "false_change_among_readable": {
+        "est": 0.6666666666666666,
+        "se": 0.041703409531132295,
+        "n_cond": 558
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 556
+       },
+       "real_token_unreadable": {
+        "est": 0.014184397163120567,
+        "se": 0.010776224997575544,
+        "n_cond": 564
+       },
+       "glimpse_periphery_coherent": {
+        "est": 0.3723608445297505,
+        "se": 0.04362268892423351,
+        "n_cond": 521
+       }
+      }
+     },
+     "table_fail": {
+      "all": {
+       "rows": 2424,
+       "eligible": 2424,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 2424
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 2424
+       },
+       "false_change": {
+        "est": 0.00041254125412541255,
+        "se": 0.0003974366338082044,
+        "n_cond": 2424
+       },
+       "false_change_upper_bound": {
+        "est": 0.00041254125412541255,
+        "se": 0.0003974366338082044,
+        "n_cond": 2424
+       },
+       "false_change_among_readable": {
+        "est": 0.00041254125412541255,
+        "se": 0.0003974366338082044,
+        "n_cond": 2424
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 2424
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 2424
+       },
+       "glimpse_periphery_coherent": {
+        "est": 0.9921487603305785,
+        "se": 0.0020257704340316636,
+        "n_cond": 2420
+       }
+      }
+     }
+    },
+    "periphery": {
+     "drink": {
+      "appearance": {
+       "rows": 182,
+       "eligible": 182,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 182
+       },
+       "unknown": {
+        "est": 0.34615384615384615,
+        "se": 0.03961948883445381,
+        "n_cond": 182
+       },
+       "success": {
+        "est": 0.13186813186813187,
+        "se": 0.02425084976581627,
+        "n_cond": 182
+       },
+       "copy": {
+        "est": 0.489010989010989,
+        "se": 0.04473857830803173,
+        "n_cond": 182
+       },
+       "other": {
+        "est": 0.03296703296703297,
+        "se": 0.013424108376114359,
+        "n_cond": 182
+       },
+       "success_upper_bound": {
+        "est": 0.47802197802197804,
+        "se": 0.04522299744503906,
+        "n_cond": 182
+       },
+       "success_among_readable": {
+        "est": 0.20168067226890757,
+        "se": 0.038032565672375,
+        "n_cond": 119
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 178
+       },
+       "real_token_unreadable": {
+        "est": 0.02197802197802198,
+        "se": 0.01427950154142731,
+        "n_cond": 182
+       },
+       "glimpse_periphery_coherent": null
+      },
+      "increment": {
+       "rows": 1384,
+       "eligible": 1384,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1384
+       },
+       "unknown": {
+        "est": 0.101878612716763,
+        "se": 0.008446247536328331,
+        "n_cond": 1384
+       },
+       "success": {
+        "est": 0.0036127167630057803,
+        "se": 0.0015475422154830258,
+        "n_cond": 1384
+       },
+       "copy": {
+        "est": 0.7225433526011561,
+        "se": 0.01401167208117952,
+        "n_cond": 1384
+       },
+       "other": {
+        "est": 0.17196531791907516,
+        "se": 0.011856894435232032,
+        "n_cond": 1384
+       },
+       "success_upper_bound": {
+        "est": 0.10549132947976879,
+        "se": 0.008353945188848355,
+        "n_cond": 1384
+       },
+       "success_among_readable": {
+        "est": 0.004022526146419952,
+        "se": 0.0017173614826090189,
+        "n_cond": 1243
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1356
+       },
+       "real_token_unreadable": {
+        "est": 0.02023121387283237,
+        "se": 0.005663364370383179,
+        "n_cond": 1384
+       },
+       "glimpse_periphery_coherent": null
+      }
+     },
+     "wood": {
+      "appearance": {
+       "rows": 414,
+       "eligible": 414,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 414
+       },
+       "unknown": {
+        "est": 0.22705314009661837,
+        "se": 0.021290374928282976,
+        "n_cond": 414
+       },
+       "success": {
+        "est": 0.1642512077294686,
+        "se": 0.02048570453653484,
+        "n_cond": 414
+       },
+       "copy": {
+        "est": 0.6086956521739131,
+        "se": 0.02737920597707983,
+        "n_cond": 414
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 414
+       },
+       "success_upper_bound": {
+        "est": 0.391304347826087,
+        "se": 0.027379205977079824,
+        "n_cond": 414
+       },
+       "success_among_readable": {
+        "est": 0.2125,
+        "se": 0.02631129335431751,
+        "n_cond": 320
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 414
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 414
+       },
+       "glimpse_periphery_coherent": null
+      },
+      "increment": {
+       "rows": 1320,
+       "eligible": 1320,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1320
+       },
+       "unknown": {
+        "est": 0.14696969696969697,
+        "se": 0.011859107187306829,
+        "n_cond": 1320
+       },
+       "success": {
+        "est": 0.011363636363636364,
+        "se": 0.003240505824680291,
+        "n_cond": 1320
+       },
+       "copy": {
+        "est": 0.7916666666666666,
+        "se": 0.013398324626038514,
+        "n_cond": 1320
+       },
+       "other": {
+        "est": 0.05,
+        "se": 0.005972454040224535,
+        "n_cond": 1320
+       },
+       "success_upper_bound": {
+        "est": 0.15833333333333333,
+        "se": 0.01174247753319915,
+        "n_cond": 1320
+       },
+       "success_among_readable": {
+        "est": 0.013321492007104795,
+        "se": 0.003761344795615663,
+        "n_cond": 1126
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1312
+       },
+       "real_token_unreadable": {
+        "est": 0.006060606060606061,
+        "se": 0.0031753304159357924,
+        "n_cond": 1320
+       },
+       "glimpse_periphery_coherent": null
+      }
+     },
+     "table": {
+      "all": {
+       "rows": 1586,
+       "eligible": 1586,
+       "recorded": {
+        "est": 0.9709962168978562,
+        "se": 0.0062252810661848415,
+        "n_cond": 1586
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1586
+       },
+       "success": {
+        "est": 0.2421185372005044,
+        "se": 0.012587322094504208,
+        "n_cond": 1586
+       },
+       "copy": {
+        "est": 0.7578814627994955,
+        "se": 0.012587322094504208,
+        "n_cond": 1586
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1586
+       },
+       "success_upper_bound": {
+        "est": 0.2421185372005044,
+        "se": 0.012587322094504208,
+        "n_cond": 1586
+       },
+       "success_among_readable": {
+        "est": 0.2421185372005044,
+        "se": 0.012587322094504208,
+        "n_cond": 1586
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1586
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1586
+       },
+       "glimpse_periphery_coherent": null
+      }
+     },
+     "sapling": {
+      "all": {
+       "rows": 1750,
+       "eligible": 1748,
+       "recorded": {
+        "est": 0.09382151029748284,
+        "se": 0.00957599818436514,
+        "n_cond": 1748
+       },
+       "unknown": {
+        "est": 0.009153318077803204,
+        "se": 0.003787334284190508,
+        "n_cond": 1748
+       },
+       "success": {
+        "est": 0.0011441647597254005,
+        "se": 0.001174139619370632,
+        "n_cond": 1748
+       },
+       "copy": {
+        "est": 0.9897025171624714,
+        "se": 0.003996798420709616,
+        "n_cond": 1748
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1748
+       },
+       "success_upper_bound": {
+        "est": 0.010297482837528604,
+        "se": 0.00399679842070962,
+        "n_cond": 1748
+       },
+       "success_among_readable": {
+        "est": 0.0011547344110854503,
+        "se": 0.0011850833736510612,
+        "n_cond": 1732
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1732
+       },
+       "real_token_unreadable": {
+        "est": 0.009153318077803204,
+        "se": 0.004085772338106239,
+        "n_cond": 1748
+       },
+       "glimpse_periphery_coherent": null
+      }
+     },
+     "move": {
+      "shift_sample": {
+       "est": 0.9103944325819612,
+       "se": 0.003947317965985787,
+       "n_cond": 2000
+      },
+      "shift_field_6.67": {
+       "est": 0.9126578558087349,
+       "se": 0.003899105767541192,
+       "n_cond": 2000
+      }
+     },
+     "adjacent": {
+      "all": {
+       "rows": 3824,
+       "eligible": 3824,
+       "recorded": {
+        "est": 0.15585774058577406,
+        "se": 0.012086588275302653,
+        "n_cond": 3824
+       },
+       "unknown": {
+        "est": 0.1809623430962343,
+        "se": 0.010291776710892006,
+        "n_cond": 3824
+       },
+       "success": {
+        "est": 0.0018305439330543933,
+        "se": 0.0007522741151675229,
+        "n_cond": 3824
+       },
+       "copy": {
+        "est": 0.7868723849372385,
+        "se": 0.011251855666129355,
+        "n_cond": 3824
+       },
+       "other": {
+        "est": 0.030334728033472803,
+        "se": 0.003718180363390101,
+        "n_cond": 3824
+       },
+       "success_upper_bound": {
+        "est": 0.1827928870292887,
+        "se": 0.010297598052257417,
+        "n_cond": 3824
+       },
+       "success_among_readable": {
+        "est": 0.002234993614303959,
+        "se": 0.0009172934440699249,
+        "n_cond": 3132
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 3800
+       },
+       "real_token_unreadable": {
+        "est": 0.006276150627615063,
+        "se": 0.0025903617931084893,
+        "n_cond": 3824
+       },
+       "glimpse_periphery_coherent": null
+      }
+     },
+     "risky": {
+      "all": {
+       "rows": 3852,
+       "eligible": 3852,
+       "recorded": {
+        "est": 0.1391484942886812,
+        "se": 0.00852174470963277,
+        "n_cond": 3852
+       },
+       "unknown": {
+        "est": 0.1967808930425753,
+        "se": 0.015516958291093338,
+        "n_cond": 3852
+       },
+       "success": {
+        "est": 0.0005192107995846313,
+        "se": 0.000393453549641347,
+        "n_cond": 3852
+       },
+       "copy": {
+        "est": 0.7733644859813084,
+        "se": 0.01524989765571254,
+        "n_cond": 3852
+       },
+       "other": {
+        "est": 0.02933541017653167,
+        "se": 0.0035871651696391138,
+        "n_cond": 3852
+       },
+       "success_upper_bound": {
+        "est": 0.19730010384215993,
+        "se": 0.015552056157461563,
+        "n_cond": 3852
+       },
+       "success_among_readable": {
+        "est": 0.0006464124111182935,
+        "se": 0.0004918555925248649,
+        "n_cond": 3094
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 3772
+       },
+       "real_token_unreadable": {
+        "est": 0.020768431983385256,
+        "se": 0.008485473779596674,
+        "n_cond": 3852
+       },
+       "glimpse_periphery_coherent": null
+      }
+     },
+     "drink_fail": {
+      "all": {
+       "rows": 488,
+       "eligible": 488,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 488
+       },
+       "unknown": {
+        "est": 0.06557377049180328,
+        "se": 0.01723176374955621,
+        "n_cond": 488
+       },
+       "false_change": {
+        "est": 0.11475409836065574,
+        "se": 0.023454104084143515,
+        "n_cond": 488
+       },
+       "false_change_upper_bound": {
+        "est": 0.18032786885245902,
+        "se": 0.027274573996516924,
+        "n_cond": 488
+       },
+       "false_change_among_readable": {
+        "est": 0.12280701754385964,
+        "se": 0.024941158037619916,
+        "n_cond": 456
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 472
+       },
+       "real_token_unreadable": {
+        "est": 0.03278688524590164,
+        "se": 0.018449281340487983,
+        "n_cond": 488
+       },
+       "glimpse_periphery_coherent": null
+      }
+     },
+     "table_fail": {
+      "all": {
+       "rows": 3248,
+       "eligible": 3248,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 3248
+       },
+       "unknown": {
+        "est": 0.001539408866995074,
+        "se": 0.0007995384331460661,
+        "n_cond": 3248
+       },
+       "false_change": {
+        "est": 0.0040024630541871924,
+        "se": 0.0012006032314560897,
+        "n_cond": 3248
+       },
+       "false_change_upper_bound": {
+        "est": 0.005541871921182266,
+        "se": 0.0013903829959738994,
+        "n_cond": 3248
+       },
+       "false_change_among_readable": {
+        "est": 0.004008633980881899,
+        "se": 0.0012023037479703734,
+        "n_cond": 3243
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 3220
+       },
+       "real_token_unreadable": {
+        "est": 0.008620689655172414,
+        "se": 0.0036801121082580754,
+        "n_cond": 3248
+       },
+       "glimpse_periphery_coherent": null
+      }
+     }
+    }
+   },
+   "perception": {
+    "drink": {
+     "appearance": {
+      "rec_cell": {
+       "est": 1.382303929796406,
+       "se": 0.0023004678829505747,
+       "n_cond": 102
+      },
+      "tsp_cell": {
+       "est": 1.3999609292722215,
+       "se": 0.0019254033104839315,
+       "n_cond": 102
+      },
+      "rec_window": {
+       "est": 1.4011070792581521,
+       "se": 0.04408764562697495,
+       "n_cond": 102
+      },
+      "tsp_window": {
+       "est": 1.4317259472959183,
+       "se": 0.04471190922668696,
+       "n_cond": 102
+      }
+     },
+     "increment": {
+      "rec_cell": {
+       "est": 1.300644165423506,
+       "se": 0.002270158373120122,
+       "n_cond": 898
+      },
+      "tsp_cell": {
+       "est": 1.319481857768146,
+       "se": 0.0022833554631793403,
+       "n_cond": 898
+      },
+      "rec_window": {
+       "est": 1.3723646914773104,
+       "se": 0.02022003399397307,
+       "n_cond": 898
+      },
+      "tsp_window": {
+       "est": 1.4020243170266693,
+       "se": 0.020829292478686857,
+       "n_cond": 898
+      }
+     }
+    },
+    "wood": {
+     "appearance": {
+      "rec_cell": {
+       "est": 1.1500322269765955,
+       "se": 0.005441095108068797,
+       "n_cond": 228
+      },
+      "tsp_cell": {
+       "est": 1.1886128589772342,
+       "se": 0.006150257168755232,
+       "n_cond": 228
+      },
+      "rec_window": {
+       "est": 0.9528457230904646,
+       "se": 0.05839859246646406,
+       "n_cond": 228
+      },
+      "tsp_window": {
+       "est": 1.0052389621473194,
+       "se": 0.06328694744555173,
+       "n_cond": 228
+      }
+     },
+     "increment": {
+      "rec_cell": {
+       "est": 1.4454664578709577,
+       "se": 0.018751617755282914,
+       "n_cond": 772
+      },
+      "tsp_cell": {
+       "est": 1.9212944799445453,
+       "se": 0.018250603996420037,
+       "n_cond": 772
+      },
+      "rec_window": {
+       "est": 0.925981380084018,
+       "se": 0.0316557899305743,
+       "n_cond": 772
+      },
+      "tsp_window": {
+       "est": 1.011558450526833,
+       "se": 0.03507295318516518,
+       "n_cond": 772
+      }
+     }
+    },
+    "table": {
+     "all": {
+      "rec_cell": {
+       "est": 7.095366880344275,
+       "se": 0.05541029018240561,
+       "n_cond": 959
+      },
+      "tsp_cell": {
+       "est": 8.188482873755525,
+       "se": 0.06369391348228393,
+       "n_cond": 959
+      },
+      "rec_window": {
+       "est": 2.65262589414873,
+       "se": 0.02179539062634108,
+       "n_cond": 959
+      },
+      "tsp_window": {
+       "est": 2.8024681754355885,
+       "se": 0.02306584533908446,
+       "n_cond": 959
+      }
+     }
+    },
+    "sapling": {
+     "all": {
+      "rec_cell": {
+       "est": 0.08230288186096989,
+       "se": 0.009646084240984737,
+       "n_cond": 961
+      },
+      "tsp_cell": {
+       "est": 0.10855540609170497,
+       "se": 0.011784089996195317,
+       "n_cond": 961
+      },
+      "rec_window": {
+       "est": 0.6266153051627414,
+       "se": 0.01909891716225021,
+       "n_cond": 961
+      },
+      "tsp_window": {
+       "est": 0.64989862522027,
+       "se": 0.020032702506611016,
+       "n_cond": 961
+      }
+     }
+    }
+   },
+   "action_routing": {
+    "drink": {
+     "appearance": {
+      "rerun_success": {
+       "est": 0.06372549019607843,
+       "se": 0.018009856402640752,
+       "n_cond": 204
+      },
+      "noop_belief_success": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 204
+      },
+      "unknown": [
+       {
+        "est": 0.08333333333333333,
+        "se": 0.017771800525715475,
+        "n_cond": 204
+       },
+       {
+        "est": 0.004901960784313725,
+        "se": 0.0043571593989973735,
+        "n_cond": 204
+       }
+      ],
+      "routing": {
+       "est": 0.06372549019607843,
+       "se": 0.018009856402640752,
+       "n_cond": 204,
+       "ci95": [
+        0.028426171646902552,
+        0.0990248087452543
+       ],
+       "rows": 204
+      }
+     },
+     "increment": {
+      "rerun_success": {
+       "est": 0.10189309576837416,
+       "se": 0.00936987031522005,
+       "n_cond": 1796
+      },
+      "noop_belief_success": {
+       "est": 0.10022271714922049,
+       "se": 0.009077481684422952,
+       "n_cond": 1796
+      },
+      "unknown": [
+       {
+        "est": 0.0027839643652561247,
+        "se": 0.0017822912247339197,
+        "n_cond": 1796
+       },
+       {
+        "est": 0.004454342984409799,
+        "se": 0.0024580415520279496,
+        "n_cond": 1796
+       }
+      ],
+      "routing": {
+       "est": 0.0016703786191536749,
+       "se": 0.0026329231800764443,
+       "n_cond": 1796,
+       "ci95": [
+        -0.0034901508137961564,
+        0.006830908052103506
+       ],
+       "rows": 1796
+      }
+     }
+    },
+    "wood": {
+     "appearance": {
+      "rerun_success": {
+       "est": 0.14035087719298245,
+       "se": 0.0193357239171651,
+       "n_cond": 456
+      },
+      "noop_belief_success": {
+       "est": 0.0021929824561403508,
+       "se": 0.0022001624321838623,
+       "n_cond": 456
+      },
+      "unknown": [
+       {
+        "est": 0.19517543859649122,
+        "se": 0.01887308892647378,
+        "n_cond": 456
+       },
+       {
+        "est": 0.006578947368421052,
+        "se": 0.004768787737404256,
+        "n_cond": 456
+       }
+      ],
+      "routing": {
+       "est": 0.13815789473684212,
+       "se": 0.019501813944307698,
+       "n_cond": 456,
+       "ci95": [
+        0.09993433940599902,
+        0.1763814500676852
+       ],
+       "rows": 456
+      }
+     },
+     "increment": {
+      "rerun_success": {
+       "est": 0.08484455958549222,
+       "se": 0.007141896831749736,
+       "n_cond": 1544
+      },
+      "noop_belief_success": {
+       "est": 0.04598445595854922,
+       "se": 0.0056489471802881165,
+       "n_cond": 1544
+      },
+      "unknown": [
+       {
+        "est": 0.006476683937823834,
+        "se": 0.002531139320431888,
+        "n_cond": 1544
+       },
+       {
+        "est": 0.0045336787564766836,
+        "se": 0.0019918234508102635,
+        "n_cond": 1544
+       }
+      ],
+      "routing": {
+       "est": 0.038860103626943004,
+       "se": 0.0045325920925413845,
+       "n_cond": 1544,
+       "ci95": [
+        0.02997622312556189,
+        0.04774398412832412
+       ],
+       "rows": 1544
+      }
+     }
+    },
+    "table": {
+     "all": {
+      "rerun_success": {
+       "est": 0.0005213764337851929,
+       "se": 0.0005308006033686224,
+       "n_cond": 1918
+      },
+      "noop_belief_success": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 1918
+      },
+      "unknown": [
+       {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1918
+       },
+       {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1918
+       }
+      ],
+      "routing": {
+       "est": 0.0005213764337851929,
+       "se": 0.0005308006033686224,
+       "n_cond": 1918,
+       "ci95": [
+        -0.000518992748817307,
+        0.0015617456163876929
+       ],
+       "rows": 1918
+      }
+     }
+    }
+   },
+   "s1": {
+    "s1_reader": {
+     "path": "artifacts/experiments/20261030_p1_guided/readings/eval_m05/base_s1_reader.pt",
+     "sha256": "fa1d4148f7be5fa4657d896217959ab6fc05f2c638c2c7ec81274dcac7225acf",
+     "checkpoint_sha256": "74eccc433bf5a785edd6d565edc1a970f8b468510abf2c0b07e24d28b547ebe5",
+     "schema": {
+      "token_dim": 16,
+      "lighting_dim": 8,
+      "hidden": [
+       256,
+       256
+      ],
+      "heads": {
+       "kind": 5,
+       "terr": 17
+      },
+      "kind_labels": [
+       "background",
+       "zombies",
+       "cows",
+       "skeletons",
+       "arrows"
+      ],
+      "probe_seed": 0,
+      "storage_precision": "float16",
+      "train_labels_sha256": "c71cb2150899997d995b641f05684e71c2cbf8fb5092203c2475592cd8852dc3"
+     }
+    },
+    "reader_retention": {
+     "day_r1_2": {
+      "presence_recall": {
+       "est": 0.999837515613734,
+       "se": 5.6173250602814134e-05,
+       "n_cond": 98471
+      },
+      "presence_precision": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 98455
+      },
+      "recall_zombies": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 37123
+      },
+      "recall_cows": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 39321
+      },
+      "recall_skeletons": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 9624
+      },
+      "recall_arrows": {
+       "est": 0.9987099895186649,
+       "se": 0.0004426562129638239,
+       "n_cond": 12403
+      },
+      "precision_zombies": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 37123
+      },
+      "precision_cows": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 39321
+      },
+      "precision_skeletons": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 9624
+      },
+      "precision_arrows": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 12387
+      }
+     },
+     "day_r1_4": {
+      "presence_recall": {
+       "est": 0.9999122069328799,
+       "se": 2.7626100799671876e-05,
+       "n_cond": 216418
+      },
+      "presence_precision": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 216399
+      },
+      "recall_zombies": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 67061
+      },
+      "recall_cows": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 100045
+      },
+      "recall_skeletons": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 31570
+      },
+      "recall_arrows": {
+       "est": 0.9988727313718859,
+       "se": 0.0003378466218238449,
+       "n_cond": 17742
+      },
+      "precision_zombies": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 67061
+      },
+      "precision_cows": {
+       "est": 0.999990004597885,
+       "se": 9.878418266491862e-06,
+       "n_cond": 100046
+      },
+      "precision_skeletons": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 31570
+      },
+      "precision_arrows": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 17722
+      }
+     },
+     "night_r1_2": {
+      "presence_recall": {
+       "est": 0.9569113468193455,
+       "se": 0.0019675901499698356,
+       "n_cond": 71086
+      },
+      "presence_precision": {
+       "est": 0.9982682966202433,
+       "se": 0.00017501746623362654,
+       "n_cond": 68141
+      },
+      "recall_zombies": {
+       "est": 0.9817526223776224,
+       "se": 0.0016667913571034843,
+       "n_cond": 36608
+      },
+      "recall_cows": {
+       "est": 0.9748895243046529,
+       "se": 0.002361036068663301,
+       "n_cond": 19235
+      },
+      "recall_skeletons": {
+       "est": 0.9408205430932703,
+       "se": 0.005423158005479099,
+       "n_cond": 6776
+      },
+      "recall_arrows": {
+       "est": 0.8162277075705681,
+       "se": 0.00892567717145513,
+       "n_cond": 8467
+      },
+      "precision_zombies": {
+       "est": 0.9983887993777432,
+       "se": 0.0002258970777725752,
+       "n_cond": 35998
+      },
+      "precision_cows": {
+       "est": 0.998881372183455,
+       "se": 0.0002445783875489249,
+       "n_cond": 18773
+      },
+      "precision_skeletons": {
+       "est": 0.997184420459878,
+       "se": 0.0006677664106972973,
+       "n_cond": 6393
+      },
+      "precision_arrows": {
+       "est": 0.9905403468539487,
+       "se": 0.0013691862758817624,
+       "n_cond": 6977
+      }
+     },
+     "night_r1_4": {
+      "presence_recall": {
+       "est": 0.851933427951691,
+       "se": 0.0033484216736122275,
+       "n_cond": 149372
+      },
+      "presence_precision": {
+       "est": 0.9787867367109443,
+       "se": 0.0006699105388065023,
+       "n_cond": 130013
+      },
+      "recall_zombies": {
+       "est": 0.8818720255411837,
+       "se": 0.0039510596429113785,
+       "n_cond": 67029
+      },
+      "recall_cows": {
+       "est": 0.8632001606103192,
+       "se": 0.004273594094796293,
+       "n_cond": 49810
+      },
+      "recall_skeletons": {
+       "est": 0.775070655881493,
+       "se": 0.0077433238783796154,
+       "n_cond": 20522
+      },
+      "recall_arrows": {
+       "est": 0.7430688535509117,
+       "se": 0.009639548954169337,
+       "n_cond": 12011
+      },
+      "precision_zombies": {
+       "est": 0.9740467323600172,
+       "se": 0.0010906347881929784,
+       "n_cond": 60686
+      },
+      "precision_cows": {
+       "est": 0.9850171821305842,
+       "se": 0.0008258659304673228,
+       "n_cond": 43650
+      },
+      "precision_skeletons": {
+       "est": 0.983856002969011,
+       "se": 0.0012661297854722128,
+       "n_cond": 16167
+      },
+      "precision_arrows": {
+       "est": 0.9384858044164038,
+       "se": 0.0036804133204250567,
+       "n_cond": 9510
+      }
+     }
+    },
+    "entity_counts": {
+     "zombies": {
+      "real": {
+       "est": 0.4246,
+       "se": 0.01494097493963221,
+       "n_cond": 5000
+      },
+      "generated": {
+       "est": 0.2344,
+       "se": 0.009589777019270542,
+       "n_cond": 5000
+      }
+     },
+     "cows": {
+      "real": {
+       "est": 0.4706,
+       "se": 0.012328399283839072,
+       "n_cond": 5000
+      },
+      "generated": {
+       "est": 0.2496,
+       "se": 0.009206331564935562,
+       "n_cond": 5000
+      }
+     },
+     "skeletons": {
+      "real": {
+       "est": 0.1572,
+       "se": 0.0074545778949448,
+       "n_cond": 5000
+      },
+      "generated": {
+       "est": 0.1364,
+       "se": 0.005622532052612529,
+       "n_cond": 5000
+      }
+     },
+     "arrows": {
+      "real": {
+       "est": 0.089,
+       "se": 0.004646296311007506,
+       "n_cond": 5000
+      },
+      "generated": {
+       "est": 0.1304,
+       "se": 0.006099669490166932,
+       "n_cond": 5000
+      }
+     }
+    },
+    "belief_probe": {
+     "heldout_loss_by_epoch": [
+      3.5241899490356445,
+      3.3734130859375,
+      3.300699234008789,
+      3.234177589416504,
+      3.1750237941741943,
+      3.1418604850769043,
+      3.1205508708953857,
+      3.0957159996032715,
+      3.0828640460968018,
+      3.082754611968994,
+      3.0861215591430664,
+      3.0929694175720215,
+      3.104234457015991
+     ],
+     "achievements": [
+      {
+       "ap": 0.9995961291802178,
+       "balanced_accuracy": 0.9825542840453318
+      },
+      {
+       "ap": 0.9980204719191234,
+       "balanced_accuracy": 0.976745035383702
+      },
+      {
+       "ap": 0.9761130097364811,
+       "balanced_accuracy": 0.8904041479188933
+      },
+      {
+       "ap": 0.84504394745786,
+       "balanced_accuracy": 0.6808208112941267
+      },
+      {
+       "ap": 0.9660025590695314,
+       "balanced_accuracy": 0.8707278687356441
+      },
+      {
+       "ap": 0.9999638959056125,
+       "balanced_accuracy": 0.995683838637965
+      },
+      {
+       "ap": 0.9998970932200408,
+       "balanced_accuracy": 0.9937315059095126
+      },
+      {
+       "ap": 0.8117448023074502,
+       "balanced_accuracy": 0.6813868879136344
+      },
+      {
+       "ap": 0.9592865387024496,
+       "balanced_accuracy": 0.8844390146221999
+      },
+      {
+       "ap": 0.9989597611897751,
+       "balanced_accuracy": 0.9673016566140573
+      },
+      {
+       "ap": 0.9891646895546803,
+       "balanced_accuracy": 0.927732764357287
+      },
+      {
+       "ap": 0.24670108222553444,
+       "balanced_accuracy": 0.5032305395969495
+      },
+      {
+       "ap": 0.9252369303088838,
+       "balanced_accuracy": 0.8765372408351124
+      },
+      {
+       "ap": 0.99838826687974,
+       "balanced_accuracy": 0.9791549206585178
+      },
+      {
+       "ap": 0.9811301828620305,
+       "balanced_accuracy": 0.9650939538406136
+      },
+      {
+       "ap": 0.9851263453437648,
+       "balanced_accuracy": 0.9072177909319064
+      },
+      {
+       "ap": 0.9809928875383628,
+       "balanced_accuracy": 0.8970317062682789
+      },
+      {
+       "ap": 0.9856052740233514,
+       "balanced_accuracy": 0.9529001371510288
+      },
+      {
+       "ap": 0.9930072174794093,
+       "balanced_accuracy": 0.9599954181593375
+      },
+      {
+       "ap": 0.4714943255907262,
+       "balanced_accuracy": 0.6270630516956688
+      },
+      {
+       "ap": 0.9515253391091337,
+       "balanced_accuracy": 0.9437629066517883
+      },
+      {
+       "ap": 0.9616319713102682,
+       "balanced_accuracy": 0.9257533464289671
+      }
+     ],
+     "hud_exact": [
+      {
+       "est": 0.9408251527425002,
+       "se": 0.001963942117799593,
+       "n_cond": 305907
+      },
+      {
+       "est": 0.39121040054657136,
+       "se": 0.008987178981400633,
+       "n_cond": 305907
+      },
+      {
+       "est": 0.4848009362322536,
+       "se": 0.007920715016408453,
+       "n_cond": 305907
+      },
+      {
+       "est": 0.5568097493682721,
+       "se": 0.00922793681150091,
+       "n_cond": 305907
+      },
+      {
+       "est": 0.6949366964469593,
+       "se": 0.009621326525455378,
+       "n_cond": 305907
+      },
+      {
+       "est": 0.5521547398392321,
+       "se": 0.012253483962152352,
+       "n_cond": 305907
+      },
+      {
+       "est": 0.6512044510259654,
+       "se": 0.0176888895768,
+       "n_cond": 305907
+      },
+      {
+       "est": 0.8233253897426343,
+       "se": 0.014373551447052466,
+       "n_cond": 305907
+      },
+      {
+       "est": 0.9832923077928913,
+       "se": 0.0050706244788598755,
+       "n_cond": 305907
+      },
+      {
+       "est": 0.9834263354548931,
+       "se": 0.00269256648421374,
+       "n_cond": 305907
+      },
+      {
+       "est": 0.8242897351155744,
+       "se": 0.01490285705890759,
+       "n_cond": 305907
+      },
+      {
+       "est": 0.8726377624572174,
+       "se": 0.017382100946048213,
+       "n_cond": 305907
+      },
+      {
+       "est": 0.9188151954679037,
+       "se": 0.008929128603104951,
+       "n_cond": 305907
+      },
+      {
+       "est": 0.8850990660560235,
+       "se": 0.013862926554485079,
+       "n_cond": 305907
+      },
+      {
+       "est": 0.8031297093561115,
+       "se": 0.01450695263841843,
+       "n_cond": 305907
+      },
+      {
+       "est": 0.9059354640462625,
+       "se": 0.015162934338318706,
+       "n_cond": 305907
+      }
+     ],
+     "departed": {
+      "zombies": {
+       "ap_by_stratum": {
+        "1-4": 0.11019310675101622,
+        "5-8": 0.07313353858659624,
+        "9-16": 0.10496275314457464,
+        "17-64": 0.27829249980348947
+       },
+       "last_seen_side_accuracy": {
+        "est": 0.4948505149485051,
+        "se": 0.008597459194163513,
+        "n_cond": 80008
+       }
+      },
+      "cows": {
+       "ap_by_stratum": {
+        "1-4": 0.1227363006328197,
+        "5-8": 0.08405295733841722,
+        "9-16": 0.12668433204186785,
+        "17-64": 0.33306779444202195
+       },
+       "last_seen_side_accuracy": {
+        "est": 0.4404549361899094,
+        "se": 0.006701825461735424,
+        "n_cond": 136107
+       }
+      },
+      "skeletons": {
+       "ap_by_stratum": {
+        "1-4": 0.08836363135052788,
+        "5-8": 0.05697951073893843,
+        "9-16": 0.08403077978615657,
+        "17-64": 0.32415086528952336
+       },
+       "last_seen_side_accuracy": {
+        "est": 0.4406950055957055,
+        "se": 0.009346303095758443,
+        "n_cond": 105438
+       }
+      },
+      "arrows": {
+       "ap_by_stratum": {
+        "1-4": 0.12951700354081233,
+        "5-8": 0.06465986388883158,
+        "9-16": 0.0816054293637088,
+        "17-64": 0.306835101430389
+       },
+       "last_seen_side_accuracy": {
+        "est": 0.3929953987877391,
+        "se": 0.009057735674262251,
+        "n_cond": 104103
+       }
+      }
+     }
+    }
+   },
+   "class_losses": {
+    "drink_up": {
+     "se_per_element": 0.15806424643611536,
+     "elements": 6400.0
+    },
+    "wood_up": {
+     "se_per_element": 0.1062581393267354,
+     "elements": 12112.0
+    },
+    "sapling_up": {
+     "se_per_element": 0.44306742618126527,
+     "elements": 560.0
+    },
+    "table_placed": {
+     "se_per_element": 0.13236638539758055,
+     "elements": 3008.0
+    },
+    "zombie_hit": {
+     "se_per_element": 0.20130275964720157,
+     "elements": 3552.0
+    },
+    "health_other": {
+     "se_per_element": 0.14815733093590963,
+     "elements": 8400.0
+    },
+    "hud_other_change": {
+     "se_per_element": 0.13711021302700563,
+     "elements": 88032.0
+    },
+    "hud_static": {
+     "se_per_element": 0.007946979435810634,
+     "elements": 7253744.0
+    },
+    "map_moved": {
+     "se_per_element": 0.033566829066984265,
+     "elements": 9314928.0
+    },
+    "map_still": {
+     "se_per_element": 0.02158751598020561,
+     "elements": 16486864.0
+    },
+    "glimpse": {
+     "se_per_element": 0.0324596860839261,
+     "elements": 14745600.0
+    },
+    "lighting": {
+     "se_per_element": 0.005648779955226928,
+     "elements": 204800.0
+    }
+   }
+  },
+  "p1f": {
+   "path": "artifacts/experiments/20261030_p1_guided/run/ckpt_10.pt",
+   "sha256": "82b0ecc037a5d538597ed0639fe3823ca73046448cc9c6837704f8aada6e6271",
+   "readers_sha256": "c0d13fe2d6f542ad3667cef20862c260bd4994877db654689c82f9fa60336086",
+   "instrument_qualification": {
+    "p": {
+     "health": {
+      "accuracy": 1.0,
+      "rows": 305907,
+      "qualified": true
+     },
+     "drink": {
+      "accuracy": 1.0,
+      "rows": 305907,
+      "qualified": true
+     },
+     "sapling": {
+      "accuracy": 1.0,
+      "rows": 305902,
+      "qualified": true
+     },
+     "wood": {
+      "accuracy": 1.0,
+      "rows": 305907,
+      "qualified": true
+     }
+    },
+    "g": {
+     "health@55": {
+      "accuracy": 1.0,
+      "rows": 5850,
+      "qualified": true
+     },
+     "health@64": {
+      "accuracy": 1.0,
+      "rows": 18012,
+      "qualified": true
+     },
+     "drink@55": {
+      "accuracy": 1.0,
+      "rows": 5850,
+      "qualified": true
+     },
+     "drink@56": {
+      "accuracy": 1.0,
+      "rows": 5405,
+      "qualified": true
+     },
+     "drink@57": {
+      "accuracy": 1.0,
+      "rows": 5331,
+      "qualified": true
+     },
+     "drink@64": {
+      "accuracy": 1.0,
+      "rows": 18012,
+      "qualified": true
+     },
+     "drink@65": {
+      "accuracy": 1.0,
+      "rows": 10171,
+      "qualified": true
+     },
+     "drink@66": {
+      "accuracy": 1.0,
+      "rows": 5405,
+      "qualified": true
+     },
+     "sapling@57": {
+      "accuracy": 1.0,
+      "rows": 5309,
+      "qualified": true
+     },
+     "sapling@58": {
+      "accuracy": 1.0,
+      "rows": 5370,
+      "qualified": true
+     },
+     "sapling@59": {
+      "accuracy": 1.0,
+      "rows": 5452,
+      "qualified": true
+     },
+     "sapling@66": {
+      "accuracy": 1.0,
+      "rows": 5405,
+      "qualified": true
+     },
+     "sapling@67": {
+      "accuracy": 1.0,
+      "rows": 15475,
+      "qualified": true
+     },
+     "sapling@68": {
+      "accuracy": 1.0,
+      "rows": 13602,
+      "qualified": true
+     },
+     "wood@58": {
+      "accuracy": 1.0,
+      "rows": 5403,
+      "qualified": true
+     },
+     "wood@59": {
+      "accuracy": 1.0,
+      "rows": 5497,
+      "qualified": true
+     },
+     "wood@60": {
+      "accuracy": 1.0,
+      "rows": 5328,
+      "qualified": true
+     },
+     "wood@67": {
+      "accuracy": 1.0,
+      "rows": 15476,
+      "qualified": true
+     },
+     "wood@68": {
+      "accuracy": 1.0,
+      "rows": 13662,
+      "qualified": true
+     },
+     "wood@69": {
+      "accuracy": 1.0,
+      "rows": 5477,
+      "qualified": true
+     }
+    },
+    "table_p": {
+     "recall": 1.0,
+     "specificity": 0.9999966547128406,
+     "tables": 6979,
+     "qualified": true
+    },
+    "table_g": {
+     "recall": 1.0,
+     "specificity": 1.0,
+     "tables": 3021,
+     "faced_in_window": 53094,
+     "qualified": true
+    }
+   },
+   "separation": {
+    "drink": {
+     "0": {
+      "step": 6.1143107414245605,
+      "step_over_spread": 38.95877442599522
+     },
+     "1": {
+      "step": 3.9787144660949707,
+      "step_over_spread": 30.867987095901544
+     },
+     "2": {
+      "step": 3.030454635620117,
+      "step_over_spread": 25.279721658797715
+     },
+     "3": {
+      "step": 4.233790397644043,
+      "step_over_spread": 35.17344729968998
+     },
+     "4": {
+      "step": 3.3203084468841553,
+      "step_over_spread": 21.26945494129717
+     },
+     "5": {
+      "step": 1.8457365036010742,
+      "step_over_spread": 10.912292553263654
+     },
+     "6": {
+      "step": 2.161278009414673,
+      "step_over_spread": 17.27720738045639
+     },
+     "7": {
+      "step": 3.899294376373291,
+      "step_over_spread": 29.121024472693296
+     },
+     "8": {
+      "step": 1.9345351457595825,
+      "step_over_spread": 14.288253361151659
+     }
+    },
+    "wood": {
+     "0": {
+      "step": 6.070809841156006,
+      "step_over_spread": 32.41855275829935
+     },
+     "1": {
+      "step": 4.721000671386719,
+      "step_over_spread": 27.92723744230252
+     },
+     "2": {
+      "step": 3.392482042312622,
+      "step_over_spread": 22.75761103158128
+     },
+     "3": {
+      "step": 4.662674903869629,
+      "step_over_spread": 30.747813577384488
+     },
+     "4": {
+      "step": 2.620776414871216,
+      "step_over_spread": 16.11816993856985
+     },
+     "5": {
+      "step": 1.6811931133270264,
+      "step_over_spread": 10.706828589044607
+     },
+     "6": {
+      "step": 2.121312141418457,
+      "step_over_spread": 19.59154248451284
+     },
+     "7": {
+      "step": 3.4858617782592773,
+      "step_over_spread": 25.563019132906877
+     },
+     "8": {
+      "step": 1.82784903049469,
+      "step_over_spread": 11.960424715695245
+     }
+    }
+   },
+   "regression": {
+    "reward_nll": {
+     "est": 0.03602393327158906,
+     "se": 0.001151329383672622,
+     "n_cond": 304898
+    },
+    "continuation_bce": {
+     "est": 1.6364784395355525e-07,
+     "se": 5.8828793143611796e-08,
+     "n_cond": 304898
+    },
+    "tsp_nll": {
+     "est": 2.300671751607642,
+     "se": 0.00751049555862846,
+     "n_cond": 304898
+    }
+   },
+   "prediction": {
+    "guided": {
+     "drink": {
+      "appearance": {
+       "rows": 204,
+       "eligible": 204,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 204
+       },
+       "unknown": {
+        "est": 0.014705882352941176,
+        "se": 0.008433991691071827,
+        "n_cond": 204
+       },
+       "success": {
+        "est": 0.9509803921568627,
+        "se": 0.01573399688329264,
+        "n_cond": 204
+       },
+       "copy": {
+        "est": 0.024509803921568627,
+        "se": 0.011125639602199675,
+        "n_cond": 204
+       },
+       "other": {
+        "est": 0.00980392156862745,
+        "se": 0.007045778283514326,
+        "n_cond": 204
+       },
+       "success_upper_bound": {
+        "est": 0.9656862745098039,
+        "se": 0.012910832000232929,
+        "n_cond": 204
+       },
+       "success_among_readable": {
+        "est": 0.9651741293532339,
+        "se": 0.01312111251803042,
+        "n_cond": 201
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 200
+       },
+       "real_token_unreadable": {
+        "est": 0.0196078431372549,
+        "se": 0.01363417493026227,
+        "n_cond": 204
+       },
+       "glimpse_periphery_coherent": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 187
+       }
+      },
+      "increment": {
+       "rows": 1796,
+       "eligible": 1796,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1796
+       },
+       "unknown": {
+        "est": 0.030623608017817373,
+        "se": 0.005432685379450458,
+        "n_cond": 1796
+       },
+       "success": {
+        "est": 0.6486636971046771,
+        "se": 0.015725403104876672,
+        "n_cond": 1796
+       },
+       "copy": {
+        "est": 0.20879732739420936,
+        "se": 0.012385960581387013,
+        "n_cond": 1796
+       },
+       "other": {
+        "est": 0.11191536748329621,
+        "se": 0.008757576050728572,
+        "n_cond": 1796
+       },
+       "success_upper_bound": {
+        "est": 0.6792873051224945,
+        "se": 0.01579007758509154,
+        "n_cond": 1796
+       },
+       "success_among_readable": {
+        "est": 0.6691556576680069,
+        "se": 0.01606127143196913,
+        "n_cond": 1741
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1768
+       },
+       "real_token_unreadable": {
+        "est": 0.015590200445434299,
+        "se": 0.005073901543521053,
+        "n_cond": 1796
+       },
+       "glimpse_periphery_coherent": {
+        "est": 0.991701244813278,
+        "se": 0.0028344504038802752,
+        "n_cond": 1205
+       }
+      }
+     },
+     "wood": {
+      "appearance": {
+       "rows": 456,
+       "eligible": 456,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 456
+       },
+       "unknown": {
+        "est": 0.008771929824561403,
+        "se": 0.004029136934800062,
+        "n_cond": 456
+       },
+       "success": {
+        "est": 0.9736842105263158,
+        "se": 0.009094509048676846,
+        "n_cond": 456
+       },
+       "copy": {
+        "est": 0.017543859649122806,
+        "se": 0.007352600915798041,
+        "n_cond": 456
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 456
+       },
+       "success_upper_bound": {
+        "est": 0.9824561403508771,
+        "se": 0.00735260091579804,
+        "n_cond": 456
+       },
+       "success_among_readable": {
+        "est": 0.9823008849557522,
+        "se": 0.007435141736942184,
+        "n_cond": 452
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 452
+       },
+       "real_token_unreadable": {
+        "est": 0.008771929824561403,
+        "se": 0.006696610290286993,
+        "n_cond": 456
+       },
+       "glimpse_periphery_coherent": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 429
+       }
+      },
+      "increment": {
+       "rows": 1544,
+       "eligible": 1544,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1544
+       },
+       "unknown": {
+        "est": 0.011658031088082901,
+        "se": 0.0034947160098551876,
+        "n_cond": 1544
+       },
+       "success": {
+        "est": 0.9177461139896373,
+        "se": 0.009130352715792323,
+        "n_cond": 1544
+       },
+       "copy": {
+        "est": 0.05829015544041451,
+        "se": 0.007626805156334902,
+        "n_cond": 1544
+       },
+       "other": {
+        "est": 0.012305699481865285,
+        "se": 0.003020509636629114,
+        "n_cond": 1544
+       },
+       "success_upper_bound": {
+        "est": 0.9294041450777202,
+        "se": 0.008099067190403925,
+        "n_cond": 1544
+       },
+       "success_among_readable": {
+        "est": 0.9285714285714286,
+        "se": 0.008221940174670938,
+        "n_cond": 1526
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1530
+       },
+       "real_token_unreadable": {
+        "est": 0.009067357512953367,
+        "se": 0.003363450909739858,
+        "n_cond": 1544
+       },
+       "glimpse_periphery_coherent": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1127
+       }
+      }
+     },
+     "table": {
+      "all": {
+       "rows": 1918,
+       "eligible": 1918,
+       "recorded": {
+        "est": 0.9895724713242962,
+        "se": 0.003319808448803791,
+        "n_cond": 1918
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1918
+       },
+       "success": {
+        "est": 0.4572471324296142,
+        "se": 0.013093717216728099,
+        "n_cond": 1918
+       },
+       "copy": {
+        "est": 0.5427528675703858,
+        "se": 0.013093717216728097,
+        "n_cond": 1918
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1918
+       },
+       "success_upper_bound": {
+        "est": 0.4572471324296142,
+        "se": 0.013093717216728099,
+        "n_cond": 1918
+       },
+       "success_among_readable": {
+        "est": 0.4572471324296142,
+        "se": 0.013093717216728099,
+        "n_cond": 1918
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1918
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1918
+       },
+       "glimpse_periphery_coherent": {
+        "est": 0.8913270637408568,
+        "se": 0.007077380848679407,
+        "n_cond": 1914
+       }
+      }
+     },
+     "sapling": {
+      "all": {
+       "rows": 1922,
+       "eligible": 1920,
+       "recorded": {
+        "est": 0.09166666666666666,
+        "se": 0.009755477270209355,
+        "n_cond": 1920
+       },
+       "unknown": {
+        "est": 0.0036458333333333334,
+        "se": 0.0013249562094489959,
+        "n_cond": 1920
+       },
+       "success": {
+        "est": 0.010416666666666666,
+        "se": 0.002421807205047475,
+        "n_cond": 1920
+       },
+       "copy": {
+        "est": 0.9859375,
+        "se": 0.0026564228789868836,
+        "n_cond": 1920
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1920
+       },
+       "success_upper_bound": {
+        "est": 0.0140625,
+        "se": 0.0026564228789868814,
+        "n_cond": 1920
+       },
+       "success_among_readable": {
+        "est": 0.010454783063251438,
+        "se": 0.002429003851887223,
+        "n_cond": 1913
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1894
+       },
+       "real_token_unreadable": {
+        "est": 0.013541666666666667,
+        "se": 0.003559215665996476,
+        "n_cond": 1920
+       },
+       "glimpse_periphery_coherent": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1829
+       }
+      }
+     },
+     "adjacent": {
+      "all": {
+       "rows": 2220,
+       "eligible": 2220,
+       "recorded": {
+        "est": 0.22162162162162163,
+        "se": 0.01785350028420538,
+        "n_cond": 2220
+       },
+       "unknown": {
+        "est": 0.09009009009009009,
+        "se": 0.008909903515822343,
+        "n_cond": 2220
+       },
+       "success": {
+        "est": 0.06306306306306306,
+        "se": 0.0076466870391250176,
+        "n_cond": 2220
+       },
+       "copy": {
+        "est": 0.8261261261261261,
+        "se": 0.013072919856811294,
+        "n_cond": 2220
+       },
+       "other": {
+        "est": 0.02072072072072072,
+        "se": 0.0032089709876052504,
+        "n_cond": 2220
+       },
+       "success_upper_bound": {
+        "est": 0.15315315315315314,
+        "se": 0.012130023748452535,
+        "n_cond": 2220
+       },
+       "success_among_readable": {
+        "est": 0.06930693069306931,
+        "se": 0.008481189984513356,
+        "n_cond": 2020
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 2176
+       },
+       "real_token_unreadable": {
+        "est": 0.01981981981981982,
+        "se": 0.007011615397007509,
+        "n_cond": 2220
+       },
+       "glimpse_periphery_coherent": {
+        "est": 0.9970059880239521,
+        "se": 0.0013402137045366255,
+        "n_cond": 1336
+       }
+      }
+     },
+     "risky": {
+      "all": {
+       "rows": 2224,
+       "eligible": 2224,
+       "recorded": {
+        "est": 0.20503597122302158,
+        "se": 0.011890916515113302,
+        "n_cond": 2224
+       },
+       "unknown": {
+        "est": 0.12634892086330934,
+        "se": 0.011529080249742849,
+        "n_cond": 2224
+       },
+       "success": {
+        "est": 0.11241007194244604,
+        "se": 0.013112930514964392,
+        "n_cond": 2224
+       },
+       "copy": {
+        "est": 0.7414568345323741,
+        "se": 0.019025234563919274,
+        "n_cond": 2224
+       },
+       "other": {
+        "est": 0.019784172661870502,
+        "se": 0.0035622899454315037,
+        "n_cond": 2224
+       },
+       "success_upper_bound": {
+        "est": 0.23875899280575538,
+        "se": 0.01845552879732454,
+        "n_cond": 2224
+       },
+       "success_among_readable": {
+        "est": 0.12866700977869275,
+        "se": 0.015284120712006237,
+        "n_cond": 1943
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 2164
+       },
+       "real_token_unreadable": {
+        "est": 0.02697841726618705,
+        "se": 0.011009238971268069,
+        "n_cond": 2224
+       },
+       "glimpse_periphery_coherent": {
+        "est": 0.9975786924939467,
+        "se": 0.0018104442894801762,
+        "n_cond": 826
+       }
+      }
+     },
+     "drink_fail": {
+      "all": {
+       "rows": 564,
+       "eligible": 564,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 564
+       },
+       "unknown": {
+        "est": 0.02304964539007092,
+        "se": 0.014577087308384244,
+        "n_cond": 564
+       },
+       "false_change": {
+        "est": 0.0726950354609929,
+        "se": 0.011795408575419436,
+        "n_cond": 564
+       },
+       "false_change_upper_bound": {
+        "est": 0.09574468085106383,
+        "se": 0.01736133076573872,
+        "n_cond": 564
+       },
+       "false_change_among_readable": {
+        "est": 0.07441016333938294,
+        "se": 0.011928615433917242,
+        "n_cond": 551
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 560
+       },
+       "real_token_unreadable": {
+        "est": 0.0070921985815602835,
+        "se": 0.0060466222327246934,
+        "n_cond": 564
+       },
+       "glimpse_periphery_coherent": {
+        "est": 0.9790356394129979,
+        "se": 0.006159415788997039,
+        "n_cond": 477
+       }
+      }
+     },
+     "table_fail": {
+      "all": {
+       "rows": 2424,
+       "eligible": 2424,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 2424
+       },
+       "unknown": {
+        "est": 0.0033003300330033004,
+        "se": 0.0023949735698438166,
+        "n_cond": 2424
+       },
+       "false_change": {
+        "est": 0.0049504950495049506,
+        "se": 0.0014329057269639428,
+        "n_cond": 2424
+       },
+       "false_change_upper_bound": {
+        "est": 0.00825082508250825,
+        "se": 0.0028636901821416203,
+        "n_cond": 2424
+       },
+       "false_change_among_readable": {
+        "est": 0.004966887417218543,
+        "se": 0.001439237065114497,
+        "n_cond": 2416
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 2416
+       },
+       "real_token_unreadable": {
+        "est": 0.0033003300330033004,
+        "se": 0.0023949735698438166,
+        "n_cond": 2424
+       },
+       "glimpse_periphery_coherent": {
+        "est": 0.9925280199252802,
+        "se": 0.0018842883304394857,
+        "n_cond": 2409
+       }
+      }
+     }
+    },
+    "periphery": {
+     "drink": {
+      "appearance": {
+       "rows": 182,
+       "eligible": 182,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 182
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 182
+       },
+       "success": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 182
+       },
+       "copy": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 182
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 182
+       },
+       "success_upper_bound": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 182
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 182
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 182
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 182
+       },
+       "glimpse_periphery_coherent": null
+      },
+      "increment": {
+       "rows": 1574,
+       "eligible": 1574,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1574
+       },
+       "unknown": {
+        "est": 0.06861499364675985,
+        "se": 0.007154920937626168,
+        "n_cond": 1574
+       },
+       "success": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1574
+       },
+       "copy": {
+        "est": 0.8983481575603558,
+        "se": 0.008501569571690957,
+        "n_cond": 1574
+       },
+       "other": {
+        "est": 0.03303684879288437,
+        "se": 0.004790578068495216,
+        "n_cond": 1574
+       },
+       "success_upper_bound": {
+        "est": 0.06861499364675985,
+        "se": 0.007154920937626168,
+        "n_cond": 1574
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1466
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1560
+       },
+       "real_token_unreadable": {
+        "est": 0.008894536213468869,
+        "se": 0.0035718350462898476,
+        "n_cond": 1574
+       },
+       "glimpse_periphery_coherent": null
+      }
+     },
+     "wood": {
+      "appearance": {
+       "rows": 414,
+       "eligible": 414,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 414
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 414
+       },
+       "success": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 414
+       },
+       "copy": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 414
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 414
+       },
+       "success_upper_bound": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 414
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 414
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 414
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 414
+       },
+       "glimpse_periphery_coherent": null
+      },
+      "increment": {
+       "rows": 1346,
+       "eligible": 1346,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1346
+       },
+       "unknown": {
+        "est": 0.03937592867756315,
+        "se": 0.007161440756630974,
+        "n_cond": 1346
+       },
+       "success": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1346
+       },
+       "copy": {
+        "est": 0.9606240713224369,
+        "se": 0.007161440756630975,
+        "n_cond": 1346
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1346
+       },
+       "success_upper_bound": {
+        "est": 0.03937592867756315,
+        "se": 0.007161440756630974,
+        "n_cond": 1346
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1293
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1342
+       },
+       "real_token_unreadable": {
+        "est": 0.0029717682020802376,
+        "se": 0.002289012376505471,
+        "n_cond": 1346
+       },
+       "glimpse_periphery_coherent": null
+      }
+     },
+     "table": {
+      "all": {
+       "rows": 1586,
+       "eligible": 1586,
+       "recorded": {
+        "est": 0.9709962168978562,
+        "se": 0.0062252810661848415,
+        "n_cond": 1586
+       },
+       "unknown": {
+        "est": 0.007566204287515763,
+        "se": 0.0027954501935740007,
+        "n_cond": 1586
+       },
+       "success": {
+        "est": 0.39659520807061793,
+        "se": 0.013550614194048757,
+        "n_cond": 1586
+       },
+       "copy": {
+        "est": 0.5958385876418664,
+        "se": 0.013577741717892864,
+        "n_cond": 1586
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1586
+       },
+       "success_upper_bound": {
+        "est": 0.4041614123581337,
+        "se": 0.013577741717892866,
+        "n_cond": 1586
+       },
+       "success_among_readable": {
+        "est": 0.39961880559085133,
+        "se": 0.01359987003737799,
+        "n_cond": 1574
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1574
+       },
+       "real_token_unreadable": {
+        "est": 0.007566204287515763,
+        "se": 0.0033638326050870193,
+        "n_cond": 1586
+       },
+       "glimpse_periphery_coherent": null
+      }
+     },
+     "sapling": {
+      "all": {
+       "rows": 1750,
+       "eligible": 1748,
+       "recorded": {
+        "est": 0.09382151029748284,
+        "se": 0.00957599818436514,
+        "n_cond": 1748
+       },
+       "unknown": {
+        "est": 0.013157894736842105,
+        "se": 0.0038824610477976975,
+        "n_cond": 1748
+       },
+       "success": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1748
+       },
+       "copy": {
+        "est": 0.9862700228832952,
+        "se": 0.004004229769596727,
+        "n_cond": 1748
+       },
+       "other": {
+        "est": 0.0005720823798627002,
+        "se": 0.0005482715940582388,
+        "n_cond": 1748
+       },
+       "success_upper_bound": {
+        "est": 0.013157894736842105,
+        "se": 0.0038824610477976975,
+        "n_cond": 1748
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1725
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 1748
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1748
+       },
+       "glimpse_periphery_coherent": null
+      }
+     },
+     "move": {
+      "shift_sample": {
+       "est": 0.8582115888148546,
+       "se": 0.0046526859869781825,
+       "n_cond": 2000
+      },
+      "shift_field_6.67": {
+       "est": 0.859837564125657,
+       "se": 0.004574901003690123,
+       "n_cond": 2000
+      }
+     },
+     "adjacent": {
+      "all": {
+       "rows": 3824,
+       "eligible": 3824,
+       "recorded": {
+        "est": 0.15585774058577406,
+        "se": 0.012086588275302653,
+        "n_cond": 3824
+       },
+       "unknown": {
+        "est": 0.16317991631799164,
+        "se": 0.010019087324338847,
+        "n_cond": 3824
+       },
+       "success": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 3824
+       },
+       "copy": {
+        "est": 0.8357740585774058,
+        "se": 0.01003059718887527,
+        "n_cond": 3824
+       },
+       "other": {
+        "est": 0.0010460251046025104,
+        "se": 0.00055209688952521,
+        "n_cond": 3824
+       },
+       "success_upper_bound": {
+        "est": 0.16317991631799164,
+        "se": 0.010019087324338847,
+        "n_cond": 3824
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 3200
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 3808
+       },
+       "real_token_unreadable": {
+        "est": 0.0041841004184100415,
+        "se": 0.0020000358716128577,
+        "n_cond": 3824
+       },
+       "glimpse_periphery_coherent": null
+      }
+     },
+     "risky": {
+      "all": {
+       "rows": 3852,
+       "eligible": 3852,
+       "recorded": {
+        "est": 0.1391484942886812,
+        "se": 0.00852174470963277,
+        "n_cond": 3852
+       },
+       "unknown": {
+        "est": 0.43302180685358255,
+        "se": 0.025513376530604613,
+        "n_cond": 3852
+       },
+       "success": {
+        "est": 0.0012980269989615785,
+        "se": 0.0005618509163500253,
+        "n_cond": 3852
+       },
+       "copy": {
+        "est": 0.563343717549325,
+        "se": 0.02550984907815319,
+        "n_cond": 3852
+       },
+       "other": {
+        "est": 0.002336448598130841,
+        "se": 0.0006778714768980215,
+        "n_cond": 3852
+       },
+       "success_upper_bound": {
+        "est": 0.43431983385254413,
+        "se": 0.025595609035162975,
+        "n_cond": 3852
+       },
+       "success_among_readable": {
+        "est": 0.0022893772893772895,
+        "se": 0.001008892211225739,
+        "n_cond": 2184
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 3772
+       },
+       "real_token_unreadable": {
+        "est": 0.020768431983385256,
+        "se": 0.006830909207600748,
+        "n_cond": 3852
+       },
+       "glimpse_periphery_coherent": null
+      }
+     },
+     "drink_fail": {
+      "all": {
+       "rows": 488,
+       "eligible": 488,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 488
+       },
+       "unknown": {
+        "est": 0.07377049180327869,
+        "se": 0.018124098496728386,
+        "n_cond": 488
+       },
+       "false_change": {
+        "est": 0.004098360655737705,
+        "se": 0.002852475271762199,
+        "n_cond": 488
+       },
+       "false_change_upper_bound": {
+        "est": 0.0778688524590164,
+        "se": 0.018570203178081873,
+        "n_cond": 488
+       },
+       "false_change_among_readable": {
+        "est": 0.004424778761061947,
+        "se": 0.003088579290417691,
+        "n_cond": 452
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 468
+       },
+       "real_token_unreadable": {
+        "est": 0.040983606557377046,
+        "se": 0.02794563573822717,
+        "n_cond": 488
+       },
+       "glimpse_periphery_coherent": null
+      }
+     },
+     "table_fail": {
+      "all": {
+       "rows": 3248,
+       "eligible": 3248,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 3248
+       },
+       "unknown": {
+        "est": 0.012007389162561576,
+        "se": 0.003806981901085109,
+        "n_cond": 3248
+       },
+       "false_change": {
+        "est": 0.0049261083743842365,
+        "se": 0.0016745335509522569,
+        "n_cond": 3248
+       },
+       "false_change_upper_bound": {
+        "est": 0.016933497536945813,
+        "se": 0.004059097739666127,
+        "n_cond": 3248
+       },
+       "false_change_among_readable": {
+        "est": 0.004985976939856653,
+        "se": 0.0016946134799660287,
+        "n_cond": 3209
+       },
+       "real_token_correct": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 3172
+       },
+       "real_token_unreadable": {
+        "est": 0.023399014778325122,
+        "se": 0.005762298709882167,
+        "n_cond": 3248
+       },
+       "glimpse_periphery_coherent": null
+      }
+     }
+    }
+   },
+   "perception": {
+    "drink": {
+     "appearance": {
+      "rec_cell": {
+       "est": 1.088427813614116,
+       "se": 0.0034824559258085203,
+       "n_cond": 102
+      },
+      "tsp_cell": {
+       "est": 1.123054045088151,
+       "se": 0.003453901869662349,
+       "n_cond": 102
+      },
+      "rec_window": {
+       "est": 1.55576095160316,
+       "se": 0.030105453850299158,
+       "n_cond": 102
+      },
+      "tsp_window": {
+       "est": 1.6077547423979814,
+       "se": 0.029996817758882757,
+       "n_cond": 102
+      }
+     },
+     "increment": {
+      "rec_cell": {
+       "est": 1.0256423688014524,
+       "se": 0.0017968269242212875,
+       "n_cond": 898
+      },
+      "tsp_cell": {
+       "est": 1.0362739595511974,
+       "se": 0.0019009589517087159,
+       "n_cond": 898
+      },
+      "rec_window": {
+       "est": 1.5155421221973104,
+       "se": 0.01098636144830287,
+       "n_cond": 898
+      },
+      "tsp_window": {
+       "est": 1.5662079918092502,
+       "se": 0.01135409469621598,
+       "n_cond": 898
+      }
+     }
+    },
+    "wood": {
+     "appearance": {
+      "rec_cell": {
+       "est": 1.2118505710049678,
+       "se": 0.0068412860910785495,
+       "n_cond": 228
+      },
+      "tsp_cell": {
+       "est": 1.3530735823146083,
+       "se": 0.0063185113597549235,
+       "n_cond": 228
+      },
+      "rec_window": {
+       "est": 1.2329771207612858,
+       "se": 0.029531513286255993,
+       "n_cond": 228
+      },
+      "tsp_window": {
+       "est": 1.3900103210880046,
+       "se": 0.030266853174391678,
+       "n_cond": 228
+      }
+     },
+     "increment": {
+      "rec_cell": {
+       "est": 1.3411862794599385,
+       "se": 0.007473842005324047,
+       "n_cond": 772
+      },
+      "tsp_cell": {
+       "est": 1.520314114699092,
+       "se": 0.011794615429264603,
+       "n_cond": 772
+      },
+      "rec_window": {
+       "est": 1.2114118348440357,
+       "se": 0.014697735474312424,
+       "n_cond": 772
+      },
+      "tsp_window": {
+       "est": 1.3636639881782582,
+       "se": 0.014998108777582203,
+       "n_cond": 772
+      }
+     }
+    },
+    "table": {
+     "all": {
+      "rec_cell": {
+       "est": 3.3124187005075845,
+       "se": 0.023283997193291932,
+       "n_cond": 959
+      },
+      "tsp_cell": {
+       "est": 3.916755763532223,
+       "se": 0.028250205171515098,
+       "n_cond": 959
+      },
+      "rec_window": {
+       "est": 2.191343797632999,
+       "se": 0.01524533660504424,
+       "n_cond": 959
+      },
+      "tsp_window": {
+       "est": 2.4191254540205747,
+       "se": 0.01646396694115253,
+       "n_cond": 959
+      }
+     }
+    },
+    "sapling": {
+     "all": {
+      "rec_cell": {
+       "est": 0.5449354772947334,
+       "se": 0.004199149045843525,
+       "n_cond": 961
+      },
+      "tsp_cell": {
+       "est": 0.6946209683688697,
+       "se": 0.007338535654877498,
+       "n_cond": 961
+      },
+      "rec_window": {
+       "est": 1.030091256616515,
+       "se": 0.01309489319779879,
+       "n_cond": 961
+      },
+      "tsp_window": {
+       "est": 1.1803127493744214,
+       "se": 0.013198285581936493,
+       "n_cond": 961
+      }
+     }
+    }
+   },
+   "action_routing": {
+    "drink": {
+     "appearance": {
+      "rerun_success": {
+       "est": 0.9656862745098039,
+       "se": 0.013533518701342583,
+       "n_cond": 204
+      },
+      "noop_belief_success": {
+       "est": 0.9264705882352942,
+       "se": 0.019895648957804955,
+       "n_cond": 204
+      },
+      "unknown": [
+       {
+        "est": 0.0196078431372549,
+        "se": 0.010756798416440078,
+        "n_cond": 204
+       },
+       {
+        "est": 0.03431372549019608,
+        "se": 0.012459164514690303,
+        "n_cond": 204
+       }
+      ],
+      "routing": {
+       "est": 0.0392156862745098,
+       "se": 0.015675067312666775,
+       "n_cond": 204,
+       "ci95": [
+        0.008492554341682924,
+        0.06993881820733669
+       ],
+       "rows": 204
+      }
+     },
+     "increment": {
+      "rerun_success": {
+       "est": 0.6536748329621381,
+       "se": 0.015088950689669067,
+       "n_cond": 1796
+      },
+      "noop_belief_success": {
+       "est": 0.5334075723830735,
+       "se": 0.014414494607521519,
+       "n_cond": 1796
+      },
+      "unknown": [
+       {
+        "est": 0.023942093541202674,
+        "se": 0.004222586887961603,
+        "n_cond": 1796
+       },
+       {
+        "est": 0.0378619153674833,
+        "se": 0.004917873262623958,
+        "n_cond": 1796
+       }
+      ],
+      "routing": {
+       "est": 0.12026726057906459,
+       "se": 0.008858314185253109,
+       "n_cond": 1796,
+       "ci95": [
+        0.1029049647759685,
+        0.13762955638216068
+       ],
+       "rows": 1796
+      }
+     }
+    },
+    "wood": {
+     "appearance": {
+      "rerun_success": {
+       "est": 0.9627192982456141,
+       "se": 0.01050603362992809,
+       "n_cond": 456
+      },
+      "noop_belief_success": {
+       "est": 0.3815789473684211,
+       "se": 0.025621268919170947,
+       "n_cond": 456
+      },
+      "unknown": [
+       {
+        "est": 0.0043859649122807015,
+        "se": 0.0032394074961279024,
+        "n_cond": 456
+       },
+       {
+        "est": 0.043859649122807015,
+        "se": 0.0105413859545455,
+        "n_cond": 456
+       }
+      ],
+      "routing": {
+       "est": 0.581140350877193,
+       "se": 0.025412915195181244,
+       "n_cond": 456,
+       "ci95": [
+        0.5313310370946377,
+        0.6309496646597482
+       ],
+       "rows": 456
+      }
+     },
+     "increment": {
+      "rerun_success": {
+       "est": 0.9222797927461139,
+       "se": 0.009400434925443837,
+       "n_cond": 1544
+      },
+      "noop_belief_success": {
+       "est": 0.4643782383419689,
+       "se": 0.0160852394488233,
+       "n_cond": 1544
+      },
+      "unknown": [
+       {
+        "est": 0.011010362694300517,
+        "se": 0.003372093180541546,
+        "n_cond": 1544
+       },
+       {
+        "est": 0.016191709844559584,
+        "se": 0.003438616855260229,
+        "n_cond": 1544
+       }
+      ],
+      "routing": {
+       "est": 0.4579015544041451,
+       "se": 0.016659247284247086,
+       "n_cond": 1544,
+       "ci95": [
+        0.4252494297270208,
+        0.4905536790812694
+       ],
+       "rows": 1544
+      }
+     }
+    },
+    "table": {
+     "all": {
+      "rerun_success": {
+       "est": 0.46715328467153283,
+       "se": 0.013908260880080176,
+       "n_cond": 1918
+      },
+      "noop_belief_success": {
+       "est": 0.0020855057351407717,
+       "se": 0.0009267477404623079,
+       "n_cond": 1918
+      },
+      "unknown": [
+       {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1918
+       },
+       {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1918
+       }
+      ],
+      "routing": {
+       "est": 0.46506777893639206,
+       "se": 0.013941572528683312,
+       "n_cond": 1918,
+       "ci95": [
+        0.4377422967801728,
+        0.49239326109261133
+       ],
+       "rows": 1918
+      }
+     }
+    }
+   },
+   "class_losses": {
+    "drink_up": {
+     "se_per_element": 0.37812719275942075,
+     "elements": 6400.0
+    },
+    "wood_up": {
+     "se_per_element": 0.39835471743926937,
+     "elements": 12112.0
+    },
+    "sapling_up": {
+     "se_per_element": 0.516794820668708,
+     "elements": 560.0
+    },
+    "table_placed": {
+     "se_per_element": 0.12159936635091187,
+     "elements": 3008.0
+    },
+    "zombie_hit": {
+     "se_per_element": 0.30314480955922257,
+     "elements": 3552.0
+    },
+    "health_other": {
+     "se_per_element": 0.3027146143368667,
+     "elements": 8400.0
+    },
+    "hud_other_change": {
+     "se_per_element": 0.1540850511424024,
+     "elements": 88032.0
+    },
+    "hud_static": {
+     "se_per_element": 0.007047050473735044,
+     "elements": 7253744.0
+    },
+    "map_moved": {
+     "se_per_element": 0.06459373069588877,
+     "elements": 9314928.0
+    },
+    "map_still": {
+     "se_per_element": 0.04227114646073781,
+     "elements": 16486864.0
+    },
+    "glimpse": {
+     "se_per_element": 0.023886467102501127,
+     "elements": 14745600.0
+    },
+    "lighting": {
+     "se_per_element": 0.0034302931127604096,
+     "elements": 204800.0
+    }
+   }
+  }
+ },
+ "differences": {
+  "p1f-base": {
+   "prediction": {
+    "guided": {
+     "drink": {
+      "appearance": {
+       "success": {
+        "est": 0.8872549019607843,
+        "se": 0.021882653597559774,
+        "n_cond": 204,
+        "ci95": [
+         0.8443649009095671,
+         0.9301449030120015
+        ],
+        "rows": 204
+       },
+       "copy": {
+        "est": -0.5441176470588235,
+        "se": 0.042826970873157004,
+        "n_cond": 204,
+        "ci95": [
+         -0.6280585099702112,
+         -0.4601767841474358
+        ],
+        "rows": 204
+       },
+       "other": {
+        "est": -0.25,
+        "se": 0.033391003017652424,
+        "n_cond": 204,
+        "ci95": [
+         -0.31544636591459874,
+         -0.18455363408540126
+        ],
+        "rows": 204
+       },
+       "unknown": {
+        "est": -0.09313725490196079,
+        "se": 0.02384202019548823,
+        "n_cond": 204,
+        "ci95": [
+         -0.13986761448511772,
+         -0.046406895318803855
+        ],
+        "rows": 204
+       },
+       "success_among_readable": {
+        "est": 0.888268156424581,
+        "se": 0.023431724541131158,
+        "n_cond": 179,
+        "ci95": [
+         0.8423419763239639,
+         0.9341943365251981
+        ],
+        "rows": 179
+       }
+      },
+      "increment": {
+       "success": {
+        "est": 0.6902654867256637,
+        "se": 0.016037566072503763,
+        "n_cond": 1582,
+        "ci95": [
+         0.6588318572235563,
+         0.721699116227771
+        ],
+        "rows": 1582
+       },
+       "copy": {
+        "est": -0.5240202275600506,
+        "se": 0.017796215371792344,
+        "n_cond": 1582,
+        "ci95": [
+         -0.5589008096887637,
+         -0.48913964543133764
+        ],
+        "rows": 1582
+       },
+       "other": {
+        "est": -0.19785082174462706,
+        "se": 0.01617672343454298,
+        "n_cond": 1582,
+        "ci95": [
+         -0.2295571996763313,
+         -0.16614444381292282
+        ],
+        "rows": 1582
+       },
+       "unknown": {
+        "est": 0.0316055625790139,
+        "se": 0.006442042211344138,
+        "n_cond": 1582,
+        "ci95": [
+         0.018979159844779395,
+         0.04423196531324841
+        ],
+        "rows": 1582
+       },
+       "success_among_readable": {
+        "est": 0.7158792650918635,
+        "se": 0.016142359242285655,
+        "n_cond": 1524,
+        "ci95": [
+         0.6842402409769837,
+         0.7475182892067433
+        ],
+        "rows": 1524
+       }
+      }
+     },
+     "wood": {
+      "appearance": {
+       "success": {
+        "est": 0.8508771929824561,
+        "se": 0.016625743868739516,
+        "n_cond": 456,
+        "ci95": [
+         0.8182907349997267,
+         0.8834636509651855
+        ],
+        "rows": 456
+       },
+       "copy": {
+        "est": -0.6096491228070176,
+        "se": 0.026984966201281796,
+        "n_cond": 456,
+        "ci95": [
+         -0.6625396565615299,
+         -0.5567585890525052
+        ],
+        "rows": 456
+       },
+       "other": {
+        "est": -0.05921052631578947,
+        "se": 0.012059693040846333,
+        "n_cond": 456,
+        "ci95": [
+         -0.08284752467584829,
+         -0.035573527955730655
+        ],
+        "rows": 456
+       },
+       "unknown": {
+        "est": -0.18201754385964913,
+        "se": 0.01941092648028123,
+        "n_cond": 456,
+        "ci95": [
+         -0.22006295976100035,
+         -0.14397212795829792
+        ],
+        "rows": 456
+       },
+       "success_among_readable": {
+        "est": 0.8273972602739726,
+        "se": 0.020116393953146853,
+        "n_cond": 365,
+        "ci95": [
+         0.7879691281258048,
+         0.8668253924221405
+        ],
+        "rows": 365
+       }
+      },
+      "increment": {
+       "success": {
+        "est": 0.8533685601056803,
+        "se": 0.010459699981983653,
+        "n_cond": 1514,
+        "ci95": [
+         0.8328675481409923,
+         0.8738695720703683
+        ],
+        "rows": 1514
+       },
+       "copy": {
+        "est": -0.7239101717305152,
+        "se": 0.01218090700709438,
+        "n_cond": 1514,
+        "ci95": [
+         -0.7477847494644202,
+         -0.7000355939966102
+        ],
+        "rows": 1514
+       },
+       "other": {
+        "est": -0.13606340819022458,
+        "se": 0.010467920470077458,
+        "n_cond": 1514,
+        "ci95": [
+         -0.1565805323115764,
+         -0.11554628406887277
+        ],
+        "rows": 1514
+       },
+       "unknown": {
+        "est": 0.0066050198150594455,
+        "se": 0.00408615328473726,
+        "n_cond": 1514,
+        "ci95": [
+         -0.0014038406230255842,
+         0.014613880253144475
+        ],
+        "rows": 1514
+       },
+       "success_among_readable": {
+        "est": 0.8635752688172043,
+        "se": 0.009649685729228924,
+        "n_cond": 1488,
+        "ci95": [
+         0.8446618847879156,
+         0.8824886528464929
+        ],
+        "rows": 1488
+       }
+      }
+     },
+     "table": {
+      "all": {
+       "success": {
+        "est": 0.4562043795620438,
+        "se": 0.013077274309646648,
+        "n_cond": 1918,
+        "ci95": [
+         0.43057292191513635,
+         0.48183583720895123
+        ],
+        "rows": 1918
+       },
+       "copy": {
+        "est": -0.4562043795620438,
+        "se": 0.013077274309646648,
+        "n_cond": 1918,
+        "ci95": [
+         -0.48183583720895123,
+         -0.43057292191513635
+        ],
+        "rows": 1918
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1918,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 1918
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1918,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 1918
+       },
+       "success_among_readable": {
+        "est": 0.4562043795620438,
+        "se": 0.013077274309646648,
+        "n_cond": 1918,
+        "ci95": [
+         0.43057292191513635,
+         0.48183583720895123
+        ],
+        "rows": 1918
+       }
+      }
+     },
+     "sapling": {
+      "all": {
+       "success": {
+        "est": 0.010416666666666666,
+        "se": 0.002421807205047475,
+        "n_cond": 1920,
+        "ci95": [
+         0.005669924544773616,
+         0.015163408788559717
+        ],
+        "rows": 1920
+       },
+       "copy": {
+        "est": -0.0067708333333333336,
+        "se": 0.0034407146420618157,
+        "n_cond": 1920,
+        "ci95": [
+         -0.013514634031774492,
+         -2.7032634892175042e-05
+        ],
+        "rows": 1920
+       },
+       "other": {
+        "est": -0.0026041666666666665,
+        "se": 0.001101936637962801,
+        "n_cond": 1920,
+        "ci95": [
+         -0.004763962477073756,
+         -0.0004443708562595766
+        ],
+        "rows": 1920
+       },
+       "unknown": {
+        "est": -0.0010416666666666667,
+        "se": 0.0021623068200061868,
+        "n_cond": 1920,
+        "ci95": [
+         -0.005279788033878793,
+         0.00319645470054546
+        ],
+        "rows": 1920
+       },
+       "success_among_readable": {
+        "est": 0.01050420168067227,
+        "se": 0.0024403288459425346,
+        "n_cond": 1904,
+        "ci95": [
+         0.005721157142624902,
+         0.015287246218719637
+        ],
+        "rows": 1904
+       }
+      }
+     },
+     "adjacent": {
+      "all": {
+       "success": {
+        "est": -0.008558558558558558,
+        "se": 0.010984432523864116,
+        "n_cond": 2220,
+        "ci95": [
+         -0.030088046305332225,
+         0.01297092918821511
+        ],
+        "rows": 2220
+       },
+       "copy": {
+        "est": 0.422972972972973,
+        "se": 0.020357031119404446,
+        "n_cond": 2220,
+        "ci95": [
+         0.3830731919789403,
+         0.46287275396700567
+        ],
+        "rows": 2220
+       },
+       "other": {
+        "est": -0.5045045045045045,
+        "se": 0.014338589412554793,
+        "n_cond": 2220,
+        "ci95": [
+         -0.5326081397531118,
+         -0.4764008692558971
+        ],
+        "rows": 2220
+       },
+       "unknown": {
+        "est": 0.09009009009009009,
+        "se": 0.008909903515822343,
+        "n_cond": 2220,
+        "ci95": [
+         0.0726266791990783,
+         0.10755350098110188
+        ],
+        "rows": 2220
+       },
+       "success_among_readable": {
+        "est": -0.004455445544554455,
+        "se": 0.011824792812230273,
+        "n_cond": 2020,
+        "ci95": [
+         -0.02763203945652579,
+         0.018721148367416878
+        ],
+        "rows": 2020
+       }
+      }
+     },
+     "risky": {
+      "all": {
+       "success": {
+        "est": 0.11241007194244604,
+        "se": 0.013112930514964392,
+        "n_cond": 2224,
+        "ci95": [
+         0.08670872813311584,
+         0.13811141575177624
+        ],
+        "rows": 2224
+       },
+       "copy": {
+        "est": 0.6461330935251799,
+        "se": 0.02151114178035596,
+        "n_cond": 2224,
+        "ci95": [
+         0.6039712556356822,
+         0.6882949314146776
+        ],
+        "rows": 2224
+       },
+       "other": {
+        "est": -0.8776978417266187,
+        "se": 0.01158688558667639,
+        "n_cond": 2224,
+        "ci95": [
+         -0.9004081374765044,
+         -0.854987545976733
+        ],
+        "rows": 2224
+       },
+       "unknown": {
+        "est": 0.1191546762589928,
+        "se": 0.011680385969170797,
+        "n_cond": 2224,
+        "ci95": [
+         0.09626111975941803,
+         0.14204823275856757
+        ],
+        "rows": 2224
+       },
+       "success_among_readable": {
+        "est": 0.12849740932642487,
+        "se": 0.015385535658861013,
+        "n_cond": 1930,
+        "ci95": [
+         0.09834175943505728,
+         0.15865305921779244
+        ],
+        "rows": 1930
+       }
+      }
+     },
+     "drink_fail": {
+      "all": {
+       "false_change": {
+        "est": -0.5868794326241135,
+        "se": 0.04048286050755008,
+        "n_cond": 564,
+        "ci95": [
+         -0.6662258392189117,
+         -0.5075330260293153
+        ],
+        "rows": 564
+       },
+       "unknown": {
+        "est": 0.012411347517730497,
+        "se": 0.01766573817930682,
+        "n_cond": 564,
+        "ci95": [
+         -0.02221349931371087,
+         0.04703619434917186
+        ],
+        "rows": 564
+       },
+       "false_change_among_readable": {
+        "est": -0.5944954128440367,
+        "se": 0.041187311959840434,
+        "n_cond": 545,
+        "ci95": [
+         -0.675222544285324,
+         -0.5137682814027494
+        ],
+        "rows": 545
+       }
+      }
+     },
+     "table_fail": {
+      "all": {
+       "false_change": {
+        "est": 0.004537953795379538,
+        "se": 0.0015036831070221063,
+        "n_cond": 2424,
+        "ci95": [
+         0.00159073490561621,
+         0.007485172685142866
+        ],
+        "rows": 2424
+       },
+       "unknown": {
+        "est": 0.0033003300330033004,
+        "se": 0.0023949735698438166,
+        "n_cond": 2424,
+        "ci95": [
+         -0.0013938181638905797,
+         0.00799447822989718
+        ],
+        "rows": 2424
+       },
+       "false_change_among_readable": {
+        "est": 0.004552980132450331,
+        "se": 0.0015101852807467102,
+        "n_cond": 2416,
+        "ci95": [
+         0.001593016982186779,
+         0.007512943282713883
+        ],
+        "rows": 2416
+       }
+      }
+     }
+    },
+    "periphery": {
+     "drink": {
+      "appearance": {
+       "success": {
+        "est": -0.13186813186813187,
+        "se": 0.02425084976581627,
+        "n_cond": 182,
+        "ci95": [
+         -0.17939979740913176,
+         -0.08433646632713199
+        ],
+        "rows": 182
+       },
+       "copy": {
+        "est": 0.510989010989011,
+        "se": 0.044738578308031726,
+        "n_cond": 182,
+        "ci95": [
+         0.42330139750526874,
+         0.5986766244727532
+        ],
+        "rows": 182
+       },
+       "other": {
+        "est": -0.03296703296703297,
+        "se": 0.013424108376114359,
+        "n_cond": 182,
+        "ci95": [
+         -0.05927828538421711,
+         -0.006655780549848826
+        ],
+        "rows": 182
+       },
+       "unknown": {
+        "est": -0.34615384615384615,
+        "se": 0.03961948883445381,
+        "n_cond": 182,
+        "ci95": [
+         -0.42380804426937563,
+         -0.26849964803831666
+        ],
+        "rows": 182
+       },
+       "success_among_readable": {
+        "est": -0.20168067226890757,
+        "se": 0.038032565672375,
+        "n_cond": 119,
+        "ci95": [
+         -0.27622450098676254,
+         -0.12713684355105256
+        ],
+        "rows": 119
+       }
+      },
+      "increment": {
+       "success": {
+        "est": -0.0036127167630057803,
+        "se": 0.0015475422154830258,
+        "n_cond": 1384,
+        "ci95": [
+         -0.006645899505352511,
+         -0.0005795340206590496
+        ],
+        "rows": 1384
+       },
+       "copy": {
+        "est": 0.17341040462427745,
+        "se": 0.012881213415656314,
+        "n_cond": 1384,
+        "ci95": [
+         0.14816322632959109,
+         0.19865758291896382
+        ],
+        "rows": 1384
+       },
+       "other": {
+        "est": -0.14017341040462428,
+        "se": 0.011597228934995214,
+        "n_cond": 1384,
+        "ci95": [
+         -0.16290397911721488,
+         -0.11744284169203366
+        ],
+        "rows": 1384
+       },
+       "unknown": {
+        "est": -0.029624277456647398,
+        "se": 0.00956488666875852,
+        "n_cond": 1384,
+        "ci95": [
+         -0.0483714553274141,
+         -0.0108770995858807
+        ],
+        "rows": 1384
+       },
+       "success_among_readable": {
+        "est": -0.004273504273504274,
+        "se": 0.0018228422497475567,
+        "n_cond": 1170,
+        "ci95": [
+         -0.007846275083009484,
+         -0.000700733463999063
+        ],
+        "rows": 1170
+       }
+      }
+     },
+     "wood": {
+      "appearance": {
+       "success": {
+        "est": -0.1642512077294686,
+        "se": 0.02048570453653484,
+        "n_cond": 414,
+        "ci95": [
+         -0.2044031886210769,
+         -0.12409922683786032
+        ],
+        "rows": 414
+       },
+       "copy": {
+        "est": 0.391304347826087,
+        "se": 0.027379205977079824,
+        "n_cond": 414,
+        "ci95": [
+         0.3376411041110105,
+         0.44496759154116344
+        ],
+        "rows": 414
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 414,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 414
+       },
+       "unknown": {
+        "est": -0.22705314009661837,
+        "se": 0.021290374928282976,
+        "n_cond": 414,
+        "ci95": [
+         -0.268782274956053,
+         -0.18532400523718373
+        ],
+        "rows": 414
+       },
+       "success_among_readable": {
+        "est": -0.2125,
+        "se": 0.02631129335431751,
+        "n_cond": 320,
+        "ci95": [
+         -0.2640701349744623,
+         -0.1609298650255377
+        ],
+        "rows": 320
+       }
+      },
+      "increment": {
+       "success": {
+        "est": -0.011363636363636364,
+        "se": 0.003240505824680291,
+        "n_cond": 1320,
+        "ci95": [
+         -0.017715027780009735,
+         -0.005012244947262994
+        ],
+        "rows": 1320
+       },
+       "copy": {
+        "est": 0.175,
+        "se": 0.013329683928860773,
+        "n_cond": 1320,
+        "ci95": [
+         0.14887381949943287,
+         0.2011261805005671
+        ],
+        "rows": 1320
+       },
+       "other": {
+        "est": -0.05,
+        "se": 0.005972454040224535,
+        "n_cond": 1320,
+        "ci95": [
+         -0.06170600991884009,
+         -0.03829399008115991
+        ],
+        "rows": 1320
+       },
+       "unknown": {
+        "est": -0.11363636363636363,
+        "se": 0.01187476868827434,
+        "n_cond": 1320,
+        "ci95": [
+         -0.13691091026538132,
+         -0.09036181700734593
+        ],
+        "rows": 1320
+       },
+       "success_among_readable": {
+        "est": -0.012681159420289856,
+        "se": 0.0037056692737979136,
+        "n_cond": 1104,
+        "ci95": [
+         -0.019944271196933767,
+         -0.005418047643645945
+        ],
+        "rows": 1104
+       }
+      }
+     },
+     "table": {
+      "all": {
+       "success": {
+        "est": 0.1544766708701135,
+        "se": 0.012497524802400902,
+        "n_cond": 1586,
+        "ci95": [
+         0.12998152225740772,
+         0.17897181948281926
+        ],
+        "rows": 1586
+       },
+       "copy": {
+        "est": -0.16204287515762925,
+        "se": 0.012810464966565115,
+        "n_cond": 1586,
+        "ci95": [
+         -0.18715138649209687,
+         -0.13693436382316163
+        ],
+        "rows": 1586
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 1586,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 1586
+       },
+       "unknown": {
+        "est": 0.007566204287515763,
+        "se": 0.0027954501935740007,
+        "n_cond": 1586,
+        "ci95": [
+         0.002087121908110722,
+         0.013045286666920803
+        ],
+        "rows": 1586
+       },
+       "success_among_readable": {
+        "est": 0.1556543837357052,
+        "se": 0.012598203351563244,
+        "n_cond": 1574,
+        "ci95": [
+         0.13096190516664125,
+         0.18034686230476915
+        ],
+        "rows": 1574
+       }
+      }
+     },
+     "sapling": {
+      "all": {
+       "success": {
+        "est": -0.0011441647597254005,
+        "se": 0.001174139619370632,
+        "n_cond": 1748,
+        "ci95": [
+         -0.0034454784136918395,
+         0.0011571488942410384
+        ],
+        "rows": 1748
+       },
+       "copy": {
+        "est": -0.003432494279176201,
+        "se": 0.0043300811541446245,
+        "n_cond": 1748,
+        "ci95": [
+         -0.011919453341299664,
+         0.005054464782947262
+        ],
+        "rows": 1748
+       },
+       "other": {
+        "est": 0.0005720823798627002,
+        "se": 0.0005482715940582388,
+        "n_cond": 1748,
+        "ci95": [
+         -0.0005025299444914479,
+         0.0016466947042168482
+        ],
+        "rows": 1748
+       },
+       "unknown": {
+        "est": 0.004004576659038902,
+        "se": 0.004004008891896184,
+        "n_cond": 1748,
+        "ci95": [
+         -0.0038432807690776194,
+         0.011852434087155424
+        ],
+        "rows": 1748
+       },
+       "success_among_readable": {
+        "est": -0.0011668611435239206,
+        "se": 0.0011969705882996697,
+        "n_cond": 1714,
+        "ci95": [
+         -0.003512923496591273,
+         0.001179201209543432
+        ],
+        "rows": 1714
+       }
+      }
+     },
+     "move": {
+      "shift_sample": {
+       "est": -0.05218284376710653,
+       "se": 0.0026229309122783226,
+       "n_cond": 2000,
+       "ci95": [
+        -0.057323788355172045,
+        -0.047041899179041016
+       ],
+       "rows": 2000
+      }
+     },
+     "adjacent": {
+      "all": {
+       "success": {
+        "est": -0.0018305439330543933,
+        "se": 0.0007522741151675229,
+        "n_cond": 3824,
+        "ci95": [
+         -0.0033050011987827382,
+         -0.0003560866673260484
+        ],
+        "rows": 3824
+       },
+       "copy": {
+        "est": 0.04890167364016736,
+        "se": 0.009405325679325659,
+        "n_cond": 3824,
+        "ci95": [
+         0.030467235308689073,
+         0.06733611197164566
+        ],
+        "rows": 3824
+       },
+       "other": {
+        "est": -0.029288702928870293,
+        "se": 0.003772661397293643,
+        "n_cond": 3824,
+        "ci95": [
+         -0.03668311926756583,
+         -0.02189428659017475
+        ],
+        "rows": 3824
+       },
+       "unknown": {
+        "est": -0.01778242677824268,
+        "se": 0.008914355825623993,
+        "n_cond": 3824,
+        "ci95": [
+         -0.03525456419646571,
+         -0.0003102893600196513
+        ],
+        "rows": 3824
+       },
+       "success_among_readable": {
+        "est": -0.0013961605584642235,
+        "se": 0.0006852386389910465,
+        "n_cond": 2865,
+        "ci95": [
+         -0.002739228290886675,
+         -5.3092826041772337e-05
+        ],
+        "rows": 2865
+       }
+      }
+     },
+     "risky": {
+      "all": {
+       "success": {
+        "est": 0.000778816199376947,
+        "se": 0.0006593270285402249,
+        "n_cond": 3852,
+        "ci95": [
+         -0.0005134647765618938,
+         0.002071097175315788
+        ],
+        "rows": 3852
+       },
+       "copy": {
+        "est": -0.2100207684319834,
+        "se": 0.01887360531948004,
+        "n_cond": 3852,
+        "ci95": [
+         -0.24701303485816428,
+         -0.1730285020058025
+        ],
+        "rows": 3852
+       },
+       "other": {
+        "est": -0.02699896157840083,
+        "se": 0.00349214547986221,
+        "n_cond": 3852,
+        "ci95": [
+         -0.03384356671893076,
+         -0.020154356437870898
+        ],
+        "rows": 3852
+       },
+       "unknown": {
+        "est": 0.23624091381100726,
+        "se": 0.019488399167553766,
+        "n_cond": 3852,
+        "ci95": [
+         0.1980436514426019,
+         0.27443817617941263
+        ],
+        "rows": 3852
+       },
+       "success_among_readable": {
+        "est": 0.0025497195308516064,
+        "se": 0.001127412608586111,
+        "n_cond": 1961,
+        "ci95": [
+         0.0003399908180228288,
+         0.004759448243680384
+        ],
+        "rows": 1961
+       }
+      }
+     },
+     "drink_fail": {
+      "all": {
+       "false_change": {
+        "est": -0.11065573770491803,
+        "se": 0.02368112056720173,
+        "n_cond": 488,
+        "ci95": [
+         -0.1570707340166334,
+         -0.06424074139320264
+        ],
+        "rows": 488
+       },
+       "unknown": {
+        "est": 0.00819672131147541,
+        "se": 0.016118188609380166,
+        "n_cond": 488,
+        "ci95": [
+         -0.02339492836290971,
+         0.039788370985860536
+        ],
+        "rows": 488
+       },
+       "false_change_among_readable": {
+        "est": -0.10440835266821345,
+        "se": 0.024571089847884493,
+        "n_cond": 431,
+        "ci95": [
+         -0.15256768877006704,
+         -0.05624901656635985
+        ],
+        "rows": 431
+       }
+      }
+     },
+     "table_fail": {
+      "all": {
+       "false_change": {
+        "est": 0.0009236453201970443,
+        "se": 0.0017234620487237686,
+        "n_cond": 3248,
+        "ci95": [
+         -0.002454340295301542,
+         0.00430163093569563
+        ],
+        "rows": 3248
+       },
+       "unknown": {
+        "est": 0.010467980295566502,
+        "se": 0.003927938124511644,
+        "n_cond": 3248,
+        "ci95": [
+         0.0027692215715236805,
+         0.018166739019609322
+        ],
+        "rows": 3248
+       },
+       "false_change_among_readable": {
+        "est": 0.0009363295880149813,
+        "se": 0.001747719279230273,
+        "n_cond": 3204,
+        "ci95": [
+         -0.0024892001992763537,
+         0.0043618593753063165
+        ],
+        "rows": 3204
+       }
+      }
+     }
+    }
+   },
+   "perception": {
+    "drink": {
+     "appearance": {
+      "rec_cell": {
+       "est": -0.29387611618228987,
+       "se": 0.0027610131956957488,
+       "n_cond": 102,
+       "ci95": [
+        -0.29928770204585353,
+        -0.2884645303187262
+       ],
+       "rows": 102
+      },
+      "tsp_cell": {
+       "est": -0.27690688418407067,
+       "se": 0.004420274547895323,
+       "n_cond": 102,
+       "ci95": [
+        -0.2855706222979455,
+        -0.26824314607019584
+       ],
+       "rows": 102
+      },
+      "rec_window": {
+       "est": 0.1546538723450081,
+       "se": 0.023306026579698973,
+       "n_cond": 102,
+       "ci95": [
+        0.10897406024879812,
+        0.20033368444121807
+       ],
+       "rows": 102
+      },
+      "tsp_window": {
+       "est": 0.17602879510206335,
+       "se": 0.021233873158061387,
+       "n_cond": 102,
+       "ci95": [
+        0.13441040371226304,
+        0.21764718649186365
+       ],
+       "rows": 102
+      }
+     },
+     "increment": {
+      "rec_cell": {
+       "est": -0.27500179662205326,
+       "se": 0.0023230118951048126,
+       "n_cond": 898,
+       "ci95": [
+        -0.2795548999364587,
+        -0.2704486933076478
+       ],
+       "rows": 898
+      },
+      "tsp_cell": {
+       "est": -0.2832078982169485,
+       "se": 0.0027121249760174073,
+       "n_cond": 898,
+       "ci95": [
+        -0.2885236631699426,
+        -0.27789213326395434
+       ],
+       "rows": 898
+      },
+      "rec_window": {
+       "est": 0.14317743072000005,
+       "se": 0.013358873465209163,
+       "n_cond": 898,
+       "ci95": [
+        0.11699403872819009,
+        0.16936082271181002
+       ],
+       "rows": 898
+      },
+      "tsp_window": {
+       "est": 0.16418367478258095,
+       "se": 0.012891637399497299,
+       "n_cond": 898,
+       "ci95": [
+        0.13891606547956625,
+        0.18945128408559564
+       ],
+       "rows": 898
+      }
+     }
+    },
+    "wood": {
+     "appearance": {
+      "rec_cell": {
+       "est": 0.06181834402837252,
+       "se": 0.006633310090491193,
+       "n_cond": 228,
+       "ci95": [
+        0.04881705625100978,
+        0.07481963180573525
+       ],
+       "rows": 228
+      },
+      "tsp_cell": {
+       "est": 0.16446072333737424,
+       "se": 0.007408805699227655,
+       "n_cond": 228,
+       "ci95": [
+        0.14993946416688803,
+        0.17898198250786046
+       ],
+       "rows": 228
+      },
+      "rec_window": {
+       "est": 0.2801313976708211,
+       "se": 0.04343943735956895,
+       "n_cond": 228,
+       "ci95": [
+        0.194990100446066,
+        0.36527269489557623
+       ],
+       "rows": 228
+      },
+      "tsp_window": {
+       "est": 0.384771358940685,
+       "se": 0.0432638227613741,
+       "n_cond": 228,
+       "ci95": [
+        0.29997426632839175,
+        0.4695684515529782
+       ],
+       "rows": 228
+      }
+     },
+     "increment": {
+      "rec_cell": {
+       "est": -0.10428017841101928,
+       "se": 0.015660024540722395,
+       "n_cond": 772,
+       "ci95": [
+        -0.13497382651083517,
+        -0.07358653031120338
+       ],
+       "rows": 772
+      },
+      "tsp_cell": {
+       "est": -0.40098036524545344,
+       "se": 0.015399366366669312,
+       "n_cond": 772,
+       "ci95": [
+        -0.4311631233241253,
+        -0.37079760716678156
+       ],
+       "rows": 772
+      },
+      "rec_window": {
+       "est": 0.28543045476001777,
+       "se": 0.02398106173539844,
+       "n_cond": 772,
+       "ci95": [
+        0.23842757375863682,
+        0.3324333357613987
+       ],
+       "rows": 772
+      },
+      "tsp_window": {
+       "est": 0.3521055376514252,
+       "se": 0.025077508873076665,
+       "n_cond": 772,
+       "ci95": [
+        0.30295362026019496,
+        0.4012574550426555
+       ],
+       "rows": 772
+      }
+     }
+    },
+    "table": {
+     "all": {
+      "rec_cell": {
+       "est": -3.782948179836691,
+       "se": 0.052930645841520386,
+       "n_cond": 959,
+       "ci95": [
+        -3.886692245686071,
+        -3.679204113987311
+       ],
+       "rows": 959
+      },
+      "tsp_cell": {
+       "est": -4.271727110223303,
+       "se": 0.06089301726839098,
+       "n_cond": 959,
+       "ci95": [
+        -4.391077424069349,
+        -4.152376796377257
+       ],
+       "rows": 959
+      },
+      "rec_window": {
+       "est": -0.4612820965157311,
+       "se": 0.014071836265640252,
+       "n_cond": 959,
+       "ci95": [
+        -0.488862895596386,
+        -0.4337012974350762
+       ],
+       "rows": 959
+      },
+      "tsp_window": {
+       "est": -0.3833427214150135,
+       "se": 0.014284469899709867,
+       "n_cond": 959,
+       "ci95": [
+        -0.41134028241844484,
+        -0.3553451604115822
+       ],
+       "rows": 959
+      }
+     }
+    },
+    "sapling": {
+     "all": {
+      "rec_cell": {
+       "est": 0.46263259543376345,
+       "se": 0.008372029391607442,
+       "n_cond": 961,
+       "ci95": [
+        0.4462234178262129,
+        0.479041773041314
+       ],
+       "rows": 961
+      },
+      "tsp_cell": {
+       "est": 0.5860655622771647,
+       "se": 0.00870441835539262,
+       "n_cond": 961,
+       "ci95": [
+        0.5690049023005951,
+        0.6031262222537342
+       ],
+       "rows": 961
+      },
+      "rec_window": {
+       "est": 0.4034759514537736,
+       "se": 0.009899923277573842,
+       "n_cond": 961,
+       "ci95": [
+        0.38407210182972884,
+        0.4228798010778183
+       ],
+       "rows": 961
+      },
+      "tsp_window": {
+       "est": 0.5304141241541515,
+       "se": 0.01075435692367771,
+       "n_cond": 961,
+       "ci95": [
+        0.5093355845837432,
+        0.5514926637245597
+       ],
+       "rows": 961
+      }
+     }
+    }
+   },
+   "action_routing": {
+    "drink": {
+     "appearance": {
+      "routing": {
+       "est": -0.024509803921568627,
+       "se": 0.02546002950340556,
+       "n_cond": 204,
+       "ci95": [
+        -0.07441146174824352,
+        0.02539185390510627
+       ],
+       "rows": 204
+      },
+      "rerun_success": {
+       "est": 0.9019607843137255,
+       "se": 0.022434594007780532,
+       "n_cond": 204,
+       "ci95": [
+        0.8579889800584757,
+        0.9459325885689753
+       ],
+       "rows": 204
+      }
+     },
+     "increment": {
+      "routing": {
+       "est": 0.11859688195991092,
+       "se": 0.009499552846748922,
+       "n_cond": 1796,
+       "ci95": [
+        0.09997775838028303,
+        0.1372160055395388
+       ],
+       "rows": 1796
+      },
+      "rerun_success": {
+       "est": 0.5517817371937639,
+       "se": 0.019898368593063,
+       "n_cond": 1796,
+       "ci95": [
+        0.5127809347513604,
+        0.5907825396361673
+       ],
+       "rows": 1796
+      }
+     }
+    },
+    "wood": {
+     "appearance": {
+      "routing": {
+       "est": 0.44298245614035087,
+       "se": 0.03498379801502023,
+       "n_cond": 456,
+       "ci95": [
+        0.3744142120309112,
+        0.5115507002497905
+       ],
+       "rows": 456
+      },
+      "rerun_success": {
+       "est": 0.8223684210526315,
+       "se": 0.021399721818932956,
+       "n_cond": 456,
+       "ci95": [
+        0.7804249662875229,
+        0.8643118758177402
+       ],
+       "rows": 456
+      }
+     },
+     "increment": {
+      "routing": {
+       "est": 0.41904145077720206,
+       "se": 0.017538960061778994,
+       "n_cond": 1544,
+       "ci95": [
+        0.38466508905611524,
+        0.4534178124982889
+       ],
+       "rows": 1544
+      },
+      "rerun_success": {
+       "est": 0.8374352331606217,
+       "se": 0.010996121445445522,
+       "n_cond": 1544,
+       "ci95": [
+        0.8158828351275486,
+        0.8589876311936949
+       ],
+       "rows": 1544
+      }
+     }
+    },
+    "table": {
+     "all": {
+      "routing": {
+       "est": 0.46454640250260687,
+       "se": 0.013914768294423924,
+       "n_cond": 1918,
+       "ci95": [
+        0.43727345664553596,
+        0.4918193483596778
+       ],
+       "rows": 1918
+      },
+      "rerun_success": {
+       "est": 0.46663190823774764,
+       "se": 0.013880795116494406,
+       "n_cond": 1918,
+       "ci95": [
+        0.4394255498094186,
+        0.49383826666607666
+       ],
+       "rows": 1918
+      }
+     }
+    }
+   }
+  }
+ },
+ "rows": {
+  "drink": 1000,
+  "wood": 1000,
+  "table": 1000,
+  "sapling": 1000,
+  "move": 1000,
+  "adjacent": 1000,
+  "risky": 1000,
+  "drink_fail": 141,
+  "table_fail": 1000
+ },
+ "failed_attempts_available": {
+  "drink_fail": 141,
+  "wood_fail": 9,
+  "table_fail": 4097
+ },
+ "dev_episodes": 1009
+}

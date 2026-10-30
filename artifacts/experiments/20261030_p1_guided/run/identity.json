@@ -1,0 +1,28 @@
+{
+ "world_seed": 1,
+ "guided": true,
+ "decoder": "faithful",
+ "script_sha256": "4683e1a86e00cb38650244a390217718612361bc088910585465661cff661353",
+ "cfg_guided": {
+  "place_sha256": "0bd48526c8116afba58af702964bfc78655e3e770f806eb0e1875f035277e99b",
+  "map_sha256": "b8555379263cb53f2b563c23579421120931be94aa8a667284c4c15cbc90eee5",
+  "guided_streams_sha256": "154f7881ffca034d97499e2d45aae032548cf8fe1b4473ceabb486a993e1a4e0",
+  "rule": "m05 Q=1"
+ },
+ "recipe": {
+  "source_sha256": {
+   "saccade/model.py": "7ea04a4957d2915c5dfbfb9a69ed5e44ae275d555bbea8e629edaa00330db148",
+   "saccade/train.py": "a1f6d55ecaa349e0815e868c184df831e79375ef91b1b1a3e76b68b29c60fa7f",
+   "saccade/data.py": "d4c865124e0cdf8819fb5cc258d519c5dcfb7ec05985eedcf821e2b632907698",
+   "saccade/m0.yaml": "eff1c9143a7397c702c46192bab483ad7d28b7f583a12c0bce5cdbff861796b6"
+  },
+  "manifest_sha256": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
+  "targets_sha256": "f1a79ed7dba730db02b5efb537cc8f44fd580406c2da7894005b4e3e84c87b97",
+  "torch": "2.13.0+cu130"
+ },
+ "control": {
+  "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_10.pt",
+  "sha256": "74eccc433bf5a785edd6d565edc1a970f8b468510abf2c0b07e24d28b547ebe5"
+ },
+ "git_commit": "3b9b33fa1bae49772b9ae0b91240a364c8d89bbe"
+}
