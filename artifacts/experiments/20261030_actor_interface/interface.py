@@ -11,10 +11,11 @@ Classes (dev; reproduce.py's production path: streaming sampler after 8 real con
   sapling, eat cow, defeat zombie / skeleton, wake up, are read with the context classes below).
 - SAPLING context: DO facing grass, awake, sapling not yet unlocked (context-defined, recorded rate ~0.07).
 - RISKY (health <= 2, zombie adjacent) and ADJACENT (health >= 3, zombie adjacent, awake): context-defined damage.
+Per class also the head's P(unlock) split by whether the recorded transition unlocked anything (false unlocks).
 Per future: P(unlock) = head mass on reward bins decoding above 0.5; expected reward, its positive and negative parts;
 P(reward < -0.05); P(termination). Recorded: reward, unlock, termination.
 Usage (project venv, GPU): python -m artifacts.experiments.20261030_actor_interface.interface OUT_JSON [--episodes=K]
-  LABEL=CKPT ...
+  [--classes=a,b] LABEL=CKPT ...   (--classes keeps the class lists and seeds of the full run, generating only those)
 """
 import importlib, json, os, sys
 from pathlib import Path
@@ -123,16 +124,22 @@ def summary(o, ep):
             "recorded": {"unlock": est(o["rec_unlock"]), "exp_reward": est(r), "pos": est(np.clip(r, 0, None)),
                          "neg": est(np.clip(r, None, 0)), "neg_p": est(r < -0.05), "term_p": est(o["rec_term"])},
             **{w: {q: est(o[f"{w}_{q}"]) for q in ("unlock_p", "exp_reward", "pos", "neg", "neg_p", "term_p")}
-               for w in ("rec_head", "gen")}}
+               for w in ("rec_head", "gen")},
+            "split_by_recorded_unlock": {k: {w: G.estimate(np.asarray(o[f"{w}_unlock_p"], float), m, ep) for w in ("rec_head", "gen")}
+                                         for k, m in (("unlocked", o["rec_unlock"].astype(bool)), ("not_unlocked", ~o["rec_unlock"].astype(bool)))
+                                         if m.any()}}
 
 
 def main():
     out_path = Path(sys.argv[1]); out_path.parent.mkdir(parents=True, exist_ok=True)
     args = sys.argv[2:]
     n_ep = int(args.pop(0).split("=")[1]) if args and args[0].startswith("--episodes=") else 0
+    only = args.pop(0).split("=")[1].split(",") if args and args[0].startswith("--classes=") else None
     pairs = [a.split("=", 1) for a in args]
     L = S.first_episodes(dict(np.load(ROOT / "artifacts/eda/s0/s0_dev_labels.npz")), n_ep)
     cls = classes(L, np.random.default_rng(2031))
+    if only:
+        cls = {k: (v if k in only else []) for k, v in cls.items()}
     res = {"classes": {k: len(v) for k, v in cls.items()}, "checkpoints": {}, "differences": {}}
     per = {}
     for label, path in pairs:
