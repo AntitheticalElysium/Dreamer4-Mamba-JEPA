@@ -95,8 +95,10 @@ Per comparison B - A, paired by rows and draws, episode bootstrap, 95% intervals
   descriptive. guided_1500 - random_1500 (if R is run): attribution.
 
 ## Order
-1. Arm G to 1,500. 2. Evaluate base, guided_0300, guided_0750, guided_1500 (~2.5-3 h; entity counts at base and
-1,500 only, their reader refit being the costliest step). 3. Dissect with the user. 4. Arm R by hand, if decided:
+1. Arm G to 1,500. 2. Evaluate base, guided_0300, guided_0750, guided_1500 (~1 h from measured components, 12-15 min
+per checkpoint: encodings and readers 1.5 min, generation ~8-12 min (v2's evaluation: 49 min for 4 checkpoints with
+more classes), memory reliance ~2 min, perception and class losses ~1-2 min, the S1 reader refit and entity counts
+~2-3 min at base and 1,500 only; my first estimate, 2.5-3 h, was unmeasured and wrong). 3. Dissect with the user. 4. Arm R by hand, if decided:
 `finetune random 1500`, then evaluate random_1500 with guided_1500.
 
 ## Limits
