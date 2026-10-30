@@ -56,6 +56,7 @@ def run(arm, until, smoke=None):
     prov = TR.run_provenance(cfg)
     ident = {"base_sha256": TR.file_sha256(BASE), "place_sha256": TR.file_sha256(PLACE), "targets_bits_sha256": TR.file_sha256(BITS),
              "script_sha256": TR.file_sha256(Path(__file__)), "lr": FT2.LR, "warmup": FT2.WARMUP, "steps": FT2.STEPS,
+             "helpers_sha256": {p.name: TR.file_sha256(p) for p in (Path(FT2.__file__), Path(PM.__file__), PM.HERE / "map.json")},
              **{k: v for k, v in prov.items() if k != "git_commit"}}
     model = M.M0(cfg).to(dev)
     model.load_state_dict(ck["model"])

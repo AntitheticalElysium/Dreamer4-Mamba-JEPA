@@ -167,6 +167,17 @@ def fit(enc_tr, L_tr, enc_dv, L_dv):
     return rd, qual
 
 
+def export(rd):
+    """The fitted readers as plain tensors (weights, classes, supports, qualification), for saving beside a reading."""
+    sup = lambda d: {k: (mu.cpu(), rad) for k, (mu, rad) in d.items()}
+    mlp = lambda r: {"state_dict": {k: v.cpu() for k, v in r["net"].state_dict().items()}, "classes": r["classes"],
+                     "support": sup(r["support"]), "qualified": r["qualified"]}
+    return {"p": {k: {"means": {a: b.cpu() for a, b in v["means"].items()}, "support": sup(v["support"]),
+                      "qualified": v["qualified"]} for k, v in rd["p"].items()},
+            "g": {f"{n}@{c}": mlp(r) for (n, c), r in rd["g"].items()},
+            "table_p": mlp(rd["table_p"]), "table_g": mlp(rd["table_g"])}
+
+
 def main():
     from saccade.eval import s1 as S
     ckpt, out = Path(sys.argv[1]), Path(sys.argv[2])

@@ -1,8 +1,37 @@
 {
+ "provenance": {
+  "sources_sha256": {
+   "artifacts/experiments/20261030_fovea_placement/evaluate.py": "20330a87b93f0a73babbdea976e5cde5965626b217bcec72463778affb4b6571",
+   "artifacts/experiments/20261030_m05_guided_fovea/instruments.py": "113b124a5bd6ea98866d6fb7d159b0beda001dfd92f13a4ba084319ba8e12bfa",
+   "artifacts/experiments/20261030_increment_diagnosis/increment_probe.py": "d30a17a0d8a710244bd54d01783a99040c49b65729ac0729fc54499cd77b4ec6",
+   "artifacts/experiments/20261029_generation_diagnosis/catalogue.py": "e82a7a8e95c97fa50c05cfe45a0c6699b6225b5048841aa1f57a3129e1cf99d2",
+   "artifacts/experiments/20261029_generation_diagnosis/field_calibration.py": "7d54dfc446778036e5f640a98b3effe14836043967531ea2d94b241a0ca1c465",
+   "artifacts/experiments/20261030_fovea_placement/placement_map.py": "20438e083989495c2467f2873cd5bb1d6b165e0243d46dc2aba2d5d262a1d219",
+   "artifacts/experiments/20261030_m05_guided_fovea/evaluate.py": "6b1599bd6d44217c7ef90d15ea47dac4ba51806dea0111b1b2ef54a1c6bc095d",
+   "artifacts/experiments/20261030_fovea_placement/map.json": "b8555379263cb53f2b563c23579421120931be94aa8a667284c4c15cbc90eee5",
+   "artifacts/eda/s0/s0_dev_labels.npz": "80ed73c7ffb7882c5952bdab90a7b27a764c7d41239275f8f70c701450eb1d54",
+   "artifacts/eda/s0/s0_train400_labels.npz": "c71cb2150899997d995b641f05684e71c2cbf8fb5092203c2475592cd8852dc3"
+  },
+  "run": {
+   "git_commit": "be6c715e7e37eebee637da660c0359413f1acafc",
+   "source_sha256": {
+    "saccade/model.py": "7ea04a4957d2915c5dfbfb9a69ed5e44ae275d555bbea8e629edaa00330db148",
+    "saccade/train.py": "97d6b99e9d0b2cf6d3c55269315310e06b090d19495f89769038e77a33ded146",
+    "saccade/data.py": "d4c865124e0cdf8819fb5cc258d519c5dcfb7ec05985eedcf821e2b632907698",
+    "saccade/m0.yaml": "be601b79321c3df10e379ea117af64e0fca2fa2cf78fdc39c6134525c33322f5"
+   },
+   "manifest_sha256": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
+   "targets_sha256": "f1a79ed7dba730db02b5efb537cc8f44fd580406c2da7894005b4e3e84c87b97",
+   "torch": "2.13.0+cu130"
+  },
+  "episodes": 30,
+  "rows_per_class": 50
+ },
  "checkpoints": {
   "base": {
    "path": "artifacts/saccade_m0/p1_world1/ckpt_10.pt",
    "sha256": "74eccc433bf5a785edd6d565edc1a970f8b468510abf2c0b07e24d28b547ebe5",
+   "readers_sha256": "c1e2779574f006e1bbe0e5dca969d934a0478029d38aa0cc202e02cfea2684b6",
    "instrument_qualification": {
     "p": {
      "health": {
@@ -218,18 +247,18 @@
    },
    "regression": {
     "reward_nll": {
-     "est": 0.022424622829312294,
-     "se": 0.0023758369747096855,
+     "est": 0.022408479794571445,
+     "se": 0.0023941581716111363,
      "n_cond": 10496
     },
     "continuation_bce": {
-     "est": 8.730929130947808e-06,
-     "se": 6.5117982532826544e-06,
+     "est": 8.77139693027073e-06,
+     "se": 6.518101523305309e-06,
      "n_cond": 10496
     },
     "tsp_nll": {
-     "est": 2.2326759933636002,
-     "se": 0.07265502877585647,
+     "est": 2.2326767613881313,
+     "se": 0.07265152544381473,
      "n_cond": 10496
     }
    },
@@ -238,29 +267,49 @@
      "drink": {
       "appearance": {
        "rows": 12,
-       "read": 8,
-       "unreadable_share": {
+       "eligible": 12,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 12
+       },
+       "unknown": {
         "est": 0.3333333333333333,
         "se": 0.10052492251482334,
         "n_cond": 12
        },
-       "recorded": {
-        "est": 1.0,
-        "se": 0.0,
-        "n_cond": 8
-       },
        "success": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 8
+        "n_cond": 12
        },
        "copy": {
-        "est": 1.0,
+        "est": 0.6666666666666666,
+        "se": 0.10052492251482335,
+        "n_cond": 12
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 12
+       },
+       "success_upper_bound": {
+        "est": 0.3333333333333333,
+        "se": 0.10052492251482334,
+        "n_cond": 12
+       },
+       "success_among_readable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 8
        },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 12
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 12
        },
@@ -272,14 +321,14 @@
       },
       "increment": {
        "rows": 82,
-       "read": 82,
-       "unreadable_share": {
-        "est": 0.0,
+       "eligible": 82,
+       "recorded": {
+        "est": 1.0,
         "se": 0.0,
         "n_cond": 82
        },
-       "recorded": {
-        "est": 1.0,
+       "unknown": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 82
        },
@@ -289,8 +338,23 @@
         "n_cond": 82
        },
        "copy": {
-        "est": 0.6829268292682927,
-        "se": 0.07832126136928647,
+        "est": 0.7073170731707317,
+        "se": 0.0710759666671689,
+        "n_cond": 82
+       },
+       "other": {
+        "est": 0.24390243902439024,
+        "se": 0.06655072400551973,
+        "n_cond": 82
+       },
+       "success_upper_bound": {
+        "est": 0.04878048780487805,
+        "se": 0.01752837770832189,
+        "n_cond": 82
+       },
+       "success_among_readable": {
+        "est": 0.04878048780487805,
+        "se": 0.01752837770832189,
         "n_cond": 82
        },
        "real_token_correct": {
@@ -298,71 +362,76 @@
         "se": 0.0,
         "n_cond": 82
        },
+       "real_token_unreadable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 82
+       },
        "glimpse_periphery_coherent": {
-        "est": 0.8309859154929577,
-        "se": 0.08527726412998043,
-        "n_cond": 71
+        "est": 0.8611111111111112,
+        "se": 0.08491804319376567,
+        "n_cond": 72
        }
       }
      },
      "wood": {
       "appearance": {
        "rows": 20,
-       "read": 0,
-       "unreadable_share": {
-        "est": 1.0,
-        "se": 0.0,
-        "n_cond": 20
-       },
+       "eligible": 0,
        "recorded": null,
+       "unknown": null,
        "success": null,
        "copy": null,
+       "other": null,
+       "success_upper_bound": null,
+       "success_among_readable": null,
        "real_token_correct": null,
+       "real_token_unreadable": null,
        "glimpse_periphery_coherent": null
       },
       "increment": {
        "rows": 80,
-       "read": 0,
-       "unreadable_share": {
-        "est": 1.0,
-        "se": 0.0,
-        "n_cond": 80
-       },
+       "eligible": 0,
        "recorded": null,
+       "unknown": null,
        "success": null,
        "copy": null,
+       "other": null,
+       "success_upper_bound": null,
+       "success_among_readable": null,
        "real_token_correct": null,
+       "real_token_unreadable": null,
        "glimpse_periphery_coherent": null
       }
      },
      "table": {
       "all": {
        "rows": 96,
-       "read": 0,
-       "unreadable_share": {
-        "est": 1.0,
-        "se": 0.0,
-        "n_cond": 96
-       },
+       "eligible": 0,
        "recorded": null,
+       "unknown": null,
        "success": null,
        "copy": null,
+       "other": null,
+       "success_upper_bound": null,
+       "success_among_readable": null,
        "real_token_correct": null,
+       "real_token_unreadable": null,
        "glimpse_periphery_coherent": null
       }
      },
      "sapling": {
       "all": {
        "rows": 98,
-       "read": 98,
-       "unreadable_share": {
-        "est": 0.0,
-        "se": 0.0,
-        "n_cond": 98
-       },
+       "eligible": 98,
        "recorded": {
         "est": 0.10204081632653061,
         "se": 0.03673010804028375,
+        "n_cond": 98
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
         "n_cond": 98
        },
        "success": {
@@ -375,8 +444,28 @@
         "se": 0.0,
         "n_cond": 98
        },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 98
+       },
+       "success_upper_bound": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 98
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 98
+       },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 98
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 98
        },
@@ -390,25 +479,40 @@
      "adjacent": {
       "all": {
        "rows": 84,
-       "read": 81,
-       "unreadable_share": {
+       "eligible": 84,
+       "recorded": {
+        "est": 0.14285714285714285,
+        "se": 0.0727478753774776,
+        "n_cond": 84
+       },
+       "unknown": {
         "est": 0.03571428571428571,
         "se": 0.013640226633277047,
         "n_cond": 84
        },
-       "recorded": {
-        "est": 0.14814814814814814,
-        "se": 0.07519017596497143,
-        "n_cond": 81
-       },
        "success": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 81
+        "n_cond": 84
        },
        "copy": {
-        "est": 0.2839506172839506,
-        "se": 0.04260776638015047,
+        "est": 0.27380952380952384,
+        "se": 0.04395184137389272,
+        "n_cond": 84
+       },
+       "other": {
+        "est": 0.6904761904761905,
+        "se": 0.030311614740615656,
+        "n_cond": 84
+       },
+       "success_upper_bound": {
+        "est": 0.03571428571428571,
+        "se": 0.013640226633277047,
+        "n_cond": 84
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
         "n_cond": 81
        },
        "real_token_correct": {
@@ -416,41 +520,66 @@
         "se": 0.0,
         "n_cond": 60
        },
+       "real_token_unreadable": {
+        "est": 0.2857142857142857,
+        "se": 0.1454957507549552,
+        "n_cond": 84
+       },
        "glimpse_periphery_coherent": {
-        "est": 0.40350877192982454,
-        "se": 0.1657902574789998,
-        "n_cond": 57
+        "est": 0.38333333333333336,
+        "se": 0.05655295947739231,
+        "n_cond": 60
        }
       }
      },
      "risky": {
       "all": {
        "rows": 80,
-       "read": 75,
-       "unreadable_share": {
-        "est": 0.0625,
-        "se": 0.037183983154547004,
-        "n_cond": 80
-       },
+       "eligible": 76,
        "recorded": {
-        "est": 0.2,
-        "se": 0.11305637393813651,
-        "n_cond": 75
+        "est": 0.21052631578947367,
+        "se": 0.11700006928566235,
+        "n_cond": 76
+       },
+       "unknown": {
+        "est": 0.013157894736842105,
+        "se": 0.01452142751136669,
+        "n_cond": 76
        },
        "success": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 75
+        "n_cond": 76
        },
        "copy": {
-        "est": 0.08,
-        "se": 0.03248732985571897,
+        "est": 0.07894736842105263,
+        "se": 0.03203661758453819,
+        "n_cond": 76
+       },
+       "other": {
+        "est": 0.9078947368421053,
+        "se": 0.03484103831785778,
+        "n_cond": 76
+       },
+       "success_upper_bound": {
+        "est": 0.013157894736842105,
+        "se": 0.01452142751136669,
+        "n_cond": 76
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
         "n_cond": 75
        },
        "real_token_correct": {
         "est": 1.0,
         "se": 0.0,
         "n_cond": 48
+       },
+       "real_token_unreadable": {
+        "est": 0.3684210526315789,
+        "se": 0.14326677529373433,
+        "n_cond": 76
        },
        "glimpse_periphery_coherent": {
         "est": 0.07547169811320754,
@@ -462,14 +591,14 @@
      "drink_fail": {
       "all": {
        "rows": 4,
-       "read": 4,
-       "unreadable_share": {
-        "est": 0.0,
+       "eligible": 4,
+       "recorded": {
+        "est": 1.0,
         "se": 0.0,
         "n_cond": 4
        },
-       "recorded": {
-        "est": 1.0,
+       "unknown": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 4
        },
@@ -478,8 +607,23 @@
         "se": 0.0,
         "n_cond": 4
        },
+       "false_change_upper_bound": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 4
+       },
+       "false_change_among_readable": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 4
+       },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 4
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 4
        },
@@ -493,15 +637,14 @@
      "table_fail": {
       "all": {
        "rows": 128,
-       "read": 0,
-       "unreadable_share": {
-        "est": 1.0,
-        "se": 0.0,
-        "n_cond": 128
-       },
+       "eligible": 0,
        "recorded": null,
+       "unknown": null,
        "false_change": null,
+       "false_change_upper_bound": null,
+       "false_change_among_readable": null,
        "real_token_correct": null,
+       "real_token_unreadable": null,
        "glimpse_periphery_coherent": null
       }
      }
@@ -510,29 +653,49 @@
      "drink": {
       "appearance": {
        "rows": 10,
-       "read": 8,
-       "unreadable_share": {
+       "eligible": 10,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 10
+       },
+       "unknown": {
         "est": 0.2,
         "se": 0.14330130637416114,
         "n_cond": 10
        },
-       "recorded": {
-        "est": 1.0,
-        "se": 0.0,
-        "n_cond": 8
-       },
        "success": {
+        "est": 0.1,
+        "se": 0.11370329860654249,
+        "n_cond": 10
+       },
+       "copy": {
+        "est": 0.6,
+        "se": 0.20957260881784395,
+        "n_cond": 10
+       },
+       "other": {
+        "est": 0.1,
+        "se": 0.11370329860654249,
+        "n_cond": 10
+       },
+       "success_upper_bound": {
+        "est": 0.3,
+        "se": 0.1389227529011017,
+        "n_cond": 10
+       },
+       "success_among_readable": {
         "est": 0.125,
         "se": 0.11894699303798217,
         "n_cond": 8
        },
-       "copy": {
-        "est": 0.75,
-        "se": 0.23789398607596435,
-        "n_cond": 8
-       },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 10
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 10
        },
@@ -540,29 +703,49 @@
       },
       "increment": {
        "rows": 74,
-       "read": 65,
-       "unreadable_share": {
+       "eligible": 74,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 74
+       },
+       "unknown": {
         "est": 0.12162162162162163,
         "se": 0.045477309520581106,
         "n_cond": 74
        },
-       "recorded": {
-        "est": 1.0,
-        "se": 0.0,
-        "n_cond": 65
-       },
        "success": {
+        "est": 0.013513513513513514,
+        "se": 0.015471128161442704,
+        "n_cond": 74
+       },
+       "copy": {
+        "est": 0.7432432432432432,
+        "se": 0.08761813734850325,
+        "n_cond": 74
+       },
+       "other": {
+        "est": 0.12162162162162163,
+        "se": 0.05875415911408609,
+        "n_cond": 74
+       },
+       "success_upper_bound": {
+        "est": 0.13513513513513514,
+        "se": 0.032970422344705784,
+        "n_cond": 74
+       },
+       "success_among_readable": {
         "est": 0.015384615384615385,
         "se": 0.01610292031164522,
         "n_cond": 65
        },
-       "copy": {
-        "est": 0.8461538461538461,
-        "se": 0.060430298844926116,
-        "n_cond": 65
-       },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 74
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 74
        },
@@ -572,29 +755,49 @@
      "wood": {
       "appearance": {
        "rows": 18,
-       "read": 12,
-       "unreadable_share": {
+       "eligible": 18,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 18
+       },
+       "unknown": {
         "est": 0.3333333333333333,
         "se": 0.07880151533723476,
         "n_cond": 18
        },
-       "recorded": {
-        "est": 1.0,
-        "se": 0.0,
-        "n_cond": 12
-       },
        "success": {
-        "est": 0.3333333333333333,
-        "se": 0.09130575414912656,
-        "n_cond": 12
+        "est": 0.2222222222222222,
+        "se": 0.052534343558156504,
+        "n_cond": 18
        },
        "copy": {
-        "est": 0.6666666666666666,
+        "est": 0.4444444444444444,
+        "se": 0.13133585889539126,
+        "n_cond": 18
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 18
+       },
+       "success_upper_bound": {
+        "est": 0.5555555555555556,
+        "se": 0.13133585889539126,
+        "n_cond": 18
+       },
+       "success_among_readable": {
+        "est": 0.3333333333333333,
         "se": 0.09130575414912656,
         "n_cond": 12
        },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 18
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 18
        },
@@ -602,29 +805,49 @@
       },
       "increment": {
        "rows": 78,
-       "read": 66,
-       "unreadable_share": {
-        "est": 0.15384615384615385,
-        "se": 0.004378803033589529,
-        "n_cond": 78
-       },
+       "eligible": 78,
        "recorded": {
         "est": 1.0,
         "se": 0.0,
-        "n_cond": 66
+        "n_cond": 78
+       },
+       "unknown": {
+        "est": 0.15384615384615385,
+        "se": 0.02335361617914416,
+        "n_cond": 78
        },
        "success": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 66
+        "n_cond": 78
        },
        "copy": {
-        "est": 0.9090909090909091,
-        "se": 0.03455088347995914,
+        "est": 0.782051282051282,
+        "se": 0.03640615628881755,
+        "n_cond": 78
+       },
+       "other": {
+        "est": 0.0641025641025641,
+        "se": 0.01575256988461758,
+        "n_cond": 78
+       },
+       "success_upper_bound": {
+        "est": 0.15384615384615385,
+        "se": 0.02335361617914416,
+        "n_cond": 78
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
         "n_cond": 66
        },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 78
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 78
        },
@@ -634,15 +857,15 @@
      "table": {
       "all": {
        "rows": 82,
-       "read": 82,
-       "unreadable_share": {
-        "est": 0.0,
-        "se": 0.0,
-        "n_cond": 82
-       },
+       "eligible": 82,
        "recorded": {
         "est": 0.975609756097561,
         "se": 0.019555464056557,
+        "n_cond": 82
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
         "n_cond": 82
        },
        "success": {
@@ -655,8 +878,28 @@
         "se": 0.051290680714662015,
         "n_cond": 82
        },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 82
+       },
+       "success_upper_bound": {
+        "est": 0.24390243902439024,
+        "se": 0.051290680714662015,
+        "n_cond": 82
+       },
+       "success_among_readable": {
+        "est": 0.24390243902439024,
+        "se": 0.051290680714662015,
+        "n_cond": 82
+       },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 82
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 82
        },
@@ -666,15 +909,15 @@
      "sapling": {
       "all": {
        "rows": 78,
-       "read": 78,
-       "unreadable_share": {
-        "est": 0.0,
-        "se": 0.0,
-        "n_cond": 78
-       },
+       "eligible": 78,
        "recorded": {
         "est": 0.07692307692307693,
         "se": 0.04965141811256241,
+        "n_cond": 78
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
         "n_cond": 78
        },
        "success": {
@@ -687,8 +930,28 @@
         "se": 0.0,
         "n_cond": 78
        },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 78
+       },
+       "success_upper_bound": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 78
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 78
+       },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 78
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 78
        },
@@ -697,42 +960,62 @@
      },
      "move": {
       "shift_sample": {
-       "est": 0.8964285165071487,
-       "se": 0.018556789121358042,
+       "est": 0.8964376503229141,
+       "se": 0.01858971982706294,
        "n_cond": 100
       },
       "shift_field_6.67": {
-       "est": 0.9024488785862923,
-       "se": 0.01720884112731159,
+       "est": 0.902410748898983,
+       "se": 0.017227661618065875,
        "n_cond": 100
       }
      },
      "adjacent": {
       "all": {
        "rows": 196,
-       "read": 178,
-       "unreadable_share": {
+       "eligible": 196,
+       "recorded": {
+        "est": 0.061224489795918366,
+        "se": 0.02970591758042363,
+        "n_cond": 196
+       },
+       "unknown": {
         "est": 0.09183673469387756,
         "se": 0.17377961784547827,
         "n_cond": 196
        },
-       "recorded": {
-        "est": 0.06741573033707865,
-        "se": 0.03214788393010228,
-        "n_cond": 178
-       },
        "success": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 196
+       },
+       "copy": {
+        "est": 0.9030612244897959,
+        "se": 0.17130412471377626,
+        "n_cond": 196
+       },
+       "other": {
+        "est": 0.00510204081632653,
+        "se": 0.0024754931317019693,
+        "n_cond": 196
+       },
+       "success_upper_bound": {
+        "est": 0.09183673469387756,
+        "se": 0.17377961784547827,
+        "n_cond": 196
+       },
+       "success_among_readable": {
         "est": 0.0,
         "se": 0.0,
         "n_cond": 178
        },
-       "copy": {
-        "est": 0.9943820224719101,
-        "se": 0.0026789903275085355,
-        "n_cond": 178
-       },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 196
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 196
        },
@@ -742,31 +1025,51 @@
      "risky": {
       "all": {
        "rows": 192,
-       "read": 113,
-       "unreadable_share": {
-        "est": 0.4114583333333333,
-        "se": 0.12098572639604208,
+       "eligible": 192,
+       "recorded": {
+        "est": 0.125,
+        "se": 0.03267282695345937,
         "n_cond": 192
        },
-       "recorded": {
-        "est": 0.12389380530973451,
-        "se": 0.05573725751050993,
-        "n_cond": 113
+       "unknown": {
+        "est": 0.4166666666666667,
+        "se": 0.12132275611274623,
+        "n_cond": 192
        },
        "success": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 113
+        "n_cond": 192
        },
        "copy": {
-        "est": 0.9823008849557522,
-        "se": 0.01228511684463003,
-        "n_cond": 113
+        "est": 0.578125,
+        "se": 0.11896904886778278,
+        "n_cond": 192
+       },
+       "other": {
+        "est": 0.005208333333333333,
+        "se": 0.005190319715375368,
+        "n_cond": 192
+       },
+       "success_upper_bound": {
+        "est": 0.4166666666666667,
+        "se": 0.12132275611274623,
+        "n_cond": 192
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 112
        },
        "real_token_correct": {
-        "est": 0.9473684210526315,
-        "se": 0.022870014038272855,
+        "est": 1.0,
+        "se": 0.0,
         "n_cond": 152
+       },
+       "real_token_unreadable": {
+        "est": 0.20833333333333334,
+        "se": 0.10683633263226547,
+        "n_cond": 192
        },
        "glimpse_periphery_coherent": null
       }
@@ -774,14 +1077,14 @@
      "drink_fail": {
       "all": {
        "rows": 4,
-       "read": 4,
-       "unreadable_share": {
-        "est": 0.0,
+       "eligible": 4,
+       "recorded": {
+        "est": 1.0,
         "se": 0.0,
         "n_cond": 4
        },
-       "recorded": {
-        "est": 1.0,
+       "unknown": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 4
        },
@@ -790,8 +1093,23 @@
         "se": 0.0,
         "n_cond": 4
        },
+       "false_change_upper_bound": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 4
+       },
+       "false_change_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 4
+       },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 4
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 4
        },
@@ -801,14 +1119,14 @@
      "table_fail": {
       "all": {
        "rows": 164,
-       "read": 164,
-       "unreadable_share": {
-        "est": 0.0,
+       "eligible": 164,
+       "recorded": {
+        "est": 1.0,
         "se": 0.0,
         "n_cond": 164
        },
-       "recorded": {
-        "est": 1.0,
+       "unknown": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 164
        },
@@ -817,8 +1135,23 @@
         "se": 0.0,
         "n_cond": 164
        },
+       "false_change_upper_bound": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 164
+       },
+       "false_change_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 164
+       },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 164
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 164
        },
@@ -836,8 +1169,8 @@
        "n_cond": 6
       },
       "tsp_cell": {
-       "est": 1.3977511127789815,
-       "se": 0.01106162916201695,
+       "est": 1.3978640635808308,
+       "se": 0.010922852446468304,
        "n_cond": 6
       },
       "rec_window": {
@@ -846,8 +1179,8 @@
        "n_cond": 6
       },
       "tsp_window": {
-       "est": 1.4120548963546753,
-       "se": 0.1513980017734476,
+       "est": 1.4113478263219197,
+       "se": 0.15153566522018067,
        "n_cond": 6
       }
      },
@@ -858,8 +1191,8 @@
        "n_cond": 44
       },
       "tsp_cell": {
-       "est": 1.320806091481989,
-       "se": 0.007904847377108207,
+       "est": 1.321013941006227,
+       "se": 0.00790836543645761,
        "n_cond": 44
       },
       "rec_window": {
@@ -868,8 +1201,8 @@
        "n_cond": 44
       },
       "tsp_window": {
-       "est": 1.504503451965072,
-       "se": 0.08272541139971396,
+       "est": 1.504498378797011,
+       "se": 0.0826681035292356,
        "n_cond": 44
       }
      }
@@ -882,8 +1215,8 @@
        "n_cond": 10
       },
       "tsp_cell": {
-       "est": 1.2365466833114624,
-       "se": 0.027647842275610686,
+       "est": 1.23621563911438,
+       "se": 0.026355557734673088,
        "n_cond": 10
       },
       "rec_window": {
@@ -892,8 +1225,8 @@
        "n_cond": 10
       },
       "tsp_window": {
-       "est": 1.512640854716301,
-       "se": 0.45476800955138325,
+       "est": 1.5121354311704636,
+       "se": 0.4542842654082458,
        "n_cond": 10
       }
      },
@@ -904,8 +1237,8 @@
        "n_cond": 40
       },
       "tsp_cell": {
-       "est": 1.945491161942482,
-       "se": 0.05470865624465496,
+       "est": 1.9485833883285522,
+       "se": 0.05480956494837298,
        "n_cond": 40
       },
       "rec_window": {
@@ -914,8 +1247,8 @@
        "n_cond": 40
       },
       "tsp_window": {
-       "est": 1.0384093694388867,
-       "se": 0.06699274365954003,
+       "est": 1.0391405455768108,
+       "se": 0.06633382934269498,
        "n_cond": 40
       }
      }
@@ -928,8 +1261,8 @@
        "n_cond": 48
       },
       "tsp_cell": {
-       "est": 7.8218095898628235,
-       "se": 0.25780052727547986,
+       "est": 7.818447232246399,
+       "se": 0.2572094196425384,
        "n_cond": 48
       },
       "rec_window": {
@@ -938,8 +1271,8 @@
        "n_cond": 48
       },
       "tsp_window": {
-       "est": 2.8750814547141395,
-       "se": 0.11326254757958965,
+       "est": 2.8749469965696335,
+       "se": 0.1131856769477642,
        "n_cond": 48
       }
      }
@@ -952,8 +1285,8 @@
        "n_cond": 49
       },
       "tsp_cell": {
-       "est": 0.06248683453185902,
-       "se": 0.021138087223297707,
+       "est": 0.06247624279503539,
+       "se": 0.021127702068702882,
        "n_cond": 49
       },
       "rec_window": {
@@ -962,41 +1295,53 @@
        "n_cond": 49
       },
       "tsp_window": {
-       "est": 0.571711604692498,
-       "se": 0.043522793770687025,
+       "est": 0.5714479678747605,
+       "se": 0.043452798841255094,
        "n_cond": 49
       }
      }
     }
    },
-   "memory": {
+   "action_routing": {
     "drink": {
      "appearance": {
       "rerun_success": {
        "est": 0.0,
        "se": 0.0,
-       "n_cond": 10
+       "n_cond": 12
       },
       "noop_belief_success": {
        "est": 0.0,
        "se": 0.0,
        "n_cond": 12
       },
-      "reliance": {
+      "unknown": [
+       {
+        "est": 0.16666666666666666,
+        "se": 0.06669845484102987,
+        "n_cond": 12
+       },
+       {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 12
+       }
+      ],
+      "routing": {
        "est": 0.0,
        "se": 0.0,
-       "n_cond": 10,
+       "n_cond": 12,
        "ci95": [
         0.0,
         0.0
        ],
-       "rows": 10
+       "rows": 12
       }
      },
      "increment": {
       "rerun_success": {
-       "est": 0.045454545454545456,
-       "se": 0.026600781078999353,
+       "est": 0.03409090909090909,
+       "se": 0.019950585809249518,
        "n_cond": 88
       },
       "noop_belief_success": {
@@ -1004,13 +1349,25 @@
        "se": 0.015782113232893094,
        "n_cond": 88
       },
-      "reliance": {
-       "est": 0.0,
-       "se": 0.018922522819527818,
+      "unknown": [
+       {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 88
+       },
+       {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 88
+       }
+      ],
+      "routing": {
+       "est": -0.011363636363636364,
+       "se": 0.014076217018013705,
        "n_cond": 88,
        "ci95": [
-        -0.03708814472627452,
-        0.03708814472627452
+        -0.03895302171894323,
+        0.016225748991670497
        ],
        "rows": 88
       }
@@ -1020,23 +1377,62 @@
      "appearance": {
       "rerun_success": null,
       "noop_belief_success": null,
-      "reliance": null
+      "unknown": [
+       null,
+       null
+      ],
+      "routing": null
      },
      "increment": {
       "rerun_success": null,
       "noop_belief_success": null,
-      "reliance": null
+      "unknown": [
+       null,
+       null
+      ],
+      "routing": null
      }
     },
     "table": {
      "all": {
       "rerun_success": null,
       "noop_belief_success": null,
-      "reliance": null
+      "unknown": [
+       null,
+       null
+      ],
+      "routing": null
      }
     }
    },
-   "entities": {
+   "s1": {
+    "s1_reader": {
+     "path": "artifacts/experiments/20261030_m05_guided_fovea/checks/eval_smoke/base_s1_reader.pt",
+     "sha256": "b4cf40efb20ac88420835eec2bc75ef3a9789c1efdac699a6cb0241e03cea3f7",
+     "checkpoint_sha256": "74eccc433bf5a785edd6d565edc1a970f8b468510abf2c0b07e24d28b547ebe5",
+     "schema": {
+      "token_dim": 16,
+      "lighting_dim": 8,
+      "hidden": [
+       256,
+       256
+      ],
+      "heads": {
+       "kind": 5,
+       "terr": 17
+      },
+      "kind_labels": [
+       "background",
+       "zombies",
+       "cows",
+       "skeletons",
+       "arrows"
+      ],
+      "probe_seed": 0,
+      "storage_precision": "float16",
+      "train_labels_sha256": "c71cb2150899997d995b641f05684e71c2cbf8fb5092203c2475592cd8852dc3"
+     }
+    },
     "reader_retention": {
      "day_r1_2": {
       "presence_recall": {
@@ -1247,7 +1643,7 @@
       }
      }
     },
-    "counts": {
+    "entity_counts": {
      "zombies": {
       "real": {
        "est": 0.5248,
@@ -1256,7 +1652,7 @@
       },
       "generated": {
        "est": 0.278,
-       "se": 0.03675800329725064,
+       "se": 0.036330635498125576,
        "n_cond": 5000
       }
      },
@@ -1267,8 +1663,8 @@
        "n_cond": 5000
       },
       "generated": {
-       "est": 0.2466,
-       "se": 0.02097979572253981,
+       "est": 0.2464,
+       "se": 0.021320876017588298,
        "n_cond": 5000
       }
      },
@@ -1279,8 +1675,8 @@
        "n_cond": 5000
       },
       "generated": {
-       "est": 0.131,
-       "se": 0.01705726769331173,
+       "est": 0.1312,
+       "se": 0.01725712955986769,
        "n_cond": 5000
       }
      },
@@ -1291,60 +1687,304 @@
        "n_cond": 5000
       },
       "generated": {
-       "est": 0.128,
-       "se": 0.008518814552930175,
+       "est": 0.1266,
+       "se": 0.008756420831005208,
        "n_cond": 5000
+      }
+     }
+    },
+    "belief_probe": {
+     "heldout_loss_by_epoch": [
+      5.157233715057373,
+      4.499497413635254,
+      4.208782196044922,
+      4.0882415771484375,
+      4.040729522705078,
+      4.0085930824279785,
+      3.940798282623291,
+      3.809471845626831,
+      3.82297945022583,
+      3.8387837409973145,
+      3.7729029655456543,
+      3.7755250930786133,
+      3.7899060249328613,
+      3.7895267009735107
+     ],
+     "achievements": [
+      {
+       "ap": 0.9971515535692802,
+       "balanced_accuracy": 0.5
+      },
+      {
+       "ap": 0.9976726789753602,
+       "balanced_accuracy": 0.8377220225844622
+      },
+      {
+       "ap": 0.9762421009779264,
+       "balanced_accuracy": 0.853872486093282
+      },
+      {
+       "ap": 0.9687093674591732,
+       "balanced_accuracy": 0.5
+      },
+      {
+       "ap": 0.9748014689569338,
+       "balanced_accuracy": 0.8827445674559604
+      },
+      {
+       "ap": 0.9970616907080176,
+       "balanced_accuracy": 0.8228471021402936
+      },
+      {
+       "ap": 0.9470875870890235,
+       "balanced_accuracy": 0.7148430853670489
+      },
+      {
+       "ap": 0.9676589174620057,
+       "balanced_accuracy": 0.5117660948753013
+      },
+      {
+       "ap": 0.9924342453878707,
+       "balanced_accuracy": 0.9279997161355902
+      },
+      {
+       "ap": 0.9971912950949547,
+       "balanced_accuracy": 0.7702199030935519
+      },
+      {
+       "ap": 0.9970013847076143,
+       "balanced_accuracy": 0.8118036364373304
+      },
+      {
+       "ap": 0.23737812674509395,
+       "balanced_accuracy": 0.5
+      },
+      {
+       "ap": 0.9618365393301034,
+       "balanced_accuracy": 0.8711840596172947
+      },
+      {
+       "ap": 0.999659867344424,
+       "balanced_accuracy": 0.9878924765618284
+      },
+      {
+       "ap": 0.994338696344161,
+       "balanced_accuracy": 0.9464370366228527
+      },
+      {
+       "ap": 0.9643213641203934,
+       "balanced_accuracy": 0.8345916073811698
+      },
+      {
+       "ap": 0.9897194821191524,
+       "balanced_accuracy": 0.8587108106469942
+      },
+      {
+       "ap": 0.9903436279612795,
+       "balanced_accuracy": 0.9303585465609051
+      },
+      {
+       "ap": 0.9972258548653884,
+       "balanced_accuracy": 0.9665271721393128
+      },
+      {
+       "ap": 0.6322142335314326,
+       "balanced_accuracy": 0.5002915451895044
+      },
+      {
+       "ap": 0.9760401034003972,
+       "balanced_accuracy": 0.9239191074523904
+      },
+      {
+       "ap": 0.7955553337276845,
+       "balanced_accuracy": 0.8369549490496856
+      }
+     ],
+     "hud_exact": [
+      {
+       "est": 0.6292038761162835,
+       "se": 0.03694434756678389,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.21366140984229526,
+       "se": 0.015205280085492275,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.27721831654949647,
+       "se": 0.02090728271768827,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.3406802204066122,
+       "se": 0.032191059681720854,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.4082272468174045,
+       "se": 0.05027526223283514,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.44233326999809996,
+       "se": 0.06753713921361824,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.4017670530115903,
+       "se": 0.07722552495622007,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.6211286338590157,
+       "se": 0.07385571475088405,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.8588257647729431,
+       "se": 0.0754242074663708,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.9670340110203306,
+       "se": 0.0158748551369838,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.557476724301729,
+       "se": 0.1141860839995096,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.7789283678510356,
+       "se": 0.08792443687591027,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.8980619418582557,
+       "se": 0.03670401121122006,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.5148204446133384,
+       "se": 0.10088568053329466,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.6886756602698081,
+       "se": 0.06930247798980357,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.7038761162834885,
+       "se": 0.08793823815042313,
+       "n_cond": 10526
+      }
+     ],
+     "departed": {
+      "zombies": {
+       "ap_by_stratum": {
+        "1-4": 0.08921393211240418,
+        "5-8": 0.04975915624139772,
+        "9-16": 0.07060975629048481,
+        "17-64": 0.21119961623044223
+       },
+       "last_seen_side_accuracy": {
+        "est": 0.4172303310786757,
+        "se": 0.03554114898776256,
+        "n_cond": 2809
+       }
+      },
+      "cows": {
+       "ap_by_stratum": {
+        "1-4": 0.10757797257511596,
+        "5-8": 0.07005574681948387,
+        "9-16": 0.09444001186158037,
+        "17-64": 0.3077905969603744
+       },
+       "last_seen_side_accuracy": {
+        "est": 0.3605110336817654,
+        "se": 0.03859145059738056,
+        "n_cond": 4305
+       }
+      },
+      "skeletons": {
+       "ap_by_stratum": {
+        "1-4": 0.05786850179222798,
+        "5-8": 0.04706060656129503,
+        "9-16": 0.10896626476231984,
+        "17-64": 0.2785074823407361
+       },
+       "last_seen_side_accuracy": {
+        "est": 0.3899145770184624,
+        "se": 0.054960354566001894,
+        "n_cond": 3629
+       }
+      },
+      "arrows": {
+       "ap_by_stratum": {
+        "1-4": 0.07373864734976228,
+        "5-8": 0.059012363229402204,
+        "9-16": 0.08166985705995411,
+        "17-64": 0.2781547168277188
+       },
+       "last_seen_side_accuracy": {
+        "est": 0.41639918295885614,
+        "se": 0.03480277080415598,
+        "n_cond": 3427
+       }
       }
      }
     }
    },
    "class_losses": {
     "drink_up": {
-     "se_per_element": 0.145227733606825,
+     "se_per_element": 0.14509706886837612,
      "elements": 2960.0
     },
     "wood_up": {
-     "se_per_element": 0.1126671391307337,
+     "se_per_element": 0.1131725560363482,
      "elements": 4176.0
     },
     "sapling_up": {
-     "se_per_element": 0.23854368703220696,
+     "se_per_element": 0.23828152208315098,
      "elements": 272.0
     },
     "table_placed": {
-     "se_per_element": 0.1746962410891711,
+     "se_per_element": 0.174461650570403,
      "elements": 1056.0
     },
     "zombie_hit": {
-     "se_per_element": 0.19040362000287997,
+     "se_per_element": 0.19043289239163555,
      "elements": 1344.0
     },
     "health_other": {
-     "se_per_element": 0.1626865658084903,
+     "se_per_element": 0.1624034284160728,
      "elements": 3616.0
     },
     "hud_other_change": {
-     "se_per_element": 0.13868184455220472,
+     "se_per_element": 0.1384904545551326,
      "elements": 33184.0
     },
     "hud_static": {
-     "se_per_element": 0.008310044694016095,
+     "se_per_element": 0.008310869494962318,
      "elements": 2682384.0
     },
     "map_moved": {
-     "se_per_element": 0.03282709840299533,
+     "se_per_element": 0.032829598095187436,
      "elements": 3602592.0
     },
     "map_still": {
-     "se_per_element": 0.02165436505185506,
+     "se_per_element": 0.021652502266962824,
      "elements": 5944128.0
     },
     "glimpse": {
-     "se_per_element": 0.03377159118831337,
+     "se_per_element": 0.03377109005286529,
      "elements": 5455872.0
     },
     "lighting": {
-     "se_per_element": 0.005811029617246744,
+     "se_per_element": 0.00581611881687029,
      "elements": 75776.0
     }
    }
@@ -1352,6 +1992,7 @@
   "guided_1500": {
    "path": "artifacts/experiments/20261030_fovea_placement/finetune/guided/ft_1500.pt",
    "sha256": "6992254db37a63b5193302c0b9710b5f5fdbfe01c021bb73f58f7f9a8d5bec45",
+   "readers_sha256": "f15c6e963eb1af72d57f1916d90561d6befb1b91139856127436cd2b4b075c7f",
    "instrument_qualification": {
     "p": {
      "health": {
@@ -1567,18 +2208,18 @@
    },
    "regression": {
     "reward_nll": {
-     "est": 0.022424622829312294,
-     "se": 0.0023758369747096855,
+     "est": 0.022408479794571445,
+     "se": 0.0023941581716111363,
      "n_cond": 10496
     },
     "continuation_bce": {
-     "est": 8.730929130947808e-06,
-     "se": 6.5117982532826544e-06,
+     "est": 8.77139693027073e-06,
+     "se": 6.518101523305309e-06,
      "n_cond": 10496
     },
     "tsp_nll": {
-     "est": 2.2326759933636002,
-     "se": 0.07265502877585647,
+     "est": 2.2326767613881313,
+     "se": 0.07265152544381473,
      "n_cond": 10496
     }
    },
@@ -1587,29 +2228,49 @@
      "drink": {
       "appearance": {
        "rows": 12,
-       "read": 11,
-       "unreadable_share": {
-        "est": 0.08333333333333333,
-        "se": 0.1051464783780818,
-        "n_cond": 12
-       },
+       "eligible": 12,
        "recorded": {
         "est": 1.0,
         "se": 0.0,
-        "n_cond": 11
+        "n_cond": 12
+       },
+       "unknown": {
+        "est": 0.16666666666666666,
+        "se": 0.10378246197797644,
+        "n_cond": 12
        },
        "success": {
-        "est": 0.09090909090909091,
-        "se": 0.07324105480179516,
-        "n_cond": 11
+        "est": 0.08333333333333333,
+        "se": 0.06886000644329678,
+        "n_cond": 12
        },
        "copy": {
-        "est": 0.7272727272727273,
-        "se": 0.12144199280638827,
-        "n_cond": 11
+        "est": 0.6666666666666666,
+        "se": 0.10052492251482335,
+        "n_cond": 12
+       },
+       "other": {
+        "est": 0.08333333333333333,
+        "se": 0.06714315320748827,
+        "n_cond": 12
+       },
+       "success_upper_bound": {
+        "est": 0.25,
+        "se": 0.1413124831281709,
+        "n_cond": 12
+       },
+       "success_among_readable": {
+        "est": 0.1,
+        "se": 0.09177135901677969,
+        "n_cond": 10
        },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 12
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 12
        },
@@ -1621,25 +2282,40 @@
       },
       "increment": {
        "rows": 82,
-       "read": 82,
-       "unreadable_share": {
-        "est": 0.0,
-        "se": 0.0,
-        "n_cond": 82
-       },
+       "eligible": 82,
        "recorded": {
         "est": 1.0,
         "se": 0.0,
         "n_cond": 82
        },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 82
+       },
        "success": {
-        "est": 0.024390243902439025,
-        "se": 0.011297591002326381,
+        "est": 0.012195121951219513,
+        "se": 0.007342555337823062,
         "n_cond": 82
        },
        "copy": {
-        "est": 0.7439024390243902,
-        "se": 0.042211627369994294,
+        "est": 0.7317073170731707,
+        "se": 0.0663499451578097,
+        "n_cond": 82
+       },
+       "other": {
+        "est": 0.25609756097560976,
+        "se": 0.05965253510652472,
+        "n_cond": 82
+       },
+       "success_upper_bound": {
+        "est": 0.012195121951219513,
+        "se": 0.007342555337823062,
+        "n_cond": 82
+       },
+       "success_among_readable": {
+        "est": 0.012195121951219513,
+        "se": 0.007342555337823062,
         "n_cond": 82
        },
        "real_token_correct": {
@@ -1647,71 +2323,76 @@
         "se": 0.0,
         "n_cond": 82
        },
+       "real_token_unreadable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 82
+       },
        "glimpse_periphery_coherent": {
-        "est": 0.9142857142857143,
-        "se": 0.051438274777752695,
-        "n_cond": 70
+        "est": 0.875,
+        "se": 0.07524764780657454,
+        "n_cond": 72
        }
       }
      },
      "wood": {
       "appearance": {
        "rows": 20,
-       "read": 0,
-       "unreadable_share": {
-        "est": 1.0,
-        "se": 0.0,
-        "n_cond": 20
-       },
+       "eligible": 0,
        "recorded": null,
+       "unknown": null,
        "success": null,
        "copy": null,
+       "other": null,
+       "success_upper_bound": null,
+       "success_among_readable": null,
        "real_token_correct": null,
+       "real_token_unreadable": null,
        "glimpse_periphery_coherent": null
       },
       "increment": {
        "rows": 80,
-       "read": 0,
-       "unreadable_share": {
-        "est": 1.0,
-        "se": 0.0,
-        "n_cond": 80
-       },
+       "eligible": 0,
        "recorded": null,
+       "unknown": null,
        "success": null,
        "copy": null,
+       "other": null,
+       "success_upper_bound": null,
+       "success_among_readable": null,
        "real_token_correct": null,
+       "real_token_unreadable": null,
        "glimpse_periphery_coherent": null
       }
      },
      "table": {
       "all": {
        "rows": 96,
-       "read": 0,
-       "unreadable_share": {
-        "est": 1.0,
-        "se": 0.0,
-        "n_cond": 96
-       },
+       "eligible": 0,
        "recorded": null,
+       "unknown": null,
        "success": null,
        "copy": null,
+       "other": null,
+       "success_upper_bound": null,
+       "success_among_readable": null,
        "real_token_correct": null,
+       "real_token_unreadable": null,
        "glimpse_periphery_coherent": null
       }
      },
      "sapling": {
       "all": {
        "rows": 98,
-       "read": 98,
-       "unreadable_share": {
-        "est": 0.0,
-        "se": 0.0,
-        "n_cond": 98
-       },
+       "eligible": 98,
        "recorded": {
         "est": 0.10204081632653061,
         "se": 0.03673010804028375,
+        "n_cond": 98
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
         "n_cond": 98
        },
        "success": {
@@ -1724,8 +2405,28 @@
         "se": 0.0,
         "n_cond": 98
        },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 98
+       },
+       "success_upper_bound": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 98
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 98
+       },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 98
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 98
        },
@@ -1739,25 +2440,40 @@
      "adjacent": {
       "all": {
        "rows": 84,
-       "read": 80,
-       "unreadable_share": {
+       "eligible": 84,
+       "recorded": {
+        "est": 0.14285714285714285,
+        "se": 0.0727478753774776,
+        "n_cond": 84
+       },
+       "unknown": {
         "est": 0.047619047619047616,
         "se": 0.03940509916280036,
         "n_cond": 84
        },
-       "recorded": {
-        "est": 0.15,
-        "se": 0.07565444154042371,
-        "n_cond": 80
-       },
        "success": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 80
+        "n_cond": 84
        },
        "copy": {
-        "est": 0.475,
-        "se": 0.12068684721924736,
+        "est": 0.4642857142857143,
+        "se": 0.0818413597996623,
+        "n_cond": 84
+       },
+       "other": {
+        "est": 0.4880952380952381,
+        "se": 0.12124645896246264,
+        "n_cond": 84
+       },
+       "success_upper_bound": {
+        "est": 0.047619047619047616,
+        "se": 0.03940509916280036,
+        "n_cond": 84
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
         "n_cond": 80
        },
        "real_token_correct": {
@@ -1765,9 +2481,14 @@
         "se": 0.0,
         "n_cond": 60
        },
+       "real_token_unreadable": {
+        "est": 0.2857142857142857,
+        "se": 0.1454957507549552,
+        "n_cond": 84
+       },
        "glimpse_periphery_coherent": {
-        "est": 0.5757575757575758,
-        "se": 0.1115712056742197,
+        "est": 0.5909090909090909,
+        "se": 0.10403261069623189,
         "n_cond": 66
        }
       }
@@ -1775,25 +2496,40 @@
      "risky": {
       "all": {
        "rows": 80,
-       "read": 72,
-       "unreadable_share": {
-        "est": 0.1,
-        "se": 0.04649948983170913,
-        "n_cond": 80
-       },
+       "eligible": 76,
        "recorded": {
-        "est": 0.16666666666666666,
-        "se": 0.10125893515295732,
-        "n_cond": 72
+        "est": 0.21052631578947367,
+        "se": 0.11700006928566235,
+        "n_cond": 76
+       },
+       "unknown": {
+        "est": 0.05263157894736842,
+        "se": 0.04132193202051449,
+        "n_cond": 76
        },
        "success": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 72
+        "n_cond": 76
        },
        "copy": {
-        "est": 0.3472222222222222,
-        "se": 0.11637336249533287,
+        "est": 0.34210526315789475,
+        "se": 0.1214573545854263,
+        "n_cond": 76
+       },
+       "other": {
+        "est": 0.6052631578947368,
+        "se": 0.11520774125605397,
+        "n_cond": 76
+       },
+       "success_upper_bound": {
+        "est": 0.05263157894736842,
+        "se": 0.04132193202051449,
+        "n_cond": 76
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
         "n_cond": 72
        },
        "real_token_correct": {
@@ -1801,24 +2537,29 @@
         "se": 0.0,
         "n_cond": 48
        },
+       "real_token_unreadable": {
+        "est": 0.3684210526315789,
+        "se": 0.14326677529373433,
+        "n_cond": 76
+       },
        "glimpse_periphery_coherent": {
-        "est": 0.3728813559322034,
-        "se": 0.13559337971257737,
-        "n_cond": 59
+        "est": 0.38333333333333336,
+        "se": 0.14227151119683826,
+        "n_cond": 60
        }
       }
      },
      "drink_fail": {
       "all": {
        "rows": 4,
-       "read": 4,
-       "unreadable_share": {
-        "est": 0.0,
+       "eligible": 4,
+       "recorded": {
+        "est": 1.0,
         "se": 0.0,
         "n_cond": 4
        },
-       "recorded": {
-        "est": 1.0,
+       "unknown": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 4
        },
@@ -1827,8 +2568,23 @@
         "se": 0.0,
         "n_cond": 4
        },
+       "false_change_upper_bound": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 4
+       },
+       "false_change_among_readable": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 4
+       },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 4
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 4
        },
@@ -1842,15 +2598,14 @@
      "table_fail": {
       "all": {
        "rows": 128,
-       "read": 0,
-       "unreadable_share": {
-        "est": 1.0,
-        "se": 0.0,
-        "n_cond": 128
-       },
+       "eligible": 0,
        "recorded": null,
+       "unknown": null,
        "false_change": null,
+       "false_change_upper_bound": null,
+       "false_change_among_readable": null,
        "real_token_correct": null,
+       "real_token_unreadable": null,
        "glimpse_periphery_coherent": null
       }
      }
@@ -1859,29 +2614,49 @@
      "drink": {
       "appearance": {
        "rows": 10,
-       "read": 8,
-       "unreadable_share": {
+       "eligible": 10,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 10
+       },
+       "unknown": {
         "est": 0.2,
         "se": 0.10478630440892198,
         "n_cond": 10
        },
-       "recorded": {
-        "est": 1.0,
-        "se": 0.0,
-        "n_cond": 8
-       },
        "success": {
-        "est": 0.125,
-        "se": 0.19328757086914153,
-        "n_cond": 8
+        "est": 0.1,
+        "se": 0.11370329860654249,
+        "n_cond": 10
        },
        "copy": {
-        "est": 0.875,
+        "est": 0.7,
+        "se": 0.20659962078677777,
+        "n_cond": 10
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 10
+       },
+       "success_upper_bound": {
+        "est": 0.3,
+        "se": 0.20659962078677777,
+        "n_cond": 10
+       },
+       "success_among_readable": {
+        "est": 0.125,
         "se": 0.19328757086914153,
         "n_cond": 8
        },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 10
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 10
        },
@@ -1889,29 +2664,49 @@
       },
       "increment": {
        "rows": 74,
-       "read": 68,
-       "unreadable_share": {
+       "eligible": 74,
+       "recorded": {
+        "est": 1.0,
+        "se": 0.0,
+        "n_cond": 74
+       },
+       "unknown": {
         "est": 0.08108108108108109,
         "se": 0.04967930038853421,
         "n_cond": 74
        },
-       "recorded": {
-        "est": 1.0,
-        "se": 0.0,
-        "n_cond": 68
-       },
        "success": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 74
+       },
+       "copy": {
+        "est": 0.7837837837837838,
+        "se": 0.08306392882269274,
+        "n_cond": 74
+       },
+       "other": {
+        "est": 0.13513513513513514,
+        "se": 0.03802898230636477,
+        "n_cond": 74
+       },
+       "success_upper_bound": {
+        "est": 0.08108108108108109,
+        "se": 0.04967930038853421,
+        "n_cond": 74
+       },
+       "success_among_readable": {
         "est": 0.0,
         "se": 0.0,
         "n_cond": 68
        },
-       "copy": {
-        "est": 0.8529411764705882,
-        "se": 0.04540886926975361,
-        "n_cond": 68
-       },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 74
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 74
        },
@@ -1921,29 +2716,49 @@
      "wood": {
       "appearance": {
        "rows": 18,
-       "read": 11,
-       "unreadable_share": {
-        "est": 0.3888888888888889,
-        "se": 0.09928360285715006,
-        "n_cond": 18
-       },
+       "eligible": 18,
        "recorded": {
         "est": 1.0,
         "se": 0.0,
-        "n_cond": 11
+        "n_cond": 18
+       },
+       "unknown": {
+        "est": 0.3333333333333333,
+        "se": 0.07880151533723476,
+        "n_cond": 18
        },
        "success": {
-        "est": 0.36363636363636365,
-        "se": 0.1068206675960957,
-        "n_cond": 11
+        "est": 0.2222222222222222,
+        "se": 0.052534343558156504,
+        "n_cond": 18
        },
        "copy": {
-        "est": 0.6363636363636364,
-        "se": 0.10682066759609571,
-        "n_cond": 11
+        "est": 0.4444444444444444,
+        "se": 0.13133585889539126,
+        "n_cond": 18
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 18
+       },
+       "success_upper_bound": {
+        "est": 0.5555555555555556,
+        "se": 0.13133585889539126,
+        "n_cond": 18
+       },
+       "success_among_readable": {
+        "est": 0.3333333333333333,
+        "se": 0.09130575414912656,
+        "n_cond": 12
        },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 18
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 18
        },
@@ -1951,29 +2766,49 @@
       },
       "increment": {
        "rows": 78,
-       "read": 70,
-       "unreadable_share": {
-        "est": 0.10256410256410256,
-        "se": 0.024831831248908993,
-        "n_cond": 78
-       },
+       "eligible": 78,
        "recorded": {
         "est": 1.0,
         "se": 0.0,
-        "n_cond": 70
+        "n_cond": 78
+       },
+       "unknown": {
+        "est": 0.08974358974358974,
+        "se": 0.02454952923244104,
+        "n_cond": 78
        },
        "success": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 70
+        "n_cond": 78
        },
        "copy": {
-        "est": 0.8714285714285714,
-        "se": 0.03687916926475305,
-        "n_cond": 70
+        "est": 0.7948717948717948,
+        "se": 0.046954544521998584,
+        "n_cond": 78
+       },
+       "other": {
+        "est": 0.11538461538461539,
+        "se": 0.03284146183083261,
+        "n_cond": 78
+       },
+       "success_upper_bound": {
+        "est": 0.08974358974358974,
+        "se": 0.02454952923244104,
+        "n_cond": 78
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 71
        },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 78
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 78
        },
@@ -1983,29 +2818,49 @@
      "table": {
       "all": {
        "rows": 82,
-       "read": 82,
-       "unreadable_share": {
-        "est": 0.0,
-        "se": 0.0,
-        "n_cond": 82
-       },
+       "eligible": 82,
        "recorded": {
         "est": 0.975609756097561,
         "se": 0.019555464056557,
         "n_cond": 82
        },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 82
+       },
        "success": {
-        "est": 0.18292682926829268,
-        "se": 0.04330249491987534,
+        "est": 0.2073170731707317,
+        "se": 0.04669328021559802,
         "n_cond": 82
        },
        "copy": {
-        "est": 0.8170731707317073,
-        "se": 0.04330249491987533,
+        "est": 0.7926829268292683,
+        "se": 0.04669328021559802,
+        "n_cond": 82
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 82
+       },
+       "success_upper_bound": {
+        "est": 0.2073170731707317,
+        "se": 0.04669328021559802,
+        "n_cond": 82
+       },
+       "success_among_readable": {
+        "est": 0.2073170731707317,
+        "se": 0.04669328021559802,
         "n_cond": 82
        },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 82
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 82
        },
@@ -2015,15 +2870,15 @@
      "sapling": {
       "all": {
        "rows": 78,
-       "read": 78,
-       "unreadable_share": {
-        "est": 0.0,
-        "se": 0.0,
-        "n_cond": 78
-       },
+       "eligible": 78,
        "recorded": {
         "est": 0.07692307692307693,
         "se": 0.04965141811256241,
+        "n_cond": 78
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
         "n_cond": 78
        },
        "success": {
@@ -2036,8 +2891,28 @@
         "se": 0.0,
         "n_cond": 78
        },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 78
+       },
+       "success_upper_bound": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 78
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 78
+       },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 78
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 78
        },
@@ -2046,42 +2921,62 @@
      },
      "move": {
       "shift_sample": {
-       "est": 0.8997401028871537,
-       "se": 0.020687431026448114,
+       "est": 0.9000261384248733,
+       "se": 0.02063504953634534,
        "n_cond": 100
       },
       "shift_field_6.67": {
-       "est": 0.9076474937796593,
-       "se": 0.017392716474600254,
+       "est": 0.9076526072621346,
+       "se": 0.017422257158895112,
        "n_cond": 100
       }
      },
      "adjacent": {
       "all": {
        "rows": 196,
-       "read": 185,
-       "unreadable_share": {
-        "est": 0.05612244897959184,
-        "se": 0.09406873900467483,
+       "eligible": 196,
+       "recorded": {
+        "est": 0.061224489795918366,
+        "se": 0.02970591758042363,
         "n_cond": 196
        },
-       "recorded": {
-        "est": 0.06486486486486487,
-        "se": 0.031179371863813823,
-        "n_cond": 185
+       "unknown": {
+        "est": 0.07653061224489796,
+        "se": 0.13268643185922555,
+        "n_cond": 196
        },
        "success": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 185
+        "n_cond": 196
        },
        "copy": {
-        "est": 0.9891891891891892,
-        "se": 0.005196561977302297,
-        "n_cond": 185
+        "est": 0.9132653061224489,
+        "se": 0.12773544559582162,
+        "n_cond": 196
+       },
+       "other": {
+        "est": 0.01020408163265306,
+        "se": 0.0049509862634039385,
+        "n_cond": 196
+       },
+       "success_upper_bound": {
+        "est": 0.07653061224489796,
+        "se": 0.13268643185922555,
+        "n_cond": 196
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 181
        },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 196
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 196
        },
@@ -2091,31 +2986,51 @@
      "risky": {
       "all": {
        "rows": 192,
-       "read": 135,
-       "unreadable_share": {
-        "est": 0.296875,
-        "se": 0.09931945502802775,
+       "eligible": 192,
+       "recorded": {
+        "est": 0.125,
+        "se": 0.03267282695345937,
         "n_cond": 192
        },
-       "recorded": {
-        "est": 0.1111111111111111,
-        "se": 0.04675950020566521,
-        "n_cond": 135
+       "unknown": {
+        "est": 0.3072916666666667,
+        "se": 0.1011684169969249,
+        "n_cond": 192
        },
        "success": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 135
+        "n_cond": 192
        },
        "copy": {
-        "est": 0.9777777777777777,
-        "se": 0.01431345283360665,
-        "n_cond": 135
+        "est": 0.6770833333333334,
+        "se": 0.0967624259724192,
+        "n_cond": 192
+       },
+       "other": {
+        "est": 0.015625,
+        "se": 0.011141598663483541,
+        "n_cond": 192
+       },
+       "success_upper_bound": {
+        "est": 0.3072916666666667,
+        "se": 0.1011684169969249,
+        "n_cond": 192
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 133
        },
        "real_token_correct": {
-        "est": 0.9473684210526315,
-        "se": 0.022870014038272855,
+        "est": 1.0,
+        "se": 0.0,
         "n_cond": 152
+       },
+       "real_token_unreadable": {
+        "est": 0.20833333333333334,
+        "se": 0.10683633263226547,
+        "n_cond": 192
        },
        "glimpse_periphery_coherent": null
       }
@@ -2123,14 +3038,14 @@
      "drink_fail": {
       "all": {
        "rows": 4,
-       "read": 4,
-       "unreadable_share": {
-        "est": 0.0,
+       "eligible": 4,
+       "recorded": {
+        "est": 1.0,
         "se": 0.0,
         "n_cond": 4
        },
-       "recorded": {
-        "est": 1.0,
+       "unknown": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 4
        },
@@ -2139,8 +3054,23 @@
         "se": 0.0,
         "n_cond": 4
        },
+       "false_change_upper_bound": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 4
+       },
+       "false_change_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 4
+       },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 4
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 4
        },
@@ -2150,14 +3080,14 @@
      "table_fail": {
       "all": {
        "rows": 164,
-       "read": 164,
-       "unreadable_share": {
-        "est": 0.0,
+       "eligible": 164,
+       "recorded": {
+        "est": 1.0,
         "se": 0.0,
         "n_cond": 164
        },
-       "recorded": {
-        "est": 1.0,
+       "unknown": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 164
        },
@@ -2166,8 +3096,23 @@
         "se": 0.0,
         "n_cond": 164
        },
+       "false_change_upper_bound": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 164
+       },
+       "false_change_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 164
+       },
        "real_token_correct": {
         "est": 1.0,
+        "se": 0.0,
+        "n_cond": 164
+       },
+       "real_token_unreadable": {
+        "est": 0.0,
         "se": 0.0,
         "n_cond": 164
        },
@@ -2185,8 +3130,8 @@
        "n_cond": 6
       },
       "tsp_cell": {
-       "est": 1.3977511127789815,
-       "se": 0.01106162916201695,
+       "est": 1.3978640635808308,
+       "se": 0.010922852446468304,
        "n_cond": 6
       },
       "rec_window": {
@@ -2195,8 +3140,8 @@
        "n_cond": 6
       },
       "tsp_window": {
-       "est": 1.4120548963546753,
-       "se": 0.1513980017734476,
+       "est": 1.4113478263219197,
+       "se": 0.15153566522018067,
        "n_cond": 6
       }
      },
@@ -2207,8 +3152,8 @@
        "n_cond": 44
       },
       "tsp_cell": {
-       "est": 1.320806091481989,
-       "se": 0.007904847377108207,
+       "est": 1.321013941006227,
+       "se": 0.00790836543645761,
        "n_cond": 44
       },
       "rec_window": {
@@ -2217,8 +3162,8 @@
        "n_cond": 44
       },
       "tsp_window": {
-       "est": 1.504503451965072,
-       "se": 0.08272541139971396,
+       "est": 1.504498378797011,
+       "se": 0.0826681035292356,
        "n_cond": 44
       }
      }
@@ -2231,8 +3176,8 @@
        "n_cond": 10
       },
       "tsp_cell": {
-       "est": 1.2365466833114624,
-       "se": 0.027647842275610686,
+       "est": 1.23621563911438,
+       "se": 0.026355557734673088,
        "n_cond": 10
       },
       "rec_window": {
@@ -2241,8 +3186,8 @@
        "n_cond": 10
       },
       "tsp_window": {
-       "est": 1.512640854716301,
-       "se": 0.45476800955138325,
+       "est": 1.5121354311704636,
+       "se": 0.4542842654082458,
        "n_cond": 10
       }
      },
@@ -2253,8 +3198,8 @@
        "n_cond": 40
       },
       "tsp_cell": {
-       "est": 1.945491161942482,
-       "se": 0.05470865624465496,
+       "est": 1.9485833883285522,
+       "se": 0.05480956494837298,
        "n_cond": 40
       },
       "rec_window": {
@@ -2263,8 +3208,8 @@
        "n_cond": 40
       },
       "tsp_window": {
-       "est": 1.0384093694388867,
-       "se": 0.06699274365954003,
+       "est": 1.0391405455768108,
+       "se": 0.06633382934269498,
        "n_cond": 40
       }
      }
@@ -2277,8 +3222,8 @@
        "n_cond": 48
       },
       "tsp_cell": {
-       "est": 7.8218095898628235,
-       "se": 0.25780052727547986,
+       "est": 7.818447232246399,
+       "se": 0.2572094196425384,
        "n_cond": 48
       },
       "rec_window": {
@@ -2287,8 +3232,8 @@
        "n_cond": 48
       },
       "tsp_window": {
-       "est": 2.8750814547141395,
-       "se": 0.11326254757958965,
+       "est": 2.8749469965696335,
+       "se": 0.1131856769477642,
        "n_cond": 48
       }
      }
@@ -2301,8 +3246,8 @@
        "n_cond": 49
       },
       "tsp_cell": {
-       "est": 0.06248683453185902,
-       "se": 0.021138087223297707,
+       "est": 0.06247624279503539,
+       "se": 0.021127702068702882,
        "n_cond": 49
       },
       "rec_window": {
@@ -2311,35 +3256,47 @@
        "n_cond": 49
       },
       "tsp_window": {
-       "est": 0.571711604692498,
-       "se": 0.043522793770687025,
+       "est": 0.5714479678747605,
+       "se": 0.043452798841255094,
        "n_cond": 49
       }
      }
     }
    },
-   "memory": {
+   "action_routing": {
     "drink": {
      "appearance": {
       "rerun_success": {
-       "est": 0.1111111111111111,
-       "se": 0.08776961278516825,
-       "n_cond": 9
+       "est": 0.08333333333333333,
+       "se": 0.06714315320748827,
+       "n_cond": 12
       },
       "noop_belief_success": {
        "est": 0.0,
        "se": 0.0,
        "n_cond": 12
       },
-      "reliance": {
-       "est": 0.1111111111111111,
-       "se": 0.08776961278516825,
-       "n_cond": 9,
+      "unknown": [
+       {
+        "est": 0.25,
+        "se": 0.11778185644851803,
+        "n_cond": 12
+       },
+       {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 12
+       }
+      ],
+      "routing": {
+       "est": 0.08333333333333333,
+       "se": 0.06714315320748827,
+       "n_cond": 12,
        "ci95": [
-        -0.06091732994781865,
-        0.28313955217004083
+        -0.04826724695334368,
+        0.21493391362001035
        ],
-       "rows": 9
+       "rows": 12
       }
      },
      "increment": {
@@ -2353,7 +3310,19 @@
        "se": 0.019950585809249518,
        "n_cond": 88
       },
-      "reliance": {
+      "unknown": [
+       {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 88
+       },
+       {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 88
+       }
+      ],
+      "routing": {
        "est": 0.0,
        "se": 0.0,
        "n_cond": 88,
@@ -2369,23 +3338,62 @@
      "appearance": {
       "rerun_success": null,
       "noop_belief_success": null,
-      "reliance": null
+      "unknown": [
+       null,
+       null
+      ],
+      "routing": null
      },
      "increment": {
       "rerun_success": null,
       "noop_belief_success": null,
-      "reliance": null
+      "unknown": [
+       null,
+       null
+      ],
+      "routing": null
      }
     },
     "table": {
      "all": {
       "rerun_success": null,
       "noop_belief_success": null,
-      "reliance": null
+      "unknown": [
+       null,
+       null
+      ],
+      "routing": null
      }
     }
    },
-   "entities": {
+   "s1": {
+    "s1_reader": {
+     "path": "artifacts/experiments/20261030_m05_guided_fovea/checks/eval_smoke/guided_1500_s1_reader.pt",
+     "sha256": "227a81b4a2be82a24ab137b85a74d64872fbf841cb8d48f24e7c31da61fdd471",
+     "checkpoint_sha256": "6992254db37a63b5193302c0b9710b5f5fdbfe01c021bb73f58f7f9a8d5bec45",
+     "schema": {
+      "token_dim": 16,
+      "lighting_dim": 8,
+      "hidden": [
+       256,
+       256
+      ],
+      "heads": {
+       "kind": 5,
+       "terr": 17
+      },
+      "kind_labels": [
+       "background",
+       "zombies",
+       "cows",
+       "skeletons",
+       "arrows"
+      ],
+      "probe_seed": 0,
+      "storage_precision": "float16",
+      "train_labels_sha256": "c71cb2150899997d995b641f05684e71c2cbf8fb5092203c2475592cd8852dc3"
+     }
+    },
     "reader_retention": {
      "day_r1_2": {
       "presence_recall": {
@@ -2596,7 +3604,7 @@
       }
      }
     },
-    "counts": {
+    "entity_counts": {
      "zombies": {
       "real": {
        "est": 0.5248,
@@ -2604,8 +3612,8 @@
        "n_cond": 5000
       },
       "generated": {
-       "est": 0.295,
-       "se": 0.04341783773266855,
+       "est": 0.2948,
+       "se": 0.043474605493969455,
        "n_cond": 5000
       }
      },
@@ -2616,8 +3624,8 @@
        "n_cond": 5000
       },
       "generated": {
-       "est": 0.2592,
-       "se": 0.018997077659392327,
+       "est": 0.259,
+       "se": 0.018968491881254816,
        "n_cond": 5000
       }
      },
@@ -2628,8 +3636,8 @@
        "n_cond": 5000
       },
       "generated": {
-       "est": 0.121,
-       "se": 0.016412897112376264,
+       "est": 0.1214,
+       "se": 0.016787522775404032,
        "n_cond": 5000
       }
      },
@@ -2640,60 +3648,304 @@
        "n_cond": 5000
       },
       "generated": {
-       "est": 0.1172,
-       "se": 0.009087134795126014,
+       "est": 0.118,
+       "se": 0.009457146079887364,
        "n_cond": 5000
+      }
+     }
+    },
+    "belief_probe": {
+     "heldout_loss_by_epoch": [
+      5.157233715057373,
+      4.499497413635254,
+      4.208782196044922,
+      4.0882415771484375,
+      4.040729522705078,
+      4.0085930824279785,
+      3.940798282623291,
+      3.809471845626831,
+      3.82297945022583,
+      3.8387837409973145,
+      3.7729029655456543,
+      3.7755250930786133,
+      3.7899060249328613,
+      3.7895267009735107
+     ],
+     "achievements": [
+      {
+       "ap": 0.9971515535692802,
+       "balanced_accuracy": 0.5
+      },
+      {
+       "ap": 0.9976726789753602,
+       "balanced_accuracy": 0.8377220225844622
+      },
+      {
+       "ap": 0.9762421009779264,
+       "balanced_accuracy": 0.853872486093282
+      },
+      {
+       "ap": 0.9687093674591732,
+       "balanced_accuracy": 0.5
+      },
+      {
+       "ap": 0.9748014689569338,
+       "balanced_accuracy": 0.8827445674559604
+      },
+      {
+       "ap": 0.9970616907080176,
+       "balanced_accuracy": 0.8228471021402936
+      },
+      {
+       "ap": 0.9470875870890235,
+       "balanced_accuracy": 0.7148430853670489
+      },
+      {
+       "ap": 0.9676589174620057,
+       "balanced_accuracy": 0.5117660948753013
+      },
+      {
+       "ap": 0.9924342453878707,
+       "balanced_accuracy": 0.9279997161355902
+      },
+      {
+       "ap": 0.9971912950949547,
+       "balanced_accuracy": 0.7702199030935519
+      },
+      {
+       "ap": 0.9970013847076143,
+       "balanced_accuracy": 0.8118036364373304
+      },
+      {
+       "ap": 0.23737812674509395,
+       "balanced_accuracy": 0.5
+      },
+      {
+       "ap": 0.9618365393301034,
+       "balanced_accuracy": 0.8711840596172947
+      },
+      {
+       "ap": 0.999659867344424,
+       "balanced_accuracy": 0.9878924765618284
+      },
+      {
+       "ap": 0.994338696344161,
+       "balanced_accuracy": 0.9464370366228527
+      },
+      {
+       "ap": 0.9643213641203934,
+       "balanced_accuracy": 0.8345916073811698
+      },
+      {
+       "ap": 0.9897194821191524,
+       "balanced_accuracy": 0.8587108106469942
+      },
+      {
+       "ap": 0.9903436279612795,
+       "balanced_accuracy": 0.9303585465609051
+      },
+      {
+       "ap": 0.9972258548653884,
+       "balanced_accuracy": 0.9665271721393128
+      },
+      {
+       "ap": 0.6322142335314326,
+       "balanced_accuracy": 0.5002915451895044
+      },
+      {
+       "ap": 0.9760401034003972,
+       "balanced_accuracy": 0.9239191074523904
+      },
+      {
+       "ap": 0.7955553337276845,
+       "balanced_accuracy": 0.8369549490496856
+      }
+     ],
+     "hud_exact": [
+      {
+       "est": 0.6292038761162835,
+       "se": 0.03694434756678389,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.21366140984229526,
+       "se": 0.015205280085492275,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.27721831654949647,
+       "se": 0.02090728271768827,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.3406802204066122,
+       "se": 0.032191059681720854,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.4082272468174045,
+       "se": 0.05027526223283514,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.44233326999809996,
+       "se": 0.06753713921361824,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.4017670530115903,
+       "se": 0.07722552495622007,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.6211286338590157,
+       "se": 0.07385571475088405,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.8588257647729431,
+       "se": 0.0754242074663708,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.9670340110203306,
+       "se": 0.0158748551369838,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.557476724301729,
+       "se": 0.1141860839995096,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.7789283678510356,
+       "se": 0.08792443687591027,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.8980619418582557,
+       "se": 0.03670401121122006,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.5148204446133384,
+       "se": 0.10088568053329466,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.6886756602698081,
+       "se": 0.06930247798980357,
+       "n_cond": 10526
+      },
+      {
+       "est": 0.7038761162834885,
+       "se": 0.08793823815042313,
+       "n_cond": 10526
+      }
+     ],
+     "departed": {
+      "zombies": {
+       "ap_by_stratum": {
+        "1-4": 0.08921393211240418,
+        "5-8": 0.04975915624139772,
+        "9-16": 0.07060975629048481,
+        "17-64": 0.21119961623044223
+       },
+       "last_seen_side_accuracy": {
+        "est": 0.4172303310786757,
+        "se": 0.03554114898776256,
+        "n_cond": 2809
+       }
+      },
+      "cows": {
+       "ap_by_stratum": {
+        "1-4": 0.10757797257511596,
+        "5-8": 0.07005574681948387,
+        "9-16": 0.09444001186158037,
+        "17-64": 0.3077905969603744
+       },
+       "last_seen_side_accuracy": {
+        "est": 0.3605110336817654,
+        "se": 0.03859145059738056,
+        "n_cond": 4305
+       }
+      },
+      "skeletons": {
+       "ap_by_stratum": {
+        "1-4": 0.05786850179222798,
+        "5-8": 0.04706060656129503,
+        "9-16": 0.10896626476231984,
+        "17-64": 0.2785074823407361
+       },
+       "last_seen_side_accuracy": {
+        "est": 0.3899145770184624,
+        "se": 0.054960354566001894,
+        "n_cond": 3629
+       }
+      },
+      "arrows": {
+       "ap_by_stratum": {
+        "1-4": 0.07373864734976228,
+        "5-8": 0.059012363229402204,
+        "9-16": 0.08166985705995411,
+        "17-64": 0.2781547168277188
+       },
+       "last_seen_side_accuracy": {
+        "est": 0.41639918295885614,
+        "se": 0.03480277080415598,
+        "n_cond": 3427
+       }
       }
      }
     }
    },
    "class_losses": {
     "drink_up": {
-     "se_per_element": 0.13929540139899865,
+     "se_per_element": 0.13980315206824123,
      "elements": 2960.0
     },
     "wood_up": {
-     "se_per_element": 0.10500593947325174,
+     "se_per_element": 0.10469400056662802,
      "elements": 4176.0
     },
     "sapling_up": {
-     "se_per_element": 0.2102549123879084,
+     "se_per_element": 0.21129242129459538,
      "elements": 272.0
     },
     "table_placed": {
-     "se_per_element": 0.17388466394957947,
+     "se_per_element": 0.17404272474320323,
      "elements": 1056.0
     },
     "zombie_hit": {
-     "se_per_element": 0.17165105207823217,
+     "se_per_element": 0.17184666864618303,
      "elements": 1344.0
     },
     "health_other": {
-     "se_per_element": 0.15506566876331263,
+     "se_per_element": 0.15486642504028514,
      "elements": 3616.0
     },
     "hud_other_change": {
-     "se_per_element": 0.13293394184848267,
+     "se_per_element": 0.13288509845733643,
      "elements": 33184.0
     },
     "hud_static": {
-     "se_per_element": 0.007312335242959102,
+     "se_per_element": 0.007313493368292848,
      "elements": 2682384.0
     },
     "map_moved": {
-     "se_per_element": 0.03178586544844288,
+     "se_per_element": 0.031785979705370594,
      "elements": 3602592.0
     },
     "map_still": {
-     "se_per_element": 0.020654385620506227,
+     "se_per_element": 0.020650510094761532,
      "elements": 5944128.0
     },
     "glimpse": {
-     "se_per_element": 0.030142897868657613,
+     "se_per_element": 0.03013882014128539,
      "elements": 5455872.0
     },
     "lighting": {
-     "se_per_element": 0.00516802360731605,
+     "se_per_element": 0.005156560675115199,
      "elements": 75776.0
     }
    }
@@ -2706,16 +3958,46 @@
      "drink": {
       "appearance": {
        "success": {
+        "est": 0.08333333333333333,
+        "se": 0.06886000644329678,
+        "n_cond": 12,
+        "ci95": [
+         -0.05163227929552834,
+         0.218298945962195
+        ],
+        "rows": 12
+       },
+       "copy": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 8,
+        "n_cond": 12,
         "ci95": [
          0.0,
          0.0
         ],
-        "rows": 8
+        "rows": 12
        },
-       "copy": {
+       "other": {
+        "est": 0.08333333333333333,
+        "se": 0.06714315320748827,
+        "n_cond": 12,
+        "ci95": [
+         -0.04826724695334368,
+         0.21493391362001035
+        ],
+        "rows": 12
+       },
+       "unknown": {
+        "est": -0.16666666666666666,
+        "se": 0.06669845484102987,
+        "n_cond": 12,
+        "ci95": [
+         -0.2973956381550852,
+         -0.0359376951782481
+        ],
+        "rows": 12
+       },
+       "success_among_readable": {
         "est": 0.0,
         "se": 0.0,
         "n_cond": 8,
@@ -2728,22 +4010,52 @@
       },
       "increment": {
        "success": {
-        "est": -0.024390243902439025,
-        "se": 0.014685110675646124,
+        "est": -0.036585365853658534,
+        "se": 0.012787754880420835,
         "n_cond": 82,
         "ci95": [
-         -0.05317306082670543,
-         0.004392573021827377
+         -0.06164936541928337,
+         -0.0115213662880337
         ],
         "rows": 82
        },
        "copy": {
-        "est": 0.06097560975609756,
-        "se": 0.042530804620326754,
+        "est": 0.024390243902439025,
+        "se": 0.01471307462047677,
         "n_cond": 82,
         "ci95": [
-         -0.02238476729974287,
-         0.144335986811938
+         -0.004447382353695444,
+         0.0532278701585735
+        ],
+        "rows": 82
+       },
+       "other": {
+        "est": 0.012195121951219513,
+        "se": 0.0249971738521487,
+        "n_cond": 82,
+        "ci95": [
+         -0.03679933879899194,
+         0.06118958270143096
+        ],
+        "rows": 82
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 82,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 82
+       },
+       "success_among_readable": {
+        "est": -0.036585365853658534,
+        "se": 0.012787754880420835,
+        "n_cond": 82,
+        "ci95": [
+         -0.06164936541928337,
+         -0.0115213662880337
         ],
         "rows": 82
        }
@@ -2752,17 +4064,26 @@
      "wood": {
       "appearance": {
        "success": null,
-       "copy": null
+       "copy": null,
+       "other": null,
+       "unknown": null,
+       "success_among_readable": null
       },
       "increment": {
        "success": null,
-       "copy": null
+       "copy": null,
+       "other": null,
+       "unknown": null,
+       "success_among_readable": null
       }
      },
      "table": {
       "all": {
        "success": null,
-       "copy": null
+       "copy": null,
+       "other": null,
+       "unknown": null,
+       "success_among_readable": null
       }
      },
      "sapling": {
@@ -2786,6 +4107,36 @@
          0.0
         ],
         "rows": 98
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 98,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 98
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 98,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 98
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 98,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 98
        }
       }
      },
@@ -2794,20 +4145,50 @@
        "success": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 79,
+        "n_cond": 84,
         "ci95": [
          0.0,
          0.0
         ],
-        "rows": 79
+        "rows": 84
        },
        "copy": {
-        "est": 0.17721518987341772,
-        "se": 0.14251688162607604,
+        "est": 0.19047619047619047,
+        "se": 0.125793201173555,
+        "n_cond": 84,
+        "ci95": [
+         -0.056078483823977315,
+         0.4370308647763582
+        ],
+        "rows": 84
+       },
+       "other": {
+        "est": -0.20238095238095238,
+        "se": 0.15155807370307833,
+        "n_cond": 84,
+        "ci95": [
+         -0.4994347768389859,
+         0.09467287207708114
+        ],
+        "rows": 84
+       },
+       "unknown": {
+        "est": 0.011904761904761904,
+        "se": 0.025764872529523312,
+        "n_cond": 84,
+        "ci95": [
+         -0.03859438825310379,
+         0.062403912062627596
+        ],
+        "rows": 84
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
         "n_cond": 79,
         "ci95": [
-         -0.10211789811369132,
-         0.45654827786052676
+         0.0,
+         0.0
         ],
         "rows": 79
        }
@@ -2818,20 +4199,50 @@
        "success": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 72,
+        "n_cond": 76,
         "ci95": [
          0.0,
          0.0
         ],
-        "rows": 72
+        "rows": 76
        },
        "copy": {
-        "est": 0.2638888888888889,
-        "se": 0.10668032087672503,
+        "est": 0.2631578947368421,
+        "se": 0.1124913122472887,
+        "n_cond": 76,
+        "ci95": [
+         0.042674922732156256,
+         0.48364086674152795
+        ],
+        "rows": 76
+       },
+       "other": {
+        "est": -0.3026315789473684,
+        "se": 0.10785330584774552,
+        "n_cond": 76,
+        "ci95": [
+         -0.5140240584089496,
+         -0.0912390994857872
+        ],
+        "rows": 76
+       },
+       "unknown": {
+        "est": 0.039473684210526314,
+        "se": 0.03269007062279365,
+        "n_cond": 76,
+        "ci95": [
+         -0.02459885421014925,
+         0.10354622263120188
+        ],
+        "rows": 76
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
         "n_cond": 72,
         "ci95": [
-         0.05479545997050783,
-         0.47298231780726996
+         0.0,
+         0.0
         ],
         "rows": 72
        }
@@ -2848,12 +4259,34 @@
          0.0
         ],
         "rows": 4
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 4,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 4
+       },
+       "false_change_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 4,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 4
        }
       }
      },
      "table_fail": {
       "all": {
-       "false_change": null
+       "false_change": null,
+       "unknown": null,
+       "false_change_among_readable": null
       }
      }
     },
@@ -2863,14 +4296,44 @@
        "success": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 7,
+        "n_cond": 10,
         "ci95": [
          0.0,
          0.0
         ],
-        "rows": 7
+        "rows": 10
        },
        "copy": {
+        "est": 0.1,
+        "se": 0.07165065318708057,
+        "n_cond": 10,
+        "ci95": [
+         -0.04043528024667792,
+         0.24043528024667793
+        ],
+        "rows": 10
+       },
+       "other": {
+        "est": -0.1,
+        "se": 0.11370329860654249,
+        "n_cond": 10,
+        "ci95": [
+         -0.3228584652688233,
+         0.12285846526882327
+        ],
+        "rows": 10
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.158569678187882,
+        "n_cond": 10,
+        "ci95": [
+         -0.3107965692482487,
+         0.3107965692482487
+        ],
+        "rows": 10
+       },
+       "success_among_readable": {
         "est": 0.0,
         "se": 0.0,
         "n_cond": 7,
@@ -2883,22 +4346,52 @@
       },
       "increment": {
        "success": {
+        "est": -0.013513513513513514,
+        "se": 0.015471128161442704,
+        "n_cond": 74,
+        "ci95": [
+         -0.043836924709941216,
+         0.016809897682914184
+        ],
+        "rows": 74
+       },
+       "copy": {
+        "est": 0.04054054054054054,
+        "se": 0.026903576063982602,
+        "n_cond": 74,
+        "ci95": [
+         -0.012190468544865357,
+         0.09327154962594644
+        ],
+        "rows": 74
+       },
+       "other": {
+        "est": 0.013513513513513514,
+        "se": 0.029058310380421136,
+        "n_cond": 74,
+        "ci95": [
+         -0.04344077483211191,
+         0.07046780185913894
+        ],
+        "rows": 74
+       },
+       "unknown": {
+        "est": -0.04054054054054054,
+        "se": 0.02951375968477174,
+        "n_cond": 74,
+        "ci95": [
+         -0.09838750952269315,
+         0.017306428441612065
+        ],
+        "rows": 74
+       },
+       "success_among_readable": {
         "est": -0.015873015873015872,
         "se": 0.01615646962138233,
         "n_cond": 63,
         "ci95": [
          -0.04753969633092524,
          0.015793664584893494
-        ],
-        "rows": 63
-       },
-       "copy": {
-        "est": 0.0,
-        "se": 0.0,
-        "n_cond": 63,
-        "ci95": [
-         0.0,
-         0.0
         ],
         "rows": 63
        }
@@ -2909,42 +4402,102 @@
        "success": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 11,
+        "n_cond": 18,
         "ci95": [
          0.0,
          0.0
         ],
-        "rows": 11
+        "rows": 18
        },
        "copy": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 11,
+        "n_cond": 18,
         "ci95": [
          0.0,
          0.0
         ],
-        "rows": 11
+        "rows": 18
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 18,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 18
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 18,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 18
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 12,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 12
        }
       },
       "increment": {
        "success": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 64,
+        "n_cond": 78,
         "ci95": [
          0.0,
          0.0
         ],
-        "rows": 64
+        "rows": 78
        },
        "copy": {
-        "est": -0.015625,
-        "se": 0.010261383942641696,
+        "est": 0.01282051282051282,
+        "se": 0.028171129673546683,
+        "n_cond": 78,
+        "ci95": [
+         -0.04239490133963868,
+         0.06803592698066432
+        ],
+        "rows": 78
+       },
+       "other": {
+        "est": 0.05128205128205128,
+        "se": 0.023150121431612245,
+        "n_cond": 78,
+        "ci95": [
+         0.00590781327609128,
+         0.09665628928801129
+        ],
+        "rows": 78
+       },
+       "unknown": {
+        "est": -0.0641025641025641,
+        "se": 0.005473576971805437,
+        "n_cond": 78,
+        "ci95": [
+         -0.07483077496730275,
+         -0.05337435323782544
+        ],
+        "rows": 78
+       },
+       "success_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
         "n_cond": 64,
         "ci95": [
-         -0.035737312527577725,
-         0.004487312527577725
+         0.0,
+         0.0
         ],
         "rows": 64
        }
@@ -2953,22 +4506,52 @@
      "table": {
       "all": {
        "success": {
-        "est": -0.06097560975609756,
-        "se": 0.03743979450762185,
+        "est": -0.036585365853658534,
+        "se": 0.043240718806118114,
         "n_cond": 82,
         "ci95": [
-         -0.13435760699103638,
-         0.012406387478841277
+         -0.12133717471365005,
+         0.04816644300633297
         ],
         "rows": 82
        },
        "copy": {
-        "est": 0.06097560975609756,
-        "se": 0.03743979450762185,
+        "est": 0.036585365853658534,
+        "se": 0.043240718806118114,
         "n_cond": 82,
         "ci95": [
-         -0.012406387478841277,
-         0.13435760699103638
+         -0.04816644300633297,
+         0.12133717471365005
+        ],
+        "rows": 82
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 82,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 82
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 82,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 82
+       },
+       "success_among_readable": {
+        "est": -0.036585365853658534,
+        "se": 0.043240718806118114,
+        "n_cond": 82,
+        "ci95": [
+         -0.12133717471365005,
+         0.04816644300633297
         ],
         "rows": 82
        }
@@ -2987,6 +4570,36 @@
         "rows": 78
        },
        "copy": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 78,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 78
+       },
+       "other": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 78,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 78
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 78,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 78
+       },
+       "success_among_readable": {
         "est": 0.0,
         "se": 0.0,
         "n_cond": 78,
@@ -3000,12 +4613,12 @@
      },
      "move": {
       "shift_sample": {
-       "est": 0.0033115863800048826,
-       "se": 0.005279422489847065,
+       "est": 0.0035884881019592283,
+       "se": 0.005189419446331761,
        "n_cond": 100,
        "ci95": [
-        -0.007036081700095364,
-        0.01365925446010513
+        -0.006582774012851024,
+        0.01375975021676948
        ],
        "rows": 100
       }
@@ -3015,22 +4628,52 @@
        "success": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 178,
+        "n_cond": 196,
         "ci95": [
          0.0,
          0.0
         ],
-        "rows": 178
+        "rows": 196
        },
        "copy": {
+        "est": 0.01020408163265306,
+        "se": 0.04356867911795467,
+        "n_cond": 196,
+        "ci95": [
+         -0.0751905294385381,
+         0.09559869270384422
+        ],
+        "rows": 196
+       },
+       "other": {
+        "est": 0.00510204081632653,
+        "se": 0.0024754931317019693,
+        "n_cond": 196,
+        "ci95": [
+         0.00025007427819067046,
+         0.00995400735446239
+        ],
+        "rows": 196
+       },
+       "unknown": {
+        "est": -0.015306122448979591,
+        "se": 0.0410931859862527,
+        "n_cond": 196,
+        "ci95": [
+         -0.09584876698203489,
+         0.0652365220840757
+        ],
+        "rows": 196
+       },
+       "success_among_readable": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 178,
+        "n_cond": 177,
         "ci95": [
          0.0,
          0.0
         ],
-        "rows": 178
+        "rows": 177
        }
       }
      },
@@ -3039,22 +4682,52 @@
        "success": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 111,
+        "n_cond": 192,
         "ci95": [
          0.0,
          0.0
         ],
-        "rows": 111
+        "rows": 192
        },
        "copy": {
+        "est": 0.09895833333333333,
+        "se": 0.02921898041568779,
+        "n_cond": 192,
+        "ci95": [
+         0.041689131718585265,
+         0.1562275349480814
+        ],
+        "rows": 192
+       },
+       "other": {
+        "est": 0.010416666666666666,
+        "se": 0.00718744552972911,
+        "n_cond": 192,
+        "ci95": [
+         -0.0036707265716023896,
+         0.024504059904935722
+        ],
+        "rows": 192
+       },
+       "unknown": {
+        "est": -0.109375,
+        "se": 0.028171541019541464,
+        "n_cond": 192,
+        "ci95": [
+         -0.16459122039830126,
+         -0.05415877960169873
+        ],
+        "rows": 192
+       },
+       "success_among_readable": {
         "est": 0.0,
         "se": 0.0,
-        "n_cond": 111,
+        "n_cond": 110,
         "ci95": [
          0.0,
          0.0
         ],
-        "rows": 111
+        "rows": 110
        }
       }
      },
@@ -3069,12 +4742,52 @@
          0.0
         ],
         "rows": 4
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 4,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 4
+       },
+       "false_change_among_readable": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 4,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 4
        }
       }
      },
      "table_fail": {
       "all": {
        "false_change": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 164,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 164
+       },
+       "unknown": {
+        "est": 0.0,
+        "se": 0.0,
+        "n_cond": 164,
+        "ci95": [
+         0.0,
+         0.0
+        ],
+        "rows": 164
+       },
+       "false_change_among_readable": {
         "est": 0.0,
         "se": 0.0,
         "n_cond": 164,
@@ -3350,48 +5063,48 @@
      }
     }
    },
-   "memory": {
+   "action_routing": {
     "drink": {
      "appearance": {
-      "reliance": {
-       "est": 0.0,
-       "se": 0.0,
-       "n_cond": 8,
+      "routing": {
+       "est": 0.08333333333333333,
+       "se": 0.06714315320748827,
+       "n_cond": 12,
        "ci95": [
-        0.0,
-        0.0
+        -0.04826724695334368,
+        0.21493391362001035
        ],
-       "rows": 8
+       "rows": 12
       },
       "rerun_success": {
-       "est": 0.0,
-       "se": 0.0,
-       "n_cond": 8,
+       "est": 0.08333333333333333,
+       "se": 0.06714315320748827,
+       "n_cond": 12,
        "ci95": [
-        0.0,
-        0.0
+        -0.04826724695334368,
+        0.21493391362001035
        ],
-       "rows": 8
+       "rows": 12
       }
      },
      "increment": {
-      "reliance": {
-       "est": 0.0,
-       "se": 0.018922522819527818,
+      "routing": {
+       "est": 0.011363636363636364,
+       "se": 0.014076217018013705,
        "n_cond": 88,
        "ci95": [
-        -0.03708814472627452,
-        0.03708814472627452
+        -0.016225748991670497,
+        0.03895302171894323
        ],
        "rows": 88
       },
       "rerun_success": {
-       "est": -0.011363636363636364,
-       "se": 0.006650195269749838,
+       "est": 0.0,
+       "se": 0.0,
        "n_cond": 88,
        "ci95": [
-        -0.024398019092346047,
-        0.0016707463650733178
+        0.0,
+        0.0
        ],
        "rows": 88
       }
@@ -3399,17 +5112,17 @@
     },
     "wood": {
      "appearance": {
-      "reliance": null,
+      "routing": null,
       "rerun_success": null
      },
      "increment": {
-      "reliance": null,
+      "routing": null,
       "rerun_success": null
      }
     },
     "table": {
      "all": {
-      "reliance": null,
+      "routing": null,
       "rerun_success": null
      }
     }
