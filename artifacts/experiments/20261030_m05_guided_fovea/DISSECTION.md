@@ -98,3 +98,19 @@ water / a tree with +1: 497 of 4,689, 2,088 of 8,314; train-400 11.4% / 24.5%), 
 Module displacement (|ft_1500 - ckpt_10| / |ckpt_10|), beside P1's own checkpoints 5 -> 10: fovea encoder 0.012
 (0.023), periphery layers 0.004 (0.009), belief 0.013 (0.026), denoiser 0.017 (0.036), pixel decoder 0.020 (0.037):
 M0.5 moved every module about half as far as P1's second half did; the glimpse digit geometry did not move.
+
+## Which failures the glimpse defects explain (user, 10-30)
+Sapling and health added to `token_geometry.json`: sapling's first unit in the glimpse 1.5-2.3x the spread (~30% of
+the token's squared norm, as visible as drink / wood's icon); a zombie hit (health v -> v - 2) 0.47-0.68x in the
+glimpse, 5.6-5.7x in the periphery.
+- The defects explain why fixation could not help DIGIT consequences in the glimpse (increments, the digit on first
+  units, health). They do not explain P1's failures: those were measured in the periphery, where digits and damage are
+  represented well (3.9-5.7x the spread) and still fail (increments 0.003-0.011, damage 0.001-0.002).
+- Saplings: as visible as the improved first units and fixated on ~97% of their events, yet 0.000 at every checkpoint:
+  the barrier is the 10% chance (P1: field ~0, production sampler suppresses minorities), not the glimpse.
+- Damage / deaths: periphery representation good, generation ~0; P1: field underweights damage ~5x, ignores the
+  cooldown information its conditioning carries, sampler suppresses the rest.
+- Map content (tables, zombies / cows, arrows, skeletons, blocked moves): not HUD digits. Tables: P1 field 0.40 in the
+  periphery; separately the glimpse never renders a table the periphery generates (decoder NLL on real tables 7.1
+  nats/px at base, worse than uniform; the decoder is not in the generation path; cause open). Mobs, arrows, blocked
+  moves: not diagnosed in M0.

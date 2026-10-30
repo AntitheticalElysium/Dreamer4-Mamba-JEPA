@@ -2,7 +2,8 @@
 evaluate.py's saved readers). Per counter, window centre and checkpoint: the step between consecutive values' real
 mean tokens |mu_(v+1) - mu_v|, beside the values' own spread (99th-percentile radius) and the step's share of the
 token's squared norm; appearance (0 -> 1) apart from increments (v -> v + 1, v >= 1); the periphery token of the same
-counter (16-d, the cell's own token) beside the glimpse token (64-d) for comparison.
+counter (16-d, the cell's own token) beside the glimpse token (64-d) for comparison; health also v -> v - 2 (a zombie
+hit), its 0 -> 1 is not an appearance.
 Usage: python -m artifacts.experiments.20261030_m05_guided_fovea.dissect.token_geometry
 """
 import json
@@ -23,7 +24,7 @@ def main():
         g = {**rd["g"], **{f"{n}@periphery": r for n, r in rd["p"].items()}}
         res[label] = {}
         for key, r in g.items():
-            if not r["qualified"] or key.startswith(("sapling", "health")):
+            if not r["qualified"]:
                 continue
             sup = {v: (mu.float(), rad) for (_, v), (mu, rad) in r["support"].items()}
             rows = []
@@ -32,11 +33,13 @@ def main():
                     step = float((sup[v + 1][0] - sup[v][0]).norm())
                     rows.append({"from": v, "step": step, "step_over_radius": step / ((sup[v][1] + sup[v + 1][1]) / 2),
                                  "step_sq_over_norm_sq": step ** 2 / float(sup[v + 1][0].square().sum())})
+            dmg = [float((sup[v - 2][0] - sup[v][0]).norm()) / ((sup[v][1] + sup[v - 2][1]) / 2) for v in sorted(sup) if v - 2 in sup]
             if rows:
-                app = [x for x in rows if x["from"] == 0]
+                app = [x for x in rows if x["from"] == 0 and not key.startswith("health")]
                 inc = [x for x in rows if x["from"] >= 1]
                 res[label][key] = {"appearance": app[0] if app else None,
                                    "increment_mean": {k: float(np.mean([x[k] for x in inc])) for k in rows[0] if k != "from"} if inc else None,
+                                   "damage_step_over_radius_mean": float(np.mean(dmg)) if key.startswith("health") and dmg else None,
                                    "transitions": rows}
     (HERE / "token_geometry.json").write_text(json.dumps(res, indent=1))
     for label, r in res.items():
