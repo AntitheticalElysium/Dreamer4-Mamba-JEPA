@@ -1,0 +1,10 @@
+{
+ "chunks": 360,
+ "frames": 552960,
+ "unguided_identical": true,
+ "guided_other_fields_identical": true,
+ "placed_frames": 72459,
+ "placed_fixation_equals_rule": true,
+ "unplaced_identical": true,
+ "placed_share": 0.13103841145833334
+}
