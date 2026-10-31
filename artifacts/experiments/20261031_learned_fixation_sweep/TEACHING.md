@@ -282,3 +282,49 @@ which a calibrated head on a calibrated glimpse stage satisfies. It is obtained 
 floor) and checked by Codex's crop test as a standing reading. It matters for P3: an actor choosing fixations could
 otherwise raise imagined reward by looking (Goodhart through a miscalibrated head). Blinding the head would also cost
 the cases where only the fovea sees the reward's cause (night).
+
+## 10a. Decision 1 after Codex's review (11-01; user agreed decision 1; `../20261101_fovea_factorization_review/REVIEW.md`)
+Verified against the code, point by point. The decision stands; four claims of section 10 are withdrawn or narrowed.
+- **D does not bound the cost of the cut (conceded; my error).** `20261029_fovea_probes/analyse.py` R2 is the
+  per-frame best fixation minus the best FIXED fixation, a glimpse present in both: it prices choosing, not having,
+  a glimpse, and says nothing about the removed route or rare events. Withdrawn: "the glimpse's whole one-step value
+  is 0.08-0.6%". The cost of the route is unmeasured.
+- **The route itself: kept cut, as an argued bet, with Codex's test standing.** The mask must hold in every frame
+  (diffusion forcing makes each frame both a target and later context, so a past periphery token that read its own
+  glimpse would also have read its frame's query). The system argument for routing past evidence through the belief
+  only: the actor reads the belief (STEP_SPEC 1, 5); evidence that reaches the next physical prediction only through
+  the denoiser's context never reaches a decision, so it serves generation, not VoI. Cutting it puts G1's pressure
+  (night, occlusion: next-frame periphery the glimpse could inform) on the belief, which is where D found no uptake.
+  Standing reading on the first factorised world (Codex): informative past glimpses (night entities seen only in the
+  glimpse) improve the next physical predictions through the belief. If the bet fails, the fallback is a strictly-past
+  route: in temporal layers, physical tokens of frame t also attend to the glimpse tokens of frames t-4..t-1 (36 extra
+  keys per query, causal by construction, cached in streaming); its cost and chunk/stream equality to be checked.
+- **"Exact coherent world" (narrowed).** The chain rule makes q(X | H, a) q(G | X, H, a, f) a valid joint for ONE
+  query; the learned conditionals, the 3-step sampler and conditioning augmentation are approximate. Several views of
+  one imagined frame would need a coupling (CGQN); our interface never takes two looks in one frame, and VoI compares
+  looks in separate branches, which needs only the per-query marginals. Successive frames' glimpses stay consistent
+  through the committed context and the belief, a learned property to measure.
+- **Training contract (conceded: unspecified; my section 9 sentence withdrawn).** In training the glimpse group sees
+  the REAL periphery tokens noised at the physical group's sigma (targets detached, as now). Its loss trains the glimpse
+  conditional and the denoiser's shared weights, including the hidden features of physical tokens (glimpse queries read
+  them: the route B2 found carrying ~90% of the transfer); it does not reach the periphery encoder or the generated
+  periphery. Withdrawn: "the glimpse's loss trains the predicted periphery to hold what the fovea will need". TSP stays
+  the encoder's fine-detail teacher. Noise: sigma_p and sigma_g drawn independently from the current log-normal, each
+  group's adaLN from its own sigma (memory tokens with the physical group), never sigma = 0 (EDM's c_noise = log(sigma)/4
+  and the division by c_out): stage 2 conditions on the generated periphery noised at a declared s_aug > 0 with
+  c_noise from s_aug. Coverage of that regime under the current schedule: P(sigma <= 0.1) = 0.056, (<= 0.2) = 0.157;
+  whether to raise it is an implementation choice read on the real-vs-generated conditioning gap (Codex), not decided.
+- **Reward head (narrowed requirement, Codex's).** Pooled calibration under one gaze policy is not enough: for EVERY
+  fixed f, the reward / termination distribution integrated over generated glimpses at f must be the same,
+  integral q(r, d | H, a, X, g, f) q(g | H, a, X, f) dg independent of f. Standing test: per legal f, K glimpses per
+  context, the spread of the per-f expectations against sampling error; plus the real-crop counter check. Overlap makes
+  this learnable, not guaranteed. Narrowed: the crop result shows view dependence; "keyed on the window's position" is
+  not established (the other crop changes content and position together).
+- **Label leaks (narrowed).** The factorisation removes the query from the physical marginal only; the glimpse stage and
+  the outcome heads still read f and can learn the logging policy's correlations. Checked by glimpse-periphery
+  coherence at every f and the reward test above.
+- **Checks before calling it built** (Codex's list): physical outputs equal across all legal next fixations under common
+  randomness, on a model with NONZERO output weights (zero-initialised heads pass a broken mask vacuously; the
+  fixation is an integer, so "a zero gradient" was the wrong test); no query path through memory, modulation or caches;
+  chunked = streaming; cost of stage 2 measured (the physical tokens' per-layer keys / values computed once, 3 passes over
+  9 glimpse tokens, one commit per frame, Mamba advanced once).
