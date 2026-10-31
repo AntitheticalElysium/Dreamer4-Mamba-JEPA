@@ -158,7 +158,8 @@ def summary(out_dir):
                     r[c][s]["locates"] = bool(e_["est"] >= 0.5 and e_["est"] - 3 * e_["se"] > 3 * chance.mean())
                 if c == "random":
                     for name, lm in (("bright", z["light"][m] >= 0.7), ("dark", z["light"][m] <= 0.3)):
-                        r[c][s][name] = {"rows": int(lm.sum()), "hud_share": float(hud[ch[lm]].mean()),
+                        if lm.any():
+                            r[c][s][name] = {"rows": int(lm.sum()), "hud_share": float(hud[ch[lm]].mean()),
                                          "faced_share": float((win[ch[lm]] == z["faced"][m][lm][:, None]).any(1).mean()),
                                          "max_score": float(z[s][m][lm].max(1).mean())}
             r[c]["chance"] = float(chance.mean())
