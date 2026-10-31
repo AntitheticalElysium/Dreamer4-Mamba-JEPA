@@ -59,10 +59,15 @@ about gamma-progress's horizon (gamma 0.9995: 2,000 updates). Reading only; no w
   frame-to-frame token change (copy-previous squared error per element, clean token units; periphery and lighting); and
   the drift from checkpoint k - 1 to k: the per-token least-squares map (per group: map cells, HUD cells, glimpse,
   lighting) fitted on even episodes, its residual per element on odd episodes, overall and per class.
-- Reading (descriptive): per class and interval, relative loss change vs relative change of the class's own token
-  step, and the unexplained drift residual against that step (clean units both). Token-space progress is read as
-  contaminated where |relative step change| >= half the |relative loss change|, or the residual >= the step.
-  Rules out token-space progress (PROGRESS candidates 1-3 in tokens) for the classes and stages where it holds.
+- Reading (descriptive): per class and interval, dlog loss = dlog(loss / step) + dlog step (the share of the loss's
+  log-change explained by the class's own token step changing), and the unexplained drift residual against the step
+  (clean units both). Token-space progress is read as contaminated where |dlog step| >= half |dlog loss| or the
+  residual >= the step; tested only for classes whose target is a change (drink / wood / sapling up, table placed,
+  zombie hit, health other, HUD other change, map moved, lighting) and intervals with |dlog loss| >= 0.02 (a declared
+  floor; "not tested" otherwise). Static classes (map still, HUD static) have ~no step: residual against token variance
+  only. Rules out token-space progress (PROGRESS candidates 1-3 in tokens) for the classes and stages where it holds.
+  (Amended 10-31 before launch, own audit: the first test flagged static classes through a ~0 step and tested
+  intervals with no loss change.)
 
 **B2. Does looking at a consequence teach its gaze-free prediction? (transfer, first order)**
 - Claim: the training signal ADDED by fixating a consequence window at the attempt frame (instead of a uniform draw)
@@ -82,7 +87,10 @@ about gamma-progress's horizon (gamma 0.9995: 2,000 updates). Reading only; no w
   loss of the frame's counter cell and faced cell (periphery tokens, training units, the frame's query fixation a
   uniform draw, history under the same uniform prior, context at the inference context level, the frame at a
   p_train sigma), and the reward readout's NLL; belief and percepts of the 7 frames before carry gradient (the routes
-  training can change). Bulk target: all periphery cells of random dev frames.
+  training can change), target and context tokens stop-gradient as in training (prediction at fixed targets). Also
+  `counter_full`: the counter loss with the tokens moving with the encoder (the loss a token-space progress signal
+  sees); full minus fixed = the recoding of the target attributable to the look. Bulk target: all periphery cells of
+  random dev frames.
 - Alignment: <P Delta, g_T>, Delta = the condition's gradient minus the uniform mean; positive = the step lowers the
   target loss. Per module (perception, belief, denoiser, pixels, tsp, change, outcome). Scales: the ordinary look's
   transfer <P g_uniform, g_T> and direct training on the target <P g_T^A, g_T^B> (cross halves). SE across the 6
@@ -91,17 +99,33 @@ about gamma-progress's horizon (gamma 0.9995: 2,000 updates). Reading only; no w
   checkpoint's v_hat, the loss accounting convention) is fragile: its per-parameter step runs from a median of ~5 to
   lr / eps ~1,000 (world 1 checkpoint 10; 9,400 at checkpoint 2), at the ceiling on head parameters training barely
   touches (unused reward-bin rows, the change map's cell table: sqrt(v_hat) < 1e-6), where real Adam saturates (a new
-  gradient enters v). Geometries: euclid (P = 1; SGD, LESS's InfSGD); adam_linear (lr / (sqrt(v_hat) + eps)); 
-  adam_saturating (LESS's Gamma: the group's own clipped gradient enters v, v_new = beta2 v + (1 - beta2) g^2,
-  bias-corrected; bounds each parameter's step). Xia et al. (LESS, ICML 2024, section 3) use the Adam update on the
-  training side and the plain gradient on the target side, as here.
+  gradient enters v). Geometries: euclid (P = 1; SGD, LESS's InfSGD); adam_linear (lr / (sqrt(v_hat) + eps): the frame
+  as an infinitesimal part of a batch); adam_step (LESS's Gamma: Adam's full update for one step whose batch is this
+  chunk, each condition's own gradient clipped as training clips it entering both moments, m1 = beta1 m + (1 - beta1)
+  G, v1 = beta2 v + (1 - beta2) G^2, bias-corrected, minus the momentum-alone update (common to all conditions):
+  the chunk as the whole batch, maximally saturating). Xia et al. (LESS, ICML 2024, section 3) use the Adam update on
+  the training side and the plain gradient on the target side, as here.
+- Review and audit before launch (10-31). Codex: the code labelled "adam_saturating" used ONE denominator built from
+  the uniform draws' mean gradient for every condition and no first moment: not LESS's Gamma nor the difference of
+  the steps the fixations would produce. Verified in the code (my comment and this plan said "LESS's Gamma":
+  wrong); replaced by adam_step above. Own audit (audit_b.py, audit_b.json, CPU fp32, world 1 checkpoints 2 and 10):
+  common random numbers exact (gradients equal to 1e-10); adam_step(0) = 0; the per-parameter step reaches Adam's
+  cap 3.16 lr at checkpoint 2 (saturation real); module dots sum to the total; drift() returns 0 on an exact affine map
+  and 0.0100 with 0.01 noise; P1-F's rule places 12.9% of train-400 frames (training: 13.1%); finite differences
+  (theta - eta d, the same noise draws) match the predicted target change to 0.99-1.04 (euclid) and 0.87-0.97
+  (adam_linear) at the smaller step for the fixed target with the encoder out of the step, and for the full target with
+  every parameter stepped (curvature at the larger steps, shrinking with eta). With the encoder in the step, the FIXED
+  target's change was 3-5x its prediction: a step on the encoder moves the tokens the fixed target holds still. So
+  the representation route is FIRST order in the measured token loss (this plan said second order: wrong), hence
+  `counter_full`. At world 1 checkpoint 10 (4 contexts) it adds ~19% to the adam_linear dot, 1% at checkpoint 2.
 - Reading: the premise holds for a class if the counter (or faced) window's transfer to its own target is > 0 beyond
   3 SE and above both the control window's and the off-class targets' at some checkpoint of world 1, in BOTH Adam
   geometries (they bracket the linearization; disagreement = linearization-dependent, reported as such); euclid is
   reported beside them as the optimizer-free reference, not part of the reading: the world trains with Adam, and SGD
   is a different counterfactual. (Revised after the second CPU smoke, whose values are noise at 2 contexts per group
   but showed euclid's sign often opposite to Adam's; the first wording required all three.) P1-F's trajectory
-  descriptive. Rules out (if null in world 1 for every class and checkpoint): the fovea's training signal
-  reaching the gaze-free prediction through the parameters to first order, i.e. a physical-progress chooser would
-  have no first-order reason to look at consequences. Not covered: the representation route (pixel grounding at the
-  window changing the encoder, hence the targets: second order), Adam momentum, clipping (a common scale).
+  descriptive. The reading uses the fixed target (prediction); `counter_full` and its difference from the fixed
+  target are reported beside it (how much of a token-space progress signal would be target recoding). Rules out (if
+  null in world 1 for every class and checkpoint): the fovea's training signal reaching the gaze-free prediction
+  through the parameters to first order, i.e. a physical-progress chooser would have no first-order reason to look
+  at consequences. Not covered: multi-step effects, a real batch's composition (the two Adam geometries bracket it).

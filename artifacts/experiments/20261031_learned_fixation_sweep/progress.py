@@ -5,10 +5,12 @@ change (copy-previous error, clean token units) and, from the previous checkpoin
 residual (fit on even episodes, read on odd), on the first 150 dev episodes under S1's seeded fixations.
 B2 (transfer, first order): the gradient of the exact training objective (train.p1_losses, harmonised + noise) on
 chunks of train episodes (8 prefix frames, the attempt frame t, 7 frames after), with only frame t's fixation varied
-(counter window, faced-cell window, control window (1, 1), uniform draws), aligned through the checkpoint's Adam step
-(lr / (sqrt(v_hat) + eps), loss accounting's convention) with the gradients of gaze-free targets on fresh dev frames:
-the counter cell's and faced cell's denoising loss and the reward readout's NLL (query and history fixations uniform),
-and the bulk periphery loss. Per module, per episode-disjoint group (Delta) and half (targets).
+(counter window, faced-cell window, control window (1, 1), uniform draws), in three geometries (euclid; adam_linear =
+lr / (sqrt(v_hat) + eps); adam_step = LESS's Gamma, the full Adam update of a step on this chunk), against the
+gradients of gaze-free targets on fresh dev frames: the counter cell's and faced cell's denoising loss and the reward
+readout's NLL (query and history fixations uniform; tokens stop-gradient as in training), the counter loss with the
+tokens moving with the encoder (counter_full), and the bulk periphery loss. Per module, per episode-disjoint group
+(Delta) and half (targets). audit_b.py checks it by finite differences.
 Usage (project venv): python -m artifacts.experiments.20261031_learned_fixation_sweep.progress OUT_DIR [--smoke]
 (GPU; with CUDA hidden it runs on CPU with Mamba's reference recurrence, for the smoke check);
 python -m ...progress --summary OUT_DIR (CPU: the PLAN readings from the saved arrays, summary.json).
@@ -31,9 +33,11 @@ EXP = Path(__file__).resolve().parents[1]
 WORLDS = {"w1": (TR.ROOT / "artifacts/saccade_m0/p1_world1", False), "p1f": (EXP / "20261030_p1_guided/run", True)}
 CLASSES = {"drink": (3, 65, None), "wood": (5, 68, None), "sapling": (2, 67, None), "stone": (4, 69, 6)}  # faced block, counter cell, tool
 CONDS = ("counter", "faced", "control")
-KINDS = ("counter", "faced", "reward")
+KINDS = ("counter", "faced", "reward", "counter_full")
 MODULES = ("perception", "belief", "denoiser", "pixels", "tsp", "change", "outcome")
-GEOMETRIES = ("euclid", "adam_linear", "adam_saturating")
+GEOMETRIES = ("euclid", "adam_linear", "adam_step")
+CHANGING = ("drink_up", "wood_up", "sapling_up", "table_placed", "zombie_hit", "health_other", "hud_other_change",
+            "map_moved", "lighting")                                    # classes whose target is a change (B1 test)
 P, H = 8, 8                                                              # prefix frames; loss frames from t
 DEV = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -119,19 +123,21 @@ def flat(grads, params):
     return torch.cat([(g if g is not None else torch.zeros_like(p)).float().reshape(-1) for g, p in zip(grads, params)])
 
 
-def target_terms(model, cfg, chunk, carry, cache, cells, gen):
+def target_terms(model, cfg, chunk, carry, cache, cells, gen, full=False):
     """Gaze-free prediction of each row's last frame: denoising error on its counter and faced cells (training units),
-    the reward readout's NLL and the bulk periphery error; percepts and belief of the 7 frames before carry gradient."""
+    the reward readout's NLL and the bulk periphery error; percepts and belief of the 7 frames before carry gradient.
+    Targets and context tokens are stop-gradient as in training (prediction at fixed targets), unless `full`: then the
+    tokens move with the encoder too (the loss a token-space progress signal would see; audit_b: first order)."""
     t = TR.tensors(chunk, DEV)
     fix = t["fixation"]
     with TR.autocast(DEV, cfg):
         Pc = model.perception(t["frames"][:, P:], fix[:, P:])
-        with torch.no_grad():
+        with torch.set_grad_enabled(full and torch.is_grad_enabled()):
             Pp = model.perception(t["frames"][:, :P], fix[:, :P])
         emb = model.belief.percept_embed(Pc)
         y, _ = model.belief(model.belief.tokens(emb, t["reward"][:, P:], t["terminated"][:, P:], t["action"][:, P:]), carry)
         b_pred = torch.cat([cache.to(y.dtype), y[:, 1::2][:, :-1]], 1)
-        x0 = tuple(torch.cat([a, b.detach()], 1).float() for a, b in zip(Pp.parts(), Pc.parts()))
+        x0 = tuple(torch.cat([a, b if full else b.detach()], 1).float() for a, b in zip(Pp.parts(), Pc.parts()))
         sig = torch.full(fix.shape[:2], cfg["edm"]["inference_context_sigma"], device=DEV)
         sig[:, -1] = TR.sample_sigma((len(sig),), cfg, DEV, gen)
         noise = tuple(torch.randn(a.shape, device=DEV, generator=gen) for a in x0)
@@ -144,6 +150,29 @@ def target_terms(model, cfg, chunk, carry, cache, cells, gen):
         reward = -model.outcome.reward_logp(h, t["reward"][:, -1]).mean()
     r = torch.arange(len(se), device=DEV)
     return {"counter": se[r, cells[:, 0]].mean(), "faced": se[r, cells[:, 1]].mean(), "reward": reward, "bulk": se.mean()}
+
+
+def drift(prev, tok, odd, cls_cell):
+    """Per token group: the least-squares affine map from the previous checkpoint's tokens to this one's (shared over
+    the group's tokens, fit on even episodes), its residual per element on odd episodes; the residual per class."""
+    groups = {"map": (lambda d: d["p"][:, :63]), "hud": (lambda d: d["p"][:, 63:]), "glimpse": (lambda d: d["g"]),
+              "lighting": (lambda d: d["v"][:, None])}
+    out, resid = {}, {}
+    ev = torch.as_tensor(~odd)
+    for name, f in groups.items():
+        X, Y = f(prev).float(), f(tok).float()
+        Xa = torch.cat([X, torch.ones_like(X[..., :1])], -1).double()
+        A = torch.linalg.solve(Xa[ev].flatten(0, -2).T @ Xa[ev].flatten(0, -2) + 1e-6 * torch.eye(Xa.shape[-1], dtype=torch.float64),
+                               Xa[ev].flatten(0, -2).T @ Y[ev].double().flatten(0, -2))
+        R = (Y[~ev].double() - Xa[~ev] @ A).square().mean(-1)            # [odd frames, tokens]
+        resid[name] = R.float()
+        out[name] = {"residual_se": float(R.mean()), "raw_change_se": float((Y[~ev] - X[~ev]).square().mean()),
+                     "token_variance": float(Y[~ev].var(0).mean())}
+    R = torch.cat([resid["map"], resid["hud"]], 1)                      # [odd frames, 81]
+    co = torch.as_tensor(cls_cell[odd].astype(np.int64))
+    by_class = {name: float(R[co == k].mean()) for k, name in enumerate(LA.CLASSES) if (co == k).any()}
+    by_class["lighting"] = float(resid["lighting"].mean())
+    return out, by_class
 
 
 def b1(model, cfg, Ld, cls_cell, prev):
@@ -159,45 +188,46 @@ def b1(model, cfg, Ld, cls_cell, prev):
     res["copy_se"] = {name: float(step[cc == k].mean()) for k, name in enumerate(LA.CLASSES) if (cc == k).any()}
     res["copy_se"]["lighting"] = float((tok["v"][1:] - tok["v"][:-1]).square().mean(-1)[later].mean())
     if prev is not None:
-        groups = {"map": (lambda d: d["p"][:, :63]), "hud": (lambda d: d["p"][:, 63:]), "glimpse": (lambda d: d["g"]),
-                  "lighting": (lambda d: d["v"][:, None])}
-        res["drift"], resid = {}, {}
-        for name, f in groups.items():
-            X, Y = f(prev), f(tok)
-            Xa = torch.cat([X, torch.ones_like(X[..., :1])], -1).double()
-            ev = torch.as_tensor(~odd)
-            A = torch.linalg.solve(Xa[ev].flatten(0, -2).T @ Xa[ev].flatten(0, -2) + 1e-6 * torch.eye(Xa.shape[-1], dtype=torch.float64),
-                                   Xa[ev].flatten(0, -2).T @ Y[ev].double().flatten(0, -2))
-            R = (Y[~ev].double() - Xa[~ev] @ A).square().mean(-1)        # [odd frames, tokens]
-            resid[name] = R.float()
-            res["drift"][name] = {"residual_se": float(R.mean()), "raw_change_se": float((Y[~ev] - X[~ev]).square().mean()),
-                                  "token_variance": float(Y[~ev].var(0).mean())}
-        R = torch.cat([resid["map"], resid["hud"]], 1)                  # [odd frames, 81]
-        co = torch.as_tensor(cls_cell[odd].astype(np.int64))
-        res["drift_by_class"] = {name: float(R[co == k].mean()) for k, name in enumerate(LA.CLASSES) if (co == k).any()}
-        res["drift_by_class"]["lighting"] = float(resid["lighting"].mean())
+        res["drift"], res["drift_by_class"] = drift(prev, tok, odd, cls_cell)
     return res, {k: v.half() for k, v in tok.items()}
 
 
-def b2(model, cfg, ck, train, dev, targets, n_uniform, seed):
-    """Per class: dots <P g, g_T> per module of each condition's gradient (counter / faced / control / uniform draws)
-    with every target gradient; the targets' Gram under P; norms of P Delta."""
+def geometry(model, ck, cfg):
+    """Parameters (harmoniser excluded), per-module slices of the flat vector, the checkpoint's Adam step per parameter
+    (`pre`, linear at v_hat) and `adam_step` (LESS's Gamma for one training step on a batch with gradient g)."""
     names = [n for n, _ in model.named_parameters() if not n.startswith("harmoniser.")]
     params = [p for n, p in model.named_parameters() if not n.startswith("harmoniser.")]
     mod = np.array([MODULES.index(n.split(".")[0]) for n in names])            # modules are contiguous in this order
+    assert (np.diff(mod) >= 0).all()
     bounds = np.r_[0, np.cumsum([p.numel() for p in params])]
     slices = [(int(bounds[np.flatnonzero(mod == m)[0]]), int(bounds[np.flatnonzero(mod == m)[-1] + 1])) for m in range(len(MODULES))]
-    assert (np.diff(mod) >= 0).all()
     o = cfg["optimizer"]
     opt = torch.optim.AdamW(model.param_groups(), lr=o["lr"], betas=tuple(o["betas"]), eps=o["eps"])
     opt.load_state_dict(ck["opt"])
     lr_of = {id(p): g["lr"] for g in opt.param_groups for p in g["params"]}
-    b2_ = o["betas"][1]
+    b1_, b2_ = o["betas"]
     lrv = torch.cat([torch.full((p.numel(),), lr_of[id(p)]) for p in params]).to(DEV)
     v = torch.cat([opt.state[p]["exp_avg_sq"].float().reshape(-1) for p in params]).to(DEV)        # raw second moments
+    m = torch.cat([opt.state[p]["exp_avg"].float().reshape(-1) for p in params]).to(DEV)           # raw first moments
     step = float(opt.state[params[0]]["step"])
-    pre = lrv / ((v / (1 - b2_ ** step)).sqrt() + o["eps"])          # Adam, linear at the checkpoint's v_hat
     del opt
+    pre = lrv / ((v / (1 - b2_ ** step)).sqrt() + o["eps"])          # Adam, linear at the checkpoint's v_hat
+    bc1, bc2 = 1 - b1_ ** (step + 1), 1 - b2_ ** (step + 1)
+    rest = lrv * b1_ * m / bc1 / ((b2_ * v / bc2).sqrt() + o["eps"])  # the next update with a zero gradient (momentum alone)
+
+    def adam_step(g):
+        """LESS's Gamma for one training step on this chunk: Adam's update with the gradient clipped as training clips it
+        entering both moments, minus the momentum-alone update `rest` (common to every condition)."""
+        G = g * min(1.0, o["grad_clip"] / (float(g.norm()) + 1e-6))     # torch's clip_grad_norm_ coefficient
+        return lrv * (b1_ * m + (1 - b1_) * G) / bc1 / (((b2_ * v + (1 - b2_) * G ** 2) / bc2).sqrt() + o["eps"]) - rest
+    return params, slices, pre, adam_step
+
+
+def b2(model, cfg, ck, train, dev, targets, n_uniform, seed):
+    """Per class: dots <w g, g_T> per module and geometry (euclid, adam_linear, adam_step) of each condition's gradient
+    (counter / faced / control / uniform draws) with every target gradient; the targets' Gram; norms of the
+    condition-minus-uniform difference in each geometry."""
+    params, slices, pre, adam_step = geometry(model, ck, cfg)
     model.train()
     dots = lambda u: torch.stack([Tm[:, a:b] @ u[a:b] for a, b in slices], -1)              # [targets, modules]
 
@@ -212,7 +242,11 @@ def b2(model, cfg, ck, train, dev, targets, n_uniform, seed):
                 part = rows[i:i + 16]
                 chunk, carry, cache = batch(dev["data"], pd, part, -2 * P + 1, 1, -P + 1)
                 cells = torch.as_tensor([dev["cells"][c][e, t] for e, t in part], device=DEV)
+                state = gen.get_state()                                  # the same draws for the fixed and full targets
                 terms = target_terms(model, cfg, chunk, carry, cache, cells, gen)
+                if c != "bulk":
+                    gen.set_state(state)
+                    terms["counter_full"] = target_terms(model, cfg, chunk, carry, cache, cells, gen, full=True)["counter"]
                 for j, k in enumerate(kinds):
                     g = torch.autograd.grad(terms[k], params, retain_graph=j < len(kinds) - 1, allow_unused=True)
                     Tm[tnames.index(f"{c}_{k}_{h}")] += flat(g, params) * len(part) / len(rows)
@@ -238,16 +272,15 @@ def b2(model, cfg, ck, train, dev, targets, n_uniform, seed):
                 loss = model.harmoniser(TR.groups(terms)) + terms.get("noise", 0)
                 G.append(flat(torch.autograd.grad(loss, params, allow_unused=True), params).cpu())
             u = torch.stack(G[len(CONDS):]).mean(0).to(DEV)
-            cu = u * min(1.0, o["grad_clip"] / float(u.norm()))       # this batch's clipped gradient enters v (LESS's Gamma)
-            sat = lrv / (((b2_ * v + (1 - b2_) * cu ** 2) / (1 - b2_ ** (step + 1))).sqrt() + o["eps"])
-            ws = (torch.ones_like(pre), pre, sat)
+            su = torch.stack([adam_step(g.to(DEV)) for g in G[len(CONDS):]]).mean(0)
             for j, gc in enumerate(G):
                 g = gc.to(DEV)
-                D_[gi, j] = torch.stack([dots(w * g) for w in ws], -1).cpu().numpy()
+                sg = adam_step(g)
+                D_[gi, j] = torch.stack([dots(g), dots(pre * g), dots(sg)], -1).cpu().numpy()
                 if j < len(CONDS):
-                    norms[gi, j] = [float((w * (g - u)).norm()) for w in ws]
+                    norms[gi, j] = [float((g - u).norm()), float((pre * (g - u)).norm()), float((sg - su).norm())]
             k0 = tnames.index(f"{c}_counter_0")
-            print(c, "group", gi, "counter - uniform, own counter target (euclid, adam_linear, adam_saturating)",
+            print(c, "group", gi, "counter - uniform, own counter target (euclid, adam_linear, adam_step)",
                   (D_[gi, 0, k0].sum(0) - D_[gi, len(CONDS):, k0].sum(1).mean(0)).round(5).tolist(), flush=True)
         out[c] = {"dots": D_, "delta_norms": norms}
     model.eval()
@@ -351,14 +384,20 @@ def summary(out_dir):
             d = {}
             for name, v in B_["class_losses"].items():
                 l0, l1 = A_["class_losses"][name]["se_per_element"], v["se_per_element"]
-                e = {"loss_rel_change": (l1 - l0) / l0}
+                e = {"dlog_loss": float(np.log(l1 / l0))}
                 if name in B_["copy_se"]:
                     s0, s1 = A_["copy_se"][name], B_["copy_se"][name]
-                    e["step_rel_change"] = (s1 - s0) / s0
+                    e["dlog_step"] = float(np.log(s1 / s0))                     # dlog loss = dlog(loss / step) + dlog step
+                    e["dlog_loss_over_step"] = e["dlog_loss"] - e["dlog_step"]
                     if name in B_.get("drift_by_class", {}):
                         e["drift_residual_over_step"] = B_["drift_by_class"][name] / s1
-                    e["contaminated"] = bool(abs(e["step_rel_change"]) >= 0.5 * abs(e["loss_rel_change"])
-                                             or e.get("drift_residual_over_step", 0) >= 1)
+                    if name not in CHANGING:
+                        e["contaminated"] = "not tested (static: no step to predict)"
+                    elif abs(e["dlog_loss"]) < 0.02:
+                        e["contaminated"] = "not tested (no measurable loss change)"
+                    else:
+                        e["contaminated"] = bool(abs(e["dlog_step"]) >= 0.5 * abs(e["dlog_loss"])
+                                                 or e.get("drift_residual_over_step", 0) >= 1)
                 d[name] = e
             d["groups"] = B_.get("drift", {})
             drift.setdefault(w, {})[f"{a}->{b}"] = d
