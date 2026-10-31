@@ -98,12 +98,14 @@ Declared reading: the counter look's transfer to its own gaze-free counter targe
 window's (3 SE of the difference) and above its transfer to every other class's target, in both Adam geometries.
 
 World 1 (trained under uniform gaze):
-- **Holds** for drink (checkpoint 4), wood (1 and 7) and stone (4). Wood's transfer is positive and class-specific at
-  every checkpoint (z 1.3-14 adam_linear, 1.3-37 adam_step); drink's is positive in both geometries at 8 of 10
-  checkpoints but not specific at 1, 9, 10; stone's is strongly positive at 2-5 and 8 but helps the other counters as
-  much (not specific) except at 4.
-- Size: the counter look adds 2-51% (adam_linear) and 9-74% (adam_step) to the transfer the same frame gives under a
-  uniform look, larger late in training, when the ordinary transfer is small.
+- **Holds** for drink (checkpoint 4), wood (1 and 7) and stone (4). Wood's transfer is positive at every checkpoint
+  (z 1.3-14 adam_linear, 1.3-37 adam_step), class-specific at 8 of 10 (not at 2, 4), but beyond 3 SE in both
+  geometries only at 1, 7, 10; drink's is positive at every checkpoint, beyond 3 SE in both geometries at 1, 4, 5, 8,
+  9, 10, not specific at 1, 9, 10 and not above the control at 5, 8; stone's is strongly positive at 2-5 and 8 but in
+  at least one geometry helps the other counters as much (not specific) except at 4.
+- Size: for wood the counter look adds 2-51% (adam_linear) and 10-74% (adam_step) to the transfer the same frame
+  gives under a uniform look; for drink 5-10% / 9-19% at checkpoints 1, 2, 4, 5; larger late in training, when the
+  ordinary transfer is small (ratios above 1 there are ratios of small numbers).
 - **Sapling: unmeasurable.** Its gaze-free target gradient does not reproduce across halves (reliability -0.31 to
   0.53); no significant transfer in both geometries at any checkpoint.
 - **The reward readout goes the other way.** On drink attempts the counter look makes the gaze-free reward readout
@@ -113,15 +115,17 @@ World 1 (trained under uniform gaze):
 
 P1-F (trained with the rule's gaze):
 - Wood holds only at checkpoint 1. From checkpoint 4 on, its transfer is NEGATIVE in both geometries and below the
-  control (z -3.0 to -183 adam_linear, -2.1 to -11 adam_step): the training signal of the guided look pushes the
-  gaze-free wood prediction the wrong way. PLAN's competing explanation "transfer only before the gaze cue forms"
-  is supported for wood. Drink: the geometries disagree (adam_step positive to checkpoint 6, adam_linear not) until
-  checkpoint 9, negative in both. Stone (outside the rule): negative in both at checkpoint 5 (z -3.1 / -3.1).
+  control (z -2.4 to -183 adam_linear, -2.1 to -11 adam_step; adam_step's control difference not significant at 5):
+  the training signal of the guided look pushes the gaze-free wood prediction the wrong way. PLAN's competing
+  explanation "transfer only before the gaze cue forms" is supported for wood. Drink: the geometries disagree
+  (adam_step positive to checkpoint 6; adam_linear negative or null except +5.7 SE at 5) until checkpoint 9, negative
+  in both (z -3.1 / -3.2). Stone (outside the rule): negative in both at checkpoint 5 (z -3.1 / -3.1).
 - Reward: negative across classes and checkpoints, stone included (drink 2: z -21 / -19; sapling 10: -424 / -20).
 
-Fixed vs moving targets (counter_full minus counter, adam_linear): in world 1 small (|difference| <= 0.09 against
-transfers up to 0.25): a token-space signal reads the look about as the prediction does. In P1-F's wood it is +0.1 to
-+0.75 against fixed transfers of -0.4 to -2.8 (re-coding hides a quarter of the harm, e.g. checkpoint 5: -2.8 fixed,
+Fixed vs moving targets (counter_full minus counter, adam_linear): in world 1 small for drink, wood and stone
+(|difference| <= 0.09 against transfers up to 0.9; sapling up to 0.22 on an unreliable target): a token-space signal
+reads the look about as the prediction does. In P1-F's wood (checkpoints 4-10) it is +0.005 to +0.75 against fixed
+transfers of -0.4 to -2.8 (re-coding hides a quarter of the harm, e.g. checkpoint 5: -2.8 fixed,
 -2.0 moving); in P1-F's late drink it flips the sign (checkpoint 10: -0.085 fixed, +0.27 moving; the moving target's
 half-reliability is low there, 0.21-0.33).
 
