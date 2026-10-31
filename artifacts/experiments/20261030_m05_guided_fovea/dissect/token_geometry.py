@@ -4,9 +4,10 @@ mean tokens |mu_(v+1) - mu_v|, beside the values' own spread (99th-percentile ra
 token's squared norm; appearance (0 -> 1) apart from increments (v -> v + 1, v >= 1); the periphery token of the same
 counter (16-d, the cell's own token) beside the glimpse token (64-d) for comparison; health also v -> v - 2 (a zombie
 hit), its 0 -> 1 is not an appearance.
-Usage: python -m artifacts.experiments.20261030_m05_guided_fovea.dissect.token_geometry
+Usage: python -m artifacts.experiments.20261030_m05_guided_fovea.dissect.token_geometry [EVAL_DIR OUT_JSON LABEL ...]
+(default: M0.5's eval directory and labels; P1-F 10-31: its readings/eval_m05, base and p1f)
 """
-import json
+import json, sys
 from pathlib import Path
 
 import numpy as np
@@ -18,9 +19,10 @@ LABELS = ("base", "guided_0300", "guided_0750", "guided_1500")
 
 
 def main():
+    ev, out = (Path(sys.argv[1]), Path(sys.argv[2])) if len(sys.argv) > 2 else (EVAL, HERE / "token_geometry.json")
     res = {}
-    for label in LABELS:
-        rd = torch.load(EVAL / f"{label}_readers.pt", weights_only=False)["readers"]
+    for label in sys.argv[3:] or LABELS:
+        rd = torch.load(ev / f"{label}_readers.pt", weights_only=False)["readers"]
         g = {**rd["g"], **{f"{n}@periphery": r for n, r in rd["p"].items()}}
         res[label] = {}
         for key, r in g.items():
@@ -41,7 +43,7 @@ def main():
                                    "increment_mean": {k: float(np.mean([x[k] for x in inc])) for k in rows[0] if k != "from"} if inc else None,
                                    "damage_step_over_radius_mean": float(np.mean(dmg)) if key.startswith("health") and dmg else None,
                                    "transitions": rows}
-    (HERE / "token_geometry.json").write_text(json.dumps(res, indent=1))
+    out.write_text(json.dumps(res, indent=1))
     for label, r in res.items():
         for key, x in r.items():
             a, i = x["appearance"], x["increment_mean"]

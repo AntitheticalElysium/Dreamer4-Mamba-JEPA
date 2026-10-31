@@ -82,6 +82,20 @@ artifacts/saccade_m0/p1_world1/ckpt_10.pt:
 M0.5's `evaluate eval_m05 base=w1 p1f=ck`, then its `readings`; decoder `refit render_p1f.json --ckpt=ck
 --trained-only` (world 1's row: `refit_results.json` "trained").
 
+## Follow-up readings (user 10-31, after the RESULTS corrections 6b624338; Codex post hoc)
+1. **Own-gaze re-read** (`own_gaze.py`). Claim: P1-F's general dynamics are worse than world 1's (RESULTS 5).
+   Competing: the readings were taken under random gaze, off P1-F's training distribution on the rule's frames (~13%)
+   and the histories of ~45% of the rest. Control: the same instruments (S1 in full, M0.5's G1 by class, movement
+   shift) with each world encoded under random and guided gaze (S1's seeded draws, the rule's window on rule-decided
+   frames: P1-F's training placement; `saccade.eval.s1.encode(windows=)`, default inert: checked equal to HEAD's
+   encode on every key, guided equal to M0.5's encode_with). Reading: P1-F guided against world 1 random. Within the
+   measurement spread (C2ST fits up to ~0.07) -> the regression is the placement's off-distribution effect; clearly
+   worse -> a regression of the recipe (guidance in training vs the harmoniser not separable by reading). World 1
+   guided vs random = instrument check. Descriptive, no gate.
+2. **Glimpse token geometry** (PLAN reading 3, declared and skipped; M0.5's `dissect/token_geometry.py` on this run's
+   saved readers, base and p1f). Reading: increment step over the within-value radius in the glimpse token, against
+   M0.5's 0.3x; above 1 = the digit is now a prominent direction of the glimpse token.
+
 ## Limits
 One seed per arm. The faithful decoder was demonstrated on frozen checkpoint-10 inputs only (one seed per arm); its
 noise model's calibration is not established (Codex), though night likelihood matched the NLL arms (3.03-3.14

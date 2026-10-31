@@ -42,16 +42,21 @@ def episodes(L):
 
 
 @torch.no_grad()
-def encode(model, L, cfg, untrained=None):
+def encode(model, L, cfg, untrained=None, windows=None):
     """Per episode of a labels file: periphery / glimpse / lighting tokens, fixation, corrected and predicted beliefs,
     the outcome heads on the real next percept (P of the recorded reward bin, P(unlock | observed health change),
     P(continue)) and the TSP
-    glimpse NLL per frame. With `untrained`, also that encoder's periphery tokens and lighting latent."""
+    glimpse NLL per frame. With `untrained`, also that encoder's periphery tokens and lighting latent. With `windows`
+    ([states, 2], -1 = none), frame t >= 1 fixates windows[state t - 1] where set, the seeded draw elsewhere."""
     out = []
     offsets = np.r_[0, np.cumsum(L["ep_T"] + 1)]
     for e, ep in enumerate(episodes(L)):
         rng = np.random.default_rng([cfg["p1"]["monitor"]["fixed_fixation_seed"], ep.shard, ep.slot])
-        recs = [[(0, 1, t, *D.fixation_prior(rng, ())) for t in range(ep.T + 1)]]
+        fx = [D.fixation_prior(rng, ()) for t in range(ep.T + 1)]
+        if windows is not None:
+            w = windows[offsets[e]:offsets[e + 1]]
+            fx = fx[:1] + [tuple(int(x) for x in w[t - 1]) if w[t - 1, 0] >= 0 else fx[t] for t in range(1, ep.T + 1)]
+        recs = [[(0, 1, t, *fx[t]) for t in range(ep.T + 1)]]
         c = TR.tensors(D.gather([ep], recs), DEV)
         with TR.autocast(DEV, cfg):
             parts = [model.perception(c["frames"][:, a:a + 512], c["fixation"][:, a:a + 512]) for a in range(0, ep.T + 1, 512)]
