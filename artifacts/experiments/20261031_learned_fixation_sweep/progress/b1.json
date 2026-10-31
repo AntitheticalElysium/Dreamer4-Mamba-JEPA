@@ -1,0 +1,2136 @@
+{
+ "w1": {
+  "1": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_01.pt",
+   "sha256": "31d4ffe8b80e6030242560a82715e429e615503983c1dce28d9d1748a25e97d8",
+   "update": 2500,
+   "harmoniser_sigma": [
+    0.901454508304596,
+    1.0687178373336792,
+    0.9890188574790955
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.3342682753902907,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.33478850002571814,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.7311870154332031,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.4159537030171071,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.208576710373576,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.19260991219349013,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.28176153486193417,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.04649036053461817,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.06569557462182601,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.0390071436754137,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.15252172264587197,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.02638989939423632,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.37126749753952026,
+     "wood_up": 0.5945013761520386,
+     "sapling_up": 0.7548562288284302,
+     "table_placed": 0.7209562063217163,
+     "zombie_hit": 0.48754414916038513,
+     "health_other": 0.09884165972471237,
+     "hud_other_change": 0.4003845155239105,
+     "hud_static": 0.0001453012810088694,
+     "map_moved": 0.1401856690645218,
+     "map_still": 0.019596384838223457,
+     "lighting": 0.0011185441398993134
+    }
+   }
+  },
+  "2": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_02.pt",
+   "sha256": "39eb3d9d6b43104f28ce8f2acd9babea6bab4f93c2214417a97ad10f6a78dcc5",
+   "update": 5000,
+   "harmoniser_sigma": [
+    0.7677965760231018,
+    1.1732685565948486,
+    0.9519312977790833
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.22808669883388422,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.2097774622419992,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.5627871053293347,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.49936693504452706,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.17918780927966838,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.14030639580803658,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.20875037723684056,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.03182073661326748,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.04672537583980005,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.03365824599526253,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.10009138125106395,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.01993224231305612,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.32589656114578247,
+     "wood_up": 0.6592588424682617,
+     "sapling_up": 0.9220961928367615,
+     "table_placed": 0.8719155192375183,
+     "zombie_hit": 0.48685964941978455,
+     "health_other": 0.08712532371282578,
+     "hud_other_change": 0.41120463609695435,
+     "hud_static": 0.0007152982288971543,
+     "map_moved": 0.1562902182340622,
+     "map_still": 0.02274049073457718,
+     "lighting": 0.0033730759751051664
+    },
+    "drift": {
+     "map": {
+      "residual_se": 0.000862172607665537,
+      "raw_change_se": 0.030018454417586327,
+      "token_variance": 0.3635927736759186
+     },
+     "hud": {
+      "residual_se": 0.003943550630156391,
+      "raw_change_se": 0.0825078934431076,
+      "token_variance": 0.28511378169059753
+     },
+     "glimpse": {
+      "residual_se": 0.0035108581757101933,
+      "raw_change_se": 0.025039255619049072,
+      "token_variance": 0.20317929983139038
+     },
+     "lighting": {
+      "residual_se": 0.00010794374841740653,
+      "raw_change_se": 0.04685789346694946,
+      "token_variance": 0.05967019870877266
+     }
+    },
+    "drift_by_class": {
+     "drink_up": 0.007078394293785095,
+     "wood_up": 0.0028574762400239706,
+     "sapling_up": 0.07094878703355789,
+     "table_placed": 0.0030056056566536427,
+     "zombie_hit": 0.004366389941424131,
+     "health_other": 0.004318831022828817,
+     "hud_other_change": 0.003579027485102415,
+     "hud_static": 0.00393747678026557,
+     "map_moved": 0.000810504425317049,
+     "map_still": 0.0008901450200937688,
+     "lighting": 0.00010794374975375831
+    }
+   }
+  },
+  "3": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_03.pt",
+   "sha256": "5fa0fe15f35f5c807dff2751e2c920c2b8eafcb10ece6d317133f1b2896acfc5",
+   "update": 7500,
+   "harmoniser_sigma": [
+    0.6344078183174133,
+    1.3610345125198364,
+    0.85962975025177
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.16611930061152527,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.142432145612521,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.5071855951523916,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.41974978501775434,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.13665563719465793,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.1055772793233709,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.16135236686100124,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.017125652221247907,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.03703812424703271,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.027018386396471878,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.06677907068575417,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.012854140177471742,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.28375232219696045,
+     "wood_up": 0.6063264012336731,
+     "sapling_up": 0.941844642162323,
+     "table_placed": 1.0053980350494385,
+     "zombie_hit": 0.44885826110839844,
+     "health_other": 0.0758715569972992,
+     "hud_other_change": 0.37370550632476807,
+     "hud_static": 0.0009260655497200787,
+     "map_moved": 0.18234290182590485,
+     "map_still": 0.0268312506377697,
+     "lighting": 0.004880973137915134
+    },
+    "drift": {
+     "map": {
+      "residual_se": 0.00044465000999835977,
+      "raw_change_se": 0.018889276310801506,
+      "token_variance": 0.4163818657398224
+     },
+     "hud": {
+      "residual_se": 0.0005411374015158181,
+      "raw_change_se": 0.02718481421470642,
+      "token_variance": 0.2710607349872589
+     },
+     "glimpse": {
+      "residual_se": 0.0011843274938799161,
+      "raw_change_se": 0.006833972875028849,
+      "token_variance": 0.2105044573545456
+     },
+     "lighting": {
+      "residual_se": 6.96436168534228e-05,
+      "raw_change_se": 0.02791757695376873,
+      "token_variance": 0.08540656417608261
+     }
+    },
+    "drift_by_class": {
+     "drink_up": 0.0009214494493789971,
+     "wood_up": 0.0006621017237193882,
+     "sapling_up": 0.003992464393377304,
+     "table_placed": 0.00048132825759239495,
+     "zombie_hit": 0.0008636501734144986,
+     "health_other": 0.0006425577448680997,
+     "hud_other_change": 0.0006615885649807751,
+     "hud_static": 0.0005381907685659826,
+     "map_moved": 0.00041578267700970173,
+     "map_still": 0.0004604669811669737,
+     "lighting": 6.964361091377214e-05
+    }
+   }
+  },
+  "4": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_04.pt",
+   "sha256": "15d22c54a84d427671e02ce0429890d761ee66d4927d09db70231a3ba26e657e",
+   "update": 10000,
+   "harmoniser_sigma": [
+    0.5314643979072571,
+    1.5953490734100342,
+    0.7378368973731995
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.17079907624394366,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.1419346460139074,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.540464345577427,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.29914923147697536,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.132242316772279,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.09957624605320187,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.1553872308744988,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.01380715799458236,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.03480178495219013,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.024941293494253367,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.05008097787971777,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.010278146952575395,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.28780698776245117,
+     "wood_up": 0.588409423828125,
+     "sapling_up": 0.9838610291481018,
+     "table_placed": 1.1482648849487305,
+     "zombie_hit": 0.4249814450740814,
+     "health_other": 0.0747508630156517,
+     "hud_other_change": 0.3679613173007965,
+     "hud_static": 0.0008134492672979832,
+     "map_moved": 0.20630790293216705,
+     "map_still": 0.02980899251997471,
+     "lighting": 0.0056276340037584305
+    },
+    "drift": {
+     "map": {
+      "residual_se": 0.000272868460563187,
+      "raw_change_se": 0.008971870876848698,
+      "token_variance": 0.4534872770309448
+     },
+     "hud": {
+      "residual_se": 0.0003840926448865171,
+      "raw_change_se": 0.01192291360348463,
+      "token_variance": 0.26293879747390747
+     },
+     "glimpse": {
+      "residual_se": 0.0004737314881704472,
+      "raw_change_se": 0.0027604030910879374,
+      "token_variance": 0.20961697399616241
+     },
+     "lighting": {
+      "residual_se": 3.42326436896661e-05,
+      "raw_change_se": 0.007067552302032709,
+      "token_variance": 0.09952251613140106
+     }
+    },
+    "drift_by_class": {
+     "drink_up": 0.0004164007259532809,
+     "wood_up": 0.00047461502254009247,
+     "sapling_up": 0.0012978971935808659,
+     "table_placed": 0.0005912629421800375,
+     "zombie_hit": 0.0006572473212145269,
+     "health_other": 0.0004760352603625506,
+     "hud_other_change": 0.000458936468930915,
+     "hud_static": 0.0003825160092674196,
+     "map_moved": 0.0002595226396806538,
+     "map_still": 0.0002801319642458111,
+     "lighting": 3.4232645703013986e-05
+    }
+   }
+  },
+  "5": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_05.pt",
+   "sha256": "fe2aee881e061278096120734f982dff65d44d5719d2dbc8495884edfbfab09e",
+   "update": 12500,
+   "harmoniser_sigma": [
+    0.4554014503955841,
+    1.8435099124908447,
+    0.6246321201324463
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.18451806561782041,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.18115769774213006,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.4947020004919702,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.20425590613191683,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.20735939106081,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.17131163866356486,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.16621885712307868,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.012584048306311756,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.03286233783417265,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.022963544339159845,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.04224355713577493,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.009424567099445122,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.43823114037513733,
+     "wood_up": 0.7519178986549377,
+     "sapling_up": 0.9450857639312744,
+     "table_placed": 1.1787842512130737,
+     "zombie_hit": 0.53373783826828,
+     "health_other": 0.20339298248291016,
+     "hud_other_change": 0.4374209940433502,
+     "hud_static": 0.0006734510534442961,
+     "map_moved": 0.21505485475063324,
+     "map_still": 0.030265718698501587,
+     "lighting": 0.0058523318730294704
+    },
+    "drift": {
+     "map": {
+      "residual_se": 0.00034097229867097504,
+      "raw_change_se": 0.013016420416533947,
+      "token_variance": 0.46388986706733704
+     },
+     "hud": {
+      "residual_se": 0.0012812642685256636,
+      "raw_change_se": 0.04840506613254547,
+      "token_variance": 0.2708820700645447
+     },
+     "glimpse": {
+      "residual_se": 0.00023639621134915608,
+      "raw_change_se": 0.0014760716585442424,
+      "token_variance": 0.20752450823783875
+     },
+     "lighting": {
+      "residual_se": 2.8765160463393434e-05,
+      "raw_change_se": 0.0029301170725375414,
+      "token_variance": 0.10401345789432526
+     }
+    },
+    "drift_by_class": {
+     "drink_up": 0.0018561503384262323,
+     "wood_up": 0.0025697483215481043,
+     "sapling_up": 0.00406899256631732,
+     "table_placed": 0.004233446437865496,
+     "zombie_hit": 0.006474320311099291,
+     "health_other": 0.005400718655437231,
+     "hud_other_change": 0.0019169858423992991,
+     "hud_static": 0.0012607639655470848,
+     "map_moved": 0.00031356001272797585,
+     "map_still": 0.0003553653950802982,
+     "lighting": 2.876516191463452e-05
+    }
+   }
+  },
+  "6": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_06.pt",
+   "sha256": "d778007cdb9e8b87c2da5a0279492eb1c312b18dc2473d2b7bd5e87eb3b8bbac",
+   "update": 13125,
+   "harmoniser_sigma": [
+    0.4416256844997406,
+    1.8966408967971802,
+    0.602862536907196
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.17001178555565175,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.14335273202404647,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.4319250154746414,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.1927079401630908,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.20094253990536046,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.1624491547456695,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.1526026744313998,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.009610695637058367,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.03164148316288191,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.02124904926145009,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.03689482664894102,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.006744709829273878,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.4396894872188568,
+     "wood_up": 0.7407711148262024,
+     "sapling_up": 0.9730832576751709,
+     "table_placed": 1.2017581462860107,
+     "zombie_hit": 0.5312754511833191,
+     "health_other": 0.20322173833847046,
+     "hud_other_change": 0.43463876843452454,
+     "hud_static": 0.000618046848103404,
+     "map_moved": 0.21837648749351501,
+     "map_still": 0.030727587640285492,
+     "lighting": 0.005802207160741091
+    },
+    "drift": {
+     "map": {
+      "residual_se": 5.8819937501523204e-05,
+      "raw_change_se": 0.0005883945268578827,
+      "token_variance": 0.4690249264240265
+     },
+     "hud": {
+      "residual_se": 0.00010725545624992428,
+      "raw_change_se": 0.0015080824960023165,
+      "token_variance": 0.2705579698085785
+     },
+     "glimpse": {
+      "residual_se": 2.2942756901958754e-05,
+      "raw_change_se": 0.00010222247510682791,
+      "token_variance": 0.20712676644325256
+     },
+     "lighting": {
+      "residual_se": 1.2518309217053719e-05,
+      "raw_change_se": 7.478133193217218e-05,
+      "token_variance": 0.1033446416258812
+     }
+    },
+    "drift_by_class": {
+     "drink_up": 7.342069147853181e-05,
+     "wood_up": 6.251163722481579e-05,
+     "sapling_up": 0.00015783864364493638,
+     "table_placed": 0.00027936126571148634,
+     "zombie_hit": 0.00010479494812898338,
+     "health_other": 6.362843851093203e-05,
+     "hud_other_change": 6.37141929473728e-05,
+     "hud_static": 0.00010798362200148404,
+     "map_moved": 4.51245105068665e-05,
+     "map_still": 6.629092240473256e-05,
+     "lighting": 1.251830872206483e-05
+    }
+   }
+  },
+  "7": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_07.pt",
+   "sha256": "bdb833a12f3e1987cf3a0c29f73cdccc7a85b7ff1fb46d4cf7800c9ef731891b",
+   "update": 13750,
+   "harmoniser_sigma": [
+    0.4305630922317505,
+    1.9423786401748657,
+    0.586600124835968
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.16579972212541036,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.13287742801669544,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.3841246921766662,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.17663833919912578,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.20408735574684891,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.15934195585748892,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.1497030572052076,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.00959186166948469,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.031807309914908724,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.021718425665486974,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.03614451552626917,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.007147735627445062,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.4426899552345276,
+     "wood_up": 0.7347791790962219,
+     "sapling_up": 0.9883110523223877,
+     "table_placed": 1.2171876430511475,
+     "zombie_hit": 0.5315889716148376,
+     "health_other": 0.2022736668586731,
+     "hud_other_change": 0.4340072274208069,
+     "hud_static": 0.0005784166278317571,
+     "map_moved": 0.22094640135765076,
+     "map_still": 0.030966371297836304,
+     "lighting": 0.005825710017234087
+    },
+    "drift": {
+     "map": {
+      "residual_se": 5.703920983866225e-05,
+      "raw_change_se": 0.00046061986358836293,
+      "token_variance": 0.47137728333473206
+     },
+     "hud": {
+      "residual_se": 9.557320168400321e-05,
+      "raw_change_se": 0.0008356169564649463,
+      "token_variance": 0.2713078260421753
+     },
+     "glimpse": {
+      "residual_se": 2.1365549083015278e-05,
+      "raw_change_se": 8.94037657417357e-05,
+      "token_variance": 0.20699185132980347
+     },
+     "lighting": {
+      "residual_se": 8.001276073959209e-06,
+      "raw_change_se": 6.754557398380712e-05,
+      "token_variance": 0.10390584915876389
+     }
+    },
+    "drift_by_class": {
+     "drink_up": 5.3563631809083745e-05,
+     "wood_up": 4.830274701816961e-05,
+     "sapling_up": 0.00012447277549654245,
+     "table_placed": 0.00022568607528228313,
+     "zombie_hit": 7.49665341572836e-05,
+     "health_other": 4.636652010958642e-05,
+     "hud_other_change": 5.302187491906807e-05,
+     "hud_static": 9.632357978262007e-05,
+     "map_moved": 4.232494393363595e-05,
+     "map_still": 6.507706712000072e-05,
+     "lighting": 8.001276000868529e-06
+    }
+   }
+  },
+  "8": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_08.pt",
+   "sha256": "6f51c099d1941c2d2bce7ed00fcb6b72cdd3f9045c8e76a9e763c25a2c225de6",
+   "update": 14375,
+   "harmoniser_sigma": [
+    0.4223219156265259,
+    1.9785943031311035,
+    0.575003445148468
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.16011972385172488,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.13021447130423286,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.42372234176957246,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.19131454369984568,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.19917575615442712,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.15464471538809207,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.14460738137559978,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.008697508401929392,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.03177801503251596,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.021438762113881977,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.03450538103537418,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.006175516032134042,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.4439436197280884,
+     "wood_up": 0.7259597182273865,
+     "sapling_up": 1.0021822452545166,
+     "table_placed": 1.2311581373214722,
+     "zombie_hit": 0.5297250747680664,
+     "health_other": 0.2015930414199829,
+     "hud_other_change": 0.4318224787712097,
+     "hud_static": 0.0005374731845222414,
+     "map_moved": 0.22329410910606384,
+     "map_still": 0.031203309074044228,
+     "lighting": 0.0058190710842609406
+    },
+    "drift": {
+     "map": {
+      "residual_se": 5.7353477835391905e-05,
+      "raw_change_se": 0.00040807059849612415,
+      "token_variance": 0.4733160138130188
+     },
+     "hud": {
+      "residual_se": 0.0001045322763922431,
+      "raw_change_se": 0.0009326915605925024,
+      "token_variance": 0.27060043811798096
+     },
+     "glimpse": {
+      "residual_se": 1.8456836390669496e-05,
+      "raw_change_se": 7.446685776812956e-05,
+      "token_variance": 0.2065281718969345
+     },
+     "lighting": {
+      "residual_se": 9.985811294901707e-06,
+      "raw_change_se": 0.00013099718489684165,
+      "token_variance": 0.10395844280719757
+     }
+    },
+    "drift_by_class": {
+     "drink_up": 5.30679571966175e-05,
+     "wood_up": 4.681997961597517e-05,
+     "sapling_up": 0.0001160012834588997,
+     "table_placed": 0.0002363453822908923,
+     "zombie_hit": 8.001988317118958e-05,
+     "health_other": 4.732419256470166e-05,
+     "hud_other_change": 5.671447797794826e-05,
+     "hud_static": 0.00010539279173826799,
+     "map_moved": 4.20861215388868e-05,
+     "map_still": 6.569282413693145e-05,
+     "lighting": 9.985810720536392e-06
+    }
+   }
+  },
+  "9": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_09.pt",
+   "sha256": "ef46b5dc04d8064f5e7cd860ad35769567de74d514281fd27f8a897a9a46ed1a",
+   "update": 15000,
+   "harmoniser_sigma": [
+    0.417024165391922,
+    2.0028772354125977,
+    0.5676903128623962
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.16152775491998847,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.12259811375079181,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.40793156950861553,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.18252823702991008,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.19944085328068348,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.15486274058158195,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.14216905663647464,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.008358877579596,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.031792969031279046,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.021572436351593526,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.03359140066659739,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.006096186723108544,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.44877585768699646,
+     "wood_up": 0.7272509932518005,
+     "sapling_up": 1.0246185064315796,
+     "table_placed": 1.2433747053146362,
+     "zombie_hit": 0.5333828926086426,
+     "health_other": 0.20199482142925262,
+     "hud_other_change": 0.433747261762619,
+     "hud_static": 0.0005042533739469945,
+     "map_moved": 0.22533690929412842,
+     "map_still": 0.031489379703998566,
+     "lighting": 0.00581026915460825
+    },
+    "drift": {
+     "map": {
+      "residual_se": 5.3914105792023016e-05,
+      "raw_change_se": 0.0002100212877849117,
+      "token_variance": 0.47534123063087463
+     },
+     "hud": {
+      "residual_se": 8.162018549721166e-05,
+      "raw_change_se": 0.0003958743473049253,
+      "token_variance": 0.27274203300476074
+     },
+     "glimpse": {
+      "residual_se": 1.5561923980760622e-05,
+      "raw_change_se": 5.40664404979907e-05,
+      "token_variance": 0.20635582506656647
+     },
+     "lighting": {
+      "residual_se": 8.501498301229454e-06,
+      "raw_change_se": 5.330910425982438e-05,
+      "token_variance": 0.10390176624059677
+     }
+    },
+    "drift_by_class": {
+     "drink_up": 3.998290412710048e-05,
+     "wood_up": 3.449327050475404e-05,
+     "sapling_up": 0.00010461293277330697,
+     "table_placed": 0.00017448596190661192,
+     "zombie_hit": 5.945456723566167e-05,
+     "health_other": 3.733250923687592e-05,
+     "hud_other_change": 4.332312528276816e-05,
+     "hud_static": 8.230898674810305e-05,
+     "map_moved": 3.798623583861627e-05,
+     "map_still": 6.262498936848715e-05,
+     "lighting": 8.50149808684364e-06
+    }
+   }
+  },
+  "10": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_10.pt",
+   "sha256": "74eccc433bf5a785edd6d565edc1a970f8b468510abf2c0b07e24d28b547ebe5",
+   "update": 15625,
+   "harmoniser_sigma": [
+    0.41335612535476685,
+    2.0202512741088867,
+    0.562649130821228
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.15531805264425344,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.12869281002014726,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.38844509557538637,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.14956531155920988,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.20185902122010857,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.15520318241098813,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.14101709857054226,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.008128399350093265,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.03204181821986242,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.021689207024220607,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.03302795298792077,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.00586323486897612,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.4507039487361908,
+     "wood_up": 0.724261462688446,
+     "sapling_up": 1.0307660102844238,
+     "table_placed": 1.2522552013397217,
+     "zombie_hit": 0.5323802828788757,
+     "health_other": 0.20159272849559784,
+     "hud_other_change": 0.4334009885787964,
+     "hud_static": 0.0004889749106951058,
+     "map_moved": 0.22705134749412537,
+     "map_still": 0.031682442873716354,
+     "lighting": 0.005850548855960369
+    },
+    "drift": {
+     "map": {
+      "residual_se": 4.804550484965693e-05,
+      "raw_change_se": 0.00021840684348717332,
+      "token_variance": 0.4768452048301697
+     },
+     "hud": {
+      "residual_se": 7.710162428777749e-05,
+      "raw_change_se": 0.0004038109036628157,
+      "token_variance": 0.272599458694458
+     },
+     "glimpse": {
+      "residual_se": 1.3865903071468138e-05,
+      "raw_change_se": 4.796637949766591e-05,
+      "token_variance": 0.20641180872917175
+     },
+     "lighting": {
+      "residual_se": 1.1236192360595928e-05,
+      "raw_change_se": 5.580313882092014e-05,
+      "token_variance": 0.10476737469434738
+     }
+    },
+    "drift_by_class": {
+     "drink_up": 3.1822837627260014e-05,
+     "wood_up": 2.2091327991802245e-05,
+     "sapling_up": 6.506731733679771e-05,
+     "table_placed": 0.00012400378182064742,
+     "zombie_hit": 4.958523277309723e-05,
+     "health_other": 2.8451539037632756e-05,
+     "hud_other_change": 3.627238402259536e-05,
+     "hud_static": 7.785293564666063e-05,
+     "map_moved": 3.438669227762148e-05,
+     "map_still": 5.5519903980894014e-05,
+     "lighting": 1.1236193131480832e-05
+    }
+   }
+  }
+ },
+ "p1f": {
+  "1": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_01.pt",
+   "sha256": "1a376683654a0c23a50a06fec0ba94fd0f5c37482669b43f8200ecfde2eda9cb",
+   "update": 2500,
+   "harmoniser_sigma": [
+    0.8500640392303467,
+    0.8403033018112183,
+    0.9000431895256042
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.3739929677648002,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.4497851931928571,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.597132292096362,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.5877213444880077,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.6740743633916916,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.6301313377595359,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.3430438388014048,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.060362443091434896,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.10903166559746617,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.07826341103376822,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.19761177345558448,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.031270486310370695,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.7054344415664673,
+     "wood_up": 1.1693487167358398,
+     "sapling_up": 2.4630017280578613,
+     "table_placed": 0.7068424820899963,
+     "zombie_hit": 1.4414138793945312,
+     "health_other": 1.2235296964645386,
+     "hud_other_change": 0.6448739767074585,
+     "hud_static": 9.898030839394778e-05,
+     "map_moved": 0.20233801007270813,
+     "map_still": 0.05317806079983711,
+     "lighting": 0.0018564192578196526
+    }
+   }
+  },
+  "2": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_02.pt",
+   "sha256": "815585a73d2dfc134c7d48b07586cb726d32b3ad397d616a2a4ac1e8506b15ea",
+   "update": 5000,
+   "harmoniser_sigma": [
+    0.6854639053344727,
+    0.6728668212890625,
+    0.7245261073112488
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.31883532428156647,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.29704422527408303,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.517049392713516,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.4812019332498312,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.5204522657411952,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.45079742127374056,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.2957761898977292,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.03672860498843704,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.08367509689026251,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.06186810016321177,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.10473032547933522,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.015348265984046885,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.8520026206970215,
+     "wood_up": 1.3484665155410767,
+     "sapling_up": 2.331249237060547,
+     "table_placed": 0.7536342144012451,
+     "zombie_hit": 1.3536453247070312,
+     "health_other": 1.104631781578064,
+     "hud_other_change": 0.7750629186630249,
+     "hud_static": 9.471700468566269e-05,
+     "map_moved": 0.2210121601819992,
+     "map_still": 0.05700239911675453,
+     "lighting": 0.0014587960904464126
+    },
+    "drift": {
+     "map": {
+      "residual_se": 0.005682498493984791,
+      "raw_change_se": 0.08701850473880768,
+      "token_variance": 0.34966525435447693
+     },
+     "hud": {
+      "residual_se": 0.004820861648822597,
+      "raw_change_se": 0.06699060648679733,
+      "token_variance": 0.44614076614379883
+     },
+     "glimpse": {
+      "residual_se": 0.006486575416923993,
+      "raw_change_se": 0.12609773874282837,
+      "token_variance": 0.191989466547966
+     },
+     "lighting": {
+      "residual_se": 1.125281583622456e-05,
+      "raw_change_se": 0.0020841239020228386,
+      "token_variance": 0.026483088731765747
+     }
+    },
+    "drift_by_class": {
+     "drink_up": 0.013995186425745487,
+     "wood_up": 0.006745513062924147,
+     "sapling_up": 0.007941007614135742,
+     "table_placed": 0.11659881472587585,
+     "zombie_hit": 0.02569410391151905,
+     "health_other": 0.0207661259919405,
+     "hud_other_change": 0.00837376806885004,
+     "hud_static": 0.004724662285298109,
+     "map_moved": 0.006021458189934492,
+     "map_still": 0.005478690844029188,
+     "lighting": 1.1252815966145135e-05
+    }
+   }
+  },
+  "3": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_03.pt",
+   "sha256": "edca1130672238a8dc3bdc0ea5306b1d9b901ac940f05f94cea75485fc32f71f",
+   "update": 7500,
+   "harmoniser_sigma": [
+    0.5618723034858704,
+    0.5511313080787659,
+    0.5927870869636536
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.30749304001141525,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.2814168686248056,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.509781807534058,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.3831881026710783,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.46721895519447953,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.3994769395854992,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.251932007256908,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.03068505001103947,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.07640939675069404,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.0556744066164338,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.07304596990337786,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.02140677857056219,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.8664366602897644,
+     "wood_up": 1.3458977937698364,
+     "sapling_up": 2.190056800842285,
+     "table_placed": 0.9387048482894897,
+     "zombie_hit": 1.3555735349655151,
+     "health_other": 1.0357475280761719,
+     "hud_other_change": 0.7923014163970947,
+     "hud_static": 9.708727884571999e-05,
+     "map_moved": 0.23583808541297913,
+     "map_still": 0.059316590428352356,
+     "lighting": 0.001232088077813387
+    },
+    "drift": {
+     "map": {
+      "residual_se": 0.0015916930375456286,
+      "raw_change_se": 0.02544950135052204,
+      "token_variance": 0.3660788834095001
+     },
+     "hud": {
+      "residual_se": 0.0009481791457816786,
+      "raw_change_se": 0.020412206649780273,
+      "token_variance": 0.44023799896240234
+     },
+     "glimpse": {
+      "residual_se": 0.0028975611701276536,
+      "raw_change_se": 0.062785305082798,
+      "token_variance": 0.13964268565177917
+     },
+     "lighting": {
+      "residual_se": 9.581155672327316e-06,
+      "raw_change_se": 0.002596398117020726,
+      "token_variance": 0.022273749113082886
+     }
+    },
+    "drift_by_class": {
+     "drink_up": 0.0019385156920179725,
+     "wood_up": 0.0016194675117731094,
+     "sapling_up": 0.001396146952174604,
+     "table_placed": 0.009253331460058689,
+     "zombie_hit": 0.0040183593519032,
+     "health_other": 0.004588485229760408,
+     "hud_other_change": 0.0012235993053764105,
+     "hud_static": 0.0009352798806503415,
+     "map_moved": 0.00158797693438828,
+     "map_still": 0.0015924854669719934,
+     "lighting": 9.581155609339476e-06
+    }
+   }
+  },
+  "4": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_04.pt",
+   "sha256": "790ecd1decbd8bff41480e852c90334cc7b0426cda369da9f31e347d1ac3550e",
+   "update": 10000,
+   "harmoniser_sigma": [
+    0.4701593816280365,
+    0.4606117010116577,
+    0.4945019781589508
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.31836852933222937,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.4150276271983276,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.5151431937208117,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.31210790184459514,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.41415082552364496,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.35358157758944786,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.22952545534132984,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.023824674849183977,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.07140595477284575,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.051415571600252806,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.04553685346655354,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.00860356028158392,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.8958802819252014,
+     "wood_up": 1.3945355415344238,
+     "sapling_up": 2.107548475265503,
+     "table_placed": 1.1212862730026245,
+     "zombie_hit": 1.3175907135009766,
+     "health_other": 0.9974426627159119,
+     "hud_other_change": 0.8205403685569763,
+     "hud_static": 0.00012396332749631256,
+     "map_moved": 0.26261913776397705,
+     "map_still": 0.06136463209986687,
+     "lighting": 0.001181381638161838
+    },
+    "drift": {
+     "map": {
+      "residual_se": 0.0015300696167747157,
+      "raw_change_se": 0.02364245429635048,
+      "token_variance": 0.39652925729751587
+     },
+     "hud": {
+      "residual_se": 0.0005657203045994519,
+      "raw_change_se": 0.013074417598545551,
+      "token_variance": 0.434072881937027
+     },
+     "glimpse": {
+      "residual_se": 0.001278156559427894,
+      "raw_change_se": 0.02173820324242115,
+      "token_variance": 0.10585492849349976
+     },
+     "lighting": {
+      "residual_se": 1.0172758128383458e-05,
+      "raw_change_se": 0.0030039651319384575,
+      "token_variance": 0.021152257919311523
+     }
+    },
+    "drift_by_class": {
+     "drink_up": 0.0011135853128507733,
+     "wood_up": 0.001015413785353303,
+     "sapling_up": 0.00041805446380749345,
+     "table_placed": 0.009782963432371616,
+     "zombie_hit": 0.003665441647171974,
+     "health_other": 0.0030228490941226482,
+     "hud_other_change": 0.0007211174815893173,
+     "hud_static": 0.0005568952765315771,
+     "map_moved": 0.001577060087583959,
+     "map_still": 0.001502972561866045,
+     "lighting": 1.017275826598052e-05
+    }
+   }
+  },
+  "5": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_05.pt",
+   "sha256": "b8f39b10d20a32b669e4a0ef9cb36037f43298c0c8fe6155a6d67ebe10da60ea",
+   "update": 12500,
+   "harmoniser_sigma": [
+    0.4066678285598755,
+    0.39790579676628113,
+    0.4261379539966583
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.3228603270752928,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.3706154803390693,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.49873885813620733,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.22534781845552582,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.36204904649881364,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.3179266175285539,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.19088641536658865,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.01589285858258309,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.06712167650597091,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.04826355756827712,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.032208796767309825,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.006628114029703554,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.9004931449890137,
+     "wood_up": 1.3812692165374756,
+     "sapling_up": 2.0985605716705322,
+     "table_placed": 1.2393500804901123,
+     "zombie_hit": 1.2594797611236572,
+     "health_other": 0.9287538528442383,
+     "hud_other_change": 0.8263210654258728,
+     "hud_static": 0.0001247757172677666,
+     "map_moved": 0.2816937565803528,
+     "map_still": 0.06364244222640991,
+     "lighting": 0.0011362169170752168
+    },
+    "drift": {
+     "map": {
+      "residual_se": 0.0009350437745405157,
+      "raw_change_se": 0.015956221148371696,
+      "token_variance": 0.424042284488678
+     },
+     "hud": {
+      "residual_se": 0.00027735301569128685,
+      "raw_change_se": 0.007337672170251608,
+      "token_variance": 0.4283004105091095
+     },
+     "glimpse": {
+      "residual_se": 0.0005367582269059318,
+      "raw_change_se": 0.006358947139233351,
+      "token_variance": 0.08840188384056091
+     },
+     "lighting": {
+      "residual_se": 8.429958436091163e-06,
+      "raw_change_se": 0.002042180858552456,
+      "token_variance": 0.020239299163222313
+     }
+    },
+    "drift_by_class": {
+     "drink_up": 0.00042456871597096324,
+     "wood_up": 0.0004056786128785461,
+     "sapling_up": 0.00017331969866063446,
+     "table_placed": 0.005551062058657408,
+     "zombie_hit": 0.001356148743070662,
+     "health_other": 0.001106387353502214,
+     "hud_other_change": 0.0003429813659749925,
+     "hud_static": 0.00027425921871326864,
+     "map_moved": 0.0009292857721447945,
+     "map_still": 0.0009374501532875001,
+     "lighting": 8.429958143096883e-06
+    }
+   }
+  },
+  "6": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_06.pt",
+   "sha256": "4ebd0b2cc521370d7a3c00d5db311d06998c0211028bc5032dff27fd4abd4c1a",
+   "update": 13125,
+   "harmoniser_sigma": [
+    0.3902812898159027,
+    0.3819889724254608,
+    0.40869981050491333
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.3328372486788967,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.4606794521481354,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.5159635395234958,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.2200854630675167,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.3485835938936311,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.3068479660229645,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.18129351893616463,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.011272326901973806,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.06361068407028429,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.04424328658245989,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.028917660388809333,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.00483379606798948,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.9002548456192017,
+     "wood_up": 1.3857944011688232,
+     "sapling_up": 2.0809428691864014,
+     "table_placed": 1.2372692823410034,
+     "zombie_hit": 1.271321415901184,
+     "health_other": 0.9391001462936401,
+     "hud_other_change": 0.833027720451355,
+     "hud_static": 0.00012907593918498605,
+     "map_moved": 0.2782774269580841,
+     "map_still": 0.0636376366019249,
+     "lighting": 0.0011241264874115586
+    },
+    "drift": {
+     "map": {
+      "residual_se": 0.00030764398207015374,
+      "raw_change_se": 0.004847710952162743,
+      "token_variance": 0.42179033160209656
+     },
+     "hud": {
+      "residual_se": 0.0001438041540399404,
+      "raw_change_se": 0.002965607913210988,
+      "token_variance": 0.42944109439849854
+     },
+     "glimpse": {
+      "residual_se": 0.00018286124834056736,
+      "raw_change_se": 0.0012769760796800256,
+      "token_variance": 0.08769837021827698
+     },
+     "lighting": {
+      "residual_se": 5.534292361576716e-06,
+      "raw_change_se": 2.7858759494847618e-05,
+      "token_variance": 0.019992198795080185
+     }
+    },
+    "drift_by_class": {
+     "drink_up": 0.0001703314046608284,
+     "wood_up": 0.00018996300059370697,
+     "sapling_up": 0.00012331680045463145,
+     "table_placed": 0.0008104853332042694,
+     "zombie_hit": 0.0004157020593993366,
+     "health_other": 0.0003879617142956704,
+     "hud_other_change": 0.00016141367086675018,
+     "hud_static": 0.00014295155415311456,
+     "map_moved": 0.0002691115951165557,
+     "map_still": 0.0003286828869022429,
+     "lighting": 5.534292995434953e-06
+    }
+   }
+  },
+  "7": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_07.pt",
+   "sha256": "bc6ba09c9e0f503d652fdf5ce78d4a2dd3f34bf2f8b6420eb602411b80ff927c",
+   "update": 13750,
+   "harmoniser_sigma": [
+    0.38023972511291504,
+    0.37222716212272644,
+    0.3980146050453186
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.3253519476609898,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.4457350011006044,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.469581928912014,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.19441361873809782,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.3355263118074892,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.30042634195367307,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.17267979651790946,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.010849527562169285,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.0634720086784117,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.04415669964538891,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.02653954527704293,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.004164230472282519,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.8992196917533875,
+     "wood_up": 1.3737374544143677,
+     "sapling_up": 2.0428049564361572,
+     "table_placed": 1.2714980840682983,
+     "zombie_hit": 1.2682883739471436,
+     "health_other": 0.9434932470321655,
+     "hud_other_change": 0.8294447660446167,
+     "hud_static": 0.00013268215116113424,
+     "map_moved": 0.2808961570262909,
+     "map_still": 0.06397119909524918,
+     "lighting": 0.001102193957194686
+    },
+    "drift": {
+     "map": {
+      "residual_se": 0.000251092581273236,
+      "raw_change_se": 0.003049205057322979,
+      "token_variance": 0.4218176603317261
+     },
+     "hud": {
+      "residual_se": 0.00010205732036974147,
+      "raw_change_se": 0.0013067468535155058,
+      "token_variance": 0.4243476390838623
+     },
+     "glimpse": {
+      "residual_se": 9.91587106117878e-05,
+      "raw_change_se": 0.0005870317691005766,
+      "token_variance": 0.08655322343111038
+     },
+     "lighting": {
+      "residual_se": 5.458464504012847e-06,
+      "raw_change_se": 6.059768929844722e-05,
+      "token_variance": 0.019566170871257782
+     }
+    },
+    "drift_by_class": {
+     "drink_up": 7.913826266303658e-05,
+     "wood_up": 8.500413969159126e-05,
+     "sapling_up": 4.431818888406269e-05,
+     "table_placed": 0.0007051705033518374,
+     "zombie_hit": 0.00019504086230881512,
+     "health_other": 0.00021768655278719962,
+     "hud_other_change": 8.926347800297663e-05,
+     "hud_static": 0.00010205463331658393,
+     "map_moved": 0.00021421376732178032,
+     "map_still": 0.00027123300242237747,
+     "lighting": 5.458464329421986e-06
+    }
+   }
+  },
+  "8": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_08.pt",
+   "sha256": "0bb04bcaceaafea567ce37d53a95e58ac130daed2c72ed1e53e8366101b6eee5",
+   "update": 14375,
+   "harmoniser_sigma": [
+    0.3741302490234375,
+    0.3662937879562378,
+    0.39153897762298584
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.3334038215835043,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.4417272480089099,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.47487352029984875,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.15928224276884326,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.3292689042661205,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.29449924221954354,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.1673050580583386,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.009489901064118898,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.06249567652235369,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.043443266040024776,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.025364084408156982,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.004214448962083533,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.90838223695755,
+     "wood_up": 1.3795793056488037,
+     "sapling_up": 2.046562433242798,
+     "table_placed": 1.2837297916412354,
+     "zombie_hit": 1.2885346412658691,
+     "health_other": 0.966943085193634,
+     "hud_other_change": 0.836283802986145,
+     "hud_static": 0.0001287991035496816,
+     "map_moved": 0.281721293926239,
+     "map_still": 0.06434720009565353,
+     "lighting": 0.0010882930364459753
+    },
+    "drift": {
+     "map": {
+      "residual_se": 0.00017093141985748486,
+      "raw_change_se": 0.001224552746862173,
+      "token_variance": 0.4254302978515625
+     },
+     "hud": {
+      "residual_se": 8.111325368774249e-05,
+      "raw_change_se": 0.0007490878342650831,
+      "token_variance": 0.42475810647010803
+     },
+     "glimpse": {
+      "residual_se": 6.258764478403973e-05,
+      "raw_change_se": 0.0005623983452096581,
+      "token_variance": 0.08649730682373047
+     },
+     "lighting": {
+      "residual_se": 3.8103830582582613e-06,
+      "raw_change_se": 8.651878488308284e-06,
+      "token_variance": 0.019306253641843796
+     }
+    },
+    "drift_by_class": {
+     "drink_up": 5.9308655181666836e-05,
+     "wood_up": 5.946753663010895e-05,
+     "sapling_up": 3.560628101695329e-05,
+     "table_placed": 0.00021762229152955115,
+     "zombie_hit": 0.00017871531599666923,
+     "health_other": 0.00018535845447331667,
+     "hud_other_change": 6.15124445175752e-05,
+     "hud_static": 8.121666905935854e-05,
+     "map_moved": 0.00013735811808146536,
+     "map_still": 0.00018932620878331363,
+     "lighting": 3.81038307750714e-06
+    }
+   }
+  },
+  "9": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_09.pt",
+   "sha256": "837c8a8a7b74551a1cbe1c4e5bb1a74166f2fee9721bc722465cf5eae0645ba7",
+   "update": 15000,
+   "harmoniser_sigma": [
+    0.37024298310279846,
+    0.362528532743454,
+    0.3874436914920807
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.32597919369803213,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.461516540193543,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.5007792326910986,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.16520121480338276,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.3171640184264207,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.2887804561512489,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.16486556329481453,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.008400016980492803,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.061875940677822074,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.04273899838734697,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.02480174896182144,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.0037663505623019597,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.9076286554336548,
+     "wood_up": 1.3822180032730103,
+     "sapling_up": 2.041227102279663,
+     "table_placed": 1.303736925125122,
+     "zombie_hit": 1.2570745944976807,
+     "health_other": 0.9301221966743469,
+     "hud_other_change": 0.8352003693580627,
+     "hud_static": 0.0001271302462555468,
+     "map_moved": 0.2841954827308655,
+     "map_still": 0.06444139033555984,
+     "lighting": 0.0010797327850013971
+    },
+    "drift": {
+     "map": {
+      "residual_se": 0.00015750584369673913,
+      "raw_change_se": 0.0016371716046705842,
+      "token_variance": 0.428918719291687
+     },
+     "hud": {
+      "residual_se": 8.179539970860512e-05,
+      "raw_change_se": 0.0010219583055004478,
+      "token_variance": 0.42381227016448975
+     },
+     "glimpse": {
+      "residual_se": 3.9033781394441804e-05,
+      "raw_change_se": 0.00028109014965593815,
+      "token_variance": 0.08700918406248093
+     },
+     "lighting": {
+      "residual_se": 3.84699431490879e-06,
+      "raw_change_se": 6.391774149960838e-06,
+      "token_variance": 0.019146723672747612
+     }
+    },
+    "drift_by_class": {
+     "drink_up": 7.029485277598724e-05,
+     "wood_up": 6.662008672719821e-05,
+     "sapling_up": 2.7224641598877497e-05,
+     "table_placed": 0.00026034688926301897,
+     "zombie_hit": 0.0002107881591655314,
+     "health_other": 0.00021289566939231008,
+     "hud_other_change": 6.300973473116755e-05,
+     "hud_static": 8.180983422789723e-05,
+     "map_moved": 0.00013060048513580114,
+     "map_still": 0.0001722366432659328,
+     "lighting": 3.8469943319796585e-06
+    }
+   }
+  },
+  "10": {
+   "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_10.pt",
+   "sha256": "82b0ecc037a5d538597ed0639fe3823ca73046448cc9c6837704f8aada6e6271",
+   "update": 15625,
+   "harmoniser_sigma": [
+    0.3675763010978699,
+    0.35993537306785583,
+    0.3846399188041687
+   ],
+   "b1": {
+    "class_losses": {
+     "drink_up": {
+      "se_per_element": 0.32158025591348055,
+      "elements": 14320.0
+     },
+     "wood_up": {
+      "se_per_element": 0.4435237990153984,
+      "elements": 20624.0
+     },
+     "sapling_up": {
+      "se_per_element": 0.47115536663808266,
+      "elements": 1056.0
+     },
+     "table_placed": {
+      "se_per_element": 0.14001291571584132,
+      "elements": 5600.0
+     },
+     "zombie_hit": {
+      "se_per_element": 0.3044118193968862,
+      "elements": 5776.0
+     },
+     "health_other": {
+      "se_per_element": 0.28688700787039084,
+      "elements": 16688.0
+     },
+     "hud_other_change": {
+      "se_per_element": 0.16049952737671921,
+      "elements": 164560.0
+     },
+     "hud_static": {
+      "se_per_element": 0.007076876334695462,
+      "elements": 13158608.0
+     },
+     "map_moved": {
+      "se_per_element": 0.060973308821324776,
+      "elements": 17112816.0
+     },
+     "map_still": {
+      "se_per_element": 0.04175133182639823,
+      "elements": 29717296.0
+     },
+     "glimpse": {
+      "se_per_element": 0.024088433007235042,
+      "elements": 26763264.0
+     },
+     "lighting": {
+      "se_per_element": 0.003389166043968692,
+      "elements": 371712.0
+     }
+    },
+    "copy_se": {
+     "drink_up": 0.9113052487373352,
+     "wood_up": 1.3852399587631226,
+     "sapling_up": 2.0282328128814697,
+     "table_placed": 1.2970975637435913,
+     "zombie_hit": 1.2752829790115356,
+     "health_other": 0.9496672749519348,
+     "hud_other_change": 0.8383030295372009,
+     "hud_static": 0.00012267330021131784,
+     "map_moved": 0.2814788520336151,
+     "map_still": 0.063865065574646,
+     "lighting": 0.0010741890873759985
+    },
+    "drift": {
+     "map": {
+      "residual_se": 0.00014124824153407382,
+      "raw_change_se": 0.0009759598760865629,
+      "token_variance": 0.4221743643283844
+     },
+     "hud": {
+      "residual_se": 6.049967033522202e-05,
+      "raw_change_se": 0.0005550726200453937,
+      "token_variance": 0.4235399067401886
+     },
+     "glimpse": {
+      "residual_se": 3.218745604484816e-05,
+      "raw_change_se": 0.0003606637183111161,
+      "token_variance": 0.0864938348531723
+     },
+     "lighting": {
+      "residual_se": 2.7021811014508715e-06,
+      "raw_change_se": 3.46588967659045e-06,
+      "token_variance": 0.019035544246435165
+     }
+    },
+    "drift_by_class": {
+     "drink_up": 3.9408962038578466e-05,
+     "wood_up": 4.432199420989491e-05,
+     "sapling_up": 3.639429633039981e-05,
+     "table_placed": 0.0001580900134285912,
+     "zombie_hit": 9.990068792831153e-05,
+     "health_other": 0.00011503145651658997,
+     "hud_other_change": 4.4033495214534923e-05,
+     "hud_static": 6.066053902031854e-05,
+     "map_moved": 0.00011511865159263834,
+     "map_still": 0.00015556777361780405,
+     "lighting": 2.7021810637961607e-06
+    }
+   }
+  }
+ }
+}
