@@ -77,7 +77,28 @@ A possible outcome to face honestly: if looking at a consequence barely moves th
 physical-progress chooser has no reason to look there, the fovea's training role cannot reach failure 3, and the
 field deficit needs another lever. Graves found uniform sampling "a surprisingly strong benchmark".
 
-## 7. B, redesigned: what to measure before choosing (proposal; needs the user's go-ahead)
+## 6b. How the literature frames "of what" (added 10-31, sources verified)
+Every approach is progress or information about SOMETHING on SOME distribution; they differ in exactly the two
+choices of sections 2-3.
+- **Parameters vs predictions.** BALD (and VIME's posterior KL) rewards information about the parameters. EPIG
+  (Bickford Smith, Kirsch, Farquhar, Gal, Foster, Rainforth; AISTATS 2023) shows BALD "lacks a notion of an input
+  distribution and so is prone to prioritise data of limited relevance", and measures information gain "in the space
+  of predictions rather than parameters", in expectation over a TARGET input distribution. Graves's target prediction
+  gain, LESS's validation gradients and Kim et al.'s own objective (their eq. 1-2: loss on a validation distribution
+  mu; gamma-progress approximates mu by the history) are the loss-based versions. Our candidate 2 is EPIG's choice:
+  predictions of the physical percept, target distribution = the data under the reference gaze.
+- **States vs parameters (active inference).** Schwartenbeck et al. (eLife 2019, with Friston) split goal-directed
+  exploration into hidden-state exploration and model-parameter exploration: "'salience is to inference' as
+  'novelty is to learning'"; parameter exploration declines as the agent's uncertainty over its model falls. The
+  user's two stages are this split: P1's fixation = novelty (learning the world), P2 / P3's VoI = salience (inferring
+  the state for decisions) plus pragmatic value. They need different targets: novelty's is the world's predictions;
+  salience's is the belief about the current state.
+- **Reducible vs raw.** RHO-LOSS (holdout-irreducible loss) and Curiosity-Critic (a learned noise floor) subtract
+  what cannot be learned; progress-based signals (IAC, Graves, gamma-progress) measure change instead. EPIG's
+  information gain is zero for irreducible noise by construction (aleatoric uncertainty carries no information about
+  predictions). Sapling's coin is the case that separates them in our data.
+
+## 7. B: what to measure before choosing (user 10-31: launch; protocol in PLAN.md B)
 Frozen checkpoints 1-10 of world 1 (random gaze) and P1-F (rule gaze), dev frames, GPU, reading only. Consecutive
 checkpoints are 1,562 updates apart, close to gamma-progress's horizon (gamma 0.9995: 2,000 updates).
 - **B1. Token drift.** Each checkpoint encodes the same frames; per token group (map, HUD, glimpse, lighting), the
@@ -99,6 +120,8 @@ Not chaining: B is one reading with two instruments. Nothing about the chooser's
 Kim et al. 2020 (https://arxiv.org/abs/2007.07853, sections 4.1-4.2 read); Graves et al. 2017
 (https://arxiv.org/abs/1704.03003); Oudeyer, Kaplan & Hafner 2007; Suau et al. 2024; BYOL-Explore (Guo et al.,
 NeurIPS 2022, https://arxiv.org/abs/2206.08332, abstract level); RND as described by Kim et al.; TracIn (Pruthi et al.,
-NeurIPS 2020) and LESS (Xia et al., ICML 2024, https://arxiv.org/abs/2402.04333, abstract level); shortcut preference
+NeurIPS 2020) and LESS (Xia et al., ICML 2024, https://arxiv.org/abs/2402.04333, section 3 read); shortcut preference
 for simple cues (Shah et al., NeurIPS 2020, https://arxiv.org/abs/2006.07710; Geirhos et al., Nature Machine
 Intelligence 2020, https://arxiv.org/abs/2004.07780; abstract level); Codex's REPORT.md (fixation gate).
+Added 10-31: Bickford Smith et al. 2023, EPIG (https://proceedings.mlr.press/v206/bickfordsmith23a.html, abstract
+level); Schwartenbeck et al. 2019 (eLife 8:e41703, https://pmc.ncbi.nlm.nih.gov/articles/PMC6510535, sections read).
