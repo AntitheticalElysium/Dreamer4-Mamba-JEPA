@@ -97,8 +97,12 @@ recorded). Per-achievement rows are outcome-selected (recall only).
    adjacent", most at the health window (7, 1). The guided death and damage gains are therefore confounded with a
    label-derived cue (PLAN's competing explanation b): policy-specific, not world quality.
 5. One-step generation regressed broadly under random gaze (C2ST 0.761 -> 0.960, monitor +50%, map G1 ~2x, movement,
-   skeleton counts, reward calibration). Cause not localized; three candidates: evaluation off P1-F's training gaze
-   distribution, guidance's effect on training, the harmoniser re-weighting (section 5).
+   skeleton counts, reward calibration). The own-gaze re-read (follow-up readings) splits it. Map dynamics (map G1
+   ~2x, movement, skeleton counts), health changes other than zombie hits (~2x) and the C2ST stay worse under P1-F's
+   own gaze: a regression of the recipe,
+   guidance in training vs the harmoniser re-weighting (section 5) not separable. Reward calibration and the HUD
+   consequences were the evaluation's gaze: under its own gaze P1-F is better than world 1 on both (label-derived
+   placement, item 4).
 
 ## C2ST localization (`localize_c2st.py`, `readings/c2st_localization.json`; user 10-31, Codex post hoc)
 S1.3's path and seeds, one outcome group at a time (all tuples), world 1 -> P1-F: periphery map 0.570 -> 0.706,
@@ -116,6 +120,78 @@ so equal error is twice as large": the 0.023 / 0.013 statistic is the raw p_out 
 LayerNorm; the denoiser sees normalised tokens in both worlds. Post-normalisation effective rank 4.0 -> 5.7 is a real
 difference.)
 
+## Follow-up readings (user 10-31; PLAN "Follow-up readings"; Codex post hoc)
+### Own-gaze re-read (`own_gaze.py`, commit 1ac1c723, unit p1f-own-gaze, 1 h 52 min, clean exit; `readings/own_gaze/`)
+Guided gaze refixates 16.8% of dev frames (the rule-decided ones), the same frames for both worlds. Periphery tokens
+do not depend on the fixation (per-cell MLP; only the crop does), so the G1 targets on periphery cells are identical
+under both gazes: only the predictions' inputs change (the predicted frame's fixation and, where an earlier context
+was a rule context, the history's glimpses). The random rows reproduce the earlier readings exactly (P1-F's S1 equals
+`run/s1` in every S1.3 number; world 1's C2ST 0.7613 equals S1's; class losses and movement as section 3).
+
+| | world 1 random | world 1 guided | P1-F random | P1-F guided |
+|---|---|---|---|---|
+| C2ST accuracy | 0.761 | 0.848 | 0.960 | 0.942 |
+| power: frozen time (shuffled 0.98 / 0.98 / 0.975 / 0.975, mismatched 0.94 all) | 0.907 | 0.857 | 0.914 | 0.898 |
+| reward NLL (ECE) | 0.0251 (0.0011) | 0.0250 (0.0011) | 0.0362 (0.0043) | 0.0073 (0.00008) |
+| generated skeletons / cows / zombies (real 0.15-0.16 / 0.47 / 0.42) | 0.138 / 0.25 / 0.235 | 0.138 / 0.25 / 0.235 | 0.052 / 0.28 / 0.224 | 0.052 / 0.28 / 0.227 |
+| movement shift | 0.910 | 0.910 | 0.858 | 0.858 |
+| G1 map still / map moved | 0.0216 / 0.0336 | 0.0216 / 0.0336 | 0.0423 / 0.0646 | 0.0423 / 0.0646 |
+| G1 all periphery cells | 0.0224 | 0.0224 | 0.0414 | 0.0412 |
+| G1 drink up / wood up / sapling up | 0.158 / 0.106 / 0.443 | 0.161 / 0.108 / 0.438 | 0.378 / 0.398 / 0.517 | 0.087 / 0.031 / 0.230 |
+| G1 table placed / zombie hit | 0.132 / 0.201 | 0.131 / 0.203 | 0.122 / 0.303 | 0.095 / 0.213 |
+| G1 health other / HUD other change / HUD static | 0.148 / 0.137 / 0.0080 | 0.148 / 0.137 / 0.0080 | 0.303 / 0.154 / 0.0071 | 0.297 / 0.153 / 0.0068 |
+| G1 glimpse | 0.032 | 0.035 | 0.024 | 0.024 |
+| TSP nats / pixel | 2.18 | 2.09 | 2.30 | 2.21 |
+
+S1.1 perception: no reading moves by more than 0.01 with the gaze in either world. S1.2's belief probe: equal under
+both gazes in world 1; in P1-F apart from collect diamond (AP 0.53 -> 0.50) and recently departed zombies (AP at 1-4
+steps 0.13 -> 0.15). S1.2's percept-only and last-8-steps controls do move: they read the glimpse directly, and the rule's placement marks zombie
+adjacency (last-8 departed-zombie AP at 1-8 steps: world 1 0.06-0.09 -> 0.15-0.17, P1-F 0.08-0.11 -> 0.18-0.22).
+
+Instrument check (world 1, guided vs random): passes for the G1 classes (largest move 0.003), movement, counts,
+perception, belief and reward calibration. It FAILS for the C2ST: +0.087, above the ~0.07 fit spread, frozen-time
+control -0.05. The C2ST depends on where the eye is, not only on the world, so the declared comparison (P1-F guided
+against world 1 random) mixes a world difference with a test difference. Why world 1 reads worse under guided gaze is
+not measured; the refixated frames alone could raise it to 0.80 at most (0.832 x 0.761 + 0.168), so the rise reaches
+beyond them.
+
+Declared reading applied, instrument by instrument:
+- Regression of the recipe: map dynamics, and health changes other than zombie hits. Under P1-F's own gaze map G1 is
+  still ~2x world 1's (still 0.042 vs 0.022, moved 0.065 vs 0.034), movement 0.858 vs 0.910, generated skeletons 0.052
+  vs 0.138, health other 0.30 vs 0.15; none moves by more than 0.006 with P1-F's gaze. C2ST 0.942 vs 0.761 is clearly worse by the declared comparison and at
+  matched gaze too (random +0.20, guided +0.09; P1-F itself moves -0.018, within spread): the gap's size depends on the
+  gaze through world 1. The periphery G1 total, which the map dominates, does not move with the gaze (0.0414 /
+  0.0412), consistent with the monitor's +50% being the recipe's. Guidance in training vs the harmoniser re-weighting
+  remains inseparable by reading (declared).
+- The evaluation's gaze: reward calibration and the HUD consequences. Under P1-F's own gaze its reward NLL is 0.0073,
+  under a third of world 1's 0.025 (ECE 0.00008 vs 0.0011), and the consequence classes are below world 1's (drink up
+  0.087 vs 0.158, wood up 0.031 vs 0.106, sapling up 0.23 vs 0.44, table 0.095 vs 0.13; zombie hit 0.21 vs 0.20,
+  equal). These own-gaze numbers carry the label-derived placement (establish 4).
+- Mechanism, within what is measured: the targets are the same under both gazes, so P1-F's drink-up loss falling
+  from 0.378 to 0.087 comes from the predictions' inputs alone, while the next section shows the digit loud in its
+  real periphery tokens. P1-F's prediction of a counter change keys on the gaze the rule computed from the context,
+  not on the action and faced block it was computed from: policy confounding (Suau, Spaan, Oliehoek, "Bad Habits",
+  RLC 2024), the rule having made the fixation a perfect proxy of the context in training. Whether the key is the
+  predicted frame's fixation or the history's glimpses is not separated here.
+
+### Glimpse token geometry (M0.5's `dissect/token_geometry.py` on this run's readers; `readings/token_geometry.json`)
+World 1 refit here reproduces M0.5's base to every printed digit (M0.5 at 1500 updates equals its base). Step between
+adjacent counter values over the within-value radius, mean over the glimpse windows holding the counter (share of
+the token's squared norm):
+
+| | world 1 | P1-F |
+|---|---|---|
+| glimpse drink increment | 0.37 (0.009) | 1.51 (0.39) |
+| glimpse wood increment | 0.25 (0.005) | 1.61 (0.39) |
+| glimpse health +-1 / damage | 0.40 (0.016) / 0.58 | 1.99 (0.47) / 2.15 |
+| glimpse appearance: drink, wood, sapling (range over windows) | 2.3-3.4, 2.7-3.7, 1.5-2.3 | 2.3-3.0, 2.2-3.2, 1.9-3.0 |
+| periphery increment: health, drink, sapling, wood | 4.8, 3.9, 3.5, 4.2 | 12.7, 11.8, 19.3, 13.0 |
+
+Reading (declared): above 1, so the digit is now a prominent direction of the glimpse token (M0.5's dissection:
+~0.3x, "glimpse digit ~invisible in token space"); appearance steps unchanged. Not attributable to the decoder or to
+guidance. With the re-read: under random gaze the digit is loud in P1-F's real tokens on both paths, so the random-gaze
+failures (no change drawn, the reward head's misses on real frames) are not a perception failure.
+
 ## Retracted or not supported (mine)
 - "The 30x weaker pixel pull may have lost the HUD from the tokens": refuted (decoder 1.000, digit probe 1.0, belief
   HUD equal or better, reader 1.0 on real periphery tokens).
@@ -124,10 +200,13 @@ difference.)
   the periphery draws them under the rule's gaze; the dependence is on the gaze policy (section 3).
 - The C2ST localization's declared non-attempt reading and the token-scale explanation (that section).
 - Omitted from the first write-up: world 1's monitor and the G1 loss by class (section 3, now reported).
-- Not run: PLAN reading 3's glimpse token geometry (M0.5 dissection), declared and skipped.
+- Not run: PLAN reading 3's glimpse token geometry (M0.5 dissection), declared and skipped (run 10-31: follow-up
+  readings).
+- The follow-up PLAN took world 1's gaze invariance at the actor interface as holding for every instrument: not for
+  the C2ST (+0.087 under guided gaze).
 
 ## Limits
 One seed per arm (P1 world seed 2 not run: no seed spread for any difference); three recipe differences, none
-isolated; S1, the class losses, the monitor and movement were read under random gaze only, off P1-F's training
-distribution on the rule's frames and the histories behind them; guided-route readings carry the label-derived
-placement.
+isolated; the monitor was read under random gaze only (S1, the class losses and movement under both: follow-up
+readings); the C2ST is not gaze-invariant (world 1 +0.087), so cross-gaze C2ST comparisons mix world and test;
+guided-route readings carry the label-derived placement.
