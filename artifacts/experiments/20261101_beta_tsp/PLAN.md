@@ -26,6 +26,13 @@ checkpoint config; identity file; resume validation compares the stored config).
   the gradient norm (8.70 vs 6.53; the update is clipped at 1 in both, so TSP's share of each step grows: part of the
   treatment, as Codex states); 1.34 s / update, peak 4.0 GiB, as P1-F.
 
+## Run (11-01)
+Unit saccade-beta-tsp, 00:08-09:32 (9 h 25 min), 25.6 M frames, clean exit. The monitor fell at every checkpoint
+(0.0932 -> 0.0272; P1-F 0.1061 -> 0.0286), so P1-F's rule selects checkpoint 10. The readings run by hand in
+`queue.sh` (unit beta-readings): S1; the actor interface under both gazes and M0.5's evaluator with P1-F re-run beside
+this run (the same rows and draws; the re-run must reproduce P1-F's 10-31 numbers); the decoder render; Codex's
+readings through `readings_codex.py` (its code unchanged, outputs redirected to readings/codex/).
+
 ## Claim, competing explanations, control
 - **Claim.** From initialization, the scale-weighted TSP teacher lowers the renderer static carried by the periphery
   tokens at night and improves generated physical outcomes against P1-F, while keeping faithful's digit / icon
