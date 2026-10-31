@@ -179,3 +179,59 @@ Abstract level: Herwig & Schneider 2014 (JEP:G 143:1903); Itti & Baldi 2009 (Vis
 2005 (Nature 434:387, not used above); Ramakrishnan & Grauman 2018 (https://arxiv.org/abs/1807.11010); Shah et al. 2020
 (https://arxiv.org/abs/2006.07710); Pezeshki et al. 2021 (https://arxiv.org/abs/2011.09468). Earlier notes: SWEEP.md,
 PROGRESS.md.
+
+## 9. Revisions after the user's questions (10-31, late)
+**Which fixation path is cut (code-checked, saccade/train.py p1_losses).** The fixation reaches the periphery by two
+different paths. (a) Perception: TSP reconstructs the CURRENT crop from the CURRENT periphery tokens at the looked-at
+cells (`model.tsp.predict(bp, Pc.p, Pc.v, M.window(fix))`, `Pc.p` not detached): where the eye looks is where the
+periphery encoder is taught fine detail (P1-F's periphery carries the digits because the rule looked at counters).
+This is the brain's transsaccadic learning (Herwig & Schneider 2014) and stays. (b) Dynamics: the denoiser's
+prediction of the NEXT periphery also reads the NEXT (query) fixation; its targets are detached (`b.detach()`, prefix
+under `no_grad`), so this path never trains the encoder's tokens; G1 reaches the encoder only through the belief.
+Section 5.1 proposes cutting (b) only. With the glimpse generated from the predicted periphery (+ belief memory +
+fixation), the glimpse's loss trains the predicted periphery to hold what the fovea will need, everywhere, because
+the next fixation is unknown to it: more pressure on fine detail, not less.
+**Why (b) carries no information.** Looking does not change Craftax, and the periphery sensor does not depend on gaze
+(Codex asserts it). The next fixation is chosen from the belief and the action, which the denoiser already has; it
+can only add a cue (a learned chooser) or leaked labels (the hand rule). In POMDP terms the fixation is a sensing
+action: it enters the observation of the gaze-dependent part (the glimpse), never the transition. The joint
+denoiser merges a world model and a sensor model; the factorisation separates them, as the brain does (remapping
+and foveal prediction predict the gaze-dependent input from a gaze-invariant representation). Precedent for the
+generative form: cascaded diffusion, a super-resolution stage conditioned on the low-resolution sample, with
+conditioning augmentation "crucial" against compounding error (Ho et al., JMLR 2022). It also makes VoI computable
+in imagination: what a look would reveal is the stochastic part of p(glimpse | periphery, belief, fixation).
+**Look first or act first.** Both, in one fixation stream. In skilled manipulation gaze reaches the contact point
+before the hand and leaves at the contact event (Johansson 2001): the look follows the decision of what to do and
+precedes the outcome, and it both guides the movement and verifies it. While a novel visuomotor mapping is being
+learned, "gaze typically pursued the cursor" (the action's visible consequence); as the hit rate rose, "gaze
+fixations began to mark predictively desired cursor positions", and later peripheral vision sufficed for refinement
+(Sailer, Flanagan & Johansson, J Neurosci 2005). Information-sampling looks precede the decision they inform (Foley
+2017). In M0 the fixation for frame t is chosen with a_{t-1}: it lands on a_{t-1}'s outcome (monitoring, learning)
+and feeds the belief that chooses a_t (information): P1's and P2 / P3's objectives are two uses of the same stream.
+**Learning progress is not set aside: it is the modulation; action contingency is the location.** Brain: the
+consequence-monitoring gaze of Sailer et al. ends as the mapping is learned; humans choose activities by progress plus
+competence (Ten 2021); infants' looking away is predicted independently by surprise, predictability and learning
+progress (Poli et al., Sci Adv 2020, abstract level). ML: IAC's progress is measured on predictions of the sensory
+consequences of the agent's own actions in sensorimotor regions (Oudeyer et al. 2007): action-contingent progress is
+IAC. Progress alone over 49 windows is statistically hard (B2: small, noisy per look); restricted to where the action
+acts it has a structure for its credit, and under the factorisation the view prediction's progress at the looked-at
+window is a direct signal (no longer transfer), measurable against fixed pixel targets (the real crop), which no
+longer rewards gating because the physical prediction cannot gate.
+**Prior art (none found combining them).** LP-driven gaze for world-model learning: Kim et al. ICML 2020. Attention to
+the controllable region learned by inverse dynamics, on a 9 x 9 grid, label-free across eight Atari games ("contingency
+awareness"): Choi et al. ICLR 2019. Sensory policy rewarded by inverse-model predictability: SUGARL 2023. A self-model
+predicting the world model's error drives play (Haber et al. NeurIPS 2018; noise-prone, fixed by progress in Kim 2020).
+Learned where-maps: Daucé et al. 2020; HPM 2023.
+**The learned map's generality.** Any chooser other than a fixed rule is a learned map (the brain's gaze patterns
+"must be learned", Hayhoe & Ballard). What must be general is its target. Revised proposal: the contingency term is
+computed from the world itself (F; no extra head; a null action or the mean over actions as reference), the learned
+part predicts the view model's progress (bandit feedback from the looked-at window: available online, not only on
+recorded data). The full-feedback realized-action-effect head of section 7 is dropped as the default: progress
+subsumes its purpose; it stays a fallback if remote consequences are found too slowly. Offline, P1 could evaluate any
+window on the stored full-resolution frame; that would not carry over to an agent that only perceives a crop.
+**Coherence P1 -> P2 / P3.** One priority map over windows: floor + contingency x (progress, competence) [learning]
++ VoI [decisions; covers exogenous, decision-relevant events]. The active-inference split (novelty vs salience,
+Schwartenbeck et al. 2019) is the same decomposition, with novelty declining as the model is learned. Two conditions:
+the learning term matters in P2 / P3 only if the world (or the view model) keeps training there (LEARNING_SKETCH froze
+it during actor training); exogenous events that are learnable but not decision-relevant get only the floor (in
+Craftax the mob deficits are the sampler's, A).
