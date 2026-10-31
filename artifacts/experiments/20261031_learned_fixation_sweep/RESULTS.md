@@ -1,6 +1,6 @@
 # Premise readings for the learned fovea: results (10-31)
 
-PLAN.md's declared readings. A, B and D complete.
+PLAN.md's declared readings. A, B, D and F complete.
 
 ## A. What part of failure 3 could fixation reach? (`decompose.py`, commit 03afde3d, unit fovea-decompose, 1 h 31 min; `decompose/results.json`)
 Instrument check: world 1 under random gaze reproduces the 10-29 generation diagnosis on its five classes (risky
@@ -185,3 +185,46 @@ What B establishes and does not:
   reading in both directions. The fixed-target gaze-free prediction remains the safer "of what"; B2's support for it
   rests on one class, not two.
 - D: no VoI substrate yet on P1-F; the HUD reading is ceilinged because the periphery carries the digits.
+
+## F. Can the world point its own eye at where the action will act? (`locus.py`, commits 38ce9b60 + fix, unit fovea-locus, 20 min; `locus/summary.json`)
+First 400 dev episodes; 300 contexts per DO class (217 failed stone attempts), 600 random frames. Belief replay for
+the recorded action within 0.65-0.86% relative L2 at all four checkpoints (bar 2%). Coverage = P(the arg-max window
+covers a consequence cell), episode-bootstrap SE; chance in brackets.
+
+| world | drink (0.12) | wood (0.12) | sapling (0.12) | stone (0.31) | coal (0.27) | iron (0.22) | stone, no pickaxe |
+|---|---|---|---|---|---|---|---|
+| world 1, ckpt 2 | 0.11 | 0.15 | 0.10 | 0.35 | 0.23 | 0.14 | 0.29 |
+| world 1, ckpt 5 | 0.27 | 0.14 | 0.16 | 0.95 | **0.93** | 0.67 | 0.28 |
+| world 1, ckpt 10 | 0.38 | 0.25 | 0.22 | 0.95 | **0.93** | 0.58 | 0.37 |
+| P1-F, ckpt 10 (uniform query) | 0.21 | 0.04 | 0.13 | **0.99** | **0.98** | **0.90** | 0.09 |
+| world 1 ckpt 10, realized change (post-outcome reference) | **0.77** | 0.42 | 0.07 | 0.80 | **0.94** | **0.88** | 0.01 |
+
+(bold: the declared "locates", coverage >= 0.5 and coverage - 3 SE > 3 x chance; SEs 0.01-0.03, 0.05-0.06 for the
+failed attempts. Stone misses the bar at ckpts 5 and 10 by its high chance: 0.95 - 0.03 against 3 x 0.31.)
+
+Declared reading:
+- **Locates** at world 1 checkpoint 10: coal (stone at the bar, iron 0.58 short of it); also at checkpoint 5; nothing
+  at checkpoint 2 (every class near chance). A from-scratch chooser has no such prior early.
+- **Where the peak is.** The contingency's maximum CELL is the faced tile for wood 0.68 (world 1, ckpt 10; P1-F
+  0.90), coal 0.64, stone 0.46, failed stone attempts 0.49 (P1-F 0.87), almost never the player's own cell (<= 0.03
+  at world 1 ckpt 10; drink 0.16 at ckpt 5): the
+  world's prediction of the next frame depends on DO most at the tile DO acts on, including trees, which do not
+  change, and stone without a pickaxe, where nothing happens. The signal finds the action's locus (the contact
+  landmark), not the outcome; it fires on failed attempts (matching negatives).
+- **The declared circularity did not occur; its mirror did.** Consequences on the map at the locus (mining:
+  block -> path) are located; consequences shown only in the HUD inventory (drink, wood, sapling) are not
+  (counter coverage 0.22-0.38 in world 1, 0.04-0.21 in P1-F), although the realized change shows them after the
+  fact (drink 0.77, wood 0.42). The HUD counters are what A found the field under-predicts (sigma 6.67: drink 0.18,
+  wood 0.24, coal 0.05): a self-referential signal cannot point at a consequence the world does not yet predict.
+  Much of the HUD mass is on OTHER HUD cells (drink: arg-max on another HUD cell 0.52): diffuse, not specific.
+- **Specificity**: not "always the HUD" (the faced tile dominates for wood, coal, stone).
+- **Competing signals.** Predicted change and sample spread locate mining less well (coal, stone 0.71-0.81; iron
+  0.46-0.47 at ckpt 10) and the
+  HUD classes no better; the coarse region measure on random frames shows no night capture for either (descriptive).
+- **P1-F**: under a uniform query its own counter consequences are invisible to the signal (wood 0.04): the gate
+  hides gated knowledge from a label-free chooser, as Codex's test predicts.
+
+What F establishes: from mid-training a frozen world supplies, label-free and before the outcome, a prior that puts
+the eye on the tile the action acts on, failures included. What it does not: a way to find consequences displayed
+away from the locus (the inventory) from the world's own predictions; for those, only the realized outcome carries
+the location. Not covered: whether looking at the locus teaches anything (B2), what a trained chooser would do.

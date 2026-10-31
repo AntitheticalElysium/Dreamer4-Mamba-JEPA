@@ -1,0 +1,35 @@
+{
+ "episodes": 400,
+ "contexts": {
+  "drink": 300,
+  "wood": 300,
+  "sapling": 300,
+  "stone": 300,
+  "coal": 300,
+  "iron": 300,
+  "stone_no_tool": 217,
+  "random": 600
+ },
+ "checkpoints": {
+  "w1_02": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_02.pt",
+   "sha256": "39eb3d9d6b43104f28ce8f2acd9babea6bab4f93c2214417a97ad10f6a78dcc5",
+   "belief_replay_worst_rel_l2": 0.006493023596704006
+  },
+  "w1_05": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_05.pt",
+   "sha256": "fe2aee881e061278096120734f982dff65d44d5719d2dbc8495884edfbfab09e",
+   "belief_replay_worst_rel_l2": 0.008068162016570568
+  },
+  "w1_10": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_10.pt",
+   "sha256": "74eccc433bf5a785edd6d565edc1a970f8b468510abf2c0b07e24d28b547ebe5",
+   "belief_replay_worst_rel_l2": 0.006755399983376265
+  },
+  "p1f_10": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_10.pt",
+   "sha256": "82b0ecc037a5d538597ed0639fe3823ca73046448cc9c6837704f8aada6e6271",
+   "belief_replay_worst_rel_l2": 0.008644333109259605
+  }
+ }
+}
