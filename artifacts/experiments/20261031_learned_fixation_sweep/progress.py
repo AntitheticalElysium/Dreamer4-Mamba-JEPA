@@ -373,14 +373,16 @@ def summary(out_dir):
                     i0, i1 = tn.index(f"{tc}_{kind}_0"), tn.index(f"{tc}_{kind}_1")
                     r = {"target_half_reliability": float(gram[i0, i1, 0] / np.sqrt(max(gram[i0, i0, 0] * gram[i1, i1, 0], 1e-300)))}
                     for q, geo in enumerate(GEOMETRIES):
-                        o_ = ordinary[:, [i0, i1], :, q].sum(-1).mean(1)
+                        # q indexed first: a list and an integer split by a slice move the list's axis to the front
+                        o_ = ordinary[..., q][:, [i0, i1]].sum(-1).mean(1)
                         e = {"direct": float(gram[i0, i1, q]) if q < 2 else None,
                              "ordinary": {"est": float(o_.mean()), "se": float(o_.std(ddof=1) / np.sqrt(len(o_)))}}
                         for j, cond in enumerate(CONDS):
-                            s = delta[:, j, [i0, i1], :, q].sum(-1)         # [groups, halves]
+                            m = delta[:, j][..., q][:, [i0, i1]]             # [groups, halves, modules]
+                            s = m.sum(-1)
                             e[cond] = {"est": float(s.mean()), "se_groups": float(s.mean(1).std(ddof=1) / np.sqrt(len(s))),
-                                       "halves": s.mean(0).tolist(),
-                                       "by_module": dict(zip(MODULES, delta[:, j, [i0, i1], :, q].mean((0, 1)).tolist()))}
+                                       "halves": s.mean(0).tolist(), "groups": s.mean(1).tolist(),
+                                       "by_module": dict(zip(MODULES, m.mean((0, 1)).tolist()))}
                         r[geo] = e
                     row[c][f"{tc}_{kind}"] = r
         res.setdefault(w, {})[k] = row

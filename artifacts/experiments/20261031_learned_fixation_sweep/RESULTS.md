@@ -94,59 +94,85 @@ out of GPU memory at checkpoint 1 (two target graphs held at once; the 2-row GPU
   the targets are stable and progress is small. The movement is re-scaling, not re-coding.
 
 ### B2. Transfer: does the look teach the gaze-free prediction? (96 contexts per class in 6 episode-disjoint groups; fresh targets 2 x 64)
-Declared reading: the counter look's transfer to its own gaze-free counter target > 0 beyond 3 SE, above the control
-window's (3 SE of the difference) and above its transfer to every other class's target, in both Adam geometries.
+**Correction (10-31, night): the first version of this section read wrong z-scores.** `summary()` indexed
+`delta[:, j, [i0, i1], :, q]`: a list and an integer separated by a slice, so NumPy moved the halves axis to the front
+and the "SE over the 6 groups" was the spread of the 2 target halves (n = 2, one degree of freedom). Estimates and
+module splits were right; every SE and z was not (hence values like -183 and -424). Fixed in progress.py (groups axis
+kept first; per-group values now saved); summary re-run from the saved arrays: all 12,240 estimates and module splits
+identical, B1 identical, one SE checked by hand. The declared reading is re-applied below with the group SE and the
+paired (per-group) difference from the control, as PLAN states; the first version also left out the faced window,
+which PLAN's reading includes. Retracted from the first version: world 1 "holds for wood (1, 7) and stone (4)";
+P1-F "wood holds at 1", "NEGATIVE from checkpoint 4 beyond 3 SE (z -2.4 to -183)", "drink negative in both at 9",
+"stone negative at 5", "reward negative across classes (z -424)"; "re-coding hides a quarter of P1-F's wood harm".
+
+Declared reading: the window's transfer to its own gaze-free target > 0 beyond 3 SE, above the control window's (3 SE
+of the paired difference) and above its transfer to every other class's target, in both Adam geometries (SE over 6
+groups, 5 degrees of freedom).
 
 World 1 (trained under uniform gaze):
-- **Holds** for drink (checkpoint 4), wood (1 and 7) and stone (4). Wood's transfer is positive at every checkpoint
-  (z 1.3-14 adam_linear, 1.3-37 adam_step), class-specific at 8 of 10 (not at 2, 4), but beyond 3 SE in both
-  geometries only at 1, 7, 10; drink's is positive at every checkpoint, beyond 3 SE in both geometries at 1, 4, 5, 8,
-  9, 10, not specific at 1, 9, 10 and not above the control at 5, 8; stone's is strongly positive at 2-5 and 8 but in
-  at least one geometry helps the other counters as much (not specific) except at 4.
-- Size: for wood the counter look adds 2-51% (adam_linear) and 10-74% (adam_step) to the transfer the same frame
-  gives under a uniform look; for drink 5-10% / 9-19% at checkpoints 1, 2, 4, 5; larger late in training, when the
-  ordinary transfer is small (ratios above 1 there are ratios of small numbers).
-- **Sapling: unmeasurable.** Its gaze-free target gradient does not reproduce across halves (reliability -0.31 to
-  0.53); no significant transfer in both geometries at any checkpoint.
-- **The reward readout goes the other way.** On drink attempts the counter look makes the gaze-free reward readout
-  worse at checkpoints 1-3 in both geometries (z -161 / -3.5, -6.8 / -5.2, -4.5 / -7.6; the control window's
-  transfer is positive); sapling at 4 and 8 likewise. The first-order seed of P1-F's reward gate exists in a world
-  trained under uniform gaze.
+- **Holds at three points:** the drink counter at checkpoint 3; the faced cell of wood (the tree, which stays) at 4;
+  the faced cell of stone (stone -> path, mining's map-side consequence) at 9.
+- **Below the bar, consistent in sign.** Drink's counter transfer is beyond 3 SE in both geometries at 7 of 10
+  checkpoints (1-4, 7, 9, 10), above the control at 1-3, not specific at 1, 2, 9, 10 (the look helps the other
+  counters too). Wood's counter transfer is positive at every checkpoint in both geometries but beyond 3 SE only in
+  adam_step (1, 2, 4), never in adam_linear (z 0.8-1.8). Stone's map-side transfer is positive and class-specific at
+  4-10 in both geometries, beyond 2.5 SE in both at 5-10 (z 2.5-4.9; against the control 2.2-5.5): the steadiest
+  positive result of B2. Stone's counter: adam_step only (1, 2).
+- Size (estimates, unaffected by the correction): the counter look adds 2-51% (adam_linear) / 10-74% (adam_step) for
+  wood and 5-19% for drink at 1, 2, 4, 5 (72-112% at 3) to the transfer the same frame gives under a uniform look; the
+  faced look adds 12-34% for stone's map cell at 5, 6, 8 (ratios above 1 late in training are ratios of small numbers).
+- Route: 80-100% of each positive counter or map transfer goes through the denoiser, most of the rest through the
+  belief.
+- **Sapling: unmeasurable**, as before: its gaze-free target gradient does not reproduce across halves (reliability
+  -0.31 to 0.53).
+- **The reward readout.** On drink attempts the counter look makes the gaze-free reward readout worse beyond 3 SE in
+  both geometries and below the control at checkpoints 2 and 3 (z -10.0 / -6.9, -6.9 / -5.8; against the control
+  -5.9 / -4.3, -4.3 / -4.2), through the belief (~80%) and the reward head; not at 1 (-2.9 / -2.9) or later. Sapling at
+  1 (-9.2 / -4.9) but not clearly below the control (-2.8 / -3.6); wood and stone no consistent sign. The first-order
+  seed of P1-F's reward gate exists under uniform gaze, for drink, early.
 
 P1-F (trained with the rule's gaze):
-- Wood holds only at checkpoint 1. From checkpoint 4 on, its transfer is NEGATIVE in both geometries and below the
-  control (z -2.4 to -183 adam_linear, -2.1 to -11 adam_step; adam_step's control difference not significant at 5):
-  the training signal of the guided look pushes the gaze-free wood prediction the wrong way. PLAN's competing
-  explanation "transfer only before the gaze cue forms" is supported for wood. Drink: the geometries disagree
-  (adam_step positive to checkpoint 6; adam_linear negative or null except +5.7 SE at 5) until checkpoint 9, negative
-  in both (z -3.1 / -3.2). Stone (outside the rule): negative in both at checkpoint 5 (z -3.1 / -3.1).
-- Reward: negative across classes and checkpoints, stone included (drink 2: z -21 / -19; sapling 10: -424 / -20).
+- **Nothing beyond 3 SE in either direction** on any counter or map target in both geometries. The sign changes:
+  wood's counter transfer is negative in both geometries at every checkpoint from 4 to 10 (adam_linear z -2.0 to -2.9,
+  adam_step -0.5 to -1.5; the look's added signal is -0.2 to -1.0 times the ordinary look's), where world 1's is
+  positive at all ten. The checkpoints share contexts and targets, so the seven are not independent replications.
+  Stone's map-side transfer, steady in world 1, is near zero from checkpoint 4, where P1-F's field already carries
+  more of stone (A: 0.65 vs 0.34 at sigma 6.67). Drink: no consistent sign.
+- Reward: drink worse beyond 3 SE in both geometries at 3, 4, 5 and 8 (below the control at 3-5: z -4.1 / -3.3,
+  -3.6 / -3.1, -3.3 / -3.1), adam_linear alone at 2, 6, 7, 9, 10; the other classes negative in sign, not significant.
+  At those checkpoints the route is perception (50-70%) and the reward head (20-30%), not the belief as in world 1.
 
-Fixed vs moving targets (counter_full minus counter, adam_linear): in world 1 small for drink, wood and stone
-(|difference| <= 0.09 against transfers up to 0.9; sapling up to 0.22 on an unreliable target): a token-space signal
-reads the look about as the prediction does. In P1-F's wood (checkpoints 4-10) it is +0.005 to +0.75 against fixed
-transfers of -0.4 to -2.8 (re-coding hides a quarter of the harm, e.g. checkpoint 5: -2.8 fixed,
--2.0 moving); in P1-F's late drink it flips the sign (checkpoint 10: -0.085 fixed, +0.27 moving; the moving target's
-half-reliability is low there, 0.21-0.33).
+Fixed vs moving targets (counter_full minus counter, adam_linear, paired over groups):
+- World 1: |difference| <= 0.09 against transfers up to 0.93 (often consistent across groups, always small): a
+  token-space signal reads the look about as the prediction does.
+- P1-F wood: +0.00 to +0.75 at 4-10 against fixed transfers of -0.4 to -2.8, within noise (paired z ~1.2): no measured
+  masking.
+- P1-F drink: the moving target reads the guided look significantly more negatively early (checkpoints 3-4: -0.66,
+  -1.52; paired z -4.5, -4.2) and significantly more positively late (8-10: +0.19 to +0.35; z +3.1 to +4.3), where the
+  fixed transfer is -0.06 to -0.12 (z -0.7 to -2.0) and the moving one +0.14 to +0.27 (z +1.3 to +2.9). The
+  representation route changes the token-space reading of the guided look, in both directions over training.
 
 What B establishes and does not:
-- Establishes, to first order and under the checkpoint's Adam state: in a world trained under uniform gaze, looking at
-  a deterministic consequence's counter adds a specific, positive training signal to its gaze-free prediction (a
-  physical-progress chooser would have a reason to look there); the same look also starts teaching the reward
-  readout to depend on the glimpse; in a world trained with deterministic placement, the look's signal turns against
-  the gaze-free prediction once the cue has formed.
-- Does not establish: multi-step effects, what a learned chooser would do, or anything about mining (not among B's
-  classes) beyond A's field deficit.
+- Establishes, to first order, under the checkpoint's Adam state, at 96 contexts per class: in a uniform-gaze world,
+  looking at a deterministic consequence adds training signal to its gaze-free prediction with a consistent positive
+  sign (drink's counter early, mining's map cell late, wood's counter throughout), meeting the declared bar at three
+  points; the counter look also makes the gaze-free reward readout worse for drink early; in P1-F the sign of the
+  look's transfer to the gaze-free wood prediction turns negative and stays there, no single checkpoint significant.
+- Does not establish: a large or reliable per-look effect (most transfers are within 3 SE of zero at this sample
+  size); multi-step effects; what a learned chooser would do; coal or iron (not among B's classes).
 
-## Across A, B and D (descriptive; no design selected)
+## Across A, B and D (descriptive; no design selected; revised with B2's correction)
 - A learning-driven fovea has something to reach: deterministic visible consequences are field-limited (A), and in a
-  uniform-gaze world looking at them adds specific gaze-free signal (B2). Mining is the largest field deficit and
-  was never fixated.
+  uniform-gaze world looking at them adds gaze-free training signal of a consistent positive sign, small next to the
+  noise at this sample size (B2). Mining is the largest field deficit (A), was never fixated, and its map-side
+  consequence carries B2's steadiest positive transfer.
 - Two levers are outside the fovea: the sampler (mobs; sapling's coin once learned) and memory (cooldown).
-- The gate is a training-signal phenomenon with a measurable seed: the reward readout's dependence on the glimpse
-  appears at first order even under uniform gaze (B2), and once placement is deterministic the look's signal turns
-  against the gaze-free prediction (P1-F wood). A chooser's reward measured on the gaze-free prediction would register
-  that turn as negative progress; one measured on the glimpse would not.
-- Progress measured on tokens is unreliable early (B1, scale changes) and can hide or flip the sign of a gated look
-  (B2, P1-F): the gaze-free prediction at fixed targets, or a fixed-target space, is the safer "of what".
+- The reward readout's dependence on the glimpse has a first-order seed under uniform gaze (drink, early, through the
+  belief); under deterministic placement the look's transfer to the gaze-free wood prediction changes sign. A chooser
+  rewarded on the gaze-free prediction would see a negative sign there, one rewarded on the glimpse would not; the
+  size of that difference is not established.
+- Progress on tokens: B1 (unchanged) finds the targets' scale moving in about a third of world 1's early
+  class-intervals; B2 finds the moving-token reading of P1-F's guided drink look diverging from the fixed-target
+  reading in both directions. The fixed-target gaze-free prediction remains the safer "of what"; B2's support for it
+  rests on one class, not two.
 - D: no VoI substrate yet on P1-F; the HUD reading is ceilinged because the periphery carries the digits.
