@@ -16,6 +16,24 @@ pixels; P1-F's mainly by the change map and reward. Periphery tokens: channel st
 gradients grow as its scale narrows, squared error's shrink with the error. So P1-F differs from world 1 in three
 ways, not two: guidance, decoder loss, and through the latter the encoder's grounding balance.
 
+Correction (10-31, after the user's question; logs only): the harmoniser did not cause the shift, and "the
+harmoniser re-weighting" was the wrong name for the third difference. Its sigmas never reached HarmonyDream's
+equilibrium (sigma^2 = mu (1 + sigma)) in either run. Adam moves a parameter by about the learning rate per update
+when its gradient keeps one sign (Kingma & Ba 2015, 2.1), and the learning rate summed over P1 is 1.11, so each log
+sigma can move by about 1.1 at most. P1-F's three ended at -1.00 / -1.02 / -0.96: all three fell at the limit for the
+whole run, giving near-equal weights 2.7 / 2.8 / 2.6 (equilibria 0.21 / 0.17 / 0.06, unreached). World 1: G1 -0.88,
+G2 +0.70 (weight 0.50), G3 -0.58. Under Adam a constant loss weight leaves single-loss parameters' updates unchanged
+(the same section: the step is invariant to gradient scale), so the weights act on shared parameters (encoder,
+belief) and through the global clip (every update clipped in both runs: pre-clip median 66 vs 3, clip 1.0). On the
+encoder, raw TSP gradients fell about 100x (12-191 -> 0.17-1.1) while G2's weight rose 5.6x: the harmoniser partly
+offset the loss change; the drop is the faithful loss's gradient scale. Weighted encoder pull, checkpoints 5-10 at
+each checkpoint's sigma (one-stream snapshots, spiky): world 1 pixels 86%, reward 9%, change map 4%, G1 2%; P1-F
+reward 73%, change map 16%, TSP 9%, reconstruction 0.6%, G1 2%. The change map's absolute pull is unchanged (2.0 vs
+1.9); it gained share because the pixels lost theirs. The third difference is therefore the decoder loss's grounding
+balance: world 1's encoder was trained mostly by an NLL that weights each pixel's error by its inverse variance
+(Seitzer et al. 2022, 3.2: well-fit points dominate, hard ones are down-weighted; here by position and lighting, so
+day map positions dominated and HUD positions starved), P1-F's mostly by reward and the change map.
+
 ## 4. Decoder rendering of the trained world (`readings/render_p1f.json`; world 1: decoder diagnosis "trained")
 The fix holds in joint training. Every HUD counter, both paths: digit and icon 1.000 (world 1 digits: health 0.014,
 food 0.033, drink 0.165, energy 0.025, wood 0.674, stone 0.415; body icons 0). Digit probe on the path features 1.0
@@ -99,8 +117,10 @@ recorded). Per-achievement rows are outcome-selected (recall only).
 5. One-step generation regressed broadly under random gaze (C2ST 0.761 -> 0.960, monitor +50%, map G1 ~2x, movement,
    skeleton counts, reward calibration). The own-gaze re-read (follow-up readings) splits it. Map dynamics (map G1
    ~2x, movement, skeleton counts), health changes other than zombie hits (~2x) and the C2ST stay worse under P1-F's
-   own gaze: a regression of the recipe,
-   guidance in training vs the harmoniser re-weighting (section 5) not separable. Reward calibration and the HUD
+   own gaze: a regression of the recipe, guidance in training vs the decoder loss's grounding balance (section 5) not
+   separable. M0.5 (guidance with world 1's NLL decoder, 1,500 updates from world 1) did not produce it: map G1 still
+   0.0216 -> 0.0226, moved 0.0336 -> 0.0349, health other 0.148 -> 0.150, movement 0.910 -> 0.915, skeletons 0.14 ->
+   0.12. A fine-tune of a formed world, so guidance from scratch is not excluded. Reward calibration and the HUD
    consequences were the evaluation's gaze: under its own gaze P1-F is better than world 1 on both (label-derived
    placement, item 4).
 
@@ -161,18 +181,20 @@ Declared reading applied, instrument by instrument:
   vs 0.138, health other 0.30 vs 0.15; none moves by more than 0.006 with P1-F's gaze. C2ST 0.942 vs 0.761 is clearly worse by the declared comparison and at
   matched gaze too (random +0.20, guided +0.09; P1-F itself moves -0.018, within spread): the gap's size depends on the
   gaze through world 1. The periphery G1 total, which the map dominates, does not move with the gaze (0.0414 /
-  0.0412), consistent with the monitor's +50% being the recipe's. Guidance in training vs the harmoniser re-weighting
-  remains inseparable by reading (declared).
+  0.0412), consistent with the monitor's +50% being the recipe's. Guidance in training vs the grounding balance (PLAN's
+  "harmoniser", renamed: section 5's correction) remains inseparable by reading (declared).
 - The evaluation's gaze: reward calibration and the HUD consequences. Under P1-F's own gaze its reward NLL is 0.0073,
   under a third of world 1's 0.025 (ECE 0.00008 vs 0.0011), and the consequence classes are below world 1's (drink up
   0.087 vs 0.158, wood up 0.031 vs 0.106, sapling up 0.23 vs 0.44, table 0.095 vs 0.13; zombie hit 0.21 vs 0.20,
   equal). These own-gaze numbers carry the label-derived placement (establish 4).
-- Mechanism, within what is measured: the targets are the same under both gazes, so P1-F's drink-up loss falling
-  from 0.378 to 0.087 comes from the predictions' inputs alone, while the next section shows the digit loud in its
-  real periphery tokens. P1-F's prediction of a counter change keys on the gaze the rule computed from the context,
-  not on the action and faced block it was computed from: policy confounding (Suau, Spaan, Oliehoek, "Bad Habits",
-  RLC 2024), the rule having made the fixation a perfect proxy of the context in training. Whether the key is the
-  predicted frame's fixation or the history's glimpses is not separated here.
+- Mechanism: gaze dependence is demonstrated; a specific shortcut is not isolated (Codex, 10-31). The targets are
+  the same under both gazes, so the drink-up loss falling from 0.378 to 0.087 comes from the inputs, but switching
+  the gaze changes several at once: the predicted frame's fixation, the history's glimpses, the belief, and, in this
+  denoising loss, the noisy glimpse of the target frame itself, which under the rule is a second noisy view of the
+  counter being denoised (a legitimate route, not a cue). Policy confounding (Suau, Spaan, Oliehoek, "Bad Habits",
+  RLC 2024) is a plausible explanation, not a diagnosis of this model. Codex's declared frozen-checkpoint protocol
+  (`../20261031_fovea_shortcut_review/PLAN.md`: vary only the next fixation, DO vs NOOP from the same prefix,
+  generation from noise) separates the routes; not run.
 
 ### Glimpse token geometry (M0.5's `dissect/token_geometry.py` on this run's readers; `readings/token_geometry.json`)
 World 1 refit here reproduces M0.5's base to every printed digit (M0.5 at 1500 updates equals its base). Step between
@@ -204,6 +226,10 @@ failures (no change drawn, the reward head's misses on real frames) are not a pe
   readings).
 - The follow-up PLAN took world 1's gaze invariance at the actor interface as holding for every instrument: not for
   the C2ST (+0.087 under guided gaze).
+- "The harmoniser re-weighting" as the third candidate cause: a mislabel; the harmoniser was rate-limited and partly
+  offset the change (section 5's correction).
+- "P1-F keys on the gaze, not on the action and faced block" (follow-up readings, first version): not isolated; the
+  denoising loss's target-glimpse route was not considered (Codex).
 
 ## Limits
 One seed per arm (P1 world seed 2 not run: no seed spread for any difference); three recipe differences, none
