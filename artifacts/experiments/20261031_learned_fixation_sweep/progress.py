@@ -39,6 +39,7 @@ GEOMETRIES = ("euclid", "adam_linear", "adam_step")
 CHANGING = ("drink_up", "wood_up", "sapling_up", "table_placed", "zombie_hit", "health_other", "hud_other_change",
             "map_moved", "lighting")                                    # classes whose target is a change (B1 test)
 P, H = 8, 8                                                              # prefix frames; loss frames from t
+ROWS = 8                                                                 # rows per backward (6 GB card)
 DEV = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
@@ -238,18 +239,23 @@ def b2(model, cfg, ck, train, dev, targets, n_uniform, seed):
     for c in [*CLASSES, "bulk"]:
         for h, rows in enumerate(dev["rows"][c]):
             kinds = KINDS if c != "bulk" else ("bulk",)
-            for i in range(0, len(rows), 16):
-                part = rows[i:i + 16]
+            for i in range(0, len(rows), ROWS):
+                part = rows[i:i + ROWS]
                 chunk, carry, cache = batch(dev["data"], pd, part, -2 * P + 1, 1, -P + 1)
                 cells = torch.as_tensor([dev["cells"][c][e, t] for e, t in part], device=DEV)
                 state = gen.get_state()                                  # the same draws for the fixed and full targets
                 terms = target_terms(model, cfg, chunk, carry, cache, cells, gen)
-                if c != "bulk":
-                    gen.set_state(state)
-                    terms["counter_full"] = target_terms(model, cfg, chunk, carry, cache, cells, gen, full=True)["counter"]
-                for j, k in enumerate(kinds):
-                    g = torch.autograd.grad(terms[k], params, retain_graph=j < len(kinds) - 1, allow_unused=True)
+                fixed = [k for k in kinds if k != "counter_full"]
+                for j, k in enumerate(fixed):                           # one graph at a time (6 GB card)
+                    g = torch.autograd.grad(terms[k], params, retain_graph=j < len(fixed) - 1, allow_unused=True)
                     Tm[tnames.index(f"{c}_{k}_{h}")] += flat(g, params) * len(part) / len(rows)
+                del terms
+                if "counter_full" in kinds:
+                    gen.set_state(state)
+                    full = target_terms(model, cfg, chunk, carry, cache, cells, gen, full=True)["counter"]
+                    g = torch.autograd.grad(full, params, allow_unused=True)
+                    Tm[tnames.index(f"{c}_counter_full_{h}")] += flat(g, params) * len(part) / len(rows)
+                    del full
     del pd
     gram = torch.stack([torch.stack([torch.stack([Tm[:, a:b] @ (Tm[i, a:b] * w[a:b]) for i in range(len(Tm))], 1) for a, b in slices], -1)
                         for w in (torch.ones_like(pre), pre)], -1).cpu()          # [targets, targets, modules, (euclid, adam_linear)]
@@ -259,18 +265,21 @@ def b2(model, cfg, ck, train, dev, targets, n_uniform, seed):
         D_ = np.zeros((len(train["rows"][c]), len(CONDS) + n_uniform, len(tnames), len(MODULES), len(GEOMETRIES)), np.float32)
         norms = np.zeros((len(train["rows"][c]), len(CONDS), len(GEOMETRIES)), np.float32)
         for gi, rows in enumerate(train["rows"][c]):
-            chunk, carry, cache = batch(train["data"], pt, rows, -P, H, 0)
             rng = np.random.default_rng([seed, ci, gi])
             fixes = [np.array([train["windows"][c][k][e, t] for e, t in rows]) for k in CONDS]
             fixes += [D.fixation_prior(rng, (len(rows),)) for _ in range(n_uniform)]
+            parts = [(i, batch(train["data"], pt, rows[i:i + ROWS], -P, H, 0)) for i in range(0, len(rows), ROWS)]
             G = []
             for fx in fixes:
-                ch = dict(chunk, fixation=chunk["fixation"].copy())
-                ch["fixation"][:, P] = fx
-                torch.manual_seed(seed * 1000 + ci * 100 + gi)
-                terms, _, _ = TR.p1_losses(model, ch, carry, cache, targets, cfg)
-                loss = model.harmoniser(TR.groups(terms)) + terms.get("noise", 0)
-                G.append(flat(torch.autograd.grad(loss, params, allow_unused=True), params).cpu())
+                g = torch.zeros(len(pre), device=DEV)
+                for i, (chunk, carry, cache) in parts:                 # the group's mean gradient, ROWS rows at a time
+                    ch = dict(chunk, fixation=chunk["fixation"].copy())
+                    ch["fixation"][:, P] = fx[i:i + ROWS]
+                    torch.manual_seed(seed * 1000 + ci * 100 + gi * 10 + i)   # the same draws in every condition
+                    terms, _, _ = TR.p1_losses(model, ch, carry, cache, targets, cfg)
+                    loss = model.harmoniser(TR.groups(terms)) + terms.get("noise", 0)
+                    g += flat(torch.autograd.grad(loss, params, allow_unused=True), params) * len(ch["first"]) / len(rows)
+                G.append(g.cpu())
             u = torch.stack(G[len(CONDS):]).mean(0).to(DEV)
             su = torch.stack([adam_step(g.to(DEV)) for g in G[len(CONDS):]]).mean(0)
             for j, gc in enumerate(G):
@@ -441,7 +450,8 @@ def main():
             res[w][k] = {"checkpoint": str(path), "sha256": TR.file_sha256(path), "update": ck["state"]["update"],
                          "harmoniser_sigma": ck["model"]["harmoniser.log_sigma"].exp().tolist(), "b1": r1}
             (out_dir / "b1.json").write_text(json.dumps(res, indent=1))
-            print(w, k, "B1 class losses", {n: round(v["se_per_element"], 4) for n, v in r1["class_losses"].items()}, flush=True)
+            print(w, k, "B1 class losses", {n: round(v["se_per_element"], 4) for n, v in r1["class_losses"].items()},
+                  "peak GiB", round(torch.cuda.max_memory_allocated() / 2 ** 30, 2) if DEV.type == "cuda" else None, flush=True)
             del model, ck
             if DEV.type == "cuda":
                 torch.cuda.empty_cache()
