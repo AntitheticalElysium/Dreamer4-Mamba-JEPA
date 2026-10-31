@@ -70,7 +70,9 @@ def sample(den, shapes, prev_action, memory, fix, cache, alg, cfg, gen):
 
 
 @torch.no_grad()
-def run(model, enc, ctx, means, cfg, gen):
+def run(model, enc, ctx, means, cfg, gen, keep=False):
+    """keep (added 10-31, learned-fixation premise test A): also return each algorithm's sampled periphery and lighting
+    latent (p_<name>, v_<name>), same draws."""
     den, neg_bins = model.denoiser, model.outcome.bin_value < -0.05
     names = ["production", *ALGORITHMS]
     out = {f"{k}_{a}": [] for a in names for k in ("f", "geo", "death", "neg")}
@@ -104,6 +106,9 @@ def run(model, enc, ctx, means, cfg, gen):
                 out[f"geo_{name}"].append(FC.geometry(xg[0]).cpu())
                 out[f"death_{name}"].append(torch.sigmoid(-model.outcome.cont_logit(h, r).float()).cpu())
                 out[f"neg_{name}"].append((model.outcome.bin_logp(h).exp() * neg_bins).sum(-1).cpu())
+                if keep:
+                    out.setdefault(f"p_{name}", []).append(xg[0].half().cpu())
+                    out.setdefault(f"v_{name}", []).append(xg[2].half().cpu())
         out["row_ctx"].append(torch.tensor([start + i for i in rows]))
     return {k: torch.cat(v).numpy() for k, v in out.items()}
 
