@@ -109,6 +109,8 @@ heads:
                   mean_loss: nll}   # nll: P1 world 1's recipe. faithful (10-31): mean by squared error in [-1, 1], scale by
                                     # NLL on the detached mean and detached lighting latent (Stirn et al. 2023; Seitzer et al.
                                     # 2022; decoder diagnosis 10-30: the NLL's per-position scale starved HUD cells)
+                                    # tsp_mean_loss (absent = faithful's squared error; set by a launcher, 11-01):
+                                    # scale_weighted_nll = stopgrad(scale) x NLL for TSP's mean only (Seitzer et al. 2022)
   change_map: {target: a9b_soft_detector, rows: map_only, hidden: 256, position_dim: 32, belief_dim: 128}   # A9b + working widths
   outcome: {hidden: 256}                      # working; DV3 size12m-like heads
   reward: {density: categorical, space: symlog, bins: 256, support: [-0.9, 1.1], support_space: raw,

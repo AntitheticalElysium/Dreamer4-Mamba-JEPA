@@ -137,6 +137,10 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg):
         if faithful:                                                     # LOSSES G2 (10-31): Stirn et al. 2023
             y = pix.float() / 127.5 - 1
             tsp, rec = (mt.float() - y).square().mean(), (mr.float() - y).square().mean()
+            if cfg["heads"]["pixel_decoder"].get("tsp_mean_loss") == "scale_weighted_nll":   # 11-01 overnight test:
+                # TSP's mean by stopgrad(logistic scale) x NLL, Seitzer et al. 2022's beta = 0.5 in logistic-scale form
+                # (Codex's BM arm, 20261031_grounding_loss_review/followup/beta_fork.py); reconstruction stays faithful
+                tsp = (st.float().clamp(min=-7).exp().detach() * M.pixel_nll(mt, st.detach(), pix)).mean()
             noise = M.pixel_nll(mt.detach(), st, pix).mean() + M.pixel_nll(mr.detach(), sr, pix).mean()
         else:
             tsp, rec = M.pixel_nll(mt, st, pix).mean(), M.pixel_nll(mr, sr, pix).mean()
