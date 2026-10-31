@@ -174,3 +174,80 @@ world's own prediction of the next percept depends on the action taken.
   et al., J Vis 2020's "where" network) or progress with exploration. Circular: such a prior cannot bootstrap the
   starved consequences without an exploration floor. Locates broadly including mining and early: a cheap, label-free
   action-locus prior exists. Not covered: whether looking there then teaches anything (B2), what a trained chooser does.
+
+## G. Where does the learning a look produces land, over P1? (`landscape.py`, GPU, frozen checkpoints; user 11-01: decision 2, "read the papers and run the test")
+Design question it serves: decision 2 (TEACHING 8-9, 11), what the chooser's learned part is trained on. Under
+decision 1 (agreed 11-01) a look at window w trains the predictions of what is seen at w: the glimpse stage (from
+history: forward; from the periphery: super-resolution), TSP (the crop from the current periphery and predicted
+belief) and the fovea encoder; the gaze-free physical stream trains on every cell wherever the eye is. The candidate
+"of what" is therefore the error of those look-local predictions against the crop's PIXELS (fixed targets; B1: token
+targets move early), and the candidate learned part a predictor of its progress per (context, window): IAC's
+regional progress, Kim et al.'s gamma-progress (EMA reference model; beat error-seeking, RND and disagreement, no
+noise fixation, ICML 2020), Kanitscheider et al.'s fast-minus-slow EMA (bidirectional), Ten et al.'s progress +
+competence (Nat Commun 2021). G asks whether that signal exists in our data, in the form a chooser starting from
+random looks would meet, before anything is built.
+- **Rows.** F's exactly (first 400 dev episodes; up to 300 DO attempts per class: drink, wood, sapling, stone, coal,
+  iron; 217 failed stone attempts; 600 random frames; F's seed). Every row is read at all 49 windows. Labels select
+  rows and label windows; they never enter an instrument.
+- **Instruments** (per world, checkpoints 1-10; pixel MSE in [-1, 1] against the real crop, decoded means clamped):
+  - `tsp`: TSP's prediction of the crop at w from the real periphery tokens, lighting and predicted belief of frame t
+    (the super-resolution part of "what will I see at w"; unchanged by decision 1).
+  - `view`: the forward prediction of the crop at w from history: the denoiser's clean estimate of frame t's glimpse
+    with query w at production's first evaluation (sigma_hat 6.67) from pure noise, i.e. its conditional mean given
+    the 8 recorded context frames, the predicted belief and the recorded action; one noise draw per row, common to its
+    49 windows and to every checkpoint; decoded through the checkpoint's reconstruction path with the estimated
+    lighting. The joint denoiser's glimpse is the closest existing stand-in for decision 1's glimpse stage in forward
+    mode, and is trained only by looks at w.
+  - `rec`: the reconstruction from the real glimpse tokens at w (the fovea encoder and decoder's competence; read
+    beside `view`, which passes through the same decoder).
+  - History fixations: S1's seeded uniform draws, both worlds. Alignment check: TSP's NLL at each row's recorded
+    fixation equals S.encode's within 2% (else abort).
+  - Progress LP_k = e_k - e_{k+1} on the same held-out rows: fresh samples and fixed targets (Graves et al.'s target
+    prediction gain), per interval k -> k + 1 (9 intervals of 2.56 M frames, 1.5-2.5 k updates, near gamma-progress's
+    2,000-update horizon).
+- **Worlds.** World 1 (random gaze throughout; its NLL pixel head renders map content, not HUD values: digits
+  0.01-0.67, icons 0, so its HUD windows are uninterpretable). P1-F (faithful pixel head renders the HUD, but 13% of
+  its training frames were fixated by the rule on drink / wood / sapling / table / zombie-adjacent contexts, and its
+  glimpse is gated on the rule's window (Codex): its drink / wood / sapling rows are rule-confounded; stone, coal,
+  iron, failed stone and random rows are random-look).
+- **Claim** (the premises of a learned progress part). (a) Structured: within a class, progress varies across the
+  49 windows replicably (odd vs even episodes). (b) Not noise: it does not follow raw error (renderer static at night,
+  new terrain). (c) Located: for DO classes, progress concentrates on the consequence windows (F's definition: the
+  counter; the faced tile for mining) in some interval after checkpoint 2, including the HUD counter where F's
+  contingency is blind. (d) Moves: its share on consequence windows grows over training against common content (the
+  user, 10-29: "at first it focuses on movements, and as those start to become learnt, it fixates on other things
+  that have been starved of gradients").
+- **Competing.** (1) Uniform: after the first intervals progress is spread over the windows (the shared decoder and
+  denoiser improve everywhere) with no replicable ranking, so a progress predictor has nothing to learn beyond a
+  uniform draw. (2) Error-tracking: progress ranks windows as raw error does. (3) Contingency-redundant: progress is
+  located only where F's contingency already is. (4) Static: the composition does not change over training.
+- **Controls.** Split halves by episode (ranking noise floor); the error ranking on the same rows; F's contingency
+  coverage on the same rows (world 1 ckpts 2, 5, 10; P1-F ckpt 10: `locus/summary.json`); the share of windows covering
+  the consequence (chance); bright (light >= 0.7) vs dark (<= 0.3) random rows (static enters only at night); world 1
+  against P1-F for the rule classes.
+- **Declared readings** (episode-bootstrap SEs, `gates.estimate`).
+  1. Structure: per world, class, interval and instrument, Spearman rho between the two halves' 49-window mean-progress
+     vectors; "structured" if rho >= 0.5; with the top-5 windows' share of positive progress (uniform 0.10).
+  2. Not error: rho between the progress vector and the error vector at the interval's start, beside the error
+     vector's own split-half rho; random rows bright vs dark.
+  3. Located: per DO class, the consequence windows' mean progress minus the row's 49-window mean ("excess"),
+     "located" if it exceeds 3 SE; the per-row arg-max's coverage of the consequence beside chance, the error arg-max
+     and F's contingency (F's bar: >= 0.5 and - 3 SE > 3 x chance).
+  4. Moves: the consequence excess by interval (DO classes); random rows: the excess on HUD, faced, entity windows.
+  5. Bandit feasibility (descriptive): per class, the looks at the progress-best window needed to tell it from the
+     class's median window at 2 SE, against those a uniform 10% floor gives it in a 25.6 M-frame run (class frequency
+     in these episodes x 25.6 M x 0.1 / 49).
+- **Rules out / supports.** No class structured in either world after interval 2: rules out a learned progress map
+  as the location source (decision 2 reduces to contingency + floor; progress at most a global "still learning"
+  schedule). Structured but error-tracking: rules out raw pixel progress without an irreducible-noise correction
+  (RHO-LOSS's holdout floor, or the night stratum excluded). Structured, not error, located only where F's
+  contingency is: progress is the modulation (when to stop), contingency the location. Structured, not error, located
+  at the counter where contingency is blind, moving over training: supports the user's mechanism and a learned
+  progress part. None of these shows that a chooser would realise it (positive feedback under its own looks is not
+  in frozen readings) or that it improves the world (P1-F2 itself).
+- **About the data / environment.** Where in Craftax, and when in training, the predictions a look trains improve;
+  whether night static yields learnable progress.
+- **Limits.** Frozen checkpoints of worlds trained under random / rule looks, not under the proposed chooser; the
+  joint denoiser's glimpse stands in for the factorised glimpse stage; one seed each; coarse checkpoint spacing.
+- **Cost.** Per checkpoint one S.encode of 400 episodes and ~3,000 denoiser passes over 392 streams; est. 1-1.5 h for
+  both worlds. Queued after the beta-TSP readings (one GPU job at a time), smoke first.
