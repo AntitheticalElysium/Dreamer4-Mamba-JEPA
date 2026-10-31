@@ -89,6 +89,20 @@ recorded). Per-achievement rows are outcome-selected (recall only).
 5. One-step generation regressed broadly (C2ST 0.761 -> 0.960, movement, skeleton counts, reward calibration). Cause
    not localized: the harmoniser re-weighting (section 5) and guidance both remain candidates.
 
+## C2ST localization (`localize_c2st.py`, `readings/c2st_localization.json`; user 10-31, Codex post hoc)
+S1.3's path and seeds, one outcome group at a time (all tuples), world 1 -> P1-F: periphery map 0.570 -> 0.706,
+periphery HUD 0.800 -> 0.919, glimpse 0.736 -> 0.857, lighting 0.567 -> 0.626, reward + termination 0.511 -> 0.512.
+All outcomes on non-attempt tuples (87%): 0.803 -> 0.958. Attempt tuples alone: 0.506 -> 0.529, both at chance, so
+underpowered (2,736 test tuples) and uninformative. Measurement spread: P1-F reproduces S1.3 (0.961 vs 0.960), world
+1 does not exactly (0.731 vs 0.761), and world 1's non-attempt subset reads above its full set (0.803 vs 0.731), so
+fits vary by up to ~0.07; lighting's difference is inside that, the map / HUD / glimpse differences (0.12-0.14)
+narrowly outside it. Reading as declared: the regression is not confined to the guided contexts or to one token
+group; it is present in the map periphery on non-attempt tuples, the pattern declared to point at the encoder's
+grounding balance (section 5) rather than at guidance. Where, not why. A competing explanation for its size is not
+separated: P1-F's periphery tokens are half as spread (channel std 0.013 vs 0.023), and G1 is a squared error in raw
+token units, so equal absolute generation error is twice as large relative to the real variation; the semantic
+regressions (movement, skeleton counts, reward calibration) show it is not only that.
+
 ## Retracted or not supported (mine)
 - "The 30x weaker pixel pull may have lost the HUD from the tokens": refuted (decoder 1.000, digit probe 1.0, belief
   HUD equal or better, reader 1.0 on real periphery tokens).
