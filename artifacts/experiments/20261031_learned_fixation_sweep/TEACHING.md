@@ -292,8 +292,9 @@ Verified against the code, point by point. The decision stands; four claims of s
 - **The route itself: kept cut, as an argued bet, with Codex's test standing.** The mask must hold in every frame
   (diffusion forcing makes each frame both a target and later context, so a past periphery token that read its own
   glimpse would also have read its frame's query). The system argument for routing past evidence through the belief
-  only: the actor reads the belief (STEP_SPEC 1, 5); evidence that reaches the next physical prediction only through
-  the denoiser's context never reaches a decision, so it serves generation, not VoI. Cutting it puts G1's pressure
+  only: the actor reads the belief (STEP_SPEC 1, 5). Evidence held only in the denoiser's context reaches a decision
+  in imagination solely through what it makes the generator draw within its 8-frame reach, and not at all when the
+  agent acts in the real environment, where no denoiser runs and only the belief carries it. Cutting it puts G1's pressure
   (night, occlusion: next-frame periphery the glimpse could inform) on the belief, which is where D found no uptake.
   Standing reading on the first factorised world (Codex): informative past glimpses (night entities seen only in the
   glimpse) improve the next physical predictions through the belief. If the bet fails, the fallback is a strictly-past
