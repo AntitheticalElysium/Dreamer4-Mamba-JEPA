@@ -129,3 +129,48 @@ about gamma-progress's horizon (gamma 0.9995: 2,000 updates). Reading only; no w
   null in world 1 for every class and checkpoint): the fovea's training signal reaching the gaze-free prediction
   through the parameters to first order, i.e. a physical-progress chooser would have no first-order reason to look
   at consequences. Not covered: multi-step effects, a real batch's composition (the two Adam geometries bracket it).
+
+## F. Can the world point its own eye at where the action will act? (`locus.py`, GPU; user 10-31: "are there any tests you want to run? feel free")
+Design question it serves: what a learned fovea should be taught to look at in P1, and from what signal. Brain
+precedent: in manipulation, gaze goes to the contact landmark before the hand arrives and leaves it when the
+contact event occurs; "the salience of gaze targets arises from the functional sensorimotor requirements of the
+task" (Johansson et al., J Neurosci 2001); saccades go ahead of an expected event using learned models of the
+world's dynamics (cricket bounce point; Hayhoe & Ballard, TiCS 2005). The label-free analogue: the cells where the
+world's own prediction of the next percept depends on the action taken.
+- **Claim.** The frozen world's action contingency of its predicted next periphery, computed from pre-outcome inputs
+  only, puts its maximum window on the cells where the action's consequence will appear (the counter; the faced
+  block for mining), for each DO class, without labels.
+- **Competing.** (1) Not localized: the maximum falls elsewhere (mobs, HUD noise, the map) as often as chance.
+  (2) Circular: localized for the consequences the field already carries (drink, wood) but not for the ones it
+  under-predicts (A: coal and iron, field 0.03-0.09 at sigma 6.67), which are the ones a learning fovea is for.
+  (3) Not specific: it always points at the HUD on DO, whatever the class.
+- **Signal.** D(a) = the denoiser's clean estimate of frame t's periphery at production's first evaluation
+  (sigma_hat = sigma_max (1 + min(S_churn / steps, sqrt 2 - 1)) = 6.67) from PURE noise (no information about the
+  outcome), 2 noise draws common to all actions; context = the 8 recorded frames before t (context noise common to all
+  actions); belief bp(t) recomputed for every action a_{t-1} from the Mamba carry after frame t - 1's percept token
+  (replay check: the recorded action reproduces S.encode's bp within 2% relative L2, else abort); query fixation
+  and history = S1's seeded uniform draws. Per cell: contingency ||D(a_taken) - D(NOOP)||^2 (sum over the 16
+  channels); secondary: against the mean over all 17 actions. Window score = sum over its 9 cells; the chooser is the
+  arg-max of the 49 windows.
+- **Competing signals (same contexts, same draws).** Predicted change ||D(a_taken) - p_{t-1}||^2; predictive spread =
+  variance over 4 production samples (the uncertainty / surprise family; expected to be captured by night static,
+  Codex 10-31: night periphery noise variance 6.69x in P1-F). Post-outcome reference (not a chooser input): the
+  realized change ||p_t - p_{t-1}||^2.
+- **Contexts** (first 400 dev episodes; labels select and score, never enter the signal): DO attempts as A (awake,
+  facing the block, counter below 9, tool held): drink, wood, sapling, stone, coal, iron; a failed attempt,
+  stone_no_tool (no wood pickaxe); random frames (any action). At most 300 per class (600 random), seeded.
+- **Worlds.** World 1 checkpoints 2, 5, 10 (when a from-scratch chooser could first use it); P1-F checkpoint 10 under
+  uniform query (descriptive: its counter consequence is gated on the rule's window, Codex).
+- **Declared reading** (per world, class, signal). Coverage = P(the arg-max window covers a consequence cell: the
+  class's counter; also the faced cell for stone, coal, iron), episode-bootstrap SE; chance = the share of the 49
+  windows covering one. "Locates" if coverage >= 0.5 and coverage - 3 SE > 3 x chance. Specificity: the arg-max
+  CELL of the contingency equals a consequence cell (chance 1/81 per cell). Circular: drink / wood locate, coal /
+  iron do not, at the same checkpoint. Failed attempts: stone_no_tool's maximum window score against stone's
+  (descriptive: whether the signal fires where nothing happens). Random frames, bright (light >= 0.7) vs dark
+  (<= 0.3): the share of arg-max windows by region (faced-cell windows, HUD row, rest of the map) per signal
+  (descriptive: noise capture).
+- **Rules out.** Locates at world 1 checkpoint 10 for no class: the world's own predictions cannot point a label-free
+  action-locus prior at consequences; a chooser then needs a learned value map trained on realized outcomes (Daucé
+  et al., J Vis 2020's "where" network) or progress with exploration. Circular: such a prior cannot bootstrap the
+  starved consequences without an exploration floor. Locates broadly including mining and early: a cheap, label-free
+  action-locus prior exists. Not covered: whether looking there then teaches anything (B2), what a trained chooser does.
