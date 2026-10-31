@@ -39,7 +39,11 @@ Declared reading, class by class:
   Stone, not in the rule, is better in P1-F under either gaze (0.34 -> 0.65 at 6.67): a recipe effect, not looking.
 - **Sampler deficits** (field near the recorded rate, production below): the mobs. Heun 32 on the same field restores
   zombies and cows (and overshoots: 0.59 / 0.63 vs 0.45 / 0.52); P1-F's missing skeletons (0.05 vs 0.16) come back at
-  0.22. So P1-F's skeleton regression is in sampling, not in what the field learned. Sapling under P1-F's own gaze:
+  0.22. So P1-F's skeleton regression is sampler-sensitive at fixed weights (qualified after Codex's review: the
+  field's own mob counts were never calibrated as the counters were, so this does not show the field learned the
+  right distribution, nor exclude a training change that made the representation harder for the 3-step sampler;
+  Codex's frozen factorial separates step count and churn: P1-F skeletons 0.051 production, 0.107 Euler-8 with
+  churn, 0.162 Euler-8 without, real reader 0.133). Sapling under P1-F's own gaze:
   the field carries the coin (0.04 / 0.03 vs 0.045), production suppresses it (0.005), Heun 32 overshoots (0.09).
   Risky damage in world 1 also loses an order of magnitude in production (field 0.026 -> 0.002). Fixation cannot fix
   these; the sampler is the lever (10-29's exact-field result, and its finding that many-step samplers overshoot from
@@ -91,7 +95,12 @@ out of GPU memory at checkpoint 1 (two target graphs held at once; the 2-row GPU
   targets are stable, but most classes' losses change by less than 2% per interval ("not tested").
 - Reading: token-space progress is uninterpretable for about a third of class-intervals in world 1's first half
   (a fifth in P1-F's), where a target's scale change accounts for at least half its loss change; late in training
-  the targets are stable and progress is small. The movement is re-scaling, not re-coding.
+  the targets are stable and progress is small. Qualified after Codex's review (`../20261031_learning_foveation_review/
+  REVIEW.md`): the residual test shows the movement is affine, not that it is harmless. An affine map can rotate the
+  token basis (zero residual, zero step change, a stale denoiser's loss rising: Codex's CPU counterexample), and how
+  far each fitted map is from a scaled identity was not measured. The scale part is measured; a rotation part is not
+  excluded. The contamination flag compares log changes of observables on partly different frame populations: a
+  description, not a decomposition of why the loss changed.
 
 ### B2. Transfer: does the look teach the gaze-free prediction? (96 contexts per class in 6 episode-disjoint groups; fresh targets 2 x 64)
 **Correction (10-31, night): the first version of this section read wrong z-scores.** `summary()` indexed
