@@ -30,8 +30,10 @@ checkpoint config; identity file; resume validation compares the stored config).
 Unit saccade-beta-tsp, 00:08-09:32 (9 h 25 min), 25.6 M frames, clean exit. The monitor fell at every checkpoint
 (0.0932 -> 0.0272; P1-F 0.1061 -> 0.0286), so P1-F's rule selects checkpoint 10. The readings run by hand in
 `queue.sh` (unit beta-readings): S1; the actor interface under both gazes and M0.5's evaluator with P1-F re-run beside
-this run (the same rows and draws; the re-run must reproduce P1-F's 10-31 numbers); the decoder render; Codex's
-readings through `readings_codex.py` (its code unchanged, outputs redirected to readings/codex/).
+this run (the same rows and draws); the decoder render; Codex's readings through `readings_codex.py` (its code
+unchanged, outputs redirected to readings/codex/). Reproduction (interface, random gaze): P1-F's re-run against its
+10-31 output, 4,552 numbers: recorded quantities identical; head-on-real within 0.0012 and generated within 0.0023
+absolute (GPU evaluation is not bitwise deterministic; below the SEs); comparisons use the re-run, same session.
 
 ## Claim, competing explanations, control
 - **Claim.** From initialization, the scale-weighted TSP teacher lowers the renderer static carried by the periphery
