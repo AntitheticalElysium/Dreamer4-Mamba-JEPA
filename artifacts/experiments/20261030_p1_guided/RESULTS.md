@@ -51,10 +51,18 @@ Verified success of the generated cell, world 1 -> P1-F:
 | damage, adjacent (0.222 / 0.156) | 0.072 -> 0.063 | 0.002 -> 0.000 |
 | false drink change on failed attempts | 0.66 -> 0.07 | 0.115 -> 0.004 |
 
-The increments M0.5 could not draw are drawn when the glimpse is on the counter. The periphery draws no HUD change
-(copies, all readable), though the reader reads P1-F's real periphery tokens perfectly (1.0). Several rows are
-UNKNOWN-HEAVY (world 1's unknown shares 0.11-0.35). Movement shift (periphery) 0.910 -> 0.858 (paired difference
--0.052 [-0.057, -0.047]): worse. Reward NLL +0.011 worse.
+The increments M0.5 could not draw are drawn when the glimpse is on the counter. On the rows eligible in both worlds
+(Codex, 10-31; the standalone rates above use different reader-qualified populations): drink increment 0.038 ->
+0.728, wood increment 0.083 -> 0.936. Under the guided route the generated periphery agrees with the correct glimpse
+(lower bounds, verified success and coherent): drink appearance 0.897, wood appearance 0.923, drink increment 0.471,
+wood increment 0.694, table 0.451. Under the random route the periphery draws no HUD change (copies, all readable),
+though the reader reads P1-F's real periphery tokens perfectly (1.0). Several rows are UNKNOWN-HEAVY (world 1's
+unknown shares 0.11-0.35). Movement shift (periphery) 0.910 -> 0.858 (paired difference -0.052 [-0.057, -0.047]):
+worse. Reward NLL +0.011 worse. Dev G1 loss by class (random-route encoding; both token spaces per-token LayerNorm
+then the same clamp): map still 0.022 -> 0.042, map moved 0.034 -> 0.065, drink up 0.16 -> 0.38, wood up 0.11 ->
+0.40, zombie hit 0.20 -> 0.30, health other 0.15 -> 0.30, table placed 0.13 -> 0.12, glimpse 0.032 -> 0.024,
+lighting 0.0056 -> 0.0034. P1's monitor (held-out G1, random fixations) at checkpoint 10: 0.0191 -> 0.0286, higher at
+every noise level.
 
 ## 1. Actor interface (`readings/interface_random.json`, `interface_guided.json`; corrected evaluator)
 Generated rates, world 1 -> P1-F (recorded):
@@ -79,15 +87,18 @@ recorded). Per-achievement rows are outcome-selected (recall only).
    and mobs far better, at a small blur on common textures.
 2. With the glimpse on the consequence cell, P1-F generates the HUD consequences (increments included) and stops
    inventing failed-attempt changes. That was M0.5's open failure.
-3. Those gains live only in the guided glimpse. The rule is Q = 1 and deterministic in its context, so P1-F never saw
-   an attempt frame without the glimpse on the counter. Under random gaze, attempt frames are off its training
-   distribution: its reward head misses the first wood on REAL frames (0.10) although its belief (0.80 exact) and
-   tokens (decoder 1.000, reader 1.0) carry the count. Its periphery never draws the change.
+3. Those gains depend on the gaze P1-F was trained with, not on the glimpse alone: under the rule's gaze the generated
+   periphery carries them too (section 3); under random gaze neither glimpse nor periphery draws them. The rule is
+   Q = 1 and deterministic in its context, so P1-F never saw an attempt frame without the eye on the counter. Under
+   random gaze its reward head misses exactly the rule's events on REAL frames (first wood 0.10, drink 0.23, sapling
+   0.60, table 0.79; world 1 0.97, 0.74, 0.89, 0.95; non-rule unlocks 0.91-1.00) although its belief (0.80 exact) and
+   tokens (decoder 1.000, reader 1.0) carry the count. World 1 reads the same under both policies.
 4. The guided policy's placement is computed from the true state: 123 of the rule's 129 contexts are "zombie
    adjacent", most at the health window (7, 1). The guided death and damage gains are therefore confounded with a
    label-derived cue (PLAN's competing explanation b): policy-specific, not world quality.
-5. One-step generation regressed broadly (C2ST 0.761 -> 0.960, movement, skeleton counts, reward calibration). Cause
-   not localized: the harmoniser re-weighting (section 5) and guidance both remain candidates.
+5. One-step generation regressed broadly under random gaze (C2ST 0.761 -> 0.960, monitor +50%, map G1 ~2x, movement,
+   skeleton counts, reward calibration). Cause not localized; three candidates: evaluation off P1-F's training gaze
+   distribution, guidance's effect on training, the harmoniser re-weighting (section 5).
 
 ## C2ST localization (`localize_c2st.py`, `readings/c2st_localization.json`; user 10-31, Codex post hoc)
 S1.3's path and seeds, one outcome group at a time (all tuples), world 1 -> P1-F: periphery map 0.570 -> 0.706,
@@ -96,17 +107,27 @@ All outcomes on non-attempt tuples (87%): 0.803 -> 0.958. Attempt tuples alone: 
 underpowered (2,736 test tuples) and uninformative. Measurement spread: P1-F reproduces S1.3 (0.961 vs 0.960), world
 1 does not exactly (0.731 vs 0.761), and world 1's non-attempt subset reads above its full set (0.803 vs 0.731), so
 fits vary by up to ~0.07; lighting's difference is inside that, the map / HUD / glimpse differences (0.12-0.14)
-narrowly outside it. Reading as declared: the regression is not confined to the guided contexts or to one token
-group; it is present in the map periphery on non-attempt tuples, the pattern declared to point at the encoder's
-grounding balance (section 5) rather than at guidance. Where, not why. A competing explanation for its size is not
-separated: P1-F's periphery tokens are half as spread (channel std 0.013 vs 0.023), and G1 is a squared error in raw
-token units, so equal absolute generation error is twice as large relative to the real variation; the semantic
-regressions (movement, skeleton counts, reward calibration) show it is not only that.
+narrowly outside it. Reading: the regression is not confined to the rule's own frames or to one token group. The
+declared reading (non-attempt map regression points at the grounding balance rather than guidance) does NOT hold:
+45% of the non-attempt tuples have a rule context in the 8 frames before their deciding state (Codex, 10-31;
+reproduced on CPU, 0.451), encoded with random fixations off P1-F's training distribution, and guidance changes the
+shared parameters everywhere. Where, not why; the declared split was not clean. (Withdrawn: "tokens half as spread,
+so equal error is twice as large": the 0.023 / 0.013 statistic is the raw p_out output BEFORE the per-token
+LayerNorm; the denoiser sees normalised tokens in both worlds. Post-normalisation effective rank 4.0 -> 5.7 is a real
+difference.)
 
 ## Retracted or not supported (mine)
 - "The 30x weaker pixel pull may have lost the HUD from the tokens": refuted (decoder 1.000, digit probe 1.0, belief
   HUD equal or better, reader 1.0 on real periphery tokens).
 - The launch check's "same order at initialisation" did not carry to training (section 5).
+- "Those gains live only in the guided glimpse" / "the periphery never draws the change": wrong as stated (Codex);
+  the periphery draws them under the rule's gaze; the dependence is on the gaze policy (section 3).
+- The C2ST localization's declared non-attempt reading and the token-scale explanation (that section).
+- Omitted from the first write-up: world 1's monitor and the G1 loss by class (section 3, now reported).
+- Not run: PLAN reading 3's glimpse token geometry (M0.5 dissection), declared and skipped.
 
 ## Limits
-One seed per arm; three recipe differences, none isolated; guided-route readings carry the label-derived placement.
+One seed per arm (P1 world seed 2 not run: no seed spread for any difference); three recipe differences, none
+isolated; S1, the class losses, the monitor and movement were read under random gaze only, off P1-F's training
+distribution on the rule's frames and the histories behind them; guided-route readings carry the label-derived
+placement.
