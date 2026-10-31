@@ -329,3 +329,64 @@ Verified against the code, point by point. The decision stands; four claims of s
   fixation is an integer, so "a zero gradient" was the wrong test); no query path through memory, modulation or caches;
   chunked = streaming; cost of stage 2 measured (the physical tokens' per-layer keys / values computed once, 3 passes over
   9 glimpse tokens, one commit per frame, Mamba advanced once).
+
+## 11. Decision 2, draft (11-01; for review; the open choices wait for G, PLAN G)
+**What a look can teach once decision 1 holds** (10a's contract). A look at w trains: the glimpse stage at w (forward
+from history when the physical group is noisy; super-resolution of the periphery when it is nearly clean), TSP at
+w's cells (the periphery encoder's fine detail), the fovea encoder (reconstruction), and it hands the belief evidence;
+the reward / continuation heads read it. The gaze-free physical stream is trained on every cell wherever the eye is;
+a look reaches it only through shared denoiser features (B2's ~90% route: small, positive in world 1, rarely
+significant), TSP's representation and the belief.
+**Of what (proposed): the error of the predictions the look trains, against the crop's pixels, measured where the
+eye actually looked, before training on it.**
+- Gaze-free physical progress is the deficit (failure 3) but is not the chooser's to buy under decision 1; rewarding
+  it would reward watching the world learn. It stays a standing reading (B2's transfer), and the field's deficit
+  stays decision 4. This answers Codex's "view progress is not automatically progress in gaze-free dynamics": under
+  decision 1 it should not be.
+- The user's 10-29 principle (look where the model can improve most, where it is starved) survives intact, applied to
+  what a look feeds: the fine view and the periphery's detail, where P2 / P3's VoI will read them.
+- Pixels, not tokens: token targets move early (B1); pixel targets are fixed and are faithful's training metric.
+- Prequential, at the looked-at window: the error before the update is a fresh sample (Graves et al.: same-sample
+  gain favours noise), and an agent never sees other windows at full resolution (bandit feedback, not offline
+  scoring of every window on stored frames).
+- Decision-level progress (imagined reward, termination) is VoI's, P2 / P3.
+**How (proposed): a learned competence estimator and its lagged copy.** e_hat(b, a, w): a small head on the predicted
+belief, the action and a window embedding, regressed on that prequential error (no gradient into the world:
+STEP_SPEC 2); progress = |e_hat_now - e_hat_old|, the old copy an EMA of the head's weights. Precedents, read:
+- MAGELLAN (Gaven et al. 2025): an MLP on the agent's own latent predicts competence per goal; absolute progress is
+  the difference from a stored past copy of the estimator (100 snapshots, 32 updates apart); goals sampled in
+  proportion to it with epsilon annealed 1 -> 0.2; generalises across goals (Online-ALP's generalisation error 0.53
+  vs 0.11) and was the only method without expert groupings to master its whole goal space.
+- Kim et al. (ICML 2020): gamma-progress, the loss of an EMA "old" model (gamma 0.9995; 0.9995-0.9999 similar) minus
+  the current one, on the agent's recent data, as a DQN gaze controller's reward; end performance over random 7.83x
+  (mixture world) and 13.79x (noise world), against RND 1.25 / 0.85, disagreement 0.62 / 0.76, error-seeking 0.62 /
+  0.59; noise fixation 0 of 8 behaviours (error-seeking 8 of 8); attention to animate agents emerged in 7 of 7, then
+  faded ("lose interest") once learned. With an oracle object encoder: our representation-learning case is untested.
+- Kanitscheider et al. (2021): progress = fast minus slow EMA of success (time scale 1,250 updates); the absolute
+  (bidirectional) version, because the one-sided one caused forgetting cycles; 82 vs ~70 Minecraft items for the
+  strongest uniform baseline (one run each).
+- Ten et al. (Nat Commun 2021): human free choice best fit by a softmax over w_PC x competence + w_LP x |progress|
+  (15-trial windows); progress-driven participants avoided the unlearnable activity and mastered all three learnable
+  ones 64% vs 35%.
+Noise: a stationary error (night static once its level is learned, sapling's coin once its rate is) gives e_hat_now
+= e_hat_old, so no pull: Kim's noise world and Ten's unlearnable activity.
+**Location prior: the action contingency (F), additive, never a gate.** Codex: an exogenous learnable event must stay
+reachable, so priority = floor + softmax(lambda_C contingency + lambda_LP progress), not a product. Brain: gaze goes to
+the contact landmark (Johansson 2001), and after a few action-effect pairings people make anticipatory saccades to
+where their action's effect will appear, even 14 degrees away, before it appears, "a comparison of expected and
+actual effects" (Pfeuffer et al. 2022 online replication; Pfeuffer, Kiesel & Huestegge 2016 in the lab; 10-month-olds:
+Kenward 2010): the remote case is a LEARNED association, which is what the progress estimator would learn while the
+view there is improving. Cost: two extra denoiser passes per frame (taken action vs NOOP). Open, for G: whether
+progress already concentrates at the action loci (then contingency is redundant as P1's location signal) and at the
+remote counter where contingency is blind.
+**Floor** (decision 3's size, this decision's requirement): per-fixation reward calibration (10a), the glimpse stage's
+coverage for VoI, and policy confounding (Suau et al.) all need overlap in every context: MAGELLAN 0.2, Suau 0.1,
+IAC 0.35, Kim's epsilon decayed to 0.025.
+**Relation to P3** (Codex's open item). With the world frozen in P3, this chooser is P1's; its product is a glimpse
+stage and a periphery trained where the loci and the progress were, plus the floor everywhere, which VoI then reads.
+If the world keeps training online (the user, 10-31: keep learning fixation at a reduced rate), the same estimator
+continues beside VoI.
+**What G decides.** No structured progress after the first intervals: drop the learned part (contingency + floor).
+Structured but tracking error: the irreducible correction is needed. Located only where contingency is: progress as
+the modulation, contingency as the location. Located at the counter as well, and moving: keep both, progress as the
+learned location for remote consequences.
