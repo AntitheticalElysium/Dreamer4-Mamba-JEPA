@@ -235,3 +235,50 @@ Schwartenbeck et al. 2019) is the same decomposition, with novelty declining as 
 the learning term matters in P2 / P3 only if the world (or the view model) keeps training there (LEARNING_SKETCH froze
 it during actor training); exogenous events that are learnable but not decision-relevant get only the floor (in
 Craftax the mob deficits are the sampler's, A).
+
+## 10. Decision 1, proposed (11-01, for review): one denoiser, factorised by structure; the reward head unchanged
+**The shortcut and labels.** The hand rule read simulator labels, but the gate does not need them: any useful chooser
+makes the next fixation predictive of the outcome (that is its job: look where a consequence is coming), so a
+denoiser that reads the query fixation can use it as a cue, whoever chose it. Labels made the cue perfect (Q = 1, the
+exact window); randomness only dilutes it. A label leak beyond that (e.g. facing direction) is possible and untested;
+the factorisation removes both.
+**What changes** (GENERATOR v3 / STEP_SPEC 7 tokens: 81 periphery, 9 glimpse at the fixation's cells, 1 lighting, K
+memory; spatial attention within a frame, temporal attention per token index):
+- In spatial layers the physical tokens (periphery, lighting, memory) never attend to glimpse tokens; glimpse tokens
+  attend to all. Memory tokens are included: through them a glimpse could otherwise reach the periphery within a layer.
+  Temporal attention is per token index, so no cross-frame route remains.
+- The glimpse group gets its own noise level in training, drawn independently of the frame's, with per-group noise
+  conditioning (adaLN per token group instead of per frame). UniDiffuser (Bao et al., ICML 2023, method read): one
+  transformer, an independent timestep per modality; "a maximum timestep T means marginalizing it", "a zero timestep
+  means conditioning on the corresponding modality", "a tied timestep means sampling two modalities jointly".
+- Sampling: periphery and lighting first (3 Euler steps; glimpse tokens omitted, they cannot affect them), then the
+  glimpse given the finished periphery at a small conditioning-augmentation level, 3 steps over 9 tokens with the
+  physical tokens' keys / values computed once. Cascaded diffusion (Ho et al., JMLR 2022, section read): conditioning
+  augmentation "alleviates compounding error from a train-test mismatch" and is "useful precisely when conditioning on
+  generated samples"; its level is a post-training choice (there: s = 0-1501, best 501-751).
+**What it guarantees.** p(periphery, lighting | history, action) cannot depend on the next fixation (unit-testable: the
+gradient of the physical outputs with respect to the glimpse inputs and the fixation is zero). The joint stays
+coherent by the chain rule, p(p') p(g' | p', f), an exact factorisation under two environment facts (looking does not
+change Craftax; the periphery sensor is gaze-invariant, Codex's `torch.equal` check). GENERATOR v3's reason for joint
+denoising ("so they stay correlated") is kept, in a stronger form. It also gives VoI its object: the glimpse stage
+answers "what would a look at w show in this imagined frame" for any w, from one sampled periphery.
+**What it costs.** (1) One route: a past glimpse reaches the next periphery only through the belief (memory tokens)
+and the glimpse stream, no longer through the past frame's periphery tokens. Bound from D: the glimpse's whole
+one-step value is 0.08-0.6% of the next-frame loss. The belief's uptake of glimpses becomes a standing reading (the
+fovea probes found it kept nothing). (2) Sampling: 3 extra passes over 9 tokens. (3) Code: the mask, per-group
+conditioning, a per-group sigma draw in the denoising loss, the sampler's order. (4) From scratch: trained worlds do
+not transfer.
+**Considered: the mask alone, tied noise, joint sampling.** The periphery marginal stays exact (its flow never reads
+the glimpse), but the glimpse is only approximately consistent with it (the joint flow needs E[p | x_p, x_g], the
+mask gives E[p | x_p]), and the conditional query VoI needs is not available. Rejected for the system's sake.
+**Unchanged.** TSP and reconstruction (the encoder's fine-detail teacher, section 9); the belief reading glimpses.
+**Reward and continuation heads: no structural change.** They read the observed percept, glimpse included: a
+posterior p(r | evidence). Looking legitimately sharpens a posterior (seeing the counter tick); the failure Codex
+measured is different: with the real successor and the counter visible at both crops, P1-F's reward NLL was 0.0036
+at the rule's window and 0.35 one row up, so the head keyed on the window's position, not on the digit. That is a
+calibration failure from deterministic placement (the same simplicity bias), not dependence on evidence. The
+requirement is marginal consistency, E over looks of p(r | p', g', f) = p(r | p') for every way of choosing f,
+which a calibrated head on a calibrated glimpse stage satisfies. It is obtained by data (non-deterministic gaze, the
+floor) and checked by Codex's crop test as a standing reading. It matters for P3: an actor choosing fixations could
+otherwise raise imagined reward by looking (Goodhart through a miscalibrated head). Blinding the head would also cost
+the cases where only the fovea sees the reward's cause (night).
