@@ -481,7 +481,8 @@ P1-F inputs with fresh TSP heads (super-resolution and forward), arms uniform / 
 **What H adds.** The selection premise holds in its learnability form: choosing which crop a look-local predictor
 trains on by learnability (current loss minus an irreducible-loss reference, RHO-LOSS) makes it learn faster in the
 coverage regime P1 operates in (~10 crops per frame: H's step ~1,250; 16-43% lower loss for super-resolution, 6-9%
-for the forward view, 28-52% at the DO consequence windows for super-resolution), and is never worse at the end; the
+for the forward view, 28-52% at the DO consequence windows for super-resolution); at the end it is within a few
+percent of uniform, not never worse (forward: +2% overall, +5% on the DO frames' other windows; Codex); the
 reference is what keeps it safe on the stochastic forward target, where plain error-seeking trades the consequence
 windows (-11%) against everything else (+17%). Temporal progress (gamma, bidirectional, greedy over 49 windows) is
 harmful here: 80% of looks on the HUD. Neither learnability nor error finds the action's locus by itself (faced tile
