@@ -26,7 +26,7 @@ CKPT = ROOT / "artifacts/experiments/20261030_p1_guided/run/ckpt_10.pt"
 CEN = F.CENTRES.to(DEV)                                                  # [49, 2]
 ARMS, MODES = ("uniform", "learnability", "error", "progress"), ("sr", "fwd")
 NEED_ARMS = ("need", "need_learnability")                                # H2 (PLAN H2): need = 1 + contingency / its mean
-ENDO_ARMS = ("excess", "priority")                                       # H3 (PLAN H3): no reference model
+ENDO_ARMS = ("excess", "priority", "priority_raw")                       # H3 (PLAN H3): no reference model
 STEPS, BATCH, WARMUP, SEED, EPS, GAMMA = 6000, 512, 250, 0, 0.2, 0.9995
 EVALS = (0, 250, 500, 1000, 2000, 3000, 4500, 6000)
 
@@ -107,18 +107,28 @@ def outputs(tsp, pixd, X, idx, w, mode):
     return mean.float(), ls.float(), M.cell_pixels(M.crop(frames, fix))
 
 
-def loss_all(tsp, pixd, X, idx, mode, cfg, excess=False):
+def loss_all(tsp, pixd, X, idx, mode, cfg, excess=False, parts=False):
     """Pixel MSE (decoded mean clamped to [-1, 1]) at every window of rows idx: [n, 49]; with excess, minus the
-    learner's own predicted noise (its scale head's logistic variance pi^2 s^2 / 3, mean over the window's pixels)."""
+    learner's own predicted noise (its scale head's variance by the continuous-logistic approximation pi^2 s^2 / 3, mean
+    over the window's pixels: close to the discretised, bounded likelihood's only for small interior scales, Codex);
+    with parts, (MSE, that floor) separately."""
     out = []
     with torch.no_grad(), TR.autocast(DEV, cfg):
         for b in torch.as_tensor(idx).split(64):
             mean, ls, pix = outputs(tsp, pixd, X, b, torch.arange(49, device=DEV).expand(len(b), -1), mode)
             e = (mean.clamp(-1, 1) - (pix.float() / 127.5 - 1)).square().flatten(2).mean(-1)
-            if excess:
-                e = e - (math.pi ** 2 / 3 * (2 * ls.clamp(min=-7)).exp()).flatten(2).mean(-1)
-            out.append(e.cpu())
+            f = (math.pi ** 2 / 3 * (2 * ls.clamp(min=-7)).exp()).flatten(2).mean(-1)
+            out.append(torch.stack([e, f], -1).cpu() if parts else (e - f if excess else e).cpu())
     return torch.cat(out)
+
+
+def rank_rho(a, b):
+    """Per-row Spearman with tie-aware (average) ranks; NaN where a row of either map is constant."""
+    import scipy.stats
+    ra, rb = scipy.stats.rankdata(a, axis=1), scipy.stats.rankdata(b, axis=1)
+    ra, rb = ra - ra.mean(1, keepdims=True), rb - rb.mean(1, keepdims=True)
+    den = np.sqrt((ra ** 2).sum(1) * (rb ** 2).sum(1))
+    return np.where(den > 0, (ra * rb).sum(1) / np.where(den > 0, den, 1), np.nan)
 
 
 class Priority(torch.nn.Module):
@@ -144,7 +154,8 @@ class Priority(torch.nn.Module):
 
 def train(arm, mode, X, train_idx, cfg, il=None, evalfn=None, held_idx=None):
     tsp, pixd, params = learner(cfg)
-    if arm == "priority":                                                # trained on out-of-sample (held-half) excess
+    comp, plog = {k: 0.0 for k in ("n", "err_sel", "floor_sel", "err_all", "floor_all", "rho_score_excess", "rho_n")}, []
+    if arm in ("priority", "priority_raw"):                              # trained on out-of-sample (held-half) excess
         pri = Priority(cfg).to(DEV)                                      # errors of the current learner (DEUP)
         popt = torch.optim.AdamW(pri.parameters(), lr=cfg["optimizer"]["lr"])
         hgen = torch.Generator().manual_seed(SEED + 1)                   # its own draws: the fit stream is unchanged
@@ -166,13 +177,20 @@ def train(arm, mode, X, train_idx, cfg, il=None, evalfn=None, held_idx=None):
         w = torch.randint(0, 49, (BATCH,), generator=gen).to(DEV)
         if arm == "need":
             w = torch.where(coin, w, X["need"][idx].to(DEV).argmax(1))
-        elif arm == "priority":
+        elif arm in ("priority", "priority_raw"):
             hb = held_idx[torch.randint(0, len(held_idx), (BATCH,), generator=hgen)]
-            target = loss_all(tsp, pixd, X, hb, mode, cfg, excess=True).to(DEV) * 100   # x 100: unit-scale regression
-            ploss = (pri(X, hb) - target).square().mean()
+            ef = loss_all(tsp, pixd, X, hb, mode, cfg, parts=True).to(DEV)
+            target = (ef[..., 0] - (ef[..., 1] if arm == "priority" else 0)) * 100   # x 100: unit-scale regression
+            pred_h = pri(X, hb)
+            ploss = (pred_h - target).square().mean()
             popt.zero_grad(set_to_none=True); ploss.backward(); popt.step()
+            if step % 250 == 0:                                          # does the head learn its targets?
+                plog.append({"step": step, "priority_loss": float(ploss.detach()),
+                            "priority_target_var": float(target.var()), "priority_rho_held": float(np.nanmean(rank_rho(
+                                pred_h.detach().cpu().numpy(), target.cpu().numpy())))})
             with torch.no_grad():
-                w = torch.where(coin, w, pri(X, idx).argmax(1))
+                score = pri(X, idx)
+                w = torch.where(coin, w, score.argmax(1))
         elif arm != "uniform":
             score = loss_all(tsp, pixd, X, idx, mode, cfg).to(DEV)
             if arm == "learnability":
@@ -184,6 +202,18 @@ def train(arm, mode, X, train_idx, cfg, il=None, evalfn=None, held_idx=None):
             elif arm == "need_learnability":
                 score = X["need"][idx].to(DEV) * (score - loss_all(*il, X, idx, mode, cfg).to(DEV))
             w = torch.where(coin, w, score.argmax(1))
+        if arm in ENDO_ARMS:                                             # the score's parts on this batch (read only)
+            ef = loss_all(tsp, pixd, X, idx, mode, cfg, parts=True)
+            ar = torch.arange(BATCH)
+            for k, x in (("err_sel", ef[ar, w.cpu(), 0]), ("floor_sel", ef[ar, w.cpu(), 1]), ("err_all", ef[..., 0]), ("floor_all", ef[..., 1])):
+                comp[k] += float(x.mean())
+            comp["n"] += 1
+            if step % 250 == 0:                                          # when does the floor become meaningful?
+                plog.append({"step": step, **{k: float(x.mean()) for k, x in (("err_sel", ef[ar, w.cpu(), 0]), ("floor_sel", ef[ar, w.cpu(), 1]),
+                                                                            ("err_all", ef[..., 0]), ("floor_all", ef[..., 1]))}})
+            if arm != "excess":
+                r = rank_rho(score.detach().cpu().numpy(), (ef[..., 0] - ef[..., 1]).numpy())
+                comp["rho_score_excess"] += float(np.nansum(r)); comp["rho_n"] += float(np.isfinite(r).sum())
         fw = CEN[w]
         cover = (M.window(fw) == X["faced"][idx].to(DEV)[:, None]).any(1)
         dn = X["do"][idx].to(DEV)
@@ -204,7 +234,13 @@ def train(arm, mode, X, train_idx, cfg, il=None, evalfn=None, held_idx=None):
                         a.mul_(GAMMA).add_(b, alpha=1 - GAMMA)
     stats = {"faced": sel["faced"] / sel["n"], "hud": sel["hud"] / sel["n"], "night_frames": sel["night"] / sel["n"],
              "faced_given_do": sel["do_faced"] / max(sel["do"], 1)}
-    if arm == "priority":
+    if comp["n"]:
+        stats["score_parts"] = {k: comp[k] / comp["n"] for k in ("err_sel", "floor_sel", "err_all", "floor_all")}
+        if comp["rho_n"]:
+            stats["score_parts"]["rho_score_vs_realized_excess_fit"] = comp["rho_score_excess"] / comp["rho_n"]
+    if plog:
+        stats["log"] = plog
+    if arm in ("priority", "priority_raw"):
         stats["priority"] = pri.eval()
     return (tsp.eval(), pixd.eval()), log, stats
 
@@ -270,12 +306,12 @@ def main():
     cfg = ck["cfg"]
     model = M.M0(cfg).to(DEV); model.load_state_dict(ck["model"]); model.eval()
     Ltr = S.first_episodes(dict(np.load(ROOT / "artifacts/eda/s0/s0_train400_labels.npz")), 20 if smoke else 400)
-    Ldv = S.first_episodes(dict(np.load(S.LABELS / "s0_dev_labels.npz")), 12 if smoke else F.N_EP)
+    Ldv = S.first_episodes(dict(np.load(S.LABELS / "s0_dev_labels.npz")), 80 if smoke else F.N_EP)
     arms = next((a.split("=", 1)[1].split(",") for a in sys.argv if a.startswith("--arms=")), ARMS)
     X = collect(model, cfg, Ltr, need_eps=set(range(0, len(Ltr["ep_T"]), 2)) if "--need" in sys.argv else ())
     ctx, face, d = F.contexts(Ldv, np.random.default_rng(2031))            # G's (F's) evaluation rows
     if smoke:
-        ctx = {c: r[:6] for c, r in ctx.items() if r}
+        ctx = {c: r[:60] for c, r in ctx.items() if r}
     rows = [r for c in ctx for r in ctx[c]]
     E_all = collect(model, cfg, Ldv)
     s_off = np.r_[0, np.cumsum(Ldv["ep_T"])]                               # collect drops frame 0 of each episode
@@ -298,13 +334,17 @@ def main():
         for arm in arms:
             t0 = time.time()
             learned, log, stats = train(arm, mode, X, fit, cfg, il=il, evalfn=evalfn, held_idx=held)
+            heads = {"tsp": learned[0].state_dict(), "pixd": learned[1].state_dict()}
             if "priority" in stats:                                      # does it rank the windows as realized excess does?
+                pri = stats.pop("priority")                              # once (Codex: popping per batch crashed)
+                heads["priority"] = pri.state_dict()
                 with torch.no_grad():
-                    pred = torch.cat([stats.pop("priority")(E_all, b).cpu() for b in eval_idx.split(256)]).numpy()
-                real = loss_all(*learned, E_all, eval_idx, mode, cfg, excess=True).numpy()
-                rk = lambda a: a.argsort(1).argsort(1).astype(float)
-                rho = [float(np.corrcoef(a, b)[0, 1]) for a, b in zip(rk(pred), rk(real))]
-                stats["priority_rank_rho_eval_mean"] = float(np.nanmean(rho))
+                    pred = torch.cat([pri(E_all, b).cpu() for b in eval_idx.split(256)]).numpy()
+                ef = loss_all(*learned, E_all, eval_idx, mode, cfg, parts=True).numpy()
+                stats["priority_rank_rho_eval"] = {"vs_excess": float(np.nanmean(rank_rho(pred, ef[..., 0] - ef[..., 1]))),
+                                                   "vs_error": float(np.nanmean(rank_rho(pred, ef[..., 0])))}
+            if arm in ENDO_ARMS:
+                torch.save(heads, out_dir / f"{mode}_{arm}_heads.pt")
             np.savez_compressed(out_dir / f"{mode}_{arm}.npz", steps=np.array([x["step"] for x in log]),
                                 loss=np.stack([x["loss"] for x in log]))
             res["runs"][f"{mode}_{arm}"] = {"seconds": time.time() - t0, "selection": stats,

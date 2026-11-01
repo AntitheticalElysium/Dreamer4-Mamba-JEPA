@@ -360,3 +360,19 @@ review section 2): selecting a crop by its realized score is outcome-dependent (
 - **Limits.** As H (frozen P1-F inputs, heads only, one seed); the timeline is simulated (the priority head reads the
   current periphery the learner also reads for super-resolution, not for the forward view); the priority head trains
   while the learner changes (DEUP's non-stationarity; no stationarizing features).
+- **Amendments before launch (Codex's H3 review, `../20261101_h3_design_review/REVIEW.md`; user 11-01: launch).**
+  (1) Crash fixed: the priority head is taken out of the stats once, not per evaluation batch; the smoke now
+  evaluates 477 rows (two batches). (2) Tie-aware (average) ranks for every rank correlation; NaN on constant rows.
+  (3) A fourth arm, priority_raw: the same head and training predicting RAW error, so the floor subtraction's own
+  contribution is measured. (4) Logged: error and floor at the chosen window and over all windows (run means and
+  every 250 steps); the priority head's regression loss, target variance and held-batch rank correlation every 250
+  steps; final rank correlation with realized excess and with raw error on the evaluation rows; learner and priority
+  weights saved. (5) Interpretation narrowed (Codex, conceded): the scale head pools residuals by lighting and
+  position, so it absorbs position-wide LEARNABLE error too (a deterministic, mispredicted target gets a negative
+  excess with the native likelihood); the score is error above the position's typical error, not a separation of
+  ignorance from noise; pi^2 s^2 / 3 is the continuous logistic's variance, close to the discretised bounded
+  likelihood's only at small interior scales (at initialisation, s ~ 1, it is 3.29 against ~0.68: the floor dominates
+  until the scale head learns, a transient the 250-step log shows). (6) The forward arm's chooser sees the current
+  periphery, its learner the previous one: a selection experiment, not evidence for a leak-free forward conditional.
+  A negative rejects this score / predictor setup, not reference-free foveation; a positive shows useful selection,
+  not that the scale measures irreducible noise.
