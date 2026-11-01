@@ -68,3 +68,17 @@ Comparisons with P1-F and P1 world 1 are descriptive (two changes each); this ru
   and the uninterrupted repeat comparisons; weights, carry, cache, RNG, streams and counters equal. Not a
   resume-specific defect; the optimizer state is not bitwise across runs. The bf16 cascade glimpse is not bitwise
   between cached and uncached computation (rounding, 7e-7 in float32).
+
+## Readings implementation (11-01 night, during the run; CPU only, the GPU is the run's)
+`queue.sh CKPT` runs items 1-5 in the PLAN's order after the run's clean exit (checkpoint by P1-F's rule, chosen from
+the log and recorded before the queue starts):
+1. S1: `saccade.eval.s1` (b1904a78): for a factorised world one_step commits each tuple's real context frame by frame
+   and draws with M.sample (the cascade, stage-2 cache); CPU test: bitwise equal to that path at t = 1, 6, 24.
+2. The battery as beta-TSP's queue (interface random / guided and M0.5's evaluator with P1-F re-run beside, decoder
+   render), all sampling through M.sample; Codex's tools through `readings_codex.py` (panel and cpu unchanged;
+   the factorial's Euler algorithms in cascade form, its own production check kept, contexts asserted equal to
+   P1-F's from beta-TSP's saved readings; P1-F's panels and factorial are beta-TSP's).
+3-4. `consistency.py`: 256 dev contexts (128 uniform, 128 after DO), K = 8; its glimpse stage is a copy of M.sample's
+   stage 2, asserted bitwise against M.sample's own glimpse on every batch (CPU smoke: equal).
+5. `uptake.py` (CPU, beside the GPU readings once S1's reader exists): F2's episode function unchanged on this world,
+   250 dev episodes, F2's seeds; strata from S1's frozen reader (CPU smoke on P1-F's checkpoint: 3 episodes in 2 min).
