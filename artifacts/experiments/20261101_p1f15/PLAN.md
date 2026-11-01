@@ -31,9 +31,26 @@ factorised key; the launcher refuses a directory with another identity).
 - The chooser hook's inputs (Codex): `choose(p, v)` reads the clean generated periphery, the glimpse stage its
   conditioning-augmented version; with an adaptive chooser the window can carry information the conditional lacks.
   Inert under uniform fixations; to be reconciled with the real step's inputs before decision 2 is built.
-**Readings:** planned and reviewed after the run, before any is run (declared there); candidates: the cascade-based
-S1 / sampler readings, consequences and HUD, whether informative past glimpses reach later physical predictions
-through the belief (decision 1's standing reading, TEACHING 10a), the reward head's consistency across fixations.
+**Readings: required, fixed before launch (11-01, Codex's pre-launch review section 4).** Checkpoint by P1-F's rule
+(10 unless the monitor rose at three successive checkpoints). Every generation reading goes through the cascade with
+the stage-2 cache (the same optimized sampler in every later arm); the evaluators are adapted and checked during
+training (CPU; the GPU is the run's) and on the GPU after it, before any result is produced. Descriptive, no pass rule:
+1. Canonical S1 (TEST_SPEC S1.1-S1.4), S1.3's one-step generation through the cascade.
+2. P1-F's battery as applied to beta-TSP (its PLAN, Readings): the actor interface (actor-facing consequences) under
+   random gaze, and guided gaze for comparability with P1-F; M0.5's evaluator; the decoder render; Codex's re-render
+   noise panel by light; HUD counter consequences at the rule's crop and at another crop containing the counter, DO
+   and NOOP (the real-crop evidence check); entity counts; the sampler factorial (Euler-3 / churn 1 primary, Euler-8 /
+   churn 0 and Euler-32 / churn 1 secondary, never a best-of), each sampler in its cascade form.
+3. Per-query consistency (TEACHING 10a): per legal fixation (all 49), glimpses drawn through stage 2 on one sampled
+   periphery per context; the reward / continuation expectation per fixation and its spread across fixations against
+   sampling error; glimpse-periphery coherence at every fixation (the label-leak check).
+4. Real- versus generated-conditioning gap (TEACHING 10a): the glimpse stage given the real periphery (noised at the
+   conditioning level) versus given the cascade's own generated periphery.
+5. Useful past glimpse -> belief -> later physical prediction (decision 1's standing reading, TEACHING 10a): next-frame
+   periphery / lighting prediction with the real past glimpses versus the same history with them replaced by
+   glimpses at another window, the belief recomputed (base: `20261029_fovea_probes/measure.py` F2), by light and by
+   whether the past glimpse held an entity the periphery missed.
+Comparisons with P1-F and P1 world 1 are descriptive (two changes each); this run is the control for P1-F2.
 
 ## Pre-launch checks: results (11-01 night; `checks.json`; all pass)
 - First attempt: the real launcher ran out of memory after update 1 (default CUDA allocator: 4.0 GiB allocated +
@@ -46,3 +63,8 @@ through the belief (decision 1's standing reading, TEACHING 10a), the reward hea
   card max 5,245 MiB of ~5,850 usable (desktop ~620 MiB): ~0.6 GiB headroom; 256-step phase with 3 checkpoints
   (encoder diagnostics) process max 4,492 MiB. Time: 1.66 s / update over the first 60 at 64 steps, 6.6 s at 256
   (the GPU's thermal state moves absolute times; decision 1's measured cost is +18-21%): ~11 h.
+- Codex's pre-launch review (`../20261101_p1f15_review/REVIEW.md`): supports launch. Qualification kept: beyond the
+  model, 4 optimizer-moment tensors (pixels.cell / tsp.cell) differ at <= 2.3e-13 (first moment) in both the resumed
+  and the uninterrupted repeat comparisons; weights, carry, cache, RNG, streams and counters equal. Not a
+  resume-specific defect; the optimizer state is not bitwise across runs. The bf16 cascade glimpse is not bitwise
+  between cached and uncached computation (rounding, 7e-7 in float32).
