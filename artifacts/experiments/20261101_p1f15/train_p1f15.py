@@ -3,8 +3,8 @@ windows, saccade.data.fixation_prior; no hand placement, no learned chooser), P1
 decision 1's factorised denoiser (learned-fixation TEACHING 10 / 10a). The three declared changes are written INTO the
 config, which the checkpoint stores and saccade.train.validate_resume compares on every restore; on first launch the
 config minus them must equal P1 world 1's checkpoint config; a directory holding a checkpoint but no identity file is
-refused. mamba_ssm's deterministic mode is required (its autotuning differs per process: a resume or re-run would
-otherwise not continue the same computation).
+refused. The CUDA allocator uses expandable segments. mamba_ssm's deterministic mode is required (its autotuning
+differs per process: a resume or re-run would otherwise not continue the same computation).
 Usage (project venv, GPU): MAMBA_DETERMINISTIC=1 python -m artifacts.experiments.20261101_p1f15.train_p1f15 OUT_DIR
   [--updates N] [--no-checkpoints]
 """
@@ -12,6 +12,8 @@ import argparse, copy, json, os
 from pathlib import Path
 
 os.environ.setdefault("JAX_PLATFORMS", "cpu")          # in case a helper imports craftax: JAX would preallocate the GPU
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")   # the factorised path's temporaries
+# fragmented the 6 GB card into an out-of-memory error at update 2-25 (4.0 GiB allocated + 0.76 reserved unused)
 import torch
 
 from saccade import train as TR
@@ -51,7 +53,7 @@ def main():
         "the recipe differs from P1 world 1's beyond the declared changes"
     prov = TR.run_provenance(cfg)
     ident = {"world_seed": WORLD_SEED, "recipe": "P1 world 1 + faithful decoder + factorised denoiser, uniform fixations",
-             "script_sha256": TR.file_sha256(Path(__file__)), "mamba_deterministic": True,
+             "script_sha256": TR.file_sha256(Path(__file__)), "mamba_deterministic": True, "cuda_alloc_conf": os.environ["PYTORCH_CUDA_ALLOC_CONF"],
              "provenance": {k: v for k, v in prov.items() if k != "git_commit"},
              "control": {"path": str(CONTROL), "sha256": TR.file_sha256(CONTROL)}}
     f = out / "identity.json"

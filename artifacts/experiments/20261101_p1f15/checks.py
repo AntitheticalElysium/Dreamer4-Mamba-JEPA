@@ -2,6 +2,8 @@
 1. The real launcher, 25 updates without checkpoints: every logged term finite; time and peak memory per update.
 2. Resume, with TR.p1 itself at a shrunken frame budget (a checkpoint every 2 updates) on P1-F1.5's config: 4 straight
    updates vs 2 + resume + 2, against a second straight run (bitwise expected in one process).
+   Then 3 updates of the 256-step phase with a checkpoint each (the monitor's encoder diagnostics included): peak
+   reserved and allocated memory over 2 and this.
 3. Identity: validate_resume refuses P1-F's checkpoint under P1-F1.5's config and a P1-F1.5 checkpoint under the
    config without the factorised key; the launcher refuses a directory whose identity differs.
 Usage: MAMBA_DETERMINISTIC=1 python -m artifacts.experiments.20261101_p1f15.checks SCRATCH_DIR
@@ -10,6 +12,7 @@ import copy, json, os, shutil, subprocess, sys
 from pathlib import Path
 
 os.environ.setdefault("JAX_PLATFORMS", "cpu")
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")    # as the launcher
 import math
 import torch
 
@@ -41,6 +44,12 @@ def main():
         for u in plan:
             TR.p1(small, L.WORLD_SEED, d, u, None, None, True)
         ck[name] = torch.load(d / "ckpt_02.pt", weights_only=False, map_location="cpu")
+    d = scratch / "phase256"
+    shutil.rmtree(d, ignore_errors=True)
+    TR.p1(small, L.WORLD_SEED, d, 3, 256, None, True)
+    res["memory_gib"] = {"max_reserved": torch.cuda.max_memory_reserved() / 2 ** 30, "max_allocated": torch.cuda.max_memory_allocated() / 2 ** 30,
+                         "phase256_log": [json.loads(l) for l in open(d / "log.jsonl")]}
+    print("memory", json.dumps(res["memory_gib"])[:1500], flush=True)
     diff = lambda a, b: max(float((ck[a]["model"][k].float() - ck[b]["model"][k].float()).abs().max()) for k in ck[a]["model"])
     res["resume"] = {"straight_a_vs_b_max_abs": diff("straight_a", "straight_b"), "straight_a_vs_resumed_max_abs": diff("straight_a", "resumed"),
                      "state_equal": ck["straight_a"]["state"] == ck["resumed"]["state"]}
