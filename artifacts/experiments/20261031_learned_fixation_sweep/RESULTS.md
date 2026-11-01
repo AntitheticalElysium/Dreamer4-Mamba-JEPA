@@ -323,3 +323,33 @@ What H establishes: in this data, choosing crops by learnability (current loss m
 makes both look-local predictors learn faster in the coverage regime P1 operates in, never worse at the end, and is
 robust where error-seeking is not; temporal progress in this greedy full-feedback form hurts. What it does not: the
 joint system (representation, belief, denoiser), an online predictor of the score, a matched need prior, one seed.
+
+## H2. Does need-weighting change what learnability buys? (`selection.py --need`, PLAN H2; unit fovea-selection-need, 54 min; `selection_need/summary.json`)
+Reproduction: the re-run uniform and learnability arms equal H's held-out means to every printed digit (both
+learners). Belief replay for the need computation within 1.06% (bar 2%). Need puts 46% of DO-frame looks on the
+faced tile (uniform 18%); need x learnability 36-42%; learnability alone 19-20%. Held-out loss relative to uniform at
+1,000 / 2,000 / 3,000 / 6,000 steps (paired SEs 0.1-2.5% of uniform's loss):
+
+| learner, target | learnability | need | need x learnability |
+|---|---|---|---|
+| sr, random rows | -16 / -43 / -34 / -3 | -3 / -2 / -19 / -3 | -22 / -44 / -35 / -5 |
+| sr, DO consequence windows | -28 / -52 / -41 / -5 | 0 / +2 / -14 / -2 | -31 / -53 / -41 / -6 |
+| sr, need-weighted, all rows | -12 / -42 / -40 / -4 | -6 / -10 / -28 / -9 | -20 / -44 / -41 / -6 |
+| sr, night | -18 / -27 / -10 / -1 | +3 / +8 / +1 / +2 | -22 / -30 / -13 / -2 |
+| fwd, random rows | -6 / -9 / -4 / +2 | +9 / +11 / +12 / +12 | -7 / -9 / -4 / 0 |
+| fwd, DO consequence windows | -6 / -12 / -6 / 0 | +2 / +4 / +4 / 0 | -8 / -11 / -6 / -1 (uniform's final at 5,159) |
+| fwd, need-weighted, all rows | -3 / -12 / -8 / +2 | +2 / +2 / +2 / 0 | -7 / -12 / -8 / -1 |
+
+Declared reading:
+- **Competing (a), need adds little beyond learnability: mostly yes.** The product is ahead of learnability alone by
+  1-6 points (largest early: -22 vs -16 at 1,000 steps on sr random rows) and ends 1-3 points better on the
+  need-weighted and consequence targets, the forward learner no longer behind uniform at the end (0 / -1%).
+- **Competing (c), need alone suffices: no.** Need alone is far behind learnability on super-resolution and WORSE than
+  uniform on the forward learner (+9 to +12% overall, +14% at night): sending 46% of DO-frame looks to the faced tile
+  starves the rest.
+- **The claim (product faster on the need-weighted target and at the loci than learnability alone): only marginally.**
+- Defect (Codex, P1-F2 review section 3, found before this run): need's arg-max takes window 0 when need is flat
+  (frames before the 8-frame context, 2.25%, and some NOOP frames); preserved as this policy's result.
+What H2 establishes: in this harness learnability carries the selection gain; need does not substitute for it and
+adds a small margin on top. What it does not: the realized-crop scores are outcome-dependent (Codex: a curator, not a
+pre-outcome chooser), so neither arm is yet the deployable form (TEACHING 13).
