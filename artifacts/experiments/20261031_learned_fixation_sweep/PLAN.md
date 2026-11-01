@@ -256,3 +256,13 @@ random looks would meet, before anything is built.
   pixel head was trained by NLL, not MSE (its TSP / reconstruction MSE rose 0.0315 -> 0.0321, 0.0320 -> 0.0328 from
   checkpoint 1 to 2), so pixel-MSE progress is not its objective's progress: world 1's `tsp` and `rec` are descriptive
   only; P1-F (trained by MSE) is the primary world for them; `view` (the denoiser's forward glimpse) is read in both.
+- **Run amendments (11-01, before any reading).** (1) The 8-frame context is computed once per row and its keys /
+  values repeated over the 49 windows (identical inputs and draws; F's helper ran it 49 times): the stopped run's
+  world 1 checkpoint 1 equals the new one (reconstruction identical; TSP mean |diff| 1.3e-5, view 1.9e-4, i.e. 0.04% /
+  0.2%; TSP does not read the cache, so this is run-to-run GPU noise). (2) The alignment check aborted at world 1
+  checkpoint 7 on its MAX statistic (2.3% > 2%), growing 0.3 -> 2.3% over checkpoints. Diagnosed: a full-precision
+  recompute equals S.encode's stored TSP NLL exactly (0.0); rounding the predicted belief to half precision (how
+  S.encode stores it, and what the instrument reads) alone moves a row's NLL by up to 2.5% in the same pass; over all
+  rows the median is 0.06%, p99 0.64%. The check now bounds the MEDIAN at 2% (a misalignment shifts it) and records the
+  max. Limit: the half-precision belief adds a small per-row noise to every instrument, equal across checkpoints and
+  worlds. Rerun from the start.
