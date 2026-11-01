@@ -26,6 +26,7 @@ CKPT = ROOT / "artifacts/experiments/20261030_p1_guided/run/ckpt_10.pt"
 CEN = F.CENTRES.to(DEV)                                                  # [49, 2]
 ARMS, MODES = ("uniform", "learnability", "error", "progress"), ("sr", "fwd")
 NEED_ARMS = ("need", "need_learnability")                                # H2 (PLAN H2): need = 1 + contingency / its mean
+ENDO_ARMS = ("excess", "priority")                                       # H3 (PLAN H3): no reference model
 STEPS, BATCH, WARMUP, SEED, EPS, GAMMA = 6000, 512, 250, 0, 0.2, 0.9995
 EVALS = (0, 250, 500, 1000, 2000, 3000, 4500, 6000)
 
@@ -106,18 +107,47 @@ def outputs(tsp, pixd, X, idx, w, mode):
     return mean.float(), ls.float(), M.cell_pixels(M.crop(frames, fix))
 
 
-def loss_all(tsp, pixd, X, idx, mode, cfg):
-    """Pixel MSE (decoded mean clamped to [-1, 1]) at every window of rows idx: [n, 49]."""
+def loss_all(tsp, pixd, X, idx, mode, cfg, excess=False):
+    """Pixel MSE (decoded mean clamped to [-1, 1]) at every window of rows idx: [n, 49]; with excess, minus the
+    learner's own predicted noise (its scale head's logistic variance pi^2 s^2 / 3, mean over the window's pixels)."""
     out = []
     with torch.no_grad(), TR.autocast(DEV, cfg):
         for b in torch.as_tensor(idx).split(64):
-            mean, _, pix = outputs(tsp, pixd, X, b, torch.arange(49, device=DEV).expand(len(b), -1), mode)
-            out.append((mean.clamp(-1, 1) - (pix.float() / 127.5 - 1)).square().flatten(2).mean(-1).cpu())
+            mean, ls, pix = outputs(tsp, pixd, X, b, torch.arange(49, device=DEV).expand(len(b), -1), mode)
+            e = (mean.clamp(-1, 1) - (pix.float() / 127.5 - 1)).square().flatten(2).mean(-1)
+            if excess:
+                e = e - (math.pi ** 2 / 3 * (2 * ls.clamp(min=-7)).exp()).flatten(2).mean(-1)
+            out.append(e.cpu())
     return torch.cat(out)
 
 
-def train(arm, mode, X, train_idx, cfg, il=None, evalfn=None):
+class Priority(torch.nn.Module):
+    """H3's pre-crop priority head: per window, from frame t's periphery tokens at its 9 cells, the lighting latent and
+    the predicted belief (what the same-frame timeline has before the crop), the predicted excess error; widths
+    PixelDecoder's (m0.yaml heads.pixel_decoder)."""
+
+    def __init__(self, cfg):
+        super().__init__()
+        h, pc = cfg["heads"]["pixel_decoder"], cfg["perception"]
+        self.win = torch.nn.Embedding(49, h["position_dim"])
+        self.belief = torch.nn.Linear(cfg["belief"]["width"], h["belief_dim"])
+        self.net = M.mlp([9 * pc["periphery"]["token_dim"] + pc["lighting"]["dim"] + h["position_dim"] + h["belief_dim"],
+                          h["hidden"], h["hidden"], 1])
+
+    def forward(self, X, idx):
+        p, v, bp = X["p"][idx].to(DEV).float(), X["v"][idx].to(DEV).float(), X["bp"][idx].to(DEV).float()
+        cells = F.WIN.to(DEV)                                            # [49, 9]
+        pw = p[:, cells].flatten(-2)                                     # [n, 49, 144]
+        ctx = torch.cat([v, self.belief(bp)], -1)[:, None].expand(-1, 49, -1)
+        return self.net(torch.cat([pw, ctx, self.win.weight.expand(len(idx), -1, -1)], -1))[..., 0]
+
+
+def train(arm, mode, X, train_idx, cfg, il=None, evalfn=None, held_idx=None):
     tsp, pixd, params = learner(cfg)
+    if arm == "priority":                                                # trained on out-of-sample (held-half) excess
+        pri = Priority(cfg).to(DEV)                                      # errors of the current learner (DEUP)
+        popt = torch.optim.AdamW(pri.parameters(), lr=cfg["optimizer"]["lr"])
+        hgen = torch.Generator().manual_seed(SEED + 1)                   # its own draws: the fit stream is unchanged
     ema = (copy.deepcopy(tsp).eval(), copy.deepcopy(pixd).eval()) if arm == "progress" else None
     o = cfg["optimizer"]
     opt = torch.optim.AdamW(params, lr=o["lr"], betas=tuple(o["betas"]), eps=o["eps"])
@@ -136,12 +166,21 @@ def train(arm, mode, X, train_idx, cfg, il=None, evalfn=None):
         w = torch.randint(0, 49, (BATCH,), generator=gen).to(DEV)
         if arm == "need":
             w = torch.where(coin, w, X["need"][idx].to(DEV).argmax(1))
+        elif arm == "priority":
+            hb = held_idx[torch.randint(0, len(held_idx), (BATCH,), generator=hgen)]
+            target = loss_all(tsp, pixd, X, hb, mode, cfg, excess=True).to(DEV) * 100   # x 100: unit-scale regression
+            ploss = (pri(X, hb) - target).square().mean()
+            popt.zero_grad(set_to_none=True); ploss.backward(); popt.step()
+            with torch.no_grad():
+                w = torch.where(coin, w, pri(X, idx).argmax(1))
         elif arm != "uniform":
             score = loss_all(tsp, pixd, X, idx, mode, cfg).to(DEV)
             if arm == "learnability":
                 score = score - loss_all(*il, X, idx, mode, cfg).to(DEV)
             elif arm == "progress":
                 score = (loss_all(*ema, X, idx, mode, cfg).to(DEV) - score).abs()
+            elif arm == "excess":
+                score = loss_all(tsp, pixd, X, idx, mode, cfg, excess=True).to(DEV)
             elif arm == "need_learnability":
                 score = X["need"][idx].to(DEV) * (score - loss_all(*il, X, idx, mode, cfg).to(DEV))
             w = torch.where(coin, w, score.argmax(1))
@@ -165,6 +204,8 @@ def train(arm, mode, X, train_idx, cfg, il=None, evalfn=None):
                         a.mul_(GAMMA).add_(b, alpha=1 - GAMMA)
     stats = {"faced": sel["faced"] / sel["n"], "hud": sel["hud"] / sel["n"], "night_frames": sel["night"] / sel["n"],
              "faced_given_do": sel["do_faced"] / max(sel["do"], 1)}
+    if arm == "priority":
+        stats["priority"] = pri.eval()
     return (tsp.eval(), pixd.eval()), log, stats
 
 
@@ -185,7 +226,7 @@ def summary(out_dir):
     def row_value(loss, m, w):
         return loss[m].mean(1) if w is None else (loss[m] * w[m]).sum(1) / np.maximum(w[m].sum(1), 1)
     res = {}
-    ARMS = [a for a in ("uniform", "learnability", "error", "progress", *NEED_ARMS) if (out_dir / f"sr_{a}.npz").exists()]
+    ARMS = [a for a in ("uniform", "learnability", "error", "progress", *NEED_ARMS, *ENDO_ARMS) if (out_dir / f"sr_{a}.npz").exists()]
     for mode in MODES:
         z = {arm: np.load(out_dir / f"{mode}_{arm}.npz") for arm in ARMS}
         steps = z["uniform"]["steps"]
@@ -256,7 +297,14 @@ def main():
         np.save(out_dir / f"{mode}_il_eval.npy", il_eval)
         for arm in arms:
             t0 = time.time()
-            _, log, stats = train(arm, mode, X, fit, cfg, il=il, evalfn=evalfn)
+            learned, log, stats = train(arm, mode, X, fit, cfg, il=il, evalfn=evalfn, held_idx=held)
+            if "priority" in stats:                                      # does it rank the windows as realized excess does?
+                with torch.no_grad():
+                    pred = torch.cat([stats.pop("priority")(E_all, b).cpu() for b in eval_idx.split(256)]).numpy()
+                real = loss_all(*learned, E_all, eval_idx, mode, cfg, excess=True).numpy()
+                rk = lambda a: a.argsort(1).argsort(1).astype(float)
+                rho = [float(np.corrcoef(a, b)[0, 1]) for a, b in zip(rk(pred), rk(real))]
+                stats["priority_rank_rho_eval_mean"] = float(np.nanmean(rho))
             np.savez_compressed(out_dir / f"{mode}_{arm}.npz", steps=np.array([x["step"] for x in log]),
                                 loss=np.stack([x["loss"] for x in log]))
             res["runs"][f"{mode}_{arm}"] = {"seconds": time.time() - t0, "selection": stats,

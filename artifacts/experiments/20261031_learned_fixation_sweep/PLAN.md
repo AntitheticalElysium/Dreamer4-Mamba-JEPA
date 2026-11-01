@@ -332,3 +332,31 @@ learnability alone did not move looks toward the action's locus (faced tile on D
   (c): learnability is not worth its reference model (contingency + floor); claim: keep the product.
 - **Limits.** As H (frozen P1-F inputs, heads only, full feedback, one seed); the need is computed from the frozen
   world, not the world being trained; the base is untuned.
+
+## H3. Can learnability come from the system itself, before the crop? (`selection.py --arms=uniform,excess,priority`, GPU; TEACHING 13; proposed, awaiting the user's go-ahead)
+User 11-01: a separately pretrained reference is an artificial dependency for an autonomous learner. Codex (P1-F2
+review section 2): selecting a crop by its realized score is outcome-dependent (a curator, not a chooser).
+- **Arms** (H's harness, same frames / batches / coin flips / budget / learners; uniform re-run as the reproduction
+  check; RHO learnability and need x learnability compared from H / H2's identical-code runs):
+  - excess (realized, the oracle form of the endogenous score): the learner's MSE at each window minus its OWN scale
+    head's predicted noise (logistic variance pi^2 s^2 / 3, the head reading only lighting and position: AMA's
+    error-minus-aleatoric, DEUP's excess risk); outcome-dependent, like H's arms.
+  - priority (the deployable, pre-crop form): a small head reading frame t's periphery tokens at the window's cells,
+    the lighting latent and the predicted belief — what a same-frame periphery-then-fovea timeline has before the
+    crop — regressed each step on the CURRENT learner's realized excess error at all 49 windows of a batch from the
+    OTHER half of the episodes (out-of-sample errors, DEUP's prescription; it never sees the realized scores of the
+    frames it selects), arg-max of its prediction with epsilon 0.2. Widths PixelDecoder's; targets x 100.
+- **Readings** as H / H2 (random rows, DO consequence windows, need-weighted, night; selections), plus the priority
+  head's per-row rank correlation with the realized excess on the evaluation rows at the end.
+- **Claim.** excess recovers RHO's gain without a reference (sr: 14-24% fewer steps mid-budget), and priority keeps
+  most of it from pre-crop inputs.
+- **Competing.** (a) The scale head's noise floor is too coarse: excess ~ error, so it inherits error's failure on the
+  forward target (H: +17%); (b) the excess error cannot be predicted from the periphery before the crop: priority ~
+  uniform; (c) priority works for super-resolution only (its periphery inputs predict super-resolution error, not the
+  forward view's).
+- **Rules out.** (a): the endogenous floor needs content-aware aleatoric estimation (the generator's spread) before it
+  can replace the reference; (b): a pre-crop chooser cannot buy the selection gain in this form (the gain then needs
+  the realized crop, i.e. a curator with its selection bias); claim: the reference model is not needed.
+- **Limits.** As H (frozen P1-F inputs, heads only, one seed); the timeline is simulated (the priority head reads the
+  current periphery the learner also reads for super-resolution, not for the forward view); the priority head trains
+  while the learner changes (DEUP's non-stationarity; no stationarizing features).
