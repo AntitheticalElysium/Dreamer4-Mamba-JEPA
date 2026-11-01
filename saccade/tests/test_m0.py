@@ -287,6 +287,28 @@ def test_factorised_loss_pair_equals_tied_and_cascade_periphery_ignores_fixation
     assert all(torch.equal(a, b) for a, b in zip(frame, outs[1]))
 
 
+def test_glimpse_step_equals_full_step(cfg):
+    """The cascade's stage-2 cache: physical keys / values kept from one full step (glimpse input g1, level s1) give,
+    for another glimpse input and level, the full step's glimpse output, with a non-empty temporal cache."""
+    c, den = _factorised(cfg)
+    B, T = 2, 4
+    x, mem, sigma, act, fix, _ = _den_inputs(c, B, T, seed=1)
+    sl = lambda a, t: a[:, t:t + 1]
+    with torch.no_grad():
+        cache = den.new_cache()
+        for t in range(T - 1):
+            cache = M.context_pass(den, tuple(sl(p, t) for p in x), sl(act, t), sl(mem, t), sl(fix, t), cache, c,
+                                   torch.Generator().manual_seed(t))
+        xt, at, mt, ft = tuple(sl(p, T - 1) for p in x), sl(act, T - 1), sl(mem, T - 1), sl(fix, T - 1)
+        cp, kept = torch.full((B, 1), -0.6), []
+        den.step(xt, (cp, torch.full((B, 1), 0.3)), at, mt, ft, cache, kept)
+        g2 = torch.randn(xt[1].shape, generator=torch.Generator().manual_seed(7))
+        full = den.step((xt[0], g2, xt[2]), (cp, torch.full((B, 1), -0.2)), at, mt, ft, cache)[0][1]
+        alone = den.glimpse_step(g2, torch.full((B, 1), -0.2), at, ft, cache, kept)
+    assert len(kept) == sum(not b.temporal for b in den.blocks)
+    assert torch.allclose(alone, full, atol=1e-6), float((alone - full).abs().max())
+
+
 def test_cached_sampler_equals_recomputed_history(cfg):
     """The whole cached sampler (3 churned Euler evaluations, then one context pass per frame) equals a sampler that
     recomputes the full history with the stored context copies, under identical draws: several frames, an episode

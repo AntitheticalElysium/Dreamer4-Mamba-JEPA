@@ -1,7 +1,8 @@
 """Decision 1's GPU build checks (PLAN.md 1-6), one step per process on the 6 GB card; results merge into checks.json.
 Usage (project venv, GPU): python -m artifacts.experiments.20261101_factorised_denoiser.checks STEP PRE_DIR SCRATCH
-  STEP: disabled | launcher | invariance | cost. PRE_DIR holds 60b98881's saccade/model.py and saccade/train.py (the
-  code before decision 1) as model.py / train.py; SCRATCH receives the launcher's 25-update run.
+  STEP: disabled | launcher | invariance | cost | cache. PRE_DIR holds the code compared against as model.py / train.py:
+  60b98881's (before decision 1) for disabled, a4f2c2a2's (before the stage-2 cache) for cache; SCRATCH receives the
+  launcher's 25-update run.
 """
 import copy, importlib, importlib.util, json, math, os, shutil, subprocess, sys, time
 from pathlib import Path
@@ -226,12 +227,71 @@ def cost():
     return res
 
 
+def cache(pre):
+    """7 (PLAN, added with the stage-2 cache): against the code before it, the factorised training step bitwise (P1-F's
+    initialization, 2 streams: terms, gradients, one step), and on P1-F's checkpoint-10 weights switched on, the
+    cascade's frames under common draws (periphery and lighting bitwise; the glimpse within float noise) and the cost
+    per sampled frame at 64 streams after an 8-frame context."""
+    PM, PT = load(pre / "model.py", "pre_cache_model"), load(pre / "train.py", "pre_cache_train")
+    PT.M = PM
+    cfg = factorised(torch.load(P1F / "ckpt_01.pt", weights_only=False, map_location="cpu")["cfg"])
+    model, opt, chunk, carry, cache_, init, opt0 = BC.start(cfg, None)
+    old = PM.M0(cfg).to(DEV); old.train(); old.denoiser.checkpoint = model.denoiser.checkpoint
+    old.load_state_dict(model.state_dict())
+    o = cfg["optimizer"]
+    oopt = torch.optim.AdamW(old.param_groups(), lr=o["lr"], betas=tuple(o["betas"]), eps=o["eps"])
+    oinit, oopt0 = {n: p.detach().clone() for n, p in old.named_parameters()}, copy.deepcopy(oopt.state_dict())
+    rng = [torch.get_rng_state(), torch.cuda.get_rng_state()]
+    args = (chunk, carry, cache_, targets_of(cfg), cfg, rng)
+    res = {"training_factorised": BC.same(BC.branch(old, oopt, oinit, oopt0, PT.p1_losses, *args),
+                                          BC.branch(model, opt, init, opt0, TR.p1_losses, *args))}
+    res["training_factorised"].pop("terms")
+    del model, opt, old, oopt
+    torch.cuda.empty_cache()
+    ck = torch.load(P1F / "ckpt_10.pt", weights_only=False, map_location="cpu")
+    dens = []
+    for mod in (M, PM):
+        m = mod.M0(cfg).to(DEV).eval(); m.load_state_dict(ck["model"]); dens.append((mod, m.denoiser))
+    B, gen = 64, torch.Generator(device=DEV).manual_seed(0)
+    dims = [(M.N, cfg["perception"]["periphery"]["token_dim"]), (M.G, cfg["perception"]["fovea"]["token_dim"]), (cfg["perception"]["lighting"]["dim"],)]
+    rnd = lambda *s: torch.randn(*s, device=DEV, generator=gen)
+    act, mem, fix = torch.randint(0, 17, (B, 1), device=DEV, generator=gen), rnd(B, 1, cfg["denoiser"]["memory_tokens"], cfg["denoiser"]["width"]), \
+        CEN.to(DEV)[torch.randint(0, 49, (B,), device=DEV, generator=gen)][:, None]
+    ctx = [tuple(rnd(B, 1, *s) for s in dims) for _ in range(8)]
+    with torch.no_grad(), TR.autocast(DEV, cfg):
+        caches = []
+        for mod, den in dens:
+            c_ = den.new_cache()
+            for t in range(8):
+                c_ = mod.context_pass(den, ctx[t], act, mem, fix, c_, cfg, torch.Generator(device=DEV).manual_seed(100 + t))
+            caches.append(c_)
+        res["context_caches_equal"] = all(torch.equal(a, b) for (ka, va), (kb, vb) in zip(caches[0]["kv"], caches[1]["kv"]) for a, b in ((ka, kb), (va, vb)))
+        cmp = []
+        for seed in range(4):
+            a, b = (mod.sample(den, dims, act, mem, fix, c_, cfg, torch.Generator(device=DEV).manual_seed(seed))
+                    for (mod, den), c_ in zip(dens, caches))
+            cmp.append({"p_equal": torch.equal(a[0], b[0]), "v_equal": torch.equal(a[2], b[2]),
+                        "g_max_abs": float((a[1] - b[1]).abs().max()), "g_std": float(b[1].float().std())})
+        res["frames_cached_vs_uncached"] = cmp
+        for name, (mod, den), c_, flag in (("joint", dens[0], caches[0], False), ("cascade_cached", dens[0], caches[0], True),
+                                           ("cascade_uncached", dens[1], caches[1], True)):
+            den.factorised = flag
+            for i in range(12):
+                if i == 2:
+                    torch.cuda.synchronize(); t0 = time.time()
+                mod.sample(den, dims, act, mem, fix, c_, cfg, gen)
+            torch.cuda.synchronize(); res[f"{name}_ms_per_frame"] = (time.time() - t0) / 10 * 1000
+            den.factorised = True
+    return res
+
+
 def main():
     step, pre, scratch = sys.argv[1], Path(sys.argv[2]), Path(sys.argv[3])
     f = HERE / "checks.json"
     res = json.loads(f.read_text()) if f.exists() else {}
     step_key = step + ("" if os.environ.get("MAMBA_DETERMINISTIC") == "1" else "_autotuned")   # mamba_ssm's mode
-    res[step_key] = {"disabled": lambda: disabled(pre), "launcher": lambda: launcher(scratch), "invariance": invariance, "cost": cost}[step]()
+    res[step_key] = {"disabled": lambda: disabled(pre), "launcher": lambda: launcher(scratch), "invariance": invariance, "cost": cost,
+                     "cache": lambda: cache(pre)}[step]()
     res.setdefault("code", {})[step_key] = {**TR.run_provenance(TR.load_cfg()), "pre_sha256": {
         f: TR.file_sha256(pre / f) for f in ("model.py", "train.py")}}
     print(step_key, json.dumps(res[step_key], default=str)[:3000], flush=True)

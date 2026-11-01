@@ -279,12 +279,14 @@ class Block(nn.Module):
         a, b = self.gate_up(h).chunk(2, -1)
         return self.down(F.silu(a) * b)
 
-    def forward(self, x, c, ang, mask=None, cache=None, phys=None):
+    def forward(self, x, c, ang, mask=None, cache=None, phys=None, pkv=None):
         """x [B, T, n, W], c [B, T, W]. Spatial: ang [B, T, n, hd/2]. Temporal: ang [B, T, hd/2] (frame positions) and
         mask [B, 1, 1, T, T]; with cache (streaming, T = 1) the cached keys / values of earlier frames are prepended and
         this frame's (k, v) is returned for the caller to commit. Factorised (TEACHING 10 / 10a): c = (physical, glimpse)
         conditionings applied to their token groups (glimpse tokens N:N+G, the rest physical), and with phys (the
-        physical token indices) the physical queries attend only to physical keys in spatial layers."""
+        physical token indices) the physical queries attend only to physical keys in spatial layers; their keys /
+        values are returned. pkv (spatial, x = the 9 glimpse tokens only): those physical keys / values, around which
+        the glimpse's own are placed in the full frame's order."""
         if isinstance(c, tuple):
             (sh1, sc1, g1, sh2, sc2, g2), mg = (self.mod(F.silu(z)).unsqueeze(2).chunk(6, -1) for z in c)
             grp = lambda t, f: torch.cat([f(t[:, :, :N], 0), f(t[:, :, N:N + G], 1), f(t[:, :, N + G:], 0)], 2)
@@ -296,11 +298,14 @@ class Block(nn.Module):
         new = None
         if not self.temporal:
             q, k, v = self.attn.project(h, ang)
+            if pkv is not None:
+                k, v = (torch.cat([pt[..., :N, :], t, pt[..., N:, :]], -2) for pt, t in zip(pkv, (k, v)))
             if phys is None:
                 a = self.attn.attend(q, k, v)
             else:
                 sel = lambda t: t.index_select(-2, phys)
-                ap, ag = self.attn.attend(sel(q), sel(k), sel(v)), self.attn.attend(q[..., N:N + G, :], k, v)
+                new = sel(k), sel(v)
+                ap, ag = self.attn.attend(sel(q), *new), self.attn.attend(q[..., N:N + G, :], k, v)
                 a = torch.cat([ap[:, :, :N], ag, ap[:, :, N:]], 2)
         else:
             ht = h.transpose(1, 2)                                            # [B, n, T, W]
@@ -404,10 +409,11 @@ class Denoiser(nn.Module):
                 tok = blk(tok, c, *a)[0]
         return self.head(tok, c)
 
-    def step(self, x, c_noise, prev_action, memory, fix, cache: dict):
+    def step(self, x, c_noise, prev_action, memory, fix, cache: dict, keep=None):
         """Streaming form for one frame per stream (T = 1) at frame position cache["t"]; cache["kv"] holds, per temporal
         layer, the keys / values of the previous <= `window` committed frames. Returns (F, kv of this frame); commit()
-        appends them."""
+        appends them. Factorised, with a list `keep`: the physical tokens' spatial keys / values per layer are appended
+        to it (for glimpse_step)."""
         tok, ang = self.embed(x, memory, fix)
         c = self.conds(c_noise, prev_action)
         ang_t = torch.full((tok.shape[0], 1, 1), float(cache["t"]), device=tok.device) * self.f_time
@@ -418,8 +424,29 @@ class Denoiser(nn.Module):
                 new.append(kv)
                 i += 1
             else:
-                tok = blk(tok, c, ang, None, None, self.phys if self.factorised else None)[0]
+                tok, pkv = blk(tok, c, ang, None, None, self.phys if self.factorised else None)
+                if keep is not None:
+                    keep.append(pkv)
         return self.head(tok, c), new
+
+    def glimpse_step(self, g, c_noise, prev_action, fix, cache: dict, kept):
+        """The glimpse tokens alone (factorised): the physical tokens never read them, so with the physical inputs and
+        level held (the cascade's stage 2) their per-layer keys / values are those `kept` by one step(); the glimpse
+        rows of the temporal cache. Returns the raw glimpse output; equal to step()'s at the same inputs."""
+        cells = window(fix)
+        tok = self.inp[1](g) + self.pos[cells] + self.kind[1]
+        ang = torch.cat([(cells % GRID)[..., None] * self.f_space, (cells // GRID)[..., None] * self.f_space], -1)
+        c = self.cond(c_noise, prev_action)
+        ang_t = torch.full((tok.shape[0], 1, 1), float(cache["t"]), device=tok.device) * self.f_time
+        i = j = 0
+        for blk in self.blocks:
+            if blk.temporal:
+                kv = tuple(t if t is None else t[:, N:N + G] for t in cache["kv"][i])
+                tok, i = blk(tok, c, ang_t, None, kv)[0], i + 1
+            else:
+                tok, j = blk(tok, c, ang, pkv=kept[j])[0], j + 1
+        shift, scale = self.final_mod(F.silu(c)).unsqueeze(2).chunk(2, -1)
+        return self.out[1](self.final_norm(tok) * (1 + scale) + shift)
 
     def new_cache(self):
         return {"t": 0, "kv": [(None, None) for b in self.blocks if b.temporal]}
@@ -462,12 +489,12 @@ def denoise_loss(den: Denoiser, x0, sigma, prev_action, memory, fix, episode, va
     return sum(se) / sum(t[0, 0].numel() for t in x0)
 
 
-def denoised(den: Denoiser, x, sigma, prev_action, memory, fix, cache, s, sd=1.0):
+def denoised(den: Denoiser, x, sigma, prev_action, memory, fix, cache, s, sd=1.0, keep=None):
     """One streaming evaluation at sigma [B, 1] (or a (physical, glimpse) pair); preserve an already valid clean
     prediction."""
     pre = [precondition(sg, sd) for sg in _parts(sigma)]
     c_noise = (pre[0][3], pre[1][3]) if isinstance(sigma, tuple) else pre[0][3]
-    Fo, new = den.step(tuple(_bcast(c[2], t) * t for t, c in zip(x, pre)), c_noise, prev_action, memory, fix, cache)
+    Fo, new = den.step(tuple(_bcast(c[2], t) * t for t, c in zip(x, pre)), c_noise, prev_action, memory, fix, cache, keep)
     return tuple(clean_estimate((t,), (f,), c[0], c[1], s)[0] for t, f, c in zip(x, Fo, pre)), new
 
 
@@ -528,13 +555,18 @@ def _cascade(den, shapes, prev_action, memory, fix, cache, cfg, sig, B, randn, c
     fix = fix if chosen is None else chosen
     sa = s["glimpse_conditioning_sigma"]
     pc, vc = (t + sa * randn(t.shape) for t in (p, v))
-    g = sig[0] * randn((B, 1, *shapes[1]))
+    g, kept = sig[0] * randn((B, 1, *shapes[1])), []
     for k in range(n):
         hat = sig[k] * (1 + gammas[k])
         if gammas[k] > 0:
             g = g + math.sqrt(hat ** 2 - sig[k] ** 2) * s["s_noise"] * randn(g.shape)
-        D, _ = denoised(den, (pc, g, vc), (full(sa), full(hat)), prev_action, memory, fix, cache, clamp, sd)
-        g = g + (sig[k + 1] - hat) * (g - D[1]) / hat
+        if k == 0:                                                       # one full pass keeps the physical keys / values
+            Dg = denoised(den, (pc, g, vc), (full(sa), full(hat)), prev_action, memory, fix, cache, clamp, sd, kept)[0][1]
+        else:                                                            # then the 9 glimpse tokens alone
+            c_skip, c_out, c_in, c_noise = precondition(full(hat), sd)
+            Fg = den.glimpse_step(_bcast(c_in, g) * g, c_noise, prev_action, fix, cache, kept)
+            Dg = clean_estimate((g,), (Fg,), c_skip, c_out, clamp)[0]
+        g = g + (sig[k + 1] - hat) * (g - Dg) / hat
     return (p, g, v) if chosen is None else ((p, g, v), fix)
 
 
