@@ -180,3 +180,37 @@ def test_m0_yaml_has_no_duplicate_keys():
             for _, value in node.value:
                 walk(value)
     walk(yaml.compose((TR.ROOT / "saccade/m0.yaml").read_text()))
+
+
+def test_one_step_factorised_is_the_system_sampler(monkeypatch):
+    """S1.3 for a factorised world (decision 1): one_step's draw for a tuple equals the system's own path for it, the
+    real context committed frame by frame by context_pass and then M.sample's cascade, from the same generator state."""
+    from saccade import model as M
+    monkeypatch.setattr(s1, "DEV", torch.device("cpu"))
+    cfg = copy.deepcopy(TR.load_cfg())
+    cfg["denoiser"]["factorised"], cfg["edm"]["sampler"]["glimpse_conditioning_sigma"] = True, 0.1
+    torch.manual_seed(0)
+    model = M.M0(cfg).eval()
+    for m in [b.mod for b in model.denoiser.blocks] + [model.denoiser.final_mod, *model.denoiser.out]:
+        torch.nn.init.normal_(m.weight, std=0.02)
+    pc, P = cfg["perception"], cfg["data"]["context_prefix"]
+    g = torch.Generator().manual_seed(1)
+    for T, seed in ((30, 3), (30, 11), (30, 5)):                         # t = 6, 24 (full context), 1 (one frame)
+        enc = [{"p": torch.randn(T, M.N, pc["periphery"]["token_dim"], generator=g), "g": torch.randn(T, M.G, pc["fovea"]["token_dim"], generator=g),
+                "v": torch.randn(T, pc["lighting"]["dim"], generator=g), "fix": torch.randint(1, 8, (T, 2), generator=g),
+                "bp": torch.randn(T, cfg["belief"]["width"], generator=g), "prev_action": torch.randint(0, 17, (T,), generator=g)}]
+        eps_, ts, out = s1.one_step(model, enc, cfg, 1, np.random.default_rng(seed))
+        t, e = int(ts[0]), enc[0]
+        k = min(P, t)
+        bp = torch.cat([torch.zeros(P - k, e["bp"].shape[1]), e["bp"][t - k:t + 1]])[None]
+        mem = model.belief.memory(bp)[:, P - k:]
+        gen, cache = torch.Generator().manual_seed(0), model.denoiser.new_cache()
+        with torch.no_grad():
+            for i in range(k):
+                f = t - k + i
+                cache = M.context_pass(model.denoiser, tuple(e[key][f][None, None].float() for key in ("p", "g", "v")),
+                                       e["prev_action"][f].view(1, 1), mem[:, i:i + 1], e["fix"][f].view(1, 1, 2), cache, cfg, gen)
+            ref = M.sample(model.denoiser, [tuple(e[key].shape[1:]) for key in ("p", "g", "v")], e["prev_action"][t].view(1, 1),
+                           mem[:, -1:], e["fix"][t].view(1, 1, 2), cache, cfg, gen)
+        for key, r in zip(("p", "g", "v"), ref):
+            assert torch.equal(out[key][0], r[0, 0].float()), (t, key)
