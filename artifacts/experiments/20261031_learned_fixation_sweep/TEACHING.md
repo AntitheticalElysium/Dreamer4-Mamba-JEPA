@@ -476,3 +476,26 @@ under the same starvation is blind to the starved); temporal progress can discov
 is noisy per look (B2); both need need-weighting to stay on what the actor will use.
 **Test H** (PLAN H, running): the causal premise both rest on, crop selection speeding look-local learning, on frozen
 P1-F inputs with fresh TSP heads (super-resolution and forward), arms uniform / learnability / error / progress.
+
+## 12b. After H (11-01; for discussion with the user, nothing decided)
+**What H adds.** The selection premise holds in its learnability form: choosing which crop a look-local predictor
+trains on by learnability (current loss minus an irreducible-loss reference, RHO-LOSS) makes it learn faster in the
+coverage regime P1 operates in (~10 crops per frame: H's step ~1,250; 16-43% lower loss for super-resolution, 6-9%
+for the forward view, 28-52% at the DO consequence windows for super-resolution), and is never worse at the end; the
+reference is what keeps it safe on the stochastic forward target, where plain error-seeking trades the consequence
+windows (-11%) against everything else (+17%). Temporal progress (gamma, bidirectional, greedy over 49 windows) is
+harmful here: 80% of looks on the HUD. Neither learnability nor error finds the action's locus by itself (faced tile
+on DO frames 19-20% vs uniform 18%): location stays contingency's (F).
+**So the user's idea survives in its learnability form, and composes with contingency as need x learnability:**
+- priority(w | frame) ~ need(w) x learnability(w), with a permanent uniform floor; need = base + action contingency
+  (Dubey & Griffiths' need probability; the base keeps exogenous events reachable, Codex); learnability = current
+  look-local pixel loss minus a reference's (RHO; JEST's "pretrained reference" can be P1-F's own TSP / forward heads,
+  in pixel space, independent of the new world's tokens);
+- P1 is offline: every window of a stored frame can be scored (full feedback; cheap for pixel heads: H scored 512 x
+  49 windows per step); an online agent needs a predictor of the score from pre-outcome inputs, trained by regression
+  on P1's full-feedback labels (no lagged self-difference, so Codex's estimator artefact does not arise);
+- floor: per-fixation reward calibration and policy confounding still need overlap.
+**Open, in order:** (1) whether need-weighting changes what learnability buys (H had no contingency arm); (2) the
+joint-system test (decision 1 built; P1-F2 arms on the factorised world: need x learnability + floor against
+contingency + floor, uniform if the user wants the baseline); (3) the reference's blind spot (it cannot point at what
+it never learned; the floor and contingency are what reach the starved).
