@@ -396,7 +396,8 @@ learned location for remote consequences.
 not pulled by night static, but: it locates action consequences no better than the world's own action contingency
 (world 1 mining, arg-max coverage 0.31-0.61 against F's 0.58-0.95 on the same rows), it does not move toward them
 over training (front-loaded with everything else in the first third: views flat from checkpoint 4-5, TSP converged),
-and in the second half it reverses sign between consecutive intervals at gamma-progress's own horizon (post hoc).
+and in the second half it reverses sign between consecutive intervals 625 updates apart (post hoc; corrected 11-01:
+not gamma-progress's 2,000-update horizon).
 This fits decision 1's accounting: a starved consequence is starved in the gaze-free physical stream, which a look
 cannot buy; what a look can buy (fine view, periphery detail) is learned early and broadly.
 **Proposed decision 2.** P1's chooser = the world's action contingency (F; additive, computed from the physical

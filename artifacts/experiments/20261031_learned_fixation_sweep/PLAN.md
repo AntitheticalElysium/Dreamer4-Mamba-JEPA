@@ -203,7 +203,7 @@ random looks would meet, before anything is built.
   - History fixations: S1's seeded uniform draws, both worlds. Alignment check: TSP's NLL at each row's recorded
     fixation equals S.encode's within 2% (else abort).
   - Progress LP_k = e_k - e_{k+1} on the same held-out rows: fresh samples and fixed targets (Graves et al.'s target
-    prediction gain), per interval k -> k + 1 (9 intervals of 2.56 M frames, 1.5-2.5 k updates, near gamma-progress's
+    prediction gain), per interval k -> k + 1 (9 intervals of 2.56 M frames: 2,500 updates through checkpoint 5, 625 after (corrected 11-01), near gamma-progress's
     2,000-update horizon).
 - **Worlds.** World 1 (random gaze throughout; its NLL pixel head renders map content, not HUD values: digits
   0.01-0.67, icons 0, so its HUD windows are uninterpretable). P1-F (faithful pixel head renders the HUD, but 13% of

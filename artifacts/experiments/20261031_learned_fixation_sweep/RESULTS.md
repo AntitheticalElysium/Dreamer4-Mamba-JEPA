@@ -266,7 +266,9 @@ Post-hoc diagnostics (not in the plan; they qualify reading 1, they select nothi
 - **Late progress is mean-reverting at this horizon.** Consecutive intervals' class-mean progress vectors correlate
   positively early (0.3-0.94) and negatively in the second half (P1-F random rows -0.36 to -0.92 from interval 3-4;
   most classes -0.2 to -0.85 at the last intervals): a window that improved in one interval worsens in the next. The
-  checkpoint spacing (1.5-2.5 k updates) is gamma-progress's horizon (2,000 updates).
+  checkpoint spacing is equal in frames (2.56 M) but 2,500 updates through checkpoint 5 and 625 afterwards (Codex,
+  11-01; corrected from "1.5-2.5 k"), so the reversals sit at 625-update intervals, a third of gamma-progress's
+  2,000-update horizon: they bear on progress at that short lag, not at gamma-progress's.
 - Cross-world agreement of the interval's progress vector (both worlds saw the same seed-1 stream): weak for the DO
   classes (-0.4 to +0.6), 0.61-0.78 for random rows at intervals 5-8: consistent with data order moving generic
   content, not established.
@@ -276,6 +278,6 @@ Post-hoc diagnostics (not in the plan; they qualify reading 1, they select nothi
 What G establishes: under random looks, the look-local predictions' progress is replicable across episodes and is
 not pulled by night static, but it does not locate action consequences better than the world's own action
 contingency, does not move toward them over training, and in the second half reverses sign between consecutive
-intervals at gamma-progress's horizon. What it does not: the dynamics under a chooser that follows progress
+intervals 625 updates apart (a shorter lag than gamma-progress's). What it does not: the dynamics under a chooser that follows progress
 (positive feedback), the factorised glimpse stage (stood in for by the joint denoiser), the remote counter in a clean
 world, more than one seed.
