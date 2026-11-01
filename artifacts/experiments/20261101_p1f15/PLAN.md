@@ -34,3 +34,15 @@ factorised key; the launcher refuses a directory with another identity).
 **Readings:** planned and reviewed after the run, before any is run (declared there); candidates: the cascade-based
 S1 / sampler readings, consequences and HUD, whether informative past glimpses reach later physical predictions
 through the belief (decision 1's standing reading, TEACHING 10a), the reward head's consistency across fixations.
+
+## Pre-launch checks: results (11-01 night; `checks.json`; all pass)
+- First attempt: the real launcher ran out of memory after update 1 (default CUDA allocator: 4.0 GiB allocated +
+  0.76 GiB reserved unused, the factorised path's temporaries fragmenting the 6 GB card). Fixed by expandable
+  segments, set by the launcher and recorded in the identity (allocation only; no arithmetic changes).
+- Launcher, 25 updates: every logged term finite. Resume: 4 straight = 2 + resume + 2 = a second straight run,
+  bitwise (max abs 0, state equal). Identity: P1-F's checkpoint refused under this config, this run's refused
+  without the factorised key, the launcher refuses a directory whose identity differs.
+- Memory measured on fresh processes (nvidia-smi, every second): 64-step phase (60 updates) process max 4,624 MiB,
+  card max 5,245 MiB of ~5,850 usable (desktop ~620 MiB): ~0.6 GiB headroom; 256-step phase with 3 checkpoints
+  (encoder diagnostics) process max 4,492 MiB. Time: 1.66 s / update over the first 60 at 64 steps, 6.6 s at 256
+  (the GPU's thermal state moves absolute times; decision 1's measured cost is +18-21%): ~11 h.
