@@ -279,16 +279,29 @@ class Block(nn.Module):
         a, b = self.gate_up(h).chunk(2, -1)
         return self.down(F.silu(a) * b)
 
-    def forward(self, x, c, ang, mask=None, cache=None):
+    def forward(self, x, c, ang, mask=None, cache=None, phys=None):
         """x [B, T, n, W], c [B, T, W]. Spatial: ang [B, T, n, hd/2]. Temporal: ang [B, T, hd/2] (frame positions) and
         mask [B, 1, 1, T, T]; with cache (streaming, T = 1) the cached keys / values of earlier frames are prepended and
-        this frame's (k, v) is returned for the caller to commit."""
-        sh1, sc1, g1, sh2, sc2, g2 = self.mod(F.silu(c)).unsqueeze(2).chunk(6, -1)
-        h = self.n1(x) * (1 + sc1) + sh1
+        this frame's (k, v) is returned for the caller to commit. Factorised (TEACHING 10 / 10a): c = (physical, glimpse)
+        conditionings applied to their token groups (glimpse tokens N:N+G, the rest physical), and with phys (the
+        physical token indices) the physical queries attend only to physical keys in spatial layers."""
+        if isinstance(c, tuple):
+            (sh1, sc1, g1, sh2, sc2, g2), mg = (self.mod(F.silu(z)).unsqueeze(2).chunk(6, -1) for z in c)
+            grp = lambda t, f: torch.cat([f(t[:, :, :N], 0), f(t[:, :, N:N + G], 1), f(t[:, :, N + G:], 0)], 2)
+            pick = lambda i, j: (sh1, sc1, g1, sh2, sc2, g2)[i] if j == 0 else mg[i]
+            h = grp(self.n1(x), lambda t, j: t * (1 + pick(1, j)) + pick(0, j))
+        else:
+            sh1, sc1, g1, sh2, sc2, g2 = self.mod(F.silu(c)).unsqueeze(2).chunk(6, -1)
+            h = self.n1(x) * (1 + sc1) + sh1
         new = None
         if not self.temporal:
             q, k, v = self.attn.project(h, ang)
-            a = self.attn.attend(q, k, v)
+            if phys is None:
+                a = self.attn.attend(q, k, v)
+            else:
+                sel = lambda t: t.index_select(-2, phys)
+                ap, ag = self.attn.attend(sel(q), sel(k), sel(v)), self.attn.attend(q[..., N:N + G, :], k, v)
+                a = torch.cat([ap[:, :, :N], ag, ap[:, :, N:]], 2)
         else:
             ht = h.transpose(1, 2)                                            # [B, n, T, W]
             q, k, v = self.attn.project(ht, ang[:, None].expand(-1, ht.shape[1], -1, -1))
@@ -297,6 +310,9 @@ class Block(nn.Module):
                 if cache[0] is not None:
                     k, v = torch.cat([cache[0], k], -2), torch.cat([cache[1], v], -2)
             a = self.attn.attend(q, k, v, mask).transpose(1, 2)
+        if isinstance(c, tuple):
+            x = x + grp(a, lambda t, j: t * pick(2, j))
+            return x + grp(self.mlp(grp(self.n2(x), lambda t, j: t * (1 + pick(4, j)) + pick(3, j))), lambda t, j: t * pick(5, j)), new
         x = x + g1 * a
         return x + g2 * self.mlp(self.n2(x) * (1 + sc2) + sh2), new
 
@@ -332,6 +348,14 @@ class Denoiser(nn.Module):
         self.register_buffer("f_space", 1.0 / d["rope_theta_space"] ** (torch.arange(0, hd, 4)[: hd // 4].float() / hd))
         self.register_buffer("f_time", 1.0 / d["rope_theta_time"] ** (torch.arange(0, hd, 2).float() / hd))
         self.checkpoint = False
+        self.factorised = d.get("factorised", False)                     # TEACHING 10 / 10a (decision 1); default off
+        self.register_buffer("phys", torch.cat([torch.arange(N), torch.arange(N + G, N + G + 1 + self.K)]), persistent=False)
+
+    def conds(self, c_noise, prev_action):
+        """Factorised: (physical, glimpse) conditionings from a noise-level pair (a single tensor = tied); else one."""
+        if not self.factorised:
+            return self.cond(c_noise, prev_action)
+        return tuple(self.cond(z, prev_action) for z in (c_noise if isinstance(c_noise, tuple) else (c_noise, c_noise)))
 
     def cond(self, c_noise: Tensor, prev_action: Tensor) -> Tensor:
         f = 2 * math.pi * c_noise[..., None].float() * self.fourier
@@ -351,6 +375,11 @@ class Denoiser(nn.Module):
         return tok, ang
 
     def head(self, h: Tensor, c: Tensor):
+        if isinstance(c, tuple):                                         # factorised: each output group its own conditioning
+            (sp, cp), (sg, cg) = (self.final_mod(F.silu(z)).unsqueeze(2).chunk(2, -1) for z in c)
+            h = self.final_norm(h)
+            hp, hg = h * (1 + cp) + sp, h[:, :, N:N + G] * (1 + cg) + sg
+            return self.out[0](hp[:, :, :N]), self.out[1](hg), self.out[2](hp[:, :, N + G])
         shift, scale = self.final_mod(F.silu(c)).unsqueeze(2).chunk(2, -1)
         h = self.final_norm(h) * (1 + scale) + shift
         return self.out[0](h[:, :, :N]), self.out[1](h[:, :, N:N + G]), self.out[2](h[:, :, N + G])
@@ -359,15 +388,16 @@ class Denoiser(nn.Module):
         """Chunked (training) form over T frames; returns the raw outputs F = (Fp, Fg, Fv). Temporal attention: a frame
         sees itself and the previous `window` frames of its own episode (valid ones)."""
         tok, ang = self.embed(x, memory, fix)
-        c = self.cond(c_noise, prev_action)
+        c = self.conds(c_noise, prev_action)
         T = tok.shape[1]
         t = torch.arange(T, device=tok.device)
         lag = t[:, None] - t[None, :]
         ok = (lag >= 0) & (lag <= self.window) & (episode[:, :, None] == episode[:, None, :]) & valid[:, None, :]
         mask = (ok | torch.eye(T, dtype=torch.bool, device=tok.device))[:, None, None]
         ang_t = t.float()[:, None] * self.f_time
+        phys = self.phys if self.factorised else None
         for blk in self.blocks:
-            a = (ang_t.expand(tok.shape[0], -1, -1), mask) if blk.temporal else (ang, None)
+            a = (ang_t.expand(tok.shape[0], -1, -1), mask) if blk.temporal else (ang, None, None, phys)
             if self.checkpoint and self.training:
                 tok = checkpoint(lambda z, b=blk, a=a: b(z, c, *a)[0], tok, use_reentrant=False)
             else:
@@ -379,7 +409,7 @@ class Denoiser(nn.Module):
         layer, the keys / values of the previous <= `window` committed frames. Returns (F, kv of this frame); commit()
         appends them."""
         tok, ang = self.embed(x, memory, fix)
-        c = self.cond(c_noise, prev_action)
+        c = self.conds(c_noise, prev_action)
         ang_t = torch.full((tok.shape[0], 1, 1), float(cache["t"]), device=tok.device) * self.f_time
         new, i = [], 0
         for blk in self.blocks:
@@ -388,7 +418,7 @@ class Denoiser(nn.Module):
                 new.append(kv)
                 i += 1
             else:
-                tok = blk(tok, c, ang)[0]
+                tok = blk(tok, c, ang, None, None, self.phys if self.factorised else None)[0]
         return self.head(tok, c), new
 
     def new_cache(self):
@@ -413,23 +443,32 @@ def _bcast(c: Tensor, x: Tensor) -> Tensor:
     return c.reshape(*c.shape, *([1] * (x.ndim - c.ndim)))
 
 
+def _parts(sigma):
+    """Noise level of each percept part (p, g, v): a (physical, glimpse) pair (factorised), or one level for all."""
+    return (sigma[0], sigma[1], sigma[0]) if isinstance(sigma, tuple) else (sigma, sigma, sigma)
+
+
 def denoise_loss(den: Denoiser, x0, sigma, prev_action, memory, fix, episode, valid, sd=1.0, noise=None):
     """LOSSES G1: MSE of the raw output against (x0 - c_skip x) / c_out (DIAMOND; EDM lambda = 1 / c_out^2), mean over
-    each frame's percept scalars (every scalar equal) -> [B, T]. x0 = (p, g, v) stop-gradient targets."""
+    each frame's percept scalars (every scalar equal) -> [B, T]. x0 = (p, g, v) stop-gradient targets; sigma [B, T], or
+    a (physical, glimpse) pair of independent levels (factorised, UniDiffuser)."""
     noise = noise or tuple(torch.randn_like(t) for t in x0)
-    c_skip, c_out, c_in, c_noise = precondition(sigma, sd)
-    xs = tuple(t + _bcast(sigma, t) * n for t, n in zip(x0, noise))
-    Fo = den(tuple(_bcast(c_in, t) * t for t in xs), c_noise, prev_action, memory, fix, episode, valid)
-    se = [((f.float() - (t - _bcast(c_skip, t) * s) / _bcast(c_out, t)) ** 2).flatten(2).sum(-1)
-          for f, t, s in zip(Fo, x0, xs)]
+    pre = [precondition(sg, sd) for sg in _parts(sigma)]                # (c_skip, c_out, c_in, c_noise) per part
+    xs = tuple(t + _bcast(sg, t) * n for t, n, sg in zip(x0, noise, _parts(sigma)))
+    c_noise = (pre[0][3], pre[1][3]) if isinstance(sigma, tuple) else pre[0][3]
+    Fo = den(tuple(_bcast(c[2], t) * t for t, c in zip(xs, pre)), c_noise, prev_action, memory, fix, episode, valid)
+    se = [((f.float() - (t - _bcast(c[0], t) * s) / _bcast(c[1], t)) ** 2).flatten(2).sum(-1)
+          for f, t, s, c in zip(Fo, x0, xs, pre)]
     return sum(se) / sum(t[0, 0].numel() for t in x0)
 
 
 def denoised(den: Denoiser, x, sigma, prev_action, memory, fix, cache, s, sd=1.0):
-    """One streaming evaluation at sigma [B, 1]; preserve an already valid clean prediction."""
-    c_skip, c_out, c_in, c_noise = precondition(sigma, sd)
-    Fo, new = den.step(tuple(_bcast(c_in, t) * t for t in x), c_noise, prev_action, memory, fix, cache)
-    return clean_estimate(x, Fo, c_skip, c_out, s), new
+    """One streaming evaluation at sigma [B, 1] (or a (physical, glimpse) pair); preserve an already valid clean
+    prediction."""
+    pre = [precondition(sg, sd) for sg in _parts(sigma)]
+    c_noise = (pre[0][3], pre[1][3]) if isinstance(sigma, tuple) else pre[0][3]
+    Fo, new = den.step(tuple(_bcast(c[2], t) * t for t, c in zip(x, pre)), c_noise, prev_action, memory, fix, cache)
+    return tuple(clean_estimate((t,), (f,), c[0], c[1], s)[0] for t, f, c in zip(x, Fo, pre)), new
 
 
 def clean_estimate(x, raw_output, c_skip, c_out, bound):
@@ -442,10 +481,14 @@ def clean_estimate(x, raw_output, c_skip, c_out, bound):
                  for t, f in zip(x, raw_output))
 
 
-def sample(den: Denoiser, shapes, prev_action, memory, fix, cache, cfg, gen=None):
+def sample(den: Denoiser, shapes, prev_action, memory, fix, cache, cfg, gen=None, choose=None):
     """EDM Algorithm 2 (NVIDIA generate.py), order 1, for one frame per stream: sigma_max-scaled start, churn
     gamma = min(S_churn / N, sqrt 2 - 1), the network evaluated at sigma_hat, final step to 0. These evaluations never
-    commit to the cache; the finished frame then enters the context once (context_pass)."""
+    commit to the cache; the finished frame then enters the context once (context_pass). A factorised denoiser samples
+    as a cascade (decision 1): periphery and lighting first (the glimpse tokens, which they never read, held at a
+    placeholder), then the glimpse given them, noised once to edm.sampler.glimpse_conditioning_sigma (cascaded
+    diffusion's conditioning augmentation); `choose(p, v) -> fix` may set the fixation between the two stages
+    (TEACHING 14), and is then returned beside the frame."""
     e, s = cfg["edm"], cfg["edm"]["sampler"]
     n, dev = s["steps"], memory.device
     i = torch.arange(n, device=dev, dtype=torch.float64)
@@ -453,8 +496,10 @@ def sample(den: Denoiser, shapes, prev_action, memory, fix, cache, cfg, gen=None
     sig = torch.cat([sig, sig.new_zeros(1)]).tolist()
     B = memory.shape[0]
     randn = lambda shp: torch.randn(shp, device=dev, generator=gen)
-    x = tuple(sig[0] * randn((B, 1, *shp)) for shp in shapes)
     clamp = cfg["perception"]["periphery"]["tanh_clamp"]
+    if getattr(den, "factorised", False):
+        return _cascade(den, shapes, prev_action, memory, fix, cache, cfg, sig, B, randn, clamp, choose)
+    x = tuple(sig[0] * randn((B, 1, *shp)) for shp in shapes)
     for k in range(n):
         gamma = min(s["s_churn"] / n, math.sqrt(2) - 1) if s["s_tmin"] <= sig[k] <= s["s_tmax"] else 0.0
         hat = sig[k] * (1 + gamma)
@@ -463,6 +508,34 @@ def sample(den: Denoiser, shapes, prev_action, memory, fix, cache, cfg, gen=None
         D, _ = denoised(den, x, torch.full((B, 1), hat, device=dev), prev_action, memory, fix, cache, clamp, e["sigma_data"])
         x = tuple(t + (sig[k + 1] - hat) * (t - d) / hat for t, d in zip(x, D))
     return x
+
+
+def _cascade(den, shapes, prev_action, memory, fix, cache, cfg, sig, B, randn, clamp, choose):
+    """sample()'s factorised order: the same Euler / churn schedule, first over (p, v), then over g."""
+    e, s, dev = cfg["edm"], cfg["edm"]["sampler"], memory.device
+    n, sd = s["steps"], e["sigma_data"]
+    full = lambda a: torch.full((B, 1), a, device=dev)
+    gammas = [min(s["s_churn"] / n, math.sqrt(2) - 1) if s["s_tmin"] <= sig[k] <= s["s_tmax"] else 0.0 for k in range(n)]
+    p, v = sig[0] * randn((B, 1, *shapes[0])), sig[0] * randn((B, 1, *shapes[2]))
+    g0 = torch.zeros((B, 1, *shapes[1]), device=dev)                   # never read by the physical tokens
+    for k in range(n):
+        hat = sig[k] * (1 + gammas[k])
+        if gammas[k] > 0:
+            p, v = (t + math.sqrt(hat ** 2 - sig[k] ** 2) * s["s_noise"] * randn(t.shape) for t in (p, v))
+        D, _ = denoised(den, (p, g0, v), full(hat), prev_action, memory, fix, cache, clamp, sd)
+        p, v = p + (sig[k + 1] - hat) * (p - D[0]) / hat, v + (sig[k + 1] - hat) * (v - D[2]) / hat
+    chosen = choose(p, v) if choose is not None else None
+    fix = fix if chosen is None else chosen
+    sa = s["glimpse_conditioning_sigma"]
+    pc, vc = (t + sa * randn(t.shape) for t in (p, v))
+    g = sig[0] * randn((B, 1, *shapes[1]))
+    for k in range(n):
+        hat = sig[k] * (1 + gammas[k])
+        if gammas[k] > 0:
+            g = g + math.sqrt(hat ** 2 - sig[k] ** 2) * s["s_noise"] * randn(g.shape)
+        D, _ = denoised(den, (pc, g, vc), (full(sa), full(hat)), prev_action, memory, fix, cache, clamp, sd)
+        g = g + (sig[k + 1] - hat) * (g - D[1]) / hat
+    return (p, g, v) if chosen is None else ((p, g, v), fix)
 
 
 def context_pass(den: Denoiser, x, prev_action, memory, fix, cache, cfg, gen=None):

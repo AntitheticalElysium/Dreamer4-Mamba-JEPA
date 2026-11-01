@@ -207,6 +207,86 @@ def test_streaming_denoiser_equals_chunked(cfg):
                     assert torch.allclose(o[0, 0], r[b, t], atol=1e-4), (b, t)
 
 
+def _factorised(cfg):
+    """A factorised denoiser with non-trivial adaLN, final modulation and output heads (zero-initialised heads would
+    pass a broken mask vacuously, Codex)."""
+    c = copy.deepcopy(cfg)
+    c["denoiser"]["factorised"] = True
+    torch.manual_seed(0)
+    den = M.Denoiser(c).eval()
+    for blk in den.blocks:
+        torch.nn.init.normal_(blk.mod.weight, std=0.02)
+    torch.nn.init.normal_(den.final_mod.weight, std=0.02)
+    for m in den.out:
+        torch.nn.init.normal_(m.weight, std=0.02)
+    return c, den
+
+
+def test_factorised_physical_outputs_ignore_glimpse_and_fixation(cfg):
+    """Decision 1's guarantee: periphery and lighting outputs are functions of neither the glimpse inputs, nor the
+    glimpse noise level, nor the fixation (chunked form, every frame); glimpse outputs do depend on them."""
+    c, den = _factorised(cfg)
+    B, T = 2, 7
+    x, mem, sigma, act, fix, _ = _den_inputs(c, B, T)
+    episode, valid = torch.zeros(B, T, dtype=torch.long), torch.ones(B, T, dtype=torch.bool)
+    g2 = torch.Generator().manual_seed(9)
+    x2 = (x[0], torch.randn(x[1].shape, generator=g2), x[2])
+    fix2, sig2 = torch.randint(1, 8, fix.shape, generator=g2), torch.rand(B, T, generator=g2) * 3 + 0.05
+    with torch.no_grad():
+        a = den(x, (sigma.log() / 4, sigma.log() / 4), act, mem, fix, episode, valid)
+        b = den(x2, (sigma.log() / 4, sig2.log() / 4), act, mem, fix2, episode, valid)
+    assert torch.equal(a[0], b[0]) and torch.equal(a[2], b[2])
+    assert not torch.allclose(a[1], b[1])
+
+
+def test_factorised_streaming_equals_chunked(cfg):
+    """The factorised denoiser's streaming form equals its chunked form under per-group noise levels."""
+    c, den = _factorised(cfg)
+    B, T = 2, 9
+    x, mem, sigma, act, fix, _ = _den_inputs(c, B, T)
+    sg = torch.rand(B, T, generator=torch.Generator().manual_seed(3)) * 3 + 0.05
+    episode = torch.zeros(B, T, dtype=torch.long)
+    episode[1, 5:] = 1
+    valid = torch.ones(B, T, dtype=torch.bool)
+    with torch.no_grad():
+        ref = den(x, (sigma.log() / 4, sg.log() / 4), act, mem, fix, episode, valid)
+        for b in range(B):
+            cache = den.new_cache()
+            for t in range(T):
+                if t and episode[b, t] != episode[b, t - 1]:
+                    cache = den.new_cache()
+                sl = lambda a: a[b:b + 1, t:t + 1]
+                out, new = den.step(tuple(sl(a) for a in x), (sl(sigma).log() / 4, sl(sg).log() / 4), sl(act), sl(mem), sl(fix), cache)
+                cache = den.commit(cache, new)
+                for o, r in zip(out, ref):
+                    assert torch.allclose(o[0, 0], r[b, t], atol=1e-4), (b, t)
+
+
+def test_factorised_loss_pair_equals_tied_and_cascade_periphery_ignores_fixation(cfg):
+    """denoise_loss with a (sigma, sigma) pair equals the tied call; the cascade sampler's periphery and lighting are
+    identical under any fixation with common draws; a choose hook sets the glimpse stage's fixation and is returned."""
+    c, den = _factorised(cfg)
+    B, T = 2, 5
+    x, mem, sigma, act, fix, dims = _den_inputs(c, B, T)
+    episode, valid = torch.zeros(B, T, dtype=torch.long), torch.ones(B, T, dtype=torch.bool)
+    noise = tuple(torch.randn(t.shape, generator=torch.Generator().manual_seed(4)) for t in x)
+    with torch.no_grad():
+        tied = M.denoise_loss(den, x, sigma, act, mem, fix, episode, valid, noise=noise)
+        pair = M.denoise_loss(den, x, (sigma, sigma), act, mem, fix, episode, valid, noise=noise)
+    assert torch.equal(tied, pair)
+    sl = lambda a: a[:, :1]
+    with torch.no_grad():
+        outs = []
+        for f in (sl(fix), torch.full_like(sl(fix), 4)):
+            outs.append(M.sample(den, dims, sl(act), sl(mem), f, den.new_cache(), c, torch.Generator().manual_seed(5)))
+        chosen = M.sample(den, dims, sl(act), sl(mem), sl(fix), den.new_cache(), c, torch.Generator().manual_seed(5),
+                          choose=lambda p, v: torch.full_like(sl(fix), 4))
+    assert torch.equal(outs[0][0], outs[1][0]) and torch.equal(outs[0][2], outs[1][2])
+    (frame, f_out) = chosen
+    assert torch.equal(f_out, torch.full_like(sl(fix), 4))
+    assert all(torch.equal(a, b) for a, b in zip(frame, outs[1]))
+
+
 def test_cached_sampler_equals_recomputed_history(cfg):
     """The whole cached sampler (3 churned Euler evaluations, then one context pass per frame) equals a sampler that
     recomputes the full history with the stored context copies, under identical draws: several frames, an episode

@@ -126,6 +126,8 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg):
         new_cache = torch.cat([b_pred[:, -P:], nxt[:, -1:]], 1).detach().float()
         x0 = tuple(torch.cat([a, b.detach()], 1) for a, b in zip(Pp.parts(), Pc.parts()))
         sigma = sample_sigma(first.shape, cfg, dev)
+        if model.denoiser.factorised:                                    # decision 1: an independent glimpse level (UniDiffuser)
+            sigma = (sigma, sample_sigma(first.shape, cfg, dev))
         g1 = M.denoise_loss(model.denoiser, x0, sigma, t["prev_action"], model.belief.memory(b_pred), fix,
                             t["episode"], t["valid"], cfg["edm"]["sigma_data"])[:, P:].mean()
         bp, cells = b_pred[:, P:], M.window(fix[:, P:])

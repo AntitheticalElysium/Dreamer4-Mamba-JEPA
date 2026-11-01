@@ -71,7 +71,9 @@ needed; with an exact belief this gives the same distribution over observation s
 - Folded away: posterior chance codes, masked prior, KL pair and free bits, the generator's world transition and typed
   record / global tokens, the world sample, the separate observation-noise head. The OBSERVATION / PERSISTENT-CONTENT
   distinction is kept (Codex): the belief is the persistent content, the percept is incomplete noisy evidence, and
-  periphery + glimpse are denoised jointly so they stay correlated.
+  periphery + glimpse are denoised jointly so they stay correlated. Amended by decision 1 (agreed 11-01; learned-fixation
+  TEACHING 10 / 10a; `denoiser.factorised`, off for the P1 / P1-F worlds): the correlation is kept by the chain rule
+  instead, periphery and lighting never reading the glimpse, the glimpse sampled given them (cascade).
 - What moves into the belief update: records' predicted motion becomes the update's own deterministic predict step
   (propagating each record's hypothesis distribution); outcomes (which way the zombie went, an arrival) appear in the
   generated percept and are absorbed by the update's correct step. Records SUPPORT conservation through the conditioning
