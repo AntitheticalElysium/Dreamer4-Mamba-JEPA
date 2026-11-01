@@ -50,7 +50,7 @@ plan routes them through the cascade.
 6. **Cost:** a real P1 update 1.32 -> 1.60 s at 64 steps (+21%), 4.97 -> 5.88 s at 256 (+18%); peak 4.00 -> 4.10
    GiB. Sampling at 64 streams: 90 -> 198 ms per frame (x2.2; stage 2 recomputes the physical tokens).
 For any later bitwise re-run across processes: MAMBA_DETERMINISTIC=1, and compare old against new code in one process.
-7. **Stage-2 cache** (added 11-01 night, user's request; code bd: `glimpse_step`, the step after 09488790's checks):
+7. **Stage-2 cache** (added 11-01 night, user's request; `glimpse_step`, code 83a60fac):
    against the code before it (a4f2c2a2), the factorised training step is bitwise (terms, gradients, one AdamW step at
    P1-F's initialization), the joint path still bitwise against 60b98881 (step 1 re-run), and on P1-F's checkpoint-10
    weights switched on, 8-frame context caches equal and sampled periphery / lighting bitwise under common draws; the
