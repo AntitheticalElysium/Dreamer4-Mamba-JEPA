@@ -29,3 +29,24 @@ built", Codex) on the real recipe and real weights. `checks.py` -> `checks.json`
 Not a reading of any trained factorised world: none exists. Known gap (8facf375): the joint evaluation samplers
 (saccade/eval/s1.one_step, Codex's sampler factorial) would read a factorised world's tied joint mode; P1-F2's readings
 plan routes them through the cascade.
+
+## Results (11-01 evening; `checks.json`, MAMBA_DETERMINISTIC=1 unless keyed `_autotuned`)
+1. **Disabled path: bitwise.** Initial parameters under the world seed equal; at P1-F's initialization and its
+   checkpoint 5 every term, every gradient and the parameters after one AdamW step equal (max abs difference 0).
+2. **Launcher: within mamba_ssm's own run-to-run noise, not bitwise.** Deterministic mode: update 1 exact, update 25
+   within 1.3e-6 relative (grad norm 6.431418 vs 6.431410). Default (autotuned) mode, as P1-F trained: update 1
+   already differs at ~1e-6 (grad norm 6.528726 vs 6.528735), update 25 within 2.2e-6. mamba_ssm autotunes its
+   Triton block sizes per process, and deterministic mode also switches its backward to a deterministic reduction
+   (ssd_combined `DETERMINISTIC_REDUCTION`), so neither mode re-creates P1-F's process; the beta-TSP launch check's
+   exact match (11-01 afternoon) was the same picks by chance. Item 1, in one process, is the decisive check. Timing
+   as P1-F's (1.36 s / update; peak 4.0 GiB). The default-mode re-run first ran out of memory beside the checks'
+   own CUDA context (fixed: the parent no longer initialises CUDA).
+3. **Physical invariance on P1-F's checkpoint-10 weights, switched on:** periphery and lighting outputs equal under
+   all 49 fixations (every frame of 2 streams x 72 frames, 46 distinct real fixations) and under replaced glimpse
+   inputs and level; the glimpse outputs differ in every case; output magnitudes 0.63-0.80.
+4. **Cascade:** periphery and lighting equal across all 49 fixations under common draws, the glimpse distinct; the
+   choose hook returns its fixation and exactly the frame drawn at it.
+5. **Training path switched on:** every term finite; the same parameters receive gradient as on the joint path.
+6. **Cost:** a real P1 update 1.32 -> 1.60 s at 64 steps (+21%), 4.97 -> 5.88 s at 256 (+18%); peak 4.00 -> 4.10
+   GiB. Sampling at 64 streams: 90 -> 198 ms per frame (x2.2; stage 2 recomputes the physical tokens).
+For any later bitwise re-run across processes: MAMBA_DETERMINISTIC=1, and compare old against new code in one process.
