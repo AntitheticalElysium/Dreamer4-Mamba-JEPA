@@ -122,6 +122,28 @@ def loss_all(tsp, pixd, X, idx, mode, cfg, excess=False, parts=False):
     return torch.cat(out)
 
 
+def floor_detail(tsp, pixd, X, idx, mode, cfg):
+    """Dissection only (PLAN H3 additions): per window, [error, pi^2 s^2 / 3, the decoder's own predicted variance
+    (pixel_nll's discretised, bounded logistic over its 256 values, absorbing edges; float64), share of saturated pixels
+    (0 / 255), share saturated and mispredicted by more than one bin, pi^2 s^2 / 3's part from saturated pixels]
+    -> [n, 49, 6]."""
+    y = -1 + 2 * torch.arange(256, device=DEV, dtype=torch.float64) / 255
+    b, dsq = y[:-1] + 1 / 255, y[1:] ** 2 - y[:-1] ** 2                 # P(Y <= y_k) = F(b_k); E[Y^2] = 1 - sum dsq F(b)
+    out = []
+    with torch.no_grad():
+        for r in torch.as_tensor(idx).split(4):
+            with TR.autocast(DEV, cfg):
+                mean, ls, pix = outputs(tsp, pixd, X, r, torch.arange(49, device=DEV).expand(len(r), -1), mode)
+            mu, s, yv = mean.double(), ls.clamp(min=-7).exp().double(), pix.double() / 127.5 - 1
+            cdf = torch.sigmoid((b - mu[..., None]) / s[..., None])
+            m1, m2 = 1 - 2 / 255 * cdf.sum(-1), 1 - (dsq * cdf).sum(-1)
+            sat, err = (pix == 0) | (pix == 255), (mu.clamp(-1, 1) - yv).square()
+            approx = math.pi ** 2 / 3 * s.square()
+            parts = (err, approx, (m2 - m1.square()).clamp(min=0), sat.double(), (sat & (err.sqrt() > 2 / 255)).double(), approx * sat)
+            out.append(torch.stack([p.flatten(2).mean(-1) for p in parts], -1).float().cpu())
+    return torch.cat(out)
+
+
 def rank_rho(a, b):
     """Per-row Spearman with tie-aware (average) ranks; NaN where a row of either map is constant."""
     import scipy.stats
@@ -319,8 +341,10 @@ def dissect(out_dir):
         mode, arm = f.stem.split("_", 1)[0], f.stem.split("_", 1)[1].removesuffix("_heads")
         h = torch.load(f, weights_only=False, map_location="cpu")
         tsp, pixd, _ = learner(cfg); tsp.load_state_dict(h["tsp"]); pixd.load_state_dict(h["pixd"]); tsp.eval(); pixd.eval()
-        ef = loss_all(tsp, pixd, E_all, eval_idx, mode, cfg, parts=True).numpy()
-        q = {"error": ef[..., 0], "floor": ef[..., 1], "excess": ef[..., 0] - ef[..., 1]}
+        ef = floor_detail(tsp, pixd, E_all, eval_idx, mode, cfg).numpy()
+        q = {"error": ef[..., 0], "floor": ef[..., 1], "excess": ef[..., 0] - ef[..., 1], "floor_exact": ef[..., 2],
+             "excess_exact": ef[..., 0] - ef[..., 2], "saturated": ef[..., 3], "saturated_mispredicted": ef[..., 4],
+             "floor_from_saturated": ef[..., 5]}
         if "priority" in h:
             pri = Priority(cfg).to(DEV); pri.load_state_dict(h["priority"]); pri.eval()
             q["priority"] = torch.cat([pri(E_all, b).cpu() for b in eval_idx.split(256)]).numpy() / 100
@@ -336,6 +360,8 @@ def dissect(out_dir):
             r["rank_rho"] = {"vs_excess": float(np.nanmean(rank_rho(q["priority"], q["excess"]))),
                              "vs_error": float(np.nanmean(rank_rho(q["priority"], q["error"])))}
         r["floor_vs_error_rank_rho"] = float(np.nanmean(rank_rho(q["floor"], q["error"])))   # absorption across windows
+        r["floor_exact_vs_error_rank_rho"] = float(np.nanmean(rank_rho(q["floor_exact"], q["error"])))
+        r["all windows"] = {k: float(v.mean()) for k, v in q.items()}
     (out_dir / "dissect.json").write_text(json.dumps(res, indent=1))
     for k, r in res.items():
         print("==", k, {t: {m: round(v, 5) for m, v in x.items()} for t, x in r.items() if isinstance(x, dict) and t not in ("argmax_share", "argmax_share_uniform", "rank_rho")})
@@ -395,7 +421,7 @@ def main():
                 ef = loss_all(*learned, E_all, eval_idx, mode, cfg, parts=True).numpy()
                 stats["priority_rank_rho_eval"] = {"vs_excess": float(np.nanmean(rank_rho(pred, ef[..., 0] - ef[..., 1]))),
                                                    "vs_error": float(np.nanmean(rank_rho(pred, ef[..., 0])))}
-            if arm in ENDO_ARMS:
+            if arm in ENDO_ARMS or arm == "uniform":                     # uniform: the floor under unselected looks
                 torch.save(heads, out_dir / f"{mode}_{arm}_heads.pt")
             np.savez_compressed(out_dir / f"{mode}_{arm}.npz", steps=np.array([x["step"] for x in log]),
                                 loss=np.stack([x["loss"] for x in log]))
