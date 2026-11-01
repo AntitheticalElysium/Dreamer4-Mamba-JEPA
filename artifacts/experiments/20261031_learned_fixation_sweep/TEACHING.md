@@ -423,3 +423,56 @@ stream under decision 1) with a permanent random floor; no learned progress map 
   measured need.
 - Costs: contingency needs two extra denoiser evaluations per training frame (taken action vs NOOP) or a cheaper
   amortised form (implementation, decision 3).
+
+## 12. Learning progress revisited (11-01, user: "I'm not sure we should be dropping learning-progress so easily"; papers re-read in full where quoted)
+**11b withdrawn as stated.** G tested the weakest form of the idea: change in error between checkpoints, under
+uniform looks, credited to no look. None of the validated forms is that.
+**What the literature measures, and where it works** (read: Lopes & Montesano's survey section 2.6-2.7 and the
+strategic student; Graves et al. 2017; Kim et al. 2020; Mindermann et al. 2022; Evans et al. 2024; Jiang et al. 2021;
+Kanitscheider et al. 2021; Gaven et al. 2025; Poli et al. 2020; Dubey & Griffiths 2017):
+- **Progress is defined against the samples that cause it.** The empirical measure is "L(T^{-k}; D) - L(T; D): to
+  which extent the last k experiences help to learn a better model as evaluated over the complete data" (survey
+  2.6.4). In the strategic student the optimal policy probes "the task whose learning curve has an higher derivative",
+  the curve against the time allocated TO THAT TASK; the optimum is non-stationary (simple topics first), some
+  choices are never studied with little time, and greedy is near-optimal (1 - 1/e) only for diminishing-returns
+  problems; "online learning methods introduce bias since the order of the data changes the results". Graves et al.:
+  prediction gain on the batch just trained (before vs after that step) was the most consistent signal; uniform
+  sampling is strong because "learning is dominated by gradients from the tasks on which the network is making
+  fastest progress" (an implicit curriculum, with "the inefficiency of unnecessary samples"). Poli et al.: infants'
+  looking is predicted by the information gain of each observation (KL between successive predictive estimates;
+  effect 7.0 against surprise 2.4, predictability 1.3).
+- **A second family scores learnability against a reference** and is the strongest record for selecting training
+  data, which is what P1's fovea does (it chooses which crop of a stored frame becomes a target). RHO-LOSS selects
+  "the points that most reduce holdout loss", approximated by training loss minus an irreducible-loss model's
+  (trained on held-out data, never updated, may be small): noisy points have high irreducible loss, redundant ones
+  low training loss; Clothing-1M reaches uniform's 50-epoch accuracy in 2 epochs; CIFAR-10 with label noise 75% in
+  27 vs 62 epochs. JEST (learner loss minus a pretrained reference's): uniform's final performance with 3x fewer
+  examples (90% filtering), up to 13x fewer iterations. PLR (value-loss score plus staleness, rho = 0.1): +28%
+  normalised test return on Procgen, against +3% for a temporal-progress curriculum (TSCL Window); gains "only occur
+  when P_replay considers both level scores and staleness".
+- **The rational form** (Dubey & Griffiths 2017): the value of learning stimulus k is dV/dh_k = p_k dc_k/dh_k, the
+  need probability (how likely the knowledge will be needed) times the improvement per exposure. RHO's holdout
+  objective and Kim et al.'s validation-loss objective are the same quantity on a target distribution.
+**What we were missing.**
+1. Credit and clock: progress must be measured per look (prediction gain, gamma-progress on the looked-at data,
+   learnability), not as a checkpoint derivative of a uniform world. Within a frame G's ranking equals the per-look
+   one only to first order (all windows equally sampled), and its checkpoint differences carry everything else the
+   world learned and the stream's order (Codex: 2,500 then 625 updates per interval).
+2. Allocation feedback: a starved (context, window) gets ~1/49 of rare frames, so its progress against GLOBAL time
+   is small however steep its curve against its own samples. Allocation is the point. P1-F is the natural experiment:
+   Q = 1 looks on the rule's window drew the counter's view there 0.98 vs 0.14 at another covering window (Codex's
+   crop test; gated, but it shows looks determine where the view learns).
+3. The learnability family (absent from SWEEP / PROGRESS / 11): robust to noise by construction (the reference
+   carries it), free of the lagged-estimator artefact Codex raised (no difference of the estimator's own outputs),
+   and natural in offline P1, where all 49 windows of a stored frame can be scored (full feedback). G's arrays: the
+   hindsight learnable error (e_k - e_10, same world) is concentrated (top 5 windows hold 27-54% of a row's, uniform
+   10%), increasingly redundant (half the windows hold < 5% of the row's maximum by checkpoint 5), and at night it is
+   about half of raw error's share in world 1 (dark frames 19-25% of learnable vs 40-49% of error).
+4. Need: progress alone answers "can I learn it", not "will it be needed". The contingency map is a need prior
+   (where decisions will want the view), not a competitor: priority ~ need x per-look learnability, need = base +
+   contingency, so exogenous events keep the base (Codex's additive point is kept by the base).
+**Limits of the families for us.** Learnability can only point at what the reference has learned (a reference trained
+under the same starvation is blind to the starved); temporal progress can discover them but only with a floor and
+is noisy per look (B2); both need need-weighting to stay on what the actor will use.
+**Test H** (PLAN H, running): the causal premise both rest on, crop selection speeding look-local learning, on frozen
+P1-F inputs with fresh TSP heads (super-resolution and forward), arms uniform / learnability / error / progress.
