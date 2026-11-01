@@ -309,3 +309,26 @@ learn faster than uniform crops.
   whether the learnable part is where consequences are.
 - **Limits.** Frozen representation (P1-F checkpoint 10), the head not the joint system; full feedback; one seed;
   the IL learner is this architecture on half the episodes (RHO used a smaller model: its ablations kept the gains).
+
+## H2. Does need-weighting change what learnability buys? (`selection.py --need`, GPU; user 11-01 evening: "feel free to launch it now")
+H (RESULTS H) left one open term of TEACHING 12b's priority, need x learnability: H had no need (contingency) arm, and
+learnability alone did not move looks toward the action's locus (faced tile on DO frames 19-20% vs uniform 18%).
+- **Need** (declared working form, untuned): per frame t, 1 + C_w / mean_w C, C_w = F's action contingency of frame t
+  over window w's cells (||D(a_{t-1}) - D(NOOP)||^2, D the clean estimate at production's first evaluation from pure
+  noise, the 8 recorded context frames, the belief recomputed per action, one draw common to both actions), on the
+  frozen P1-F checkpoint 10 for the fit (even) episodes; 1 where t < 8. The base 1 keeps every window's need at least
+  its average-contingency half (Codex's additive point); no source fixes the base, so it is part of the arm.
+- **Arms** (one invocation, same frames / batches / coin flips / budget / learners as H): uniform and learnability
+  (re-run: the reproduction check against H, GPU non-determinism expected), need (the arg-max need window), need x
+  learnability (need times RHO's learnability); epsilon 0.2 uniform as before.
+- **Readings** as H, plus the need-weighted held-out loss (sum_w need_w loss_w / sum_w need_w on G's rows, need from F's
+  saved P1-F contingency on the same rows) and the selections' faced-tile share on DO frames.
+- **Claim.** need x learnability keeps learnability's speed on the uniform target (H's readings 1-2) and is faster on
+  the need-weighted target and at the action loci than learnability alone.
+- **Competing.** (a) need adds nothing beyond learnability (the loci are learned through generalisation: H's
+  consequence windows already gained most); (b) need costs the uniform target (looks pulled to loci); (c) need alone
+  is as good as the product (learnability adds nothing once need directs the looks).
+- **Rules out.** (a): the need term is not worth its two denoiser evaluations per frame in P1 (learnability + floor);
+  (c): learnability is not worth its reference model (contingency + floor); claim: keep the product.
+- **Limits.** As H (frozen P1-F inputs, heads only, full feedback, one seed); the need is computed from the frozen
+  world, not the world being trained; the base is untuned.

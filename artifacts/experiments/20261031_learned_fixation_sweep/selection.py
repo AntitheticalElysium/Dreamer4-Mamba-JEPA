@@ -9,7 +9,7 @@ gamma 0.9995). Every non-uniform arm takes its arg-max with probability 0.8, a u
 final epsilon 0.2). Labels select evaluation rows, label windows and describe the selections; they never score.
 Usage (project venv, GPU): python -m artifacts.experiments.20261031_learned_fixation_sweep.selection OUT_DIR [--smoke]
 """
-import copy, importlib, json, os, sys, time
+import copy, importlib, json, math, os, sys, time
 from pathlib import Path
 
 os.environ.setdefault("JAX_PLATFORMS", "cpu")
@@ -25,17 +25,54 @@ DEV, ROOT = F.DEV, TR.ROOT
 CKPT = ROOT / "artifacts/experiments/20261030_p1_guided/run/ckpt_10.pt"
 CEN = F.CENTRES.to(DEV)                                                  # [49, 2]
 ARMS, MODES = ("uniform", "learnability", "error", "progress"), ("sr", "fwd")
+NEED_ARMS = ("need", "need_learnability")                                # H2 (PLAN H2): need = 1 + contingency / its mean
 STEPS, BATCH, WARMUP, SEED, EPS, GAMMA = 6000, 512, 250, 0, 0.2, 0.9995
 EVALS = (0, 250, 500, 1000, 2000, 3000, 4500, 6000)
 
 
-def collect(model, cfg, L):
+@torch.no_grad()
+def need_of(model, cfg, enc, e, gen):
+    """H2's need per window for frames 1..T-1 of episode e: 1 + F's action contingency of frame t (||D(a_{t-1}) -
+    D(NOOP)||^2 over each window's cells and channels, D the clean estimate at production's first evaluation from pure
+    noise, the 8 recorded context frames, the belief recomputed per action, one draw common to both actions) over its
+    mean across the 49 windows; 1 where t < 8 (no context). Returns ([T - 1, 49], belief replay worst relative L2)."""
+    T = len(enc[e]["p"])
+    out, rows = torch.ones(T - 1, 49), [(e, t) for t in range(F.P, T)]
+    if not rows:
+        return out, 0.0
+    bps, worst = F.beliefs(model, cfg, enc, rows)
+    den, s, sd = model.denoiser, cfg["edm"]["sampler"], cfg["edm"]["sigma_data"]
+    clamp, win = cfg["perception"]["periphery"]["tanh_clamp"], F.WIN.to(DEV)
+    hat = s["sigma_max"] * (1 + min(s["s_churn"] / s["steps"], math.sqrt(2) - 1))
+    shapes = [tuple(enc[e][k].shape[1:]) for k in ("p", "g", "v")]
+    for b0 in range(0, len(rows), 32):
+        br = rows[b0:b0 + 32]
+        n = len(br)
+        take = lambda k, dt: torch.stack([enc[ee][k][t + dt] for ee, t in br]).to(DEV)
+        acts = torch.stack([take("prev_action", 0).long(), torch.zeros(n, dtype=torch.long, device=DEV)], 1).reshape(-1)
+        bp = torch.stack([bps[r] for r in br]).to(DEV)[torch.arange(n, device=DEV).repeat_interleave(2), acts]
+        with TR.autocast(DEV, cfg):
+            cache = F.context_cache(model, cfg, take, 1, gen)
+            cache = {"t": cache["t"], "kv": [(k.repeat_interleave(2, 0), v.repeat_interleave(2, 0)) for k, v in cache["kv"]]}
+            x = tuple(hat * torch.randn((n, 1, *shp), device=DEV, generator=gen).repeat_interleave(2, 0) for shp in shapes)
+            Dd, _ = M.denoised(den, x, torch.full((2 * n, 1), hat, device=DEV), acts[:, None], model.belief.memory(bp)[:, None],
+                               take("fix", 0).long().repeat_interleave(2, 0)[:, None], cache, clamp, sd)
+        d = Dd[0][:, 0].float().view(n, 2, *shapes[0])
+        c = ((d[:, 0] - d[:, 1]) ** 2).sum(-1)[:, win].sum(-1)            # [n, 49]
+        out[[t - 1 for _, t in br]] = (1 + c / c.mean(1, keepdim=True).clamp(min=1e-12)).cpu()
+    return out, worst
+
+
+def collect(model, cfg, L, need_eps=()):
     """Per frame t >= 1 of every episode: frame t's periphery / lighting, frame t-1's, frame t's predicted belief, the
-    frame's pixels, episode index, light, faced screen cell, whether a_{t-1} was DO."""
+    frame's pixels, episode index, light, faced screen cell, whether a_{t-1} was DO; H2's need for episodes need_eps."""
     enc, eps = S.encode(model, L, cfg), S.episodes(L)
     s_off, a_off = np.r_[0, np.cumsum(L["ep_T"] + 1)], np.r_[0, np.cumsum(L["ep_T"])]
-    out = {k: [] for k in ("p", "pp", "v", "vp", "bp", "frame", "ep", "light", "faced", "do")}
+    out = {k: [] for k in ("p", "pp", "v", "vp", "bp", "frame", "ep", "light", "faced", "do", "need")}
+    gen, worst = torch.Generator(device=DEV).manual_seed(2033), 0.0
     for e, r in enumerate(enc):
+        nd, wst = need_of(model, cfg, enc, e, gen) if e in need_eps else (torch.ones(len(r["p"]) - 1, 49), 0.0)
+        out["need"].append(nd); worst = max(worst, wst)
         T = len(r["p"])
         g = s_off[e] + np.arange(1, T)
         d = F.FC.DIRS[L["s_dir"][g - 1]]
@@ -45,7 +82,9 @@ def collect(model, cfg, L):
                      ("faced", torch.as_tensor((3 + d[:, 0]) * 9 + 4 + d[:, 1])),
                      ("do", torch.as_tensor(L["t_action"][a_off[e] + np.arange(T - 1)] == F.FC.DO))):
             out[k].append(torch.as_tensor(x))
-    return {k: torch.cat(v) for k, v in out.items()}
+    if worst > 0.02:
+        raise RuntimeError(f"belief replay differs: {worst}")
+    return {**{k: torch.cat(v) for k, v in out.items()}, "need_belief_replay_worst": worst}
 
 
 def learner(cfg):
@@ -95,12 +134,16 @@ def train(arm, mode, X, train_idx, cfg, il=None, evalfn=None):
         idx = train_idx[torch.randint(0, len(train_idx), (BATCH,), generator=gen)]
         coin = torch.rand(BATCH, generator=gen).to(DEV) < EPS
         w = torch.randint(0, 49, (BATCH,), generator=gen).to(DEV)
-        if arm != "uniform":
+        if arm == "need":
+            w = torch.where(coin, w, X["need"][idx].to(DEV).argmax(1))
+        elif arm != "uniform":
             score = loss_all(tsp, pixd, X, idx, mode, cfg).to(DEV)
             if arm == "learnability":
                 score = score - loss_all(*il, X, idx, mode, cfg).to(DEV)
             elif arm == "progress":
                 score = (loss_all(*ema, X, idx, mode, cfg).to(DEV) - score).abs()
+            elif arm == "need_learnability":
+                score = X["need"][idx].to(DEV) * (score - loss_all(*il, X, idx, mode, cfg).to(DEV))
             w = torch.where(coin, w, score.argmax(1))
         fw = CEN[w]
         cover = (M.window(fw) == X["faced"][idx].to(DEV)[:, None]).any(1)
@@ -134,9 +177,15 @@ def summary(out_dir):
     rnd, do = cls == "random", np.isin(cls, list(F.ATTEMPTS) + ["stone_no_tool"])
     pops = {"random_all_windows": (rnd, None), "random_day": (rnd & (light >= 0.7), None), "random_night": (rnd & (light <= 0.3), None),
             "do_consequence_windows": (do, cons), "do_other_windows": (do, ~cons)}
+    fz = np.load(Path(__file__).resolve().parent / "locus/p1f_10.npz")
+    if len(fz["ep"]) == len(ep) and (fz["ep"] == ep).all() and (fz["t"] == lab["t"]).all():   # F's rows are G's rows
+        c = fz["contingency"]
+        nw = 1 + c / np.maximum(c.mean(1, keepdims=True), 1e-12)          # H2's need on the evaluation rows
+        pops.update({"need_weighted_all_rows": (np.ones(len(ep), bool), nw), "need_weighted_do_rows": (do, nw)})
     def row_value(loss, m, w):
         return loss[m].mean(1) if w is None else (loss[m] * w[m]).sum(1) / np.maximum(w[m].sum(1), 1)
     res = {}
+    ARMS = [a for a in ("uniform", "learnability", "error", "progress", *NEED_ARMS) if (out_dir / f"sr_{a}.npz").exists()]
     for mode in MODES:
         z = {arm: np.load(out_dir / f"{mode}_{arm}.npz") for arm in ARMS}
         steps = z["uniform"]["steps"]
@@ -181,7 +230,8 @@ def main():
     model = M.M0(cfg).to(DEV); model.load_state_dict(ck["model"]); model.eval()
     Ltr = S.first_episodes(dict(np.load(ROOT / "artifacts/eda/s0/s0_train400_labels.npz")), 20 if smoke else 400)
     Ldv = S.first_episodes(dict(np.load(S.LABELS / "s0_dev_labels.npz")), 12 if smoke else F.N_EP)
-    X = collect(model, cfg, Ltr)
+    arms = next((a.split("=", 1)[1].split(",") for a in sys.argv if a.startswith("--arms=")), ARMS)
+    X = collect(model, cfg, Ltr, need_eps=set(range(0, len(Ltr["ep_T"]), 2)) if "--need" in sys.argv else ())
     ctx, face, d = F.contexts(Ldv, np.random.default_rng(2031))            # G's (F's) evaluation rows
     if smoke:
         ctx = {c: r[:6] for c, r in ctx.items() if r}
@@ -195,7 +245,8 @@ def main():
     torch.cuda.empty_cache()
     held = (X["ep"] % 2 == 1).nonzero()[:, 0]                              # the IL learner's half (RHO's holdout split)
     fit = (X["ep"] % 2 == 0).nonzero()[:, 0]
-    res = {"checkpoint": str(CKPT), "frames": {"fit": len(fit), "il": len(held)}, "eval_rows": len(rows), "runs": {}}
+    res = {"checkpoint": str(CKPT), "frames": {"fit": len(fit), "il": len(held)}, "eval_rows": len(rows), "arms": list(arms),
+           "need_belief_replay_worst": X["need_belief_replay_worst"], "runs": {}}
     for mode in MODES:
         evalfn = lambda tsp, pixd: {"loss": loss_all(tsp, pixd, E_all, eval_idx, mode, cfg).numpy()}
         t0 = time.time()
@@ -203,7 +254,7 @@ def main():
         res["runs"][f"{mode}_il"] = {"seconds": time.time() - t0}
         il_eval = loss_all(*il, E_all, eval_idx, mode, cfg).numpy()
         np.save(out_dir / f"{mode}_il_eval.npy", il_eval)
-        for arm in ARMS:
+        for arm in arms:
             t0 = time.time()
             _, log, stats = train(arm, mode, X, fit, cfg, il=il, evalfn=evalfn)
             np.savez_compressed(out_dir / f"{mode}_{arm}.npz", steps=np.array([x["step"] for x in log]),
