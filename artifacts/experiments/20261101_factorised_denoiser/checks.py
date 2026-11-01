@@ -15,7 +15,8 @@ from saccade import data as D, model as M, train as TR
 BC = importlib.import_module("artifacts.experiments.20261101_beta_tsp.checks")   # start / branch / same (its checks 1)
 TG, P1F, DEV = BC.TG, BC.P1F, BC.DEV
 HERE = Path(__file__).parent
-CEN = torch.stack(torch.meshgrid(torch.arange(1, 8), torch.arange(1, 8), indexing="ij"), -1).reshape(-1, 2).to(DEV)
+CEN = torch.stack(torch.meshgrid(torch.arange(1, 8), torch.arange(1, 8), indexing="ij"), -1).reshape(-1, 2)   # CPU: the launcher step
+# leaves the GPU to its child (a parent CUDA context plus autotuning ran it out of memory on the 6 GB card)
 
 
 def factorised(cfg):
@@ -107,6 +108,7 @@ def invariance():
     del ck, opt
     model.eval()
     den, x0, sigma, act, mem, fix, episode, valid, sd = capture(model, chunk, carry, cache, cfg)
+    CEN = globals()["CEN"].to(DEV)
     assert isinstance(sigma, tuple)
     gen = torch.Generator(device=DEV).manual_seed(0)
     pre = [M.precondition(s, sd) for s in M._parts(sigma)]
@@ -195,7 +197,7 @@ def sample_cost(cfg, B=64, n=10):
     dims = [(M.N, cfg["perception"]["periphery"]["token_dim"]), (M.G, cfg["perception"]["fovea"]["token_dim"]), (cfg["perception"]["lighting"]["dim"],)]
     rnd = lambda *s: torch.randn(*s, device=DEV, generator=gen)
     act, mem = torch.zeros(B, 1, dtype=torch.long, device=DEV), rnd(B, 1, cfg["denoiser"]["memory_tokens"], cfg["denoiser"]["width"])
-    fix = CEN[24].expand(B, 1, 2)
+    fix = CEN[24].to(DEV).expand(B, 1, 2)
     out = {}
     with torch.no_grad(), TR.autocast(DEV, cfg):
         cache = den.new_cache()
