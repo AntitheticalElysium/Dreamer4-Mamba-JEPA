@@ -591,7 +591,7 @@ fovea's role is instead to organize the agent's experience so that the world mod
 and increasingly informative observations; the world model does the learning. Two timescales: fast, where to look
 next given the actions and recent observations; slow, the regularities the world model learns from that experience.
 VoI (P2 / P3) later adds decision value to the same priority map.
-**Gaze is a mix of factors, not one score (checked 11-02).** Action-oriented gaze: sections 3 (Johansson et al.
+**Gaze is a mix of factors, not one score (checked 11-02).** Action-oriented gaze: section 3 (Johansson et al.
 2001; Hayhoe & Ballard 2005). Surprise: Itti & Baldi 2009 (section 3). Learning progress: behavioural (Ten et al.
 2021; Poli et al. 2020), its relation to eye movements "unknown" (Gottlieb et al. 2013). Information value: Foley et
 al. 2017 (P3's VoI). Avoiding revisits: inhibition of return (Klein, TiCS 2000; the "foraging facilitator" account is
