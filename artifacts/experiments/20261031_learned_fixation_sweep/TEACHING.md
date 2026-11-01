@@ -390,3 +390,35 @@ continues beside VoI.
 Structured but tracking error: the irreducible correction is needed. Located only where contingency is: progress as
 the modulation, contingency as the location. Located at the counter as well, and moving: keep both, progress as the
 learned location for remote consequences.
+
+## 11b. Decision 2 after G (11-01; proposed, for the user's call; RESULTS G 092dc4b5)
+**What G showed.** Under random looks the progress of what a look trains (the forward glimpse, TSP) is replicable and
+not pulled by night static, but: it locates action consequences no better than the world's own action contingency
+(world 1 mining, arg-max coverage 0.31-0.61 against F's 0.58-0.95 on the same rows), it does not move toward them
+over training (front-loaded with everything else in the first third: views flat from checkpoint 4-5, TSP converged),
+and in the second half it reverses sign between consecutive intervals at gamma-progress's own horizon (post hoc).
+This fits decision 1's accounting: a starved consequence is starved in the gaze-free physical stream, which a look
+cannot buy; what a look can buy (fine view, periphery detail) is learned early and broadly.
+**Proposed decision 2.** P1's chooser = the world's action contingency (F; additive, computed from the physical
+stream under decision 1) with a permanent random floor; no learned progress map in P1.
+- Why not the progress map: G gives it no location value beyond contingency in the clean world, no movement toward the
+  starved events, and late at its natural horizon it would chase reversals; Graves et al.'s "uniform is a surprisingly
+  strong benchmark" and Kanitscheider's modest margin over a strong uniform (82 vs ~70) point the same way. It would
+  add a head, an EMA copy and a schedule for nothing measurable.
+- Why contingency: it locates the action's locus label-free from mid-training, failures included (F), which is where
+  P2 / P3's VoI will need the glimpse stage to be good (the brain's contact landmarks, Johansson 2001). Before it is
+  informative (F: flat at checkpoint 2), a softmax over it is near-uniform by itself (to be checked when built,
+  decision 3).
+- What stays of the user's progress idea: as a standing READING (is the glimpse stage still learning, where; G's
+  instrument), and as the candidate for later if the world keeps learning online in P2 / P3, where the data stream is
+  no longer fixed. Not as P1's driver. The honest limit: G is a frozen landscape under random looks; a chooser that
+  follows progress changes the data and could create the positive feedback G cannot show (Kim et al.'s attention
+  "bump" then "lose interest"); testing that needs a run, and G gives no reason to expect it to beat contingency.
+- Remote consequences (shown away from the locus): contingency is blind there until the world predicts them (F), and
+  G could not test progress there cleanly (world 1 digit-blind, P1-F gated). In Craftax the periphery carries the HUD
+  (12-19x), so the physical stream gets these consequences without a look; the floor covers the glimpse stage there
+  (6 of 49 windows cover a given counter). The general case (a remote effect the periphery cannot resolve) is the
+  brain's learned anticipatory saccade (Pfeuffer et al.); its candidate is section 7's realized-effect map, added on
+  measured need.
+- Costs: contingency needs two extra denoiser evaluations per training frame (taken action vs NOOP) or a cheaper
+  amortised form (implementation, decision 3).
