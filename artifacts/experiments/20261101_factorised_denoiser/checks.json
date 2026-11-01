@@ -56,9 +56,9 @@
  },
  "code": {
   "disabled": {
-   "git_commit": "a86442204f1b493fc83e3e05c795cf4938de7aa5",
+   "git_commit": "83a60facf8a6487630017a896eaacba18dbdd6a3",
    "source_sha256": {
-    "saccade/model.py": "f769fedfadc17a13f3c54ec71d3330b01b875de9354d77826af1c68103edf034",
+    "saccade/model.py": "94ccc8ec06fc66aa03851bc3df9d24500f19dcf5bc13296bf2c01cfb6d6475dc",
     "saccade/train.py": "3eeda34a11c2c56209a3285c4c42c555a5a5a2eac4fbe5dcaedca7a9c506c850",
     "saccade/data.py": "d4c865124e0cdf8819fb5cc258d519c5dcfb7ec05985eedcf821e2b632907698",
     "saccade/m0.yaml": "cfe6adeea4ea3699409c6b441ba588a02724ef056eaf78ef1cbc8fc9b31c7fcb"
@@ -133,6 +133,22 @@
    "pre_sha256": {
     "model.py": "7ea04a4957d2915c5dfbfb9a69ed5e44ae275d555bbea8e629edaa00330db148",
     "train.py": "4fc5658c79c87c2a014cc720775c8c909c28120d93d2bc2e87535e9c208e1e25"
+   }
+  },
+  "cache": {
+   "git_commit": "83a60facf8a6487630017a896eaacba18dbdd6a3",
+   "source_sha256": {
+    "saccade/model.py": "94ccc8ec06fc66aa03851bc3df9d24500f19dcf5bc13296bf2c01cfb6d6475dc",
+    "saccade/train.py": "3eeda34a11c2c56209a3285c4c42c555a5a5a2eac4fbe5dcaedca7a9c506c850",
+    "saccade/data.py": "d4c865124e0cdf8819fb5cc258d519c5dcfb7ec05985eedcf821e2b632907698",
+    "saccade/m0.yaml": "cfe6adeea4ea3699409c6b441ba588a02724ef056eaf78ef1cbc8fc9b31c7fcb"
+   },
+   "manifest_sha256": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
+   "targets_sha256": "f1a79ed7dba730db02b5efb537cc8f44fd580406c2da7894005b4e3e84c87b97",
+   "torch": "2.13.0+cu130",
+   "pre_sha256": {
+    "model.py": "f769fedfadc17a13f3c54ec71d3330b01b875de9354d77826af1c68103edf034",
+    "train.py": "3eeda34a11c2c56209a3285c4c42c555a5a5a2eac4fbe5dcaedca7a9c506c850"
    }
   }
  },
@@ -322,5 +338,43 @@
     4.0057220458984375
    ]
   ]
+ },
+ "cache": {
+  "training_factorised": {
+   "terms_equal": true,
+   "grad_keys_equal": true,
+   "grad_max_abs": 0.0,
+   "param_after_step_max_abs": 0.0
+  },
+  "context_caches_equal": true,
+  "frames_cached_vs_uncached": [
+   {
+    "p_equal": true,
+    "v_equal": true,
+    "g_max_abs": 0.01046609878540039,
+    "g_std": 0.4618404805660248
+   },
+   {
+    "p_equal": true,
+    "v_equal": true,
+    "g_max_abs": 0.005545616149902344,
+    "g_std": 0.4617213308811188
+   },
+   {
+    "p_equal": true,
+    "v_equal": true,
+    "g_max_abs": 0.005571603775024414,
+    "g_std": 0.4616153836250305
+   },
+   {
+    "p_equal": true,
+    "v_equal": true,
+    "g_max_abs": 0.00605977326631546,
+    "g_std": 0.4614119529724121
+   }
+  ],
+  "joint_ms_per_frame": 87.23933696746826,
+  "cascade_cached_ms_per_frame": 139.18108940124512,
+  "cascade_uncached_ms_per_frame": 192.06430912017822
  }
 }
