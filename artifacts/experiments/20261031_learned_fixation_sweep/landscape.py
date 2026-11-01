@@ -59,7 +59,9 @@ def run(model, cfg, enc, rows, frames, gen):
             Pc = model.perception(img, fix)
             mt, st = model.pixels(model.tsp.predict(bp, Pc.p, Pc.v, cells), Pc.v, cells)
             mr, _ = model.pixels(model.tsp.reconstruct(Pc.g, Pc.v, cells), Pc.v, cells)
-            cache = F.context_cache(model, cfg, take, NW, gen)
+            cache = F.context_cache(model, cfg, take, 1, gen)              # the context does not depend on the query:
+            cache = {"t": cache["t"], "kv": [(k.repeat_interleave(NW, 0), v.repeat_interleave(NW, 0))   # once per row,
+                                            for k, v in cache["kv"]]}                                   # same draws
             x = tuple(hat * torch.randn((n, 1, *shp), device=DEV, generator=gen).repeat_interleave(NW, 0) for shp in shapes)
             Dd, _ = M.denoised(den, x, torch.full((n * NW, 1), hat, device=DEV),
                                take("prev_action", 0).long().repeat_interleave(NW, 0)[:, None],
