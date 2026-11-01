@@ -1,5 +1,5 @@
 #!/bin/bash
-# P1-F1.5's fixed readings (PLAN.md "Readings", items 1-5), after the run's clean exit, on the checkpoint chosen by
+# P1-F1.5's fixed readings (PLAN.md "Readings", items 1-6; 6 added 11-02), after the run's clean exit, on the checkpoint chosen by
 # P1-F's rule (argument). GPU jobs one at a time; reading 5 (uptake, CPU) starts once S1 has written its reader and
 # runs beside them. P1-F is re-run beside this world in the interface and M0.5's evaluator (same rows and draws), as
 # for beta-TSP; its Codex panels and sampler factorial are beta-TSP's (same code, contexts asserted). M0.5's evaluator
@@ -37,6 +37,11 @@ step codex sampler
 $PY -u -m artifacts.experiments.20261101_p1f15.readings_codex sampler $CK
 step consistency
 $PY -u -m artifacts.experiments.20261101_p1f15.consistency $CK $R/consistency
+step F re-read with surprise
+F=artifacts/experiments/20261031_learned_fixation_sweep
+$PY -u -m artifacts.experiments.20261031_learned_fixation_sweep.locus $R/locus --ckpt=p1f15=$CK
+for w in w1_10 p1f_10; do ln -sfn "$(pwd)/$F/locus/$w.npz" $R/locus/$w.npz; done
+$PY -u -m artifacts.experiments.20261031_learned_fixation_sweep.locus --summary $R/locus
 step waiting for uptake
 wait $UPTAKE
 step done

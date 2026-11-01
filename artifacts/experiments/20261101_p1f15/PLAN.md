@@ -50,6 +50,12 @@ training (CPU; the GPU is the run's) and on the GPU after it, before any result 
    periphery / lighting prediction with the real past glimpses versus the same history with them replaced by
    glimpses at another window, the belief recomputed (base: `20261029_fovea_probes/measure.py` F2), by light and by
    whether the past glimpse held an entity the periphery missed.
+6. **Added 11-02, before any result (user-agreed; decision 2's validation, learned-fixation TEACHING 15):** design
+   reading F re-read on this world (`../20261031_learned_fixation_sweep/locus.py --ckpt`): does the world's own
+   expectation of the next periphery locate the action's consequences (contingency, D(a_taken) vs D(NOOP)), and where
+   does surprise (the observed periphery against that expectation, added to F's signals) point, by attempt class,
+   HUD share and light. F's earlier P1 world 1 / P1-F outputs sit beside it for the shared signals (same contexts).
+   Also read from items 1-5 for decision 2: reading 5 decides whether inhibition of return must be explicit.
 Comparisons with P1-F and P1 world 1 are descriptive (two changes each); this run is the control for P1-F2.
 
 ## Pre-launch checks: results (11-01 night; `checks.json`; all pass)

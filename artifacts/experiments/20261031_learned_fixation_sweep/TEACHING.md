@@ -582,3 +582,63 @@ sampling commits each frame once and advances Mamba once (Codex). The actor-side
 look within the step, informing a_{t+1}, not a_t.
 **What it does not change.** Decision 1 (structure, noise groups, cascade), the belief-only route of past glimpses,
 the reward head's inputs, TSP, the losses.
+
+## 15. Decision 2 redirected: an emergent fovea (11-02; the user's proposal; agreed with the user; nothing built; to be validated on P1-F1.5's readings, then by Codex)
+**The change of view (user).** We had been top-down: estimate learnability and promote it, a hard constraint that
+needs an oracle we cannot build (H3: the endogenous floor fails wherever pixels saturate, under any looking policy,
+and self-confirms under selection; progress is hard to measure, and a model may take long to connect the dots). The
+fovea's role is instead to organize the agent's experience so that the world model meets diverse, causally relevant
+and increasingly informative observations; the world model does the learning. Two timescales: fast, where to look
+next given the actions and recent observations; slow, the regularities the world model learns from that experience.
+VoI (P2 / P3) later adds decision value to the same priority map.
+**Gaze is a mix of factors, not one score (checked 11-02).** Action-oriented gaze: sections 3 (Johansson et al.
+2001; Hayhoe & Ballard 2005). Surprise: Itti & Baldi 2009 (section 3). Learning progress: behavioural (Ten et al.
+2021; Poli et al. 2020), its relation to eye movements "unknown" (Gottlieb et al. 2013). Information value: Foley et
+al. 2017 (P3's VoI). Avoiding revisits: inhibition of return (Klein, TiCS 2000; the "foraging facilitator" account is
+contested, one challenge finding inhibition only at the most recently attended location; its reference frame is
+debated: object-based IOR, Tipper, Driver & Weaver 1991, failed to replicate in Mueller & von Muehlenen 1996, and
+Zhang & Zhang 2006 explain it as spatial inhibition updated across movement). Predicting the foveal input from the
+periphery (Herwig & Schneider 2014; Kroell & Rolfs 2022) is TSP: what looking teaches, the slow learner, not a
+selection signal. The priority map (Bisley & Goldberg 2010) is where the factors combine, not a factor.
+**Novelty is not surprise; we keep surprise.** Barto, Mirolli & Baldassarre (Front. Psychol. 2013, read): novelty is
+"the quality of not being previously experienced", its detection "requires examining ... the contents of memory";
+surprise is "a discrepancy between an expectation and an observed actuality" and requires a predictive model;
+"something can be unanticipated without being un-experienced". They read phasic dopamine's responses as surprise
+signals that help discover "which aspects of its own activity may trigger surprising events". The drafted novelty
+memory is dropped (user: too many moving parts); RND is not taken (as a gaze reward 1.25x / 0.85x random in Kim et al.
+2020, section 12; AMA: RND and ensembles break when the trap has many novel states, section 13). Never Give Up (Badia
+et al. 2020) shows the same two timescales with novelty: an episodic bonus from a memory reset every episode,
+multiplied by a life-long RND factor whose modulation vanishes over time.
+**Agreed (user, 11-02):**
+- One mechanism, the world's own expectation of frame t's periphery before the look, D = the factorised denoiser's
+  clean estimate from noise (design reading F's D), gives two signals per window w (sums over its 9 cells):
+  contingency(w) = ||D(a_taken) - D(NOOP)||^2 (F's: where my action changed things); surprise(w) =
+  ||p_t - D(a_taken)||^2 (the observed periphery against the expectation: where things did not go as expected;
+  pre-crop under section 14's same-frame timeline). No memory, no new network; both sharpen as the world learns
+  (the emergence). They come from the periphery stream, which learns from every frame wherever the eye goes, so
+  neither can self-confirm as H3's floor did, and they cover the whole screen, HUD included (the belief's change head
+  is map-only: HUD-blind by omission). Noisy TV (error-seeking fixated noise in 8 of 8 runs in Kim et al.): windows
+  compete within one frame, so screen-wide randomness (rendering static) cancels; Craftax's local randomness is mostly
+  mobs; the floor (and inhibition of return, if needed) bounds the dwell.
+- Selection: sample from a softmax over scores normalised across the frame's 49 windows, plus the uniform floor
+  (0.2), never arg-max (deterministic placement keyed the heads on the window's position, 10a; per-fixation
+  calibration and policy confounding need overlap).
+- Inhibition of return waits for P1-F1.5's reading 5: if a look reaches the belief and improves the expectation
+  there, surprise falls by itself (habituation emerging from the belief update); if the belief does not take up
+  glimpses, an explicit short trace over the 49 windows (decaying within a few frames; spatial, shifted with the
+  view's scroll if needed).
+- The combination's weights are ours; the emergence is in the signals. Learning the policy (VoI in P3) comes later.
+- Validation: P1-F1.5's fixed readings (what uniform gaze leaves unlearned; reading 5 for inhibition of return) and
+  reading 6 (added before any result): F re-read on P1-F1.5 with surprise added to its signals (does the world's own
+  expectation locate the consequences; where does surprise point). Then agree the controller, measure its cost,
+  build P1-F2 = P1-F1.5 + the controller, read with the same fixed readings plus gaze descriptives (where looks go
+  over training by content and action; how the priority evolves). No toy-harness ablations: the H-series results
+  stay descriptive.
+**Open, to scope before building.** (1) A state-dependent chooser makes P1's data collection sequential per chunk
+(per frame: the expectation under a and NOOP, the scores, a sampled fixation, its glimpse, a belief step), before the
+training pass: two denoiser passes per frame per stream, cost to be measured. (2) The real step then runs the
+denoiser for gaze (the actor still reads only the belief). (3) The chooser hook's inputs (Codex: clean vs augmented
+periphery) reconciled with the real step's. (4) Content the periphery cannot show (night) drives neither signal: the
+floor's and P3's VoI's role.
+**Superseded:** section 13's chooser (the priority head on realized excess error) and 12b's need x learnability
+proposal; H3's floor (RESULTS H3). **Kept:** section 14's same-frame timeline; decision 1.
