@@ -251,3 +251,8 @@ random looks would meet, before anything is built.
   joint denoiser's glimpse stands in for the factorised glimpse stage; one seed each; coarse checkpoint spacing.
 - **Cost.** Per checkpoint one S.encode of 400 episodes and ~3,000 denoiser passes over 392 streams; est. 1-1.5 h for
   both worlds. Queued after the beta-TSP readings (one GPU job at a time), smoke first.
+- **Smoke (11-01, before the full run; scratchpad, world 1 ckpts 1-2, 42 rows).** Runs end to end, 30 s; TSP's NLL at
+  the recorded fixation matches S.encode within 0.08-0.4% (bar 2%). Declared from it, before the full run: world 1's
+  pixel head was trained by NLL, not MSE (its TSP / reconstruction MSE rose 0.0315 -> 0.0321, 0.0320 -> 0.0328 from
+  checkpoint 1 to 2), so pixel-MSE progress is not its objective's progress: world 1's `tsp` and `rec` are descriptive
+  only; P1-F (trained by MSE) is the primary world for them; `view` (the denoiser's forward glimpse) is read in both.
