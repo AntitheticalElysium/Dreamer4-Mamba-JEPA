@@ -550,3 +550,35 @@ trained excess-error predictor tracks the falling level, whose decrease is the p
 **What it must show before being built:** that the pre-crop priority head recovers RHO's gain without a reference
 (H3, proposed: in H's harness, arms uniform / RHO / realized excess error / predicted excess error), and that the
 same-frame timeline is accepted.
+
+## 14. Proposed step-order amendment: periphery first, then the fovea (11-01; user: "might want to keep and canonize this order"; Codex supports it with an explicit contract; NOT applied to STEP_SPEC until agreed)
+**Why.** A fixation chosen from what the glimpse conditional already conditions on cannot carry outcome information
+into it (TEACHING 13; Codex's curator counterexample); the brain's priority map is computed from the current
+peripheral view; it fits decision 1's cascade exactly. Decision 1's physical stream does not depend on the
+fixation, so nothing earlier in the step changes.
+**Real step (replaces STEP_SPEC 2.2-2.3).**
+1. Predict B-_{t+1} = U_pred(B_t, a_t) (unchanged).
+2a. Perceive the gaze-invariant part of o_{t+1}: lighting latent v, periphery tokens p.
+2b. Fixation f_{t+1} = pi_fix(B-_{t+1}, p, v): a perceptual head inside the step, from pre-crop inputs only (P1:
+    learned chooser + floor; P2 / P3: VoI). No gradient into the world.
+2c. TSP predicts the glimpse pixels at f_{t+1} from (B-_{t+1}, p, v) before reading it (unchanged in form); read the
+    glimpse g at f_{t+1}; store g with f_{t+1}.
+3. Generator loss: physical stream q(p, v | history, a_t) (gaze-free); glimpse stage q(g | p, v, history, a_t,
+   f_{t+1}), which receives every input pi_fix used (B-_{t+1} through the memory tokens, p and v as tokens): Codex's
+   requirement that the predictor see what the chooser saw.
+4. Correct: B_{t+1} = U_corr(B-_{t+1}, P_{t+1}) with P_{t+1} = (v, p, g, f_{t+1}); Mamba reads the completed
+   percept once, then the action (unchanged interleaving), so the glimpse enters the belief in the same step.
+5. Reward and termination arrive with o_{t+1} and are read by U_corr with the percept (unchanged); the outcome heads
+   read (B-_{t+1}, P_{t+1}).
+**Imagined step (replaces STEP_SPEC 3.1-3.3).** The actor reads B_t -> a_t only (the fixation is no longer part of the
+previous action); B-_{t+1} = U_pred(B_t, a_t); sample (p', v') (stage 1); f_{t+1} = pi_fix(B-_{t+1}, p', v'); sample
+g' | p', v', f_{t+1} (stage 2, conditioning augmentation s_aug); reward and continuation from (B-_{t+1}, P'); B_{t+1}
+= U_corr(B-_{t+1}, P', r', not terminated). Consistency (Codex: the same treatment of conditioning noise): pi_fix
+reads exactly the (p', v') the glimpse stage conditions on, the augmented copy.
+**What changes elsewhere.** STEP_SPEC 5: "Fixation is part of the action" becomes "the fixation is a within-step
+perceptual act after the periphery"; P1's data pipeline chooses each frame's fixation after computing its periphery
+(offline frames; the periphery is gaze-invariant) and writes it back so a reused context frame keeps its glimpse;
+sampling commits each frame once and advances Mamba once (Codex). The actor-side VoI chooser in P3 decides where to
+look within the step, informing a_{t+1}, not a_t.
+**What it does not change.** Decision 1 (structure, noise groups, cascade), the belief-only route of past glimpses,
+the reward head's inputs, TSP, the losses.
