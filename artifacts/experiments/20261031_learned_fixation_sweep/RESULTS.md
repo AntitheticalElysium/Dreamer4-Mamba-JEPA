@@ -228,3 +228,54 @@ What F establishes: from mid-training a frozen world supplies, label-free and be
 the eye on the tile the action acts on, failures included. What it does not: a way to find consequences displayed
 away from the locus (the inventory) from the world's own predictions; for those, only the realized outcome carries
 the location. Not covered: whether looking at the locus teaches anything (B2), what a trained chooser would do.
+
+## G. Where does the learning a look produces land, over P1? (`landscape.py`, PLAN G; units fovea-landscape3, ~30 min; `landscape/summary.json`)
+F's rows (2,617: up to 300 per DO class, 217 failed stone, 600 random), 49 windows each, world 1 and P1-F checkpoints
+1-10. Alignment (TSP NLL at the recorded fixation vs S.encode): median 0.03-0.11% at every checkpoint (bar 2%; the
+max, 0.3-2.3%, is the half-precision belief, PLAN G amendments). Mean pixel MSE, checkpoint 1 -> 10: world 1 view
+0.090 -> 0.041 (flat from checkpoint 4), TSP 0.033 -> 0.034 and reconstruction 0.033 -> 0.034 (its NLL head does not
+train MSE: descriptive only, declared); P1-F view 0.043 -> 0.010 (flat from 5), TSP 0.0143 -> 0.0012 and
+reconstruction 0.0083 -> 0.0009 (flat from 4-5). Progress is in units of 1e-4 pixel MSE.
+
+Declared readings:
+1. **Structured: yes.** Split-half rho of the 49-window progress vector >= 0.5 for nearly every class and interval
+   of the view instrument in both worlds (0.5-0.97), and of TSP while TSP still progresses (P1-F intervals 1-5); the
+   top 5 windows hold 0.13-0.45 of positive progress where progress is substantial (uniform 0.10).
+2. **Not raw error: yes for the view, no for early TSP.** View: rho(progress, error) is often NEGATIVE in world 1 at
+   intervals 2-6 (-0.3 to -0.85; error split-half 0.8-0.96) and mixed in P1-F (-0.5 to +0.9). TSP tracks error in
+   the first intervals (0.81-0.99), then has almost no progress left. Night static does not attract progress: the
+   dark rows' share of positive progress is at or below their share of error (world 1 TSP 0.17-0.26 vs 0.45-0.49;
+   P1-F TSP 0.31-0.60 vs 0.45-0.79; view similar or mixed).
+3. **Located: not beyond F's contingency, where a clean test exists.** World 1 (random gaze) mining, view progress
+   arg-max covering the consequence: stone 0.31-0.60 (chance 0.31), coal 0.07-0.61 (0.27), iron 0.10-0.46 (0.22);
+   none meets F's bar. F's contingency on the same rows: stone 0.95, coal 0.93, iron 0.58-0.67 (checkpoints 5, 10).
+   The consequence excess exceeds 3 SE in some intervals with BOTH signs (world 1 stone +73 at 1-2, +11 at 3-4;
+   coal -12.5 at 4-5). P1-F's drink / wood / sapling (rule-confounded and gated) do show located view progress
+   (drink arg-max 0.55-0.79 in four intervals, chance 0.12), but the ERROR arg-max covers the same windows as often
+   (0.63-0.86): the gated world's forward view is wrong there under a non-rule query. The remote-consequence case
+   (a HUD counter in a world that is neither digit-blind nor gated) has no clean test in these two worlds.
+4. **Moves: no.** World 1's consequence progress is front-loaded with everything else (interval 1-2: wood +343,
+   sapling +175, stone +73, failed stone +174) and near zero or negative afterwards; random rows: the HUD first
+   (+237 world 1, +107 P1-F at 1-2), then small and sign-alternating. No rising consequence share: the user's
+   "first movements, then the starved events" is not what progress does under random looks.
+5. **Bandit (descriptive).** Separating the progress-best window from the class's median at 2 SE takes 2-350 looks
+   per interval (mostly < 100); a 10% floor gives 13-210 per class per interval (coal 21, iron 13): feasible for the
+   common classes, marginal for the rare ones, even with labels pooling the contexts.
+
+Post-hoc diagnostics (not in the plan; they qualify reading 1, they select nothing):
+- **Late progress is mean-reverting at this horizon.** Consecutive intervals' class-mean progress vectors correlate
+  positively early (0.3-0.94) and negatively in the second half (P1-F random rows -0.36 to -0.92 from interval 3-4;
+  most classes -0.2 to -0.85 at the last intervals): a window that improved in one interval worsens in the next. The
+  checkpoint spacing (1.5-2.5 k updates) is gamma-progress's horizon (2,000 updates).
+- Cross-world agreement of the interval's progress vector (both worlds saw the same seed-1 stream): weak for the DO
+  classes (-0.4 to +0.6), 0.61-0.78 for random rows at intervals 5-8: consistent with data order moving generic
+  content, not established.
+- Over 4-interval spans some located progress persists: P1-F drink counter +99 (7) at 2-6 and +25 (3) at 6-10 (rule-
+  confounded); world 1 stone +15.5 (3.6) and +2.9 (0.9).
+
+What G establishes: under random looks, the look-local predictions' progress is replicable across episodes and is
+not pulled by night static, but it does not locate action consequences better than the world's own action
+contingency, does not move toward them over training, and in the second half reverses sign between consecutive
+intervals at gamma-progress's horizon. What it does not: the dynamics under a chooser that follows progress
+(positive feedback), the factorised glimpse stage (stood in for by the joint denoiser), the remote counter in a clean
+world, more than one seed.

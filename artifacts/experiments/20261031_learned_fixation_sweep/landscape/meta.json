@@ -1,0 +1,145 @@
+{
+ "episodes": 400,
+ "contexts": {
+  "drink": 300,
+  "wood": 300,
+  "sapling": 300,
+  "stone": 300,
+  "coal": 300,
+  "iron": 300,
+  "stone_no_tool": 217,
+  "random": 600
+ },
+ "class_frequency": {
+  "drink": 0.01683746489005901,
+  "wood": 0.024743419995254895,
+  "sapling": 0.030965628611444883,
+  "stone": 0.036851087929833694,
+  "coal": 0.0035435210200442367,
+  "iron": 0.002318978118949036,
+  "stone_no_tool": 0.0016607863096103658,
+  "random": 0.975509141978096
+ },
+ "checkpoints": {
+  "w1_ckpt_01": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_01.pt",
+   "sha256": "31d4ffe8b80e6030242560a82715e429e615503983c1dce28d9d1748a25e97d8",
+   "tsp_nll_check_median_rel": 0.00026714784326031804,
+   "max_rel": 0.003167587099596858
+  },
+  "w1_ckpt_02": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_02.pt",
+   "sha256": "39eb3d9d6b43104f28ce8f2acd9babea6bab4f93c2214417a97ad10f6a78dcc5",
+   "tsp_nll_check_median_rel": 0.0004017048340756446,
+   "max_rel": 0.007481328211724758
+  },
+  "w1_ckpt_03": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_03.pt",
+   "sha256": "5fa0fe15f35f5c807dff2751e2c920c2b8eafcb10ece6d317133f1b2896acfc5",
+   "tsp_nll_check_median_rel": 0.00042949969065375626,
+   "max_rel": 0.013074048794806004
+  },
+  "w1_ckpt_04": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_04.pt",
+   "sha256": "15d22c54a84d427671e02ce0429890d761ee66d4927d09db70231a3ba26e657e",
+   "tsp_nll_check_median_rel": 0.0005405312404036522,
+   "max_rel": 0.015311899594962597
+  },
+  "w1_ckpt_05": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_05.pt",
+   "sha256": "fe2aee881e061278096120734f982dff65d44d5719d2dbc8495884edfbfab09e",
+   "tsp_nll_check_median_rel": 0.0005721108173020184,
+   "max_rel": 0.01169303897768259
+  },
+  "w1_ckpt_06": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_06.pt",
+   "sha256": "d778007cdb9e8b87c2da5a0279492eb1c312b18dc2473d2b7bd5e87eb3b8bbac",
+   "tsp_nll_check_median_rel": 0.0006205091485753655,
+   "max_rel": 0.01517787016928196
+  },
+  "w1_ckpt_07": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_07.pt",
+   "sha256": "bdb833a12f3e1987cf3a0c29f73cdccc7a85b7ff1fb46d4cf7800c9ef731891b",
+   "tsp_nll_check_median_rel": 0.0006078987498767674,
+   "max_rel": 0.023326391354203224
+  },
+  "w1_ckpt_08": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_08.pt",
+   "sha256": "6f51c099d1941c2d2bce7ed00fcb6b72cdd3f9045c8e76a9e763c25a2c225de6",
+   "tsp_nll_check_median_rel": 0.0006324527785181999,
+   "max_rel": 0.012768803164362907
+  },
+  "w1_ckpt_09": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_09.pt",
+   "sha256": "ef46b5dc04d8064f5e7cd860ad35769567de74d514281fd27f8a897a9a46ed1a",
+   "tsp_nll_check_median_rel": 0.0006600632332265377,
+   "max_rel": 0.013910957612097263
+  },
+  "w1_ckpt_10": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_10.pt",
+   "sha256": "74eccc433bf5a785edd6d565edc1a970f8b468510abf2c0b07e24d28b547ebe5",
+   "tsp_nll_check_median_rel": 0.000665759202092886,
+   "max_rel": 0.016440974548459053
+  },
+  "p1f_ckpt_01": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_01.pt",
+   "sha256": "1a376683654a0c23a50a06fec0ba94fd0f5c37482669b43f8200ecfde2eda9cb",
+   "tsp_nll_check_median_rel": 0.00028979984926991165,
+   "max_rel": 0.0038732499815523624
+  },
+  "p1f_ckpt_02": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_02.pt",
+   "sha256": "815585a73d2dfc134c7d48b07586cb726d32b3ad397d616a2a4ac1e8506b15ea",
+   "tsp_nll_check_median_rel": 0.0004656852688640356,
+   "max_rel": 0.010818768292665482
+  },
+  "p1f_ckpt_03": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_03.pt",
+   "sha256": "edca1130672238a8dc3bdc0ea5306b1d9b901ac940f05f94cea75485fc32f71f",
+   "tsp_nll_check_median_rel": 0.0006008013151586056,
+   "max_rel": 0.007140812464058399
+  },
+  "p1f_ckpt_04": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_04.pt",
+   "sha256": "790ecd1decbd8bff41480e852c90334cc7b0426cda369da9f31e347d1ac3550e",
+   "tsp_nll_check_median_rel": 0.0006833342486061156,
+   "max_rel": 0.012532372027635574
+  },
+  "p1f_ckpt_05": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_05.pt",
+   "sha256": "b8f39b10d20a32b669e4a0ef9cb36037f43298c0c8fe6155a6d67ebe10da60ea",
+   "tsp_nll_check_median_rel": 0.0007905283127911389,
+   "max_rel": 0.019203180447220802
+  },
+  "p1f_ckpt_06": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_06.pt",
+   "sha256": "4ebd0b2cc521370d7a3c00d5db311d06998c0211028bc5032dff27fd4abd4c1a",
+   "tsp_nll_check_median_rel": 0.0008369478746317327,
+   "max_rel": 0.01933141052722931
+  },
+  "p1f_ckpt_07": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_07.pt",
+   "sha256": "bc6ba09c9e0f503d652fdf5ce78d4a2dd3f34bf2f8b6420eb602411b80ff927c",
+   "tsp_nll_check_median_rel": 0.0008724519284442067,
+   "max_rel": 0.015387563034892082
+  },
+  "p1f_ckpt_08": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_08.pt",
+   "sha256": "0bb04bcaceaafea567ce37d53a95e58ac130daed2c72ed1e53e8366101b6eee5",
+   "tsp_nll_check_median_rel": 0.0009737576474435627,
+   "max_rel": 0.017117874696850777
+  },
+  "p1f_ckpt_09": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_09.pt",
+   "sha256": "837c8a8a7b74551a1cbe1c4e5bb1a74166f2fee9721bc722465cf5eae0645ba7",
+   "tsp_nll_check_median_rel": 0.0010599184315651655,
+   "max_rel": 0.018992377445101738
+  },
+  "p1f_ckpt_10": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_10.pt",
+   "sha256": "82b0ecc037a5d538597ed0639fe3823ca73046448cc9c6837704f8aada6e6271",
+   "tsp_nll_check_median_rel": 0.0009946258505806327,
+   "max_rel": 0.021770097315311432
+  }
+ }
+}
