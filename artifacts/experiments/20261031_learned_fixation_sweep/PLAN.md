@@ -376,3 +376,17 @@ review section 2): selecting a crop by its realized score is outcome-dependent (
   periphery, its learner the previous one: a selection experiment, not evidence for a leak-free forward conditional.
   A negative rejects this score / predictor setup, not reference-free foveation; a positive shows useful selection,
   not that the scale measures irreducible noise.
+- **Dissection additions (11-01 20:50, written AFTER seeing sr excess's selection, evaluation curve and score-parts
+  log, before the other arms finished; post hoc, labelled so in RESULTS).** sr excess ends +62% above uniform (+159%
+  at step 3000), HUD windows chosen 7.9% of the time (uniform 28.5%), final HUD error 3.5x uniform's; its floor
+  (pi^2 s^2 / 3, all windows) rises from 0.055 at step 1250 to 0.23 at 5750 while the error falls to 0.0022 (~100x).
+  Suspected mechanism, to be measured, not assumed: pixel_nll's absorbing edge bins (PixelCNN++) give a saturated
+  pixel (0 / 255) whose mean sits on the wrong side an NLL that falls monotonically to log 2 as s grows, so the
+  position-only scale inflates wherever saturated content is still mispredicted (the 10-30 "NLL scale trap", now in
+  the scale alone), and pi^2 s^2 / 3 is unbounded where the bounded distribution's variance is not. Added, for every
+  arm's final heads, by window type and light: (1) the decoder's own predicted variance, exactly (the discretised,
+  bounded logistic of pixel_nll over its 256 values) beside pi^2 s^2 / 3; (2) the share of saturated pixels, the share
+  of saturated pixels mispredicted by more than one bin, and the approximate floor's part from saturated pixels;
+  (3) the uniform learner's heads, re-run (deterministic; its evaluation curve must equal this run's bitwise), as the
+  floor under uniform looks: inflation there too = the floor's construction; only under selection = a self-confirming
+  loop (a window deemed noisy is not looked at, so it is not learned, so it stays "noisy").
