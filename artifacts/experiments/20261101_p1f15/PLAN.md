@@ -88,3 +88,8 @@ the log and recorded before the queue starts):
    stage 2, asserted bitwise against M.sample's own glimpse on every batch (CPU smoke: equal).
 5. `uptake.py` (CPU, beside the GPU readings once S1's reader exists): F2's episode function unchanged on this world,
    250 dev episodes, F2's seeds; strata from S1's frozen reader (CPU smoke on P1-F's checkpoint: 3 episodes in 2 min).
+
+## Run (11-01 22:51 -> 11-02 09:56; unit saccade-p1f15)
+Clean exit, 11 h 05 min, 25.6 M frames (15,625 updates). Monitor G1 at checkpoints 1-10: 0.0986, 0.0655, 0.0448,
+0.0372, 0.0335, 0.0296, 0.0289, 0.0282, 0.0278, 0.0271, falling at every checkpoint: checkpoint 10 by P1-F's rule
+(recorded before the queue started). The readings: `queue.sh run/ckpt_10.pt`, unit p1f15-readings.
