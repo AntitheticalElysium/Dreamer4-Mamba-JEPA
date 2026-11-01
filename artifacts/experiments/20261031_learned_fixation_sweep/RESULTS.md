@@ -281,3 +281,45 @@ contingency, does not move toward them over training, and in the second half rev
 intervals 625 updates apart (a shorter lag than gamma-progress's). What it does not: the dynamics under a chooser that follows progress
 (positive feedback), the factorised glimpse stage (stood in for by the joint denoiser), the remote counter in a clean
 world, more than one seed.
+
+## H. Does choosing which crop is trained on speed up look-local learning? (`selection.py`, PLAN H; unit fovea-selection, 1 h 34 min; `selection/summary.json`, `results.json`)
+Fresh TSP heads on frozen P1-F checkpoint-10 inputs (fit: 64 k frames of the even train-400 episodes; IL learner: the
+odd ones), identical init / frames / coin flips / budget (6,000 x 512), held out on G's 2,617 dev rows at all 49
+windows. Held-out pixel MSE relative to uniform (negative = better), at 1,000 / 2,000 / 3,000 / 6,000 steps, and the
+steps each arm needs to reach uniform's loss at 2,000 / 3,000 / 4,500 / 6,000:
+
+| learner, population | learnability (RHO) | error | progress (gamma) |
+|---|---|---|---|
+| sr, random rows, all windows | -16 / -43 / -34 / -3 %; 1515 / 2332 / 3889 / 5779 | -16 / -43 / -31 / -9 %; 1517 / 2369 / 3983 / 5526 | +37 / +20 / +63 / +61 % |
+| sr, DO classes, consequence windows | -28 / -52 / -41 / -5 %; 1420 / 2244 / 3725 / 5687 | -28 / -52 / -36 / -12 % | +16 / +3 / +57 / +59 % |
+| sr, random rows at night | -18 / -27 / -10 / -1 % | -18 / -28 / -8 / +2 % | +16 / +1 / +25 / +33 % |
+| fwd, random rows, all windows | -6 / -9 / -4 / +2 %; 1622 / 2407 / 4167 / never | +5 / +5 / +12 / +17 % | +15 / +7 / +9 / +13 % |
+| fwd, DO classes, consequence windows | -6 / -12 / -6 / 0 % | -4 / -10 / -7 / -11 %; reaches uniform's final at 3,605 | +15 / +5 / +7 / +10 % |
+| fwd, DO classes, other windows | -8 / -28 / -18 / +5 % | 0 / -12 / +6 / +25 % | +37 / +13 / +14 / +31 % |
+
+(episode-bootstrap SEs of the paired differences 0.00000-0.00047, i.e. every percentage above 2% is many SEs.)
+Selections on the training frames (uniform: HUD 29%, faced tile 18%, faced tile on DO frames 18%): learnability HUD
+44-45%, faced 19%, faced on DO 19-20%; error HUD 45%, faced 16-18%; progress HUD 78-80%, faced 5%.
+
+Declared reading:
+- **Claim (uniform's FINAL loss in clearly fewer steps): not met.** sr 5,779 steps (4% fewer), fwd never (2% worse at
+  6,000). **Competing (a), every arm ~ uniform: not met either.** Mid-budget, learnability needs 14-24% fewer steps
+  to match uniform (sr) and 7-20% (fwd), and at 2,000 steps its loss is 43% lower (sr; 52% at the DO consequence
+  windows) and 9% lower (fwd). The arms converge by the end: at 6,000 x 512 samples each fit frame has been trained
+  ~48 times, about once per window.
+- **Regime.** P1 trains on 2.44 M frames for 25.6 M samples (10.5 passes): ~10 crops per frame, H's step ~1,250, where
+  learnability is 16-43% ahead (sr) and 6-9% (fwd). A coverage analogy, not a transfer of the numbers to joint training.
+- **Competing (b), a trade-off: for error on the forward learner.** Error selection buys the DO consequence windows
+  (-11% at the end, uniform's final in 40% fewer steps) at the cost of everything else (+17% overall, +25% on the DO
+  frames' other windows). Learnability does not trade off (+0-5% at the end, ahead throughout the middle).
+- **Competing (c), noise.** For super-resolution (little irreducible error by day) error ~ learnability; for the
+  forward prediction (a partly unpredictable next view) error is worse than uniform overall and at night (+10% at the
+  end) while learnability is not: the irreducible-loss reference matters exactly where the target is stochastic,
+  RHO-LOSS's argument. Progress in this form (bidirectional, greedy, full feedback, gamma 0.9995) is worse than
+  uniform everywhere: it puts ~80% of looks on the HUD.
+- **Where the selections go.** Neither learnability nor error moves looks toward the action's locus (faced tile on DO
+  frames 19-20% vs 18%); they move them to the HUD (44-45% vs 29%). Locating action loci remains contingency's (F).
+What H establishes: in this data, choosing crops by learnability (current loss minus an irreducible-loss reference)
+makes both look-local predictors learn faster in the coverage regime P1 operates in, never worse at the end, and is
+robust where error-seeking is not; temporal progress in this greedy full-feedback form hurts. What it does not: the
+joint system (representation, belief, denoiser), an online predictor of the score, a matched need prior, one seed.

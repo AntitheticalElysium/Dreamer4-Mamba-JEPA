@@ -125,8 +125,53 @@ def train(arm, mode, X, train_idx, cfg, il=None, evalfn=None):
     return (tsp.eval(), pixd.eval()), log, stats
 
 
+def summary(out_dir):
+    """PLAN H's readings from the saved arrays (CPU): per learner, arm and evaluation step, held-out pixel MSE on (1)
+    all windows of the random rows, (2) the DO classes' consequence windows, (3) random rows by light; paired
+    differences against uniform (episode-bootstrap SEs); steps to reach uniform's final value (linear in log loss)."""
+    lab = np.load(out_dir / "labels.npz")
+    cls, ep, light, cons = lab["cls"], lab["ep"], lab["light"], lab["consequence"]
+    rnd, do = cls == "random", np.isin(cls, list(F.ATTEMPTS) + ["stone_no_tool"])
+    pops = {"random_all_windows": (rnd, None), "random_day": (rnd & (light >= 0.7), None), "random_night": (rnd & (light <= 0.3), None),
+            "do_consequence_windows": (do, cons), "do_other_windows": (do, ~cons)}
+    def row_value(loss, m, w):
+        return loss[m].mean(1) if w is None else (loss[m] * w[m]).sum(1) / np.maximum(w[m].sum(1), 1)
+    res = {}
+    for mode in MODES:
+        z = {arm: np.load(out_dir / f"{mode}_{arm}.npz") for arm in ARMS}
+        steps = z["uniform"]["steps"]
+        res[mode] = {}
+        for pname, (m, w) in pops.items():
+            r = res[mode][pname] = {"steps": steps.tolist()}
+            for arm in ARMS:
+                vals = [row_value(z[arm]["loss"][i], m, w) for i in range(len(steps))]
+                base = [row_value(z["uniform"]["loss"][i], m, w) for i in range(len(steps))]
+                r[arm] = {"mean": [float(v.mean()) for v in vals],
+                          "minus_uniform": [LS.G.estimate(v - b, np.ones(len(v), bool), ep[m]) for v, b in zip(vals, base)]}
+            final = r["uniform"]["mean"][-1]
+            for arm in ARMS:
+                y = np.log(np.array(r[arm]["mean"]))
+                hit = np.nonzero(y <= np.log(final))[0]
+                if len(hit) and hit[0] > 0:
+                    i = hit[0]; f = (np.log(final) - y[i - 1]) / (y[i] - y[i - 1])
+                    r[arm]["steps_to_uniform_final"] = float(steps[i - 1] + f * (steps[i] - steps[i - 1]))
+                else:
+                    r[arm]["steps_to_uniform_final"] = None
+    (out_dir / "summary.json").write_text(json.dumps(res, indent=1, default=float))
+    for mode, rr in res.items():
+        for pname, r in rr.items():
+            print(f"== {mode} {pname}")
+            for arm in ARMS:
+                d = r[arm]["minus_uniform"]
+                print(f"   {arm:12s} final {r[arm]['mean'][-1]:.5f} to-uniform-final {r[arm]['steps_to_uniform_final']}",
+                      " ".join(f"{s}:{x['est']:+.5f}({x['se']:.5f})" for s, x in zip(r["steps"], d) if s in (1000, 2000, 3000, 6000)))
+    return res
+
+
 def main():
     global STEPS, EVALS
+    if sys.argv[1] == "--summary":
+        return summary(Path(sys.argv[2]))
     out_dir, smoke = Path(sys.argv[1]), "--smoke" in sys.argv
     out_dir.mkdir(parents=True, exist_ok=True)
     if smoke:
