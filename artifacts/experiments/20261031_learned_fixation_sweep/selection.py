@@ -294,10 +294,62 @@ def summary(out_dir):
     return res
 
 
+@torch.no_grad()
+def dissect(out_dir):
+    """H3 dissection (GPU): each endogenous arm's saved heads on the evaluation rows — realized error, its scale-head
+    floor, excess, and the priority head's prediction, averaged by window type (DO consequence, faced, entity, HUD,
+    other map) and light; the share of each row's priority mass per type; rank correlations by type."""
+    ck = torch.load(CKPT, weights_only=False, map_location="cpu")
+    cfg = ck["cfg"]
+    model = M.M0(cfg).to(DEV); model.load_state_dict(ck["model"]); model.eval()
+    Ldv = S.first_episodes(dict(np.load(S.LABELS / "s0_dev_labels.npz")), F.N_EP)
+    ctx, _, _ = F.contexts(Ldv, np.random.default_rng(2031))
+    rows = [r for c in ctx for r in ctx[c]]
+    E_all = collect(model, cfg, Ldv)
+    del model
+    s_off = np.r_[0, np.cumsum(Ldv["ep_T"])]
+    eval_idx = torch.as_tensor([s_off[e] + t - 1 for e, t in rows])
+    lab = np.load(out_dir / "labels.npz")
+    do = np.isin(lab["cls"], list(F.ATTEMPTS) + ["stone_no_tool"])
+    types = {"consequence (DO rows)": lab["consequence"] & do[:, None], "faced": lab["faced"], "entity": lab["entity"],
+             "hud": lab["hud"], "other map": ~(lab["hud"] | lab["faced"] | lab["entity"] | lab["consequence"])}
+    light = {"day": lab["light"] >= 0.7, "night": lab["light"] <= 0.3}
+    res = {}
+    for f in sorted(out_dir.glob("*_heads.pt")):
+        mode, arm = f.stem.split("_", 1)[0], f.stem.split("_", 1)[1].removesuffix("_heads")
+        h = torch.load(f, weights_only=False, map_location="cpu")
+        tsp, pixd, _ = learner(cfg); tsp.load_state_dict(h["tsp"]); pixd.load_state_dict(h["pixd"]); tsp.eval(); pixd.eval()
+        ef = loss_all(tsp, pixd, E_all, eval_idx, mode, cfg, parts=True).numpy()
+        q = {"error": ef[..., 0], "floor": ef[..., 1], "excess": ef[..., 0] - ef[..., 1]}
+        if "priority" in h:
+            pri = Priority(cfg).to(DEV); pri.load_state_dict(h["priority"]); pri.eval()
+            q["priority"] = torch.cat([pri(E_all, b).cpu() for b in eval_idx.split(256)]).numpy() / 100
+        r = res[f"{mode}_{arm}"] = {}
+        for tname, tm in types.items():
+            r[tname] = {k: float(v[tm].mean()) for k, v in q.items()} | {"windows": int(tm.sum())}
+        for lname, lm in light.items():
+            r[lname] = {k: float(v[lm].mean()) for k, v in q.items()}
+        if "priority" in q:                                              # where would the head send the eye?
+            am = q["priority"].argmax(1)
+            r["argmax_share"] = {tname: float(tm[np.arange(len(am)), am].mean()) for tname, tm in types.items()}
+            r["argmax_share_uniform"] = {tname: float(tm.mean()) for tname, tm in types.items()}
+            r["rank_rho"] = {"vs_excess": float(np.nanmean(rank_rho(q["priority"], q["excess"]))),
+                             "vs_error": float(np.nanmean(rank_rho(q["priority"], q["error"])))}
+        r["floor_vs_error_rank_rho"] = float(np.nanmean(rank_rho(q["floor"], q["error"])))   # absorption across windows
+    (out_dir / "dissect.json").write_text(json.dumps(res, indent=1))
+    for k, r in res.items():
+        print("==", k, {t: {m: round(v, 5) for m, v in x.items()} for t, x in r.items() if isinstance(x, dict) and t not in ("argmax_share", "argmax_share_uniform", "rank_rho")})
+        for t in ("argmax_share", "argmax_share_uniform", "rank_rho", "floor_vs_error_rank_rho"):
+            if t in r: print("  ", t, r[t])
+    return res
+
+
 def main():
     global STEPS, EVALS
     if sys.argv[1] == "--summary":
         return summary(Path(sys.argv[2]))
+    if sys.argv[1] == "--dissect":
+        return dissect(Path(sys.argv[2]))
     out_dir, smoke = Path(sys.argv[1]), "--smoke" in sys.argv
     out_dir.mkdir(parents=True, exist_ok=True)
     if smoke:
