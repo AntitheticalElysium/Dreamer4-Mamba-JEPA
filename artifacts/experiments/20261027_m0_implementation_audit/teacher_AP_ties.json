@@ -1,0 +1,18 @@
+{
+  "day": {
+    "rank_by_item_AP": 0.943060400146609,
+    "threshold_grouped_AP": 0.9430835717422393,
+    "difference": -2.317159563036686e-05,
+    "observations": 122471,
+    "positives": 2107,
+    "unique_scores": 2264
+  },
+  "night": {
+    "rank_by_item_AP": 0.6120657088385467,
+    "threshold_grouped_AP": 0.6120662290745817,
+    "difference": -5.202360350287094e-07,
+    "observations": 52325,
+    "positives": 1499,
+    "unique_scores": 50677
+  }
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "checkpoint": 1,
+    "frames": 2560000,
+    "stream_state_exact": true
+  },
+  {
+    "checkpoint": 5,
+    "frames": 12800000,
+    "stream_state_exact": true
+  },
+  {
+    "checkpoint": 10,
+    "frames": 25600000,
+    "stream_state_exact": true
+  }
+]

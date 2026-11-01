@@ -1,0 +1,1184 @@
+{
+ "a": "base",
+ "b": "guided_1500",
+ "prediction": {
+  "guided": {
+   "drink_appearance": {
+    "a": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 12
+    },
+    "b": {
+     "est": 0.08333333333333333,
+     "se": 0.06886000644329678,
+     "n_cond": 12
+    },
+    "difference": {
+     "est": 0.08333333333333333,
+     "se": 0.06886000644329678,
+     "n_cond": 12,
+     "ci95": [
+      -0.05163227929552834,
+      0.218298945962195
+     ],
+     "rows": 12
+    },
+    "mei": 0.25,
+    "reading": "BOUNDED NULL",
+    "unknown_heavy": true,
+    "unknown": [
+     0.3333333333333333,
+     0.16666666666666666
+    ],
+    "unknown_difference": {
+     "est": -0.16666666666666666,
+     "se": 0.06669845484102987,
+     "n_cond": 12,
+     "ci95": [
+      -0.2973956381550852,
+      -0.0359376951782481
+     ],
+     "rows": 12
+    },
+    "upper_bounds": [
+     0.3333333333333333,
+     0.25
+    ],
+    "among_readable_difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 8,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 8
+    },
+    "real_token_correct": [
+     1.0,
+     1.0
+    ],
+    "real_token_unreadable": [
+     0.0,
+     0.0
+    ],
+    "coherent": [
+     1.0,
+     1.0
+    ]
+   },
+   "drink_increment": {
+    "a": {
+     "est": 0.04878048780487805,
+     "se": 0.01752837770832189,
+     "n_cond": 82
+    },
+    "b": {
+     "est": 0.012195121951219513,
+     "se": 0.007342555337823062,
+     "n_cond": 82
+    },
+    "difference": {
+     "est": -0.036585365853658534,
+     "se": 0.012787754880420835,
+     "n_cond": 82,
+     "ci95": [
+      -0.06164936541928337,
+      -0.0115213662880337
+     ],
+     "rows": 82
+    },
+    "mei": 0.23780487804878048,
+    "reading": "NEGATIVE",
+    "unknown_heavy": false,
+    "unknown": [
+     0.0,
+     0.0
+    ],
+    "unknown_difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 82,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 82
+    },
+    "upper_bounds": [
+     0.04878048780487805,
+     0.012195121951219513
+    ],
+    "among_readable_difference": {
+     "est": -0.036585365853658534,
+     "se": 0.012787754880420835,
+     "n_cond": 82,
+     "ci95": [
+      -0.06164936541928337,
+      -0.0115213662880337
+     ],
+     "rows": 82
+    },
+    "real_token_correct": [
+     1.0,
+     1.0
+    ],
+    "real_token_unreadable": [
+     0.0,
+     0.0
+    ],
+    "coherent": [
+     0.8611111111111112,
+     0.875
+    ]
+   },
+   "wood_appearance": {
+    "a": null,
+    "b": null,
+    "difference": null,
+    "mei": null,
+    "reading": "UNMEASURED",
+    "unknown_heavy": false,
+    "unknown": [
+     null,
+     null
+    ],
+    "unknown_difference": null,
+    "upper_bounds": [
+     null,
+     null
+    ],
+    "among_readable_difference": null,
+    "real_token_correct": [
+     null,
+     null
+    ],
+    "real_token_unreadable": [
+     null,
+     null
+    ],
+    "coherent": [
+     null,
+     null
+    ]
+   },
+   "wood_increment": {
+    "a": null,
+    "b": null,
+    "difference": null,
+    "mei": null,
+    "reading": "UNMEASURED",
+    "unknown_heavy": false,
+    "unknown": [
+     null,
+     null
+    ],
+    "unknown_difference": null,
+    "upper_bounds": [
+     null,
+     null
+    ],
+    "among_readable_difference": null,
+    "real_token_correct": [
+     null,
+     null
+    ],
+    "real_token_unreadable": [
+     null,
+     null
+    ],
+    "coherent": [
+     null,
+     null
+    ]
+   },
+   "table_all": {
+    "a": null,
+    "b": null,
+    "difference": null,
+    "mei": null,
+    "reading": "UNMEASURED",
+    "unknown_heavy": false,
+    "unknown": [
+     null,
+     null
+    ],
+    "unknown_difference": null,
+    "upper_bounds": [
+     null,
+     null
+    ],
+    "among_readable_difference": null,
+    "real_token_correct": [
+     null,
+     null
+    ],
+    "real_token_unreadable": [
+     null,
+     null
+    ],
+    "coherent": [
+     null,
+     null
+    ]
+   }
+  },
+  "periphery": {
+   "drink_appearance": {
+    "a": {
+     "est": 0.1,
+     "se": 0.11370329860654249,
+     "n_cond": 10
+    },
+    "b": {
+     "est": 0.1,
+     "se": 0.11370329860654249,
+     "n_cond": 10
+    },
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 10,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 10
+    },
+    "mei": 0.225,
+    "reading": "BOUNDED NULL",
+    "unknown_heavy": true,
+    "unknown": [
+     0.2,
+     0.2
+    ],
+    "unknown_difference": {
+     "est": 0.0,
+     "se": 0.158569678187882,
+     "n_cond": 10,
+     "ci95": [
+      -0.3107965692482487,
+      0.3107965692482487
+     ],
+     "rows": 10
+    },
+    "upper_bounds": [
+     0.3,
+     0.3
+    ],
+    "among_readable_difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 7,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 7
+    },
+    "real_token_correct": [
+     1.0,
+     1.0
+    ],
+    "real_token_unreadable": [
+     0.0,
+     0.0
+    ],
+    "coherent": [
+     null,
+     null
+    ]
+   },
+   "drink_increment": {
+    "a": {
+     "est": 0.013513513513513514,
+     "se": 0.015471128161442704,
+     "n_cond": 74
+    },
+    "b": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 74
+    },
+    "difference": {
+     "est": -0.013513513513513514,
+     "se": 0.015471128161442704,
+     "n_cond": 74,
+     "ci95": [
+      -0.043836924709941216,
+      0.016809897682914184
+     ],
+     "rows": 74
+    },
+    "mei": 0.24662162162162163,
+    "reading": "BOUNDED NULL",
+    "unknown_heavy": true,
+    "unknown": [
+     0.12162162162162163,
+     0.08108108108108109
+    ],
+    "unknown_difference": {
+     "est": -0.04054054054054054,
+     "se": 0.02951375968477174,
+     "n_cond": 74,
+     "ci95": [
+      -0.09838750952269315,
+      0.017306428441612065
+     ],
+     "rows": 74
+    },
+    "upper_bounds": [
+     0.13513513513513514,
+     0.08108108108108109
+    ],
+    "among_readable_difference": {
+     "est": -0.015873015873015872,
+     "se": 0.01615646962138233,
+     "n_cond": 63,
+     "ci95": [
+      -0.04753969633092524,
+      0.015793664584893494
+     ],
+     "rows": 63
+    },
+    "real_token_correct": [
+     1.0,
+     1.0
+    ],
+    "real_token_unreadable": [
+     0.0,
+     0.0
+    ],
+    "coherent": [
+     null,
+     null
+    ]
+   },
+   "wood_appearance": {
+    "a": {
+     "est": 0.2222222222222222,
+     "se": 0.052534343558156504,
+     "n_cond": 18
+    },
+    "b": {
+     "est": 0.2222222222222222,
+     "se": 0.052534343558156504,
+     "n_cond": 18
+    },
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 18,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 18
+    },
+    "mei": 0.19444444444444445,
+    "reading": "BOUNDED NULL",
+    "unknown_heavy": true,
+    "unknown": [
+     0.3333333333333333,
+     0.3333333333333333
+    ],
+    "unknown_difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 18,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 18
+    },
+    "upper_bounds": [
+     0.5555555555555556,
+     0.5555555555555556
+    ],
+    "among_readable_difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 12,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 12
+    },
+    "real_token_correct": [
+     1.0,
+     1.0
+    ],
+    "real_token_unreadable": [
+     0.0,
+     0.0
+    ],
+    "coherent": [
+     null,
+     null
+    ]
+   },
+   "wood_increment": {
+    "a": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 78
+    },
+    "b": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 78
+    },
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 78,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 78
+    },
+    "mei": 0.25,
+    "reading": "BOUNDED NULL",
+    "unknown_heavy": true,
+    "unknown": [
+     0.15384615384615385,
+     0.08974358974358974
+    ],
+    "unknown_difference": {
+     "est": -0.0641025641025641,
+     "se": 0.005473576971805437,
+     "n_cond": 78,
+     "ci95": [
+      -0.07483077496730275,
+      -0.05337435323782544
+     ],
+     "rows": 78
+    },
+    "upper_bounds": [
+     0.15384615384615385,
+     0.08974358974358974
+    ],
+    "among_readable_difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 64,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 64
+    },
+    "real_token_correct": [
+     1.0,
+     1.0
+    ],
+    "real_token_unreadable": [
+     0.0,
+     0.0
+    ],
+    "coherent": [
+     null,
+     null
+    ]
+   },
+   "table_all": {
+    "a": {
+     "est": 0.24390243902439024,
+     "se": 0.051290680714662015,
+     "n_cond": 82
+    },
+    "b": {
+     "est": 0.2073170731707317,
+     "se": 0.04669328021559802,
+     "n_cond": 82
+    },
+    "difference": {
+     "est": -0.036585365853658534,
+     "se": 0.043240718806118114,
+     "n_cond": 82,
+     "ci95": [
+      -0.12133717471365005,
+      0.04816644300633297
+     ],
+     "rows": 82
+    },
+    "mei": 0.18292682926829268,
+    "reading": "BOUNDED NULL",
+    "unknown_heavy": false,
+    "unknown": [
+     0.0,
+     0.0
+    ],
+    "unknown_difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 82,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 82
+    },
+    "upper_bounds": [
+     0.24390243902439024,
+     0.2073170731707317
+    ],
+    "among_readable_difference": {
+     "est": -0.036585365853658534,
+     "se": 0.043240718806118114,
+     "n_cond": 82,
+     "ci95": [
+      -0.12133717471365005,
+      0.04816644300633297
+     ],
+     "rows": 82
+    },
+    "real_token_correct": [
+     1.0,
+     1.0
+    ],
+    "real_token_unreadable": [
+     0.0,
+     0.0
+    ],
+    "coherent": [
+     null,
+     null
+    ]
+   }
+  }
+ },
+ "calibration": {
+  "guided": {
+   "sapling": {
+    "recorded": 0.10204081632653061,
+    "a": 0.0,
+    "b": 0.0
+   },
+   "adjacent": {
+    "recorded": 0.14285714285714285,
+    "a": 0.0,
+    "b": 0.0
+   },
+   "risky": {
+    "recorded": 0.21052631578947367,
+    "a": 0.0,
+    "b": 0.0
+   }
+  },
+  "periphery": {
+   "sapling": {
+    "recorded": 0.07692307692307693,
+    "a": 0.0,
+    "b": 0.0
+   },
+   "adjacent": {
+    "recorded": 0.061224489795918366,
+    "a": 0.0,
+    "b": 0.0
+   },
+   "risky": {
+    "recorded": 0.125,
+    "a": 0.0,
+    "b": 0.0
+   }
+  }
+ },
+ "failed_attempts": {
+  "guided": {
+   "drink_fail": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 4,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 4
+    },
+    "reading": "NO CHANGE",
+    "unknown_difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 4,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 4
+    }
+   },
+   "table_fail": {
+    "difference": null,
+    "reading": "UNMEASURED",
+    "unknown_difference": null
+   }
+  },
+  "periphery": {
+   "drink_fail": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 4,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 4
+    },
+    "reading": "NO CHANGE",
+    "unknown_difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 4,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 4
+    }
+   },
+   "table_fail": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 164,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 164
+    },
+    "reading": "NO CHANGE",
+    "unknown_difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 164,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 164
+    }
+   }
+  }
+ },
+ "perception": {
+  "drink_appearance": {
+   "rec_cell": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 6,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 6
+    },
+    "reading": "NO CHANGE"
+   },
+   "tsp_cell": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 6,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 6
+    },
+    "reading": "NO CHANGE"
+   },
+   "rec_window": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 6,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 6
+    },
+    "reading": "NO CHANGE"
+   },
+   "tsp_window": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 6,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 6
+    },
+    "reading": "NO CHANGE"
+   }
+  },
+  "drink_increment": {
+   "rec_cell": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 44,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 44
+    },
+    "reading": "NO CHANGE"
+   },
+   "tsp_cell": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 44,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 44
+    },
+    "reading": "NO CHANGE"
+   },
+   "rec_window": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 44,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 44
+    },
+    "reading": "NO CHANGE"
+   },
+   "tsp_window": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 44,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 44
+    },
+    "reading": "NO CHANGE"
+   }
+  },
+  "wood_appearance": {
+   "rec_cell": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 10,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 10
+    },
+    "reading": "NO CHANGE"
+   },
+   "tsp_cell": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 10,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 10
+    },
+    "reading": "NO CHANGE"
+   },
+   "rec_window": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 10,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 10
+    },
+    "reading": "NO CHANGE"
+   },
+   "tsp_window": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 10,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 10
+    },
+    "reading": "NO CHANGE"
+   }
+  },
+  "wood_increment": {
+   "rec_cell": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 40,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 40
+    },
+    "reading": "NO CHANGE"
+   },
+   "tsp_cell": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 40,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 40
+    },
+    "reading": "NO CHANGE"
+   },
+   "rec_window": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 40,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 40
+    },
+    "reading": "NO CHANGE"
+   },
+   "tsp_window": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 40,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 40
+    },
+    "reading": "NO CHANGE"
+   }
+  },
+  "table_all": {
+   "rec_cell": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 48,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 48
+    },
+    "reading": "NO CHANGE"
+   },
+   "tsp_cell": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 48,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 48
+    },
+    "reading": "NO CHANGE"
+   },
+   "rec_window": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 48,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 48
+    },
+    "reading": "NO CHANGE"
+   },
+   "tsp_window": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 48,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 48
+    },
+    "reading": "NO CHANGE"
+   }
+  },
+  "sapling_all": {
+   "rec_cell": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 49,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 49
+    },
+    "reading": "NO CHANGE"
+   },
+   "tsp_cell": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 49,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 49
+    },
+    "reading": "NO CHANGE"
+   },
+   "rec_window": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 49,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 49
+    },
+    "reading": "NO CHANGE"
+   },
+   "tsp_window": {
+    "difference": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 49,
+     "ci95": [
+      0.0,
+      0.0
+     ],
+     "rows": 49
+    },
+    "reading": "NO CHANGE"
+   }
+  }
+ },
+ "action_routing": {
+  "drink_appearance": {
+   "b_routing": {
+    "est": 0.08333333333333333,
+    "se": 0.06714315320748827,
+    "n_cond": 12,
+    "ci95": [
+     -0.04826724695334368,
+     0.21493391362001035
+    ],
+    "rows": 12
+   },
+   "change": {
+    "est": 0.08333333333333333,
+    "se": 0.06714315320748827,
+    "n_cond": 12,
+    "ci95": [
+     -0.04826724695334368,
+     0.21493391362001035
+    ],
+    "rows": 12
+   },
+   "reading": "NO CHANGE"
+  },
+  "drink_increment": {
+   "b_routing": {
+    "est": 0.0,
+    "se": 0.0,
+    "n_cond": 88,
+    "ci95": [
+     0.0,
+     0.0
+    ],
+    "rows": 88
+   },
+   "change": {
+    "est": 0.011363636363636364,
+    "se": 0.014076217018013705,
+    "n_cond": 88,
+    "ci95": [
+     -0.016225748991670497,
+     0.03895302171894323
+    ],
+    "rows": 88
+   },
+   "reading": "NO CHANGE"
+  },
+  "wood_appearance": {
+   "b_routing": null,
+   "change": null,
+   "reading": "UNMEASURED"
+  },
+  "wood_increment": {
+   "b_routing": null,
+   "change": null,
+   "reading": "UNMEASURED"
+  },
+  "table_all": {
+   "b_routing": null,
+   "change": null,
+   "reading": "UNMEASURED"
+  }
+ },
+ "regression": {
+  "reward_nll": {
+   "a": {
+    "est": 0.022408479794571445,
+    "se": 0.0023941581716111363,
+    "n_cond": 10496
+   },
+   "b": {
+    "est": 0.022408479794571445,
+    "se": 0.0023941581716111363,
+    "n_cond": 10496
+   },
+   "difference": 0.0
+  },
+  "continuation_bce": {
+   "a": {
+    "est": 8.77139693027073e-06,
+    "se": 6.518101523305309e-06,
+    "n_cond": 10496
+   },
+   "b": {
+    "est": 8.77139693027073e-06,
+    "se": 6.518101523305309e-06,
+    "n_cond": 10496
+   },
+   "difference": 0.0
+  },
+  "tsp_nll": {
+   "a": {
+    "est": 2.2326767613881313,
+    "se": 0.07265152544381473,
+    "n_cond": 10496
+   },
+   "b": {
+    "est": 2.2326767613881313,
+    "se": 0.07265152544381473,
+    "n_cond": 10496
+   },
+   "difference": 0.0
+  },
+  "movement_shift": {
+   "est": 0.0035884881019592283,
+   "se": 0.005189419446331761,
+   "n_cond": 100,
+   "ci95": [
+    -0.006582774012851024,
+    0.01375975021676948
+   ],
+   "rows": 100
+  },
+  "entity_gap_generated_minus_real": {
+   "a": {
+    "zombies": -0.24680000000000002,
+    "cows": -0.2398,
+    "skeletons": 0.0024000000000000132,
+    "arrows": 0.05779999999999999
+   },
+   "b": {
+    "zombies": -0.23000000000000004,
+    "cows": -0.2272,
+    "skeletons": -0.007400000000000004,
+    "arrows": 0.049199999999999994
+   }
+  },
+  "belief_departed_ap": {
+   "a": {
+    "zombies": {
+     "1-4": 0.08921393211240418,
+     "5-8": 0.04975915624139772,
+     "9-16": 0.07060975629048481,
+     "17-64": 0.21119961623044223
+    },
+    "cows": {
+     "1-4": 0.10757797257511596,
+     "5-8": 0.07005574681948387,
+     "9-16": 0.09444001186158037,
+     "17-64": 0.3077905969603744
+    },
+    "skeletons": {
+     "1-4": 0.05786850179222798,
+     "5-8": 0.04706060656129503,
+     "9-16": 0.10896626476231984,
+     "17-64": 0.2785074823407361
+    },
+    "arrows": {
+     "1-4": 0.07373864734976228,
+     "5-8": 0.059012363229402204,
+     "9-16": 0.08166985705995411,
+     "17-64": 0.2781547168277188
+    }
+   },
+   "b": {
+    "zombies": {
+     "1-4": 0.08921393211240418,
+     "5-8": 0.04975915624139772,
+     "9-16": 0.07060975629048481,
+     "17-64": 0.21119961623044223
+    },
+    "cows": {
+     "1-4": 0.10757797257511596,
+     "5-8": 0.07005574681948387,
+     "9-16": 0.09444001186158037,
+     "17-64": 0.3077905969603744
+    },
+    "skeletons": {
+     "1-4": 0.05786850179222798,
+     "5-8": 0.04706060656129503,
+     "9-16": 0.10896626476231984,
+     "17-64": 0.2785074823407361
+    },
+    "arrows": {
+     "1-4": 0.07373864734976228,
+     "5-8": 0.059012363229402204,
+     "9-16": 0.08166985705995411,
+     "17-64": 0.2781547168277188
+    }
+   }
+  },
+  "belief_hud_exact_mean": {
+   "a": 0.5813699410982329,
+   "b": 0.5813699410982329
+  },
+  "qualification_lost": []
+ }
+}

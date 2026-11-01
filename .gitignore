@@ -297,3 +297,13 @@ artifacts/lewm_transformer_comparison/m03/stages/corrected_eda.json
 artifacts/experiments/20260927_levers/evals/resume/
 artifacts/experiments/**/status_events.jsonl
 artifacts/experiments/**/live_status.json
+
+# saccade M0 run outputs: checkpoints and precomputed targets (text reports are committed)
+artifacts/saccade_m0/**/*.npy
+artifacts/saccade_m0/**/*.pt
+artifacts/saccade_m0/**/*.log
+
+# Codex review copies of S0 label archives and prediction dumps (originals live under artifacts/eda, untracked)
+artifacts/experiments/20261026_saccade_review/*.npz
+artifacts/experiments/20261029_generation_diagnosis/**/*.npz
+artifacts/experiments/20261029_fovea_probes/run/*.npz

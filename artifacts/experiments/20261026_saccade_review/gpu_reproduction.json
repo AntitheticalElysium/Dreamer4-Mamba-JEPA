@@ -1,0 +1,8 @@
+{
+  "seconds": 254.84902214800002,
+  "torch": "2.13.0+cu130",
+  "cuda": "13.0",
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "peak_allocated_bytes": 1796348416,
+  "peak_reserved_bytes": 2206203904
+}

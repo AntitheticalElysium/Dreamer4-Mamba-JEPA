@@ -1,0 +1,13 @@
+{
+  "head": "e1b4cb40c68b90b5988fba7fd7942f4abf7b37e8",
+  "sha256": {
+    "saccade/design/CURRICULUM.md": "2ccc804f0da1263bd42796d229a0817e2176904e962f61b92df1fa578be2ed1c",
+    "saccade/design/DECISIONS.md": "17d1384dc9a9146ffdbbc347a23fcad747c2e974ab4472a015c923afcd7ac414",
+    "saccade/design/LOSSES.md": "bd16b4c2dd5b9c09b55dd1bda004eecda3322a57d0889d66362d3cdc38a45569",
+    "saccade/design/M0_CODE.md": "8e90a76ecfabf1a3cfcfa1ae9ca2bc3de9e02ee33773dc82106552695c86780f",
+    "saccade/design/PERCEPTION.md": "43fb624c94d0d28cc2a0e77e3c3cdffb36ceedcfd66db6fc44ff8e9b78ef26ec",
+    "saccade/design/READING.md": "50df51780f4bca0013abb345944eb4696ff553d38d3eb0aec684386ceb10bbc8",
+    "saccade/design/STEP_SPEC.md": "2d9a20abd3156fb9d1499e1243a2d620f5f99117f58f2fa476e84228f0adcbf4",
+    "saccade/m0.yaml": "651dba71ac19e2ecd7b8b7f590c50fe0f024713215d1e79b46e29d4b3f49679a"
+  }
+}

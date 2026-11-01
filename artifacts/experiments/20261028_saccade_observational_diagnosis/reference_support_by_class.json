@@ -1,0 +1,114 @@
+{
+  "p/real": {
+    "background": {
+      "n": 249017,
+      "support_fraction": 0.9446061915451556,
+      "nn_neural_agreement": 0.9992329840934555
+    },
+    "zombies": {
+      "n": 1776,
+      "support_fraction": 0.8676801801801802,
+      "nn_neural_agreement": 0.9127252252252253
+    },
+    "cows": {
+      "n": 2074,
+      "support_fraction": 0.8881388621022179,
+      "nn_neural_agreement": 0.9488910318225651
+    },
+    "skeletons": {
+      "n": 675,
+      "support_fraction": 0.8548148148148148,
+      "nn_neural_agreement": 0.9185185185185185
+    },
+    "arrows": {
+      "n": 410,
+      "support_fraction": 0.7707317073170732,
+      "nn_neural_agreement": 0.926829268292683
+    },
+    "entity_union_agreement": 0.8952399531798674
+  },
+  "p/generated": {
+    "background": {
+      "n": 250448,
+      "support_fraction": 0.9228422666581486,
+      "nn_neural_agreement": 0.9991135884494985
+    },
+    "zombies": {
+      "n": 999,
+      "support_fraction": 0.5405405405405406,
+      "nn_neural_agreement": 0.8438438438438438
+    },
+    "cows": {
+      "n": 1172,
+      "support_fraction": 0.46501706484641636,
+      "nn_neural_agreement": 0.8472696245733788
+    },
+    "skeletons": {
+      "n": 504,
+      "support_fraction": 0.10119047619047619,
+      "nn_neural_agreement": 0.626984126984127
+    },
+    "arrows": {
+      "n": 829,
+      "support_fraction": 0.0,
+      "nn_neural_agreement": 0.3956574185765983
+    },
+    "entity_union_agreement": 0.6655931293612453
+  },
+  "pv/real": {
+    "background": {
+      "n": 249163,
+      "support_fraction": 0.9421824267648086,
+      "nn_neural_agreement": 0.9988120226518383
+    },
+    "zombies": {
+      "n": 1719,
+      "support_fraction": 0.8237347294938918,
+      "nn_neural_agreement": 0.9325189063408958
+    },
+    "cows": {
+      "n": 2028,
+      "support_fraction": 0.8722879684418146,
+      "nn_neural_agreement": 0.9536489151873767
+    },
+    "skeletons": {
+      "n": 687,
+      "support_fraction": 0.7234352256186317,
+      "nn_neural_agreement": 0.893740902474527
+    },
+    "arrows": {
+      "n": 355,
+      "support_fraction": 0.35492957746478876,
+      "nn_neural_agreement": 0.9408450704225352
+    },
+    "entity_union_agreement": 0.8820058997050148
+  },
+  "pv/generated": {
+    "background": {
+      "n": 250661,
+      "support_fraction": 0.8788203988653999,
+      "nn_neural_agreement": 0.9987672593662357
+    },
+    "zombies": {
+      "n": 1033,
+      "support_fraction": 0.5091965150048403,
+      "nn_neural_agreement": 0.8199419167473379
+    },
+    "cows": {
+      "n": 1142,
+      "support_fraction": 0.5612959719789843,
+      "nn_neural_agreement": 0.862521891418564
+    },
+    "skeletons": {
+      "n": 563,
+      "support_fraction": 0.12966252220248667,
+      "nn_neural_agreement": 0.5683836589698046
+    },
+    "arrows": {
+      "n": 553,
+      "support_fraction": 0.0705244122965642,
+      "nn_neural_agreement": 0.47377938517179025
+    },
+    "entity_union_agreement": 0.6705555555555556
+  }
+}

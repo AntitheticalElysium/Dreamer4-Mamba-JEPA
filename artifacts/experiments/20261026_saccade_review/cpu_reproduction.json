@@ -1,0 +1,32 @@
+[
+  {
+    "module": "labels",
+    "seconds": 134.8808785880001,
+    "exit_code": 0
+  },
+  {
+    "module": "labels",
+    "seconds": 66.503731732,
+    "exit_code": 0
+  },
+  {
+    "module": "gates",
+    "seconds": 62.81468045899999,
+    "exit_code": 0
+  },
+  {
+    "module": "revisit",
+    "seconds": 29.01166411099996,
+    "exit_code": 0
+  },
+  {
+    "module": "oracle",
+    "seconds": 273.91535599600013,
+    "exit_code": 0
+  },
+  {
+    "module": "calib",
+    "seconds": 8.439967626999987,
+    "exit_code": 0
+  }
+]

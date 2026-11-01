@@ -1,0 +1,14 @@
+{
+  "b/0": {
+    "max_hud_accuracy_difference": 9.480005361106603e-05
+  },
+  "b/1": {
+    "max_hud_accuracy_difference": 0.00025171048717420597
+  },
+  "full_percept/0": {
+    "max_hud_accuracy_difference": 0.0
+  },
+  "full_percept/1": {
+    "max_hud_accuracy_difference": 0.0
+  }
+}

@@ -1,0 +1,67 @@
+{
+ "perfect": [
+  {
+   "bin": [
+    0.0,
+    0.01
+   ],
+   "histories": 9651,
+   "mean_predicted_heldout": 0.1879079888094498,
+   "recorded": 0.18267537042793494,
+   "recorded_se": 0.003933246217486578
+  },
+  {
+   "bin": [
+    0.5,
+    0.8
+   ],
+   "histories": 6572,
+   "mean_predicted_heldout": 0.45701460742544125,
+   "recorded": 0.4654595252586732,
+   "recorded_se": 0.006152937182475679
+  },
+  {
+   "bin": [
+    0.8,
+    1.0
+   ],
+   "histories": 3777,
+   "mean_predicted_heldout": 0.581546200688377,
+   "recorded": 0.5872385491130527,
+   "recorded_se": 0.008010937643936625
+  }
+ ],
+ "carries_30pct": [
+  {
+   "bin": [
+    0.0,
+    0.01
+   ],
+   "histories": 16096,
+   "mean_predicted_heldout": 0.09197937375745527,
+   "recorded": 0.3091451292246521,
+   "recorded_se": 0.0036426348174573736
+  },
+  {
+   "bin": [
+    0.5,
+    0.8
+   ],
+   "histories": 3559,
+   "mean_predicted_heldout": 0.1552402360213543,
+   "recorded": 0.5220567575161562,
+   "recorded_se": 0.008373037371958918
+  },
+  {
+   "bin": [
+    0.8,
+    1.0
+   ],
+   "histories": 345,
+   "mean_predicted_heldout": 0.15942028985507245,
+   "recorded": 0.5971014492753624,
+   "recorded_se": 0.026406592751065973
+  }
+ ],
+ "pass": true
+}

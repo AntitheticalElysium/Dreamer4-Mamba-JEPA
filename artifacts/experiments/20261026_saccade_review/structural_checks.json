@@ -1,0 +1,39 @@
+{
+  "opposite_move_actions": {
+    "reference": {
+      "est": 1.0,
+      "se": 0.0,
+      "n_cond": 55968
+    },
+    "corrupt": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 51686
+    },
+    "real_B_rejections": [],
+    "corrupt_rejections": []
+  },
+  "paired_c2st_split": {
+    "physical_episodes": 128,
+    "physical_episodes_in_both_train_and_test": 59
+  },
+  "impossible_diagonal_moves": {
+    "different_grid_cells": 8,
+    "identical_summary": true,
+    "energy_score": 0.0,
+    "same_persistence": true,
+    "all_one_step_event_arrays_equal": true
+  },
+  "occluded_last_sighting": {
+    "disagreement_rows": [
+      [
+        0,
+        2,
+        0
+      ]
+    ],
+    "last_clear_terrain_age": 3,
+    "last_in_view_age": 2,
+    "documented_both_sightings_unoccluded": false
+  }
+}

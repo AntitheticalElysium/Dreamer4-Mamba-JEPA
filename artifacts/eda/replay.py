@@ -21,7 +21,7 @@ import jax.numpy as jnp
 import numpy as np
 import torch
 
-ROOT = Path("/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA")
+ROOT = Path(__file__).resolve().parents[2]
 STORE = ROOT / "artifacts/craftax_support_v2"
 SUPPORT_SEED = 20260731 + 10_000
 NUM_ENVS = 24

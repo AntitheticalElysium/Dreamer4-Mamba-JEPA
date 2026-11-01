@@ -1,0 +1,48 @@
+{
+ "world_seed": 1,
+ "teacher": "scale_weighted_nll",
+ "script_sha256": "e6639c0f7121797e13e45b6fe851bae321df8e78d804e6cc27f0ad22508b3dec",
+ "guided_script_sha256": "4683e1a86e00cb38650244a390217718612361bc088910585465661cff661353",
+ "cfg_pixel_decoder": {
+  "hidden": 256,
+  "position_dim": 32,
+  "belief_dim": 128,
+  "log_scale_floor": -7,
+  "mean_loss": "faithful",
+  "tsp_mean_loss": "scale_weighted_nll"
+ },
+ "cfg_guided": {
+  "place_sha256": "0bd48526c8116afba58af702964bfc78655e3e770f806eb0e1875f035277e99b",
+  "map_sha256": "b8555379263cb53f2b563c23579421120931be94aa8a667284c4c15cbc90eee5",
+  "guided_streams_sha256": "154f7881ffca034d97499e2d45aae032548cf8fe1b4473ceabb486a993e1a4e0",
+  "rule": "m05 Q=1"
+ },
+ "recipe": {
+  "source_sha256": {
+   "saccade/model.py": "7ea04a4957d2915c5dfbfb9a69ed5e44ae275d555bbea8e629edaa00330db148",
+   "saccade/train.py": "4fc5658c79c87c2a014cc720775c8c909c28120d93d2bc2e87535e9c208e1e25",
+   "saccade/data.py": "d4c865124e0cdf8819fb5cc258d519c5dcfb7ec05985eedcf821e2b632907698",
+   "saccade/m0.yaml": "c115401ce7dd2a7f4d8117b147ed6ce19f1f21f63afbf33a275a54936b573152"
+  },
+  "manifest_sha256": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
+  "targets_sha256": "f1a79ed7dba730db02b5efb537cc8f44fd580406c2da7894005b4e3e84c87b97",
+  "torch": "2.13.0+cu130"
+ },
+ "control": {
+  "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_10.pt",
+  "sha256": "82b0ecc037a5d538597ed0639fe3823ca73046448cc9c6837704f8aada6e6271",
+  "provenance": {
+   "git_commit": "3b9b33fa1bae49772b9ae0b91240a364c8d89bbe",
+   "source_sha256": {
+    "saccade/model.py": "7ea04a4957d2915c5dfbfb9a69ed5e44ae275d555bbea8e629edaa00330db148",
+    "saccade/train.py": "a1f6d55ecaa349e0815e868c184df831e79375ef91b1b1a3e76b68b29c60fa7f",
+    "saccade/data.py": "d4c865124e0cdf8819fb5cc258d519c5dcfb7ec05985eedcf821e2b632907698",
+    "saccade/m0.yaml": "eff1c9143a7397c702c46192bab483ad7d28b7f583a12c0bce5cdbff861796b6"
+   },
+   "manifest_sha256": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
+   "targets_sha256": "f1a79ed7dba730db02b5efb537cc8f44fd580406c2da7894005b4e3e84c87b97",
+   "torch": "2.13.0+cu130"
+  }
+ },
+ "git_commit": "a21ebce984f5100bf064bc06a8e6c5c30dd6de16"
+}

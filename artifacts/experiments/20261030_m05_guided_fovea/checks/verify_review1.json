@@ -1,0 +1,43 @@
+{
+ "counterexample": {
+  "success": 0.1,
+  "unknown": 0.9,
+  "success_upper_bound": 1.0,
+  "success_among_readable": 1.0,
+  "recorded": 0.1
+ },
+ "paired_counterexample": {
+  "success": -0.05,
+  "unknown": 0.05,
+  "among_readable": 0.0
+ },
+ "health_reference": {
+  "adjacent": {
+   "rows": 1000,
+   "observed_equals_labels": true,
+   "rows_the_old_reference_misstated": 30
+  },
+  "risky": {
+   "rows": 1000,
+   "observed_equals_labels": true,
+   "rows_the_old_reference_misstated": 30
+  }
+ },
+ "glimpse_interface": {
+  "eligible": [
+   true,
+   true,
+   false
+  ],
+  "read": [
+   1,
+   1,
+   -1
+  ],
+  "readable": [
+   true,
+   false,
+   false
+  ]
+ }
+}

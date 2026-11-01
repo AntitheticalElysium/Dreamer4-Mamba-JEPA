@@ -1,0 +1,139 @@
+{
+ "p": {
+  "health": {
+   "accuracy": 1.0,
+   "rows": 305907,
+   "qualified": true
+  },
+  "drink": {
+   "accuracy": 1.0,
+   "rows": 305907,
+   "qualified": true
+  },
+  "sapling": {
+   "accuracy": 1.0,
+   "rows": 305902,
+   "qualified": true
+  },
+  "wood": {
+   "accuracy": 1.0,
+   "rows": 305907,
+   "qualified": true
+  }
+ },
+ "g": {
+  "health@55": {
+   "accuracy": 1.0,
+   "rows": 5850,
+   "qualified": true
+  },
+  "health@64": {
+   "accuracy": 1.0,
+   "rows": 18012,
+   "qualified": true
+  },
+  "drink@55": {
+   "accuracy": 0.9998290598290598,
+   "rows": 5850,
+   "qualified": true
+  },
+  "drink@56": {
+   "accuracy": 0.9998149861239592,
+   "rows": 5405,
+   "qualified": true
+  },
+  "drink@57": {
+   "accuracy": 0.9998124179328456,
+   "rows": 5331,
+   "qualified": true
+  },
+  "drink@64": {
+   "accuracy": 0.9999444814568066,
+   "rows": 18012,
+   "qualified": true
+  },
+  "drink@65": {
+   "accuracy": 0.9995084062530725,
+   "rows": 10171,
+   "qualified": true
+  },
+  "drink@66": {
+   "accuracy": 0.9996299722479186,
+   "rows": 5405,
+   "qualified": true
+  },
+  "sapling@57": {
+   "accuracy": 1.0,
+   "rows": 5309,
+   "qualified": true
+  },
+  "sapling@58": {
+   "accuracy": 1.0,
+   "rows": 5370,
+   "qualified": true
+  },
+  "sapling@59": {
+   "accuracy": 1.0,
+   "rows": 5452,
+   "qualified": true
+  },
+  "sapling@66": {
+   "accuracy": 0.9966697502312674,
+   "rows": 5405,
+   "qualified": true
+  },
+  "sapling@67": {
+   "accuracy": 0.9984491114701131,
+   "rows": 15475,
+   "qualified": true
+  },
+  "sapling@68": {
+   "accuracy": 1.0,
+   "rows": 13602,
+   "qualified": true
+  },
+  "wood@58": {
+   "accuracy": 0.9975939292985379,
+   "rows": 5403,
+   "qualified": true
+  },
+  "wood@59": {
+   "accuracy": 0.9976350736765508,
+   "rows": 5497,
+   "qualified": true
+  },
+  "wood@60": {
+   "accuracy": 0.996996996996997,
+   "rows": 5328,
+   "qualified": true
+  },
+  "wood@67": {
+   "accuracy": 0.9975445851641251,
+   "rows": 15476,
+   "qualified": true
+  },
+  "wood@68": {
+   "accuracy": 0.9959742351046699,
+   "rows": 13662,
+   "qualified": true
+  },
+  "wood@69": {
+   "accuracy": 0.9948877122512324,
+   "rows": 5477,
+   "qualified": true
+  }
+ },
+ "table_p": {
+  "recall": 1.0,
+  "specificity": 0.9999397848311299,
+  "tables": 6979,
+  "qualified": true
+ },
+ "table_g": {
+  "recall": 0.9910625620655412,
+  "specificity": 0.9995007289357538,
+  "tables": 3021,
+  "faced_in_window": 53094,
+  "qualified": true
+ }
+}

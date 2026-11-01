@@ -1,0 +1,214 @@
+diff --git a/saccade/design/CURRICULUM.md b/saccade/design/CURRICULUM.md
+index ae549911..2c417dea 100644
+--- a/saccade/design/CURRICULUM.md
++++ b/saccade/design/CURRICULUM.md
+@@ -23,8 +23,8 @@ own generated percepts (self-feeding), (3) how far imagination runs for the acto
+   64 steps for the first half of P1's frames, 256 steps for the second half. At 256 only ~4 streams fit in 6 GB, so
+   a 256-step update ACCUMULATES four microbatches of four DISTINCT streams (each with its full 256-step gradient path)
+   before one optimizer step; loss normalised by valid (non-padding) frames, gradients clipped after accumulation;
+-  SIGReg computed per microbatch on a fixed sample of 4,096 tokens in both halves (same estimator before and after the
+-  switch). The Mamba state is carried across chunks of the SAME episode and reset at true episode boundaries; one
++  token normalisation (BatchNorm, no affine) uses each microbatch's statistics, 83k tokens in both halves (16 x 64 x
++  81 and 4 x 256 x 81), so the estimator is the same before and after the switch. The Mamba state is carried across chunks of the SAME episode and reset at true episode boundaries; one
+   optimizer update per chunk, the carried state detached: its last chunk was computed under the previous update's
+   parameters and its earlier history under older ones (TBPTT never refreshes the history; a normal approximation, to be
+   measured, not a reason for a state-rebuild subsystem); no out-of-order chunks, so no burn-in is needed (a short zero-initialised burn-in
+diff --git a/saccade/design/DECISIONS.md b/saccade/design/DECISIONS.md
+index f10d36fb..10a9e255 100644
+--- a/saccade/design/DECISIONS.md
++++ b/saccade/design/DECISIONS.md
+@@ -81,6 +81,11 @@ The first build, M0, is defined in STEP_SPEC §7; entries below marked [supersed
+   M0_CODE.md; weak coupling = JEDI's encoder lr x 0.3 (LOSSES, reconciled); S1.2 probes and the acuity-relative S3
+   perception blocker specified before training.
+ 
++- Collapse prevention decided 10-27 (user asked for a dedicated investigation; my call): SIGReg dropped from M0.
++  Routing (all denoiser inputs and targets stop-gradient; REPA-E, JEDI) + a fixed-target owner per token type (adds
++  the fovea's own reconstruction, the agreed limited pixel grounding) + tanh clamp and BatchNorm without affine for
++  scale (REPA-E). SIGReg kept as a planned comparison and for richer per-patch content later (LOSSES principle 7).
++
+ ## Reserve ideas (keep; don't build until a measured need appears)
+ - Coarse peripheral target: predict a per-cell colour / contrast summary everywhere ("peripheral vision"). Cheap,
+   biology-inspired; risk: zombies are the lowest-contrast sprite (09-26: 2.5 vs 2.6-6.5), so colour alone may miss
+diff --git a/saccade/design/LOSSES.md b/saccade/design/LOSSES.md
+index 658a5fc9..262df92a 100644
+--- a/saccade/design/LOSSES.md
++++ b/saccade/design/LOSSES.md
+@@ -18,9 +18,18 @@ separate (no gradient into the world).
+    the encoder alike (grounding and SIGReg included); the mix between routes is set by the group weights. DreamerV3's
+    per-route 0.1 does not transfer one-to-one: here the denoising gradient reaches the encoder through conditioning
+    paths (past percepts, the belief) that also carry the grounding gradients. A per-route scale stays a documented
+-   alternative. SIGReg's lambda: LeWM's statistic is the Epps-Pulley distance x N (N = its 128 samples), so lambda x N
+-   is held constant: 0.09 x 128 / 4,096 sampled tokens = 0.0028 (as in R56's amendment); a starting value relative to
+-   the harmonised groups, monitored with the token statistic and effective rank.
++   alternative.
++7. Collapse prevention (decided 10-27 after a dedicated investigation; SIGReg dropped from M0, see READING 10-27):
++   collapse is prevented by the ROUTING and by GROUNDING, not by a distribution regulariser. (a) Every denoiser input
++   and target is stop-gradient (noisy frames, context frames, targets): REPA-E measured that a diffusion loss reaching
++   the encoder through the latent collapses it (spatial variance 17.06 -> 0.02; FID 444 without the stop-gradient);
++   JEDI stops its target and its own noisy input. The denoising loss reaches the encoder only through the belief
++   (past percepts -> Mamba -> memory tokens), never through the frame being predicted, and the encoder learns 0.3x
++   slower (Tang et al.: predictor faster than representation). (b) Each token type has a fixed-target owner: periphery
++   tokens by TSP and the change map, glimpse tokens by the fovea's own reconstruction (G2), the lighting latent through
++   both pixel likelihoods, all of them through the outcome heads. (c) Token scale for the diffusion (sigma_data = 1)
++   is kept by JEDI's tanh clamp followed by REPA-E's normalisation (BatchNorm, no affine), not by shaping the encoder.
++   Diagnostics, never gates: token std before normalisation, effective rank, nuisance drift ratio (R56 definition).
+ 4. Terms in different units are equalised by a learned harmoniser per GROUP: L_g / sigma_g + log(1 + sigma_g)
+    (HarmonyDream, ICML 2024). CORRECTION (Codex): with mu = E[L_g] the optimum satisfies sigma^2 = mu (1 + sigma), not
+    sigma = mu (that is the unrectified log sigma form); the normalised contribution is sigma / (1 + sigma) < 1, and as mu
+@@ -43,7 +52,7 @@ separate (no gradient into the world).
+ | G2 grounding | TSP | discretised logistic NLL; mean from (belief, periphery, v), scale from (v, position) | nats per pixel; mean over the glimpse | harmonised |
+ | G3 consequences | reward (observation model) | negative log-likelihood of a discretised mixture of logistics over symlog(r) (support: the symlog range of the train split, [-0.9, 1.1], 256 uniform bins; sample, then symexp; the same bins score the S1 calibration references, saccade/eval/calib.py) | nats; mean over steps | harmonised |
+ | G3 consequences | continuation | BCE, conditioned on (predicted belief, percept, reward) | nats; mean over steps | harmonised |
+-| (fixed) | SIGReg | Epps-Pulley statistic over random projections (LeJEPA) on periphery and glimpse tokens | statistic | m0.yaml (lambda x N held at LeWM's 0.09 x 128) |
++| G2 grounding | fovea reconstruction (10-27) | discretised logistic NLL of the glimpse crop's pixels from its own glimpse tokens and v (TSP's pixel decoder and noise model) | nats per pixel; mean over the crop | harmonised |
+ | G1 (shared) | own-sample unrolls | the G1 term at each unrolled step while the update reads the generator's own percepts (context corruption / random switching), truncated gradients | mean over steps | G1's sigma |
+ | G4 sampled rollouts | free-running sampled unrolls on exogenous windows | PATCHED + GLOBAL joint-trajectory energy score (agreed 10-27; beta = 1, fair pairwise term, m = 2 independent rollouts with independent noise and termination draws; Y = the recorded window through the frozen encoder). Patched: one zero-padded 3x3 window of periphery tokens CENTRED on each of the 81 tokens (each token covered 9 times, HUD included), stacked over the h steps. Global: the full flattened trajectory (all periphery tokens, lighting latent, glimpse tokens, symlog reward, termination); a pooled global would miss distant dependencies (Codex's corner counterexample). Every component scaled once by its std over 10,000 recorded windows at the start of P2; absorbing terminal convention; weights: the patch sum 1, the global set once at the start of P2 to equal mean magnitude (Pacchiardi et al., E.4.2; their patches are spatial at one lead time, stacking over time is ours). Gradient: CURRICULUM §2 contract. Distinct from the S0 evaluation summary (simulator labels via the reader) | per trajectory | harmonised |
+ 
+diff --git a/saccade/design/M0_CODE.md b/saccade/design/M0_CODE.md
+index 0abcc6ae..4b52835b 100644
+--- a/saccade/design/M0_CODE.md
++++ b/saccade/design/M0_CODE.md
+@@ -34,11 +34,13 @@ K = 4 memory tokens, W = 256.
+ - Heads: `TSP.forward(memory, p_window, v, fix) -> (mean, log_scale)` over the glimpse pixels; `ChangeMap.forward(p_t,
+   p_t1, memory) -> logits [.., 7, 9]`; `Reward.log_prob(r, cond)`, `Reward.sample(cond)` (mixture of logistics over
+   the 256 symlog bins); `Continuation.forward(cond, r) -> logit`.
+-- `sigreg(tokens) -> statistic` (port of LeWM's module; samples 4,096 tokens).
++- Fovea reconstruction: `PixelDecoder` shared by TSP and the fovea (per cell, discretised logistic): TSP feeds it
++  (memory, periphery window, v), the reconstruction feeds it the glimpse tokens and v.
++- Token scale: tanh clamp, then `BatchNorm1d(affine=False)` per token type (REPA-E). No SIGReg in M0.
+ 
+ ## saccade/train.py — phases
+ - `p1(cfg, world_seed)`: the one-step loop (streams, accumulation at 256 steps, frame-indexed lr, harmonised groups,
+-  SIGReg, checkpoints every 10% of frames, the fixed monitor). `harmonise(losses, log_sigma) -> total`.
++  stop-gradient routing, checkpoints every 10% of frames, the fixed monitor). `harmonise(losses, log_sigma) -> total`.
+ - `p2(cfg, world_seed, checkpoint)`, `p3(cfg, world_seed, checkpoint)`: written after S1 / S2, against these interfaces.
+ 
+ ## saccade/eval/s1.py — the S1 readings (written before P1 ends)
+@@ -50,7 +52,8 @@ reward / continuation calibration on the common bins (`eval.calib.reward_bin`).
+ Streams never cross episodes and are deterministic; the periphery encoder is equivariant to whole-cell shifts; the
+ Mamba scan equals step-by-step stepping across chunks and resets; the streaming denoiser equals the chunked one; EDM
+ coefficients match the reference formulas; the reward head can put near-all mass on one bin; gradients reach the
+-encoder only through the declared routes (targets stop-gradient); a resumed run equals an uninterrupted one;
++encoder only through the declared routes (belief, TSP, fovea reconstruction, change map) and never through any
++denoiser input or target; a resumed run equals an uninterrupted one;
+ P2 gradients reach the denoiser and the update, not the encoder or outcome heads.
+ 
+ ## Build order
+diff --git a/saccade/design/PERCEPTION.md b/saccade/design/PERCEPTION.md
+index 7e524471..79ab5c18 100644
+--- a/saccade/design/PERCEPTION.md
++++ b/saccade/design/PERCEPTION.md
+@@ -20,8 +20,11 @@ that answers the thesis, not a perfect Craftax model; Craftax-specific structure
+   superseded). Categorical perception tokens shelved. Precedents for continuous percepts in long
+   imagination: Dreamer 4 (tanh bottleneck latents, offline Minecraft), GameNGen (noise-augmented continuous latents).
+   Dedieu's collapse of continuous patches was MSE reconstruction of raw patches, not a matched comparison.
+-- Anti-collapse: SIGReg on the continuous tokens (alternative: R2-Dreamer's Barlow-style term against a detached
+-  embedding).
++- Anti-collapse (revised 10-27, LOSSES principle 7): no distribution regulariser on the tokens. Stop-gradient routing
++  plus a fixed-target owner per token type (periphery: TSP and change map; glimpse: its own reconstruction; lighting:
++  the pixel likelihoods); tanh clamp then BatchNorm without affine (REPA-E) for scale. SIGReg (per token, or on a
++  frame-level embedding as in LeWM) is a planned comparison, and a candidate again where per-patch content is rich
++  (natural or 3D images).
+ 
+ ## Viewing-conditions latent (lighting; AGREED, user 10-26)
+ Brain: (1) adaptation and gain control at the sensor (divisive normalisation, Carandini & Heeger 2012); (2) constancy:
+diff --git a/saccade/design/READING.md b/saccade/design/READING.md
+index e633ce8d..7c91471a 100644
+--- a/saccade/design/READING.md
++++ b/saccade/design/READING.md
+@@ -789,3 +789,29 @@ Scripts named below (eda_*.py, ana_*.py, t1_/t2_*) are in artifacts/experiments/
+   kinds; night zombies 0.86, cows 0.85, skeletons 0.64, arrows 0.78 (full res 0.97 / 0.95 / 0.85 / 0.91).
+ - A continuous token's width does not bound its information (only noise or quantisation does); Craftax cells carry at
+   most ~5.5 bits of meaning, so any working width holds a cell's meaning by day.
++
++## Collapse prevention: SIGReg reviewed for the whole system (2026-10-27)
++- History of the call: I proposed dropping SIGReg on 10-23 ("working systems don't use it"); the user rejected that
++  argument; collapse prevention stayed open ("never agreed", 10-23 evening); SIGReg re-entered in learning sketch v2
++  (10-25) inside a larger approved message, never as its own decision. Investigated on its own 10-27.
++- Precedent: LeJEPA applies SIGReg to the projector output of a global (view-level) embedding and uses the backbone
++  before the projector downstream (vendored MINIMAL.md); LeWM to a frame embedding; LeVLJEPA to pooled embeddings. No
++  per-patch-token use found. Guillotine regularisation (Bordes et al., TMLR 2023): the space the SSL loss shapes is the
++  worse one downstream (up to 30 points). Our percept tokens are used directly (denoiser, belief, actor).
++- Our history (October encoder study, R57 corrected): where patch-level SIGReg acted (the deployed projector output),
++  macro recall fell to 0.48 against 0.83 in the backbone under it, and day nuisance drift was about 2x Raw's (0.062-
++  0.072 vs 0.035-0.041; VICReg similar); the backbone review found patch SIGReg opposing camera-aligned transport at
++  4/4 paired checkpoints. Causes not isolated (warp and compression), so a warning, not proof.
++- Fit to the data: by day a Craftax cell has 44 meanings (2.7 bits on average); an isotropic Gaussian per 16-d cell
++  token can only be filled by continuous variation, i.e. light level, sleep tint or static: exactly what the lighting
++  latent is meant to discount. Reasoning from measured facts, not a measurement of training.
++- What SIGReg does not do: choose which variance survives (SLIM); prevent selective erasure (our R63 history). HamJEPA
++  (arXiv 2605.20107): fixed isotropic marginals carry a "price" for structured geometries and miss the predictive
++  coupling. The free-energy account (arXiv 2607.13612) is theoretical and assumes isotropy is achieved.
++- Joint latent diffusion: REPA-E (ICCV 2025): the diffusion loss back-propagated into the encoder collapses the latent
++  (spatial variance 17.06 -> 0.02; FID 444 without stop-gradient); fixed by stop-gradient plus BatchNorm without
++  affine between encoder and diffusion model (removing BN: gFID 16.3 -> 18.1). JEDI: stop-gradient target and own noisy
++  input, encoder lr 0.3x, tanh clamp; its appendix relates SIGReg to the omitted aggregate prior term of its bottleneck.
++- Whole-system finding: glimpse tokens had no fixed-target owner (TSP predicts glimpse pixels from the PERIPHERY), so
++  the fovea's evidence stream relied on self-referential routes; the fovea's own reconstruction (the limited pixel
++  grounding the user intended: "the point of the fovea is to reconstruct everything perfectly") closes that gap.
+diff --git a/saccade/design/STEP_SPEC.md b/saccade/design/STEP_SPEC.md
+index bae2f8e8..10046003 100644
+--- a/saccade/design/STEP_SPEC.md
++++ b/saccade/design/STEP_SPEC.md
+@@ -32,8 +32,9 @@ There is no separate hidden world: simulation runs on the belief (belief-MDP; GE
+    head is NOT a sampler: a deterministic reward of 1 gets mass on bins ~0.88 and ~1.20, Codex), with a categorical
+    over the empirical reward values as the alternative for discrete-reward environments; continuation ~ p(c |
+    B-_{t+1}, P_{t+1}, r). The critic keeps two-hot. Change map rendered from (B-_{t+1}, B_{t+1}).
+-Losses and weights: LOSSES.md v1. Gradient routes into the encoders: the belief path, TSP, SIGReg, the change map; the
+-denoiser's targets are stop-gradient. No gradient from the fixation head, actor or critic into the world.
++Losses and weights: LOSSES.md v1. Gradient routes into the encoders: the belief path, TSP, the fovea's own
++reconstruction, the change map; every denoiser input and target is stop-gradient (LOSSES principle 7; SIGReg dropped
++10-27). No gradient from the fixation head, actor or critic into the world.
+ 
+ ## 3. Imagined step (actor training; world frozen)
+ Start from a real history: B_0 from the update. Repeat:
+@@ -85,7 +86,7 @@ tokens with EDM x-prediction. JEDI adds tanh clamping, a slower encoder and own-
+ - Periphery acuity (agreed 10-27): each cell's periphery input is downsampled to 3 x 3 pixels (8-bit); the fovea stays
+   full resolution (PERCEPTION, acuity section).
+ - Unchanged from the full design: perception (patch-local tokens, lighting latent, fovea + TSP), denoiser and its loss,
+-  reward / termination as observations, change map, SIGReg, actor and critic reading the belief, the belief-MDP
++  reward / termination as observations, change map, fovea reconstruction, actor and critic reading the belief, the belief-MDP
+   imagination loop. Fixation: a broad random prior (HUD included) while the world model is trained; learned fixation
+   once the world model exists (its offline target needs one).
+ - Increments, each entering through the SAME two interfaces (the belief's contents and the denoiser's conditioning
+diff --git a/saccade/m0.yaml b/saccade/m0.yaml
+index 58c3ceb9..ab2b1088 100644
+--- a/saccade/m0.yaml
++++ b/saccade/m0.yaml
+@@ -22,6 +22,7 @@ perception:
+     hidden: [256, 256]                        # working; the S0 probe family (MLP, GELU)
+     token_dim: 16                             # working; JEDI's 16 channels per latent position
+     tanh_clamp: 3.0                           # JEDI encoder tanh clamp factor
++    normalise: batchnorm_no_affine            # REPA-E: unit token scale for sigma_data = 1 as the encoder changes
+     film_from_lighting: true                  # PERCEPTION v4: gain control (Carandini & Heeger)
+   lighting:
+     dim: 8                                    # working; low-dimensional by contract (PERCEPTION v4, Codex)
+@@ -30,6 +31,7 @@ perception:
+     crop_cells: 3                             # 3 x 3 cells, full resolution (user 10-26, working size)
+     token_dim: 64                             # working; per-cell glimpse token, higher capacity than periphery
+     tanh_clamp: 3.0                           # JEDI
++    normalise: batchnorm_no_affine            # REPA-E
+   fixation_prior: uniform_49_centres          # 3 x 3 window anywhere on the 9 x 9 screen, HUD included (STEP_SPEC 7)
+ 
+ belief:                                       # Mamba-2; LeWM Raw recipe (our past working Mamba world)
+@@ -69,6 +71,7 @@ edm:
+ 
+ heads:
+   tsp: {likelihood: discretised_logistic, mean_from: [belief, periphery, lighting], scale_from: [lighting, pixel_position]}
++  fovea_reconstruction: {likelihood: discretised_logistic, mean_from: [glimpse, lighting], decoder: shared_with_tsp}  # 10-27
+   change_map: {target: a9b_soft_detector, rows: map_only}   # A9b teacher covers map rows only (documented limit)
+   reward: {density: discretised_mixture_of_logistics, components: 4, space: symlog, bins: 256, support: [-0.9, 1.1]}
+   continuation: {likelihood: bernoulli, conditioned_on: [predicted_belief, percept, reward]}
+@@ -76,9 +79,9 @@ heads:
+ losses:
+   harmoniser: harmonydream                    # L / sigma + log(1 + sigma) per group (LOSSES v1.1)
+   harmoniser_init_sigma: 1.0                  # working
+-  sigreg: {knots: 17, projections: 1024, samples_per_microbatch: 4096, weight: 0.0028}
+-  # weight = LeWM 0.09 x 128 / 4096: LeWM's statistic is the Epps-Pulley distance x N (N = 128 samples there), so
+-  # lambda x N is held constant to keep the same strength on the underlying discrepancy (as in R56's amendment).
++  sigreg: null                                # dropped from M0 (10-27, LOSSES principle 7); comparison: LeWM module,
++                                              # lambda x N held at 0.09 x 128 (Epps-Pulley statistic scales with N)
++  stop_gradient: [denoiser_inputs, denoiser_targets]   # REPA-E, JEDI
+ 
+ optimizer:                                    # JEDI / DIAMOND
+   name: adamw

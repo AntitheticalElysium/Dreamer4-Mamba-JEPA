@@ -1,0 +1,7 @@
+{
+  "n_actual_parameter_pairs": 2048,
+  "max_absolute_normalisation_error_canonical": 8.304083460863865e-06,
+  "max_absolute_normalisation_error_reference": 2.1538326677728037e-14,
+  "max_abs_pairwise_nll_difference": 0.0002525322372548544,
+  "fraction_bins_abs_nll_error_gt_01": 0.0
+}

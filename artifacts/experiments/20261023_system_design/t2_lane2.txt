@@ -1,0 +1,10 @@
+sigreg 16 1
+sg 4 1
+ema 4 1
+sigreg 4 1
+sg 1 1
+vicreg 1 1
+ema 16 2
+none 16 2
+none 4 2
+sigreg 1 2

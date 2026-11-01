@@ -1,0 +1,366 @@
+{
+ "n_transitions": 304898,
+ "reference_full_dev": {
+  "appear_edge_zombies_day": {
+   "est": 0.018913118929250565,
+   "se": 0.0005016208678911351,
+   "n_cond": 204567
+  },
+  "appear_interior_zombies_day": {
+   "est": 0.0014616238200687306,
+   "se": 8.586247905337802e-05,
+   "n_cond": 204567
+  },
+  "vanish_zombies_day": {
+   "est": 0.004120899265277391,
+   "se": 0.00014462901264668647,
+   "n_cond": 204567
+  },
+  "count_zombies_day": {
+   "est": 0.32737440545151464,
+   "se": 0.011696989729517677,
+   "n_cond": 204567
+  },
+  "appear_edge_zombies_night": {
+   "est": 0.045329957839551085,
+   "se": 0.0008485537856821004,
+   "n_cond": 100331
+  },
+  "appear_interior_zombies_night": {
+   "est": 0.0028306306126720557,
+   "se": 0.00015532792488839701,
+   "n_cond": 100331
+  },
+  "vanish_zombies_night": {
+   "est": 0.006428720933709422,
+   "se": 0.0002476730720209247,
+   "n_cond": 100331
+  },
+  "count_zombies_night": {
+   "est": 0.6690454595289591,
+   "se": 0.013944242193702836,
+   "n_cond": 100331
+  },
+  "appear_edge_cows_day": {
+   "est": 0.04413712866689153,
+   "se": 0.0005994762700764564,
+   "n_cond": 204567
+  },
+  "appear_interior_cows_day": {
+   "est": 0.003788489834626308,
+   "se": 0.0001421602945654307,
+   "n_cond": 204567
+  },
+  "vanish_cows_day": {
+   "est": 0.0048248251184208595,
+   "se": 0.00014404782406242096,
+   "n_cond": 204567
+  },
+  "count_cows_day": {
+   "est": 0.4906265428930375,
+   "se": 0.009435294864993272,
+   "n_cond": 204567
+  },
+  "appear_edge_cows_night": {
+   "est": 0.046366526796304236,
+   "se": 0.0007494622387842625,
+   "n_cond": 100331
+  },
+  "appear_interior_cows_night": {
+   "est": 0.0035881233118378168,
+   "se": 0.0001867446843423026,
+   "n_cond": 100331
+  },
+  "vanish_cows_night": {
+   "est": 0.005721063280541408,
+   "se": 0.00019956834252243222,
+   "n_cond": 100331
+  },
+  "count_cows_night": {
+   "est": 0.49325731827650476,
+   "se": 0.010301971237500129,
+   "n_cond": 100331
+  },
+  "appear_edge_skeletons_day": {
+   "est": 0.02072670567589103,
+   "se": 0.0006630167476965348,
+   "n_cond": 204567
+  },
+  "appear_interior_skeletons_day": {
+   "est": 0.0007723630888657506,
+   "se": 5.600426020346563e-05,
+   "n_cond": 204567
+  },
+  "vanish_skeletons_day": {
+   "est": 0.0019602379660453545,
+   "se": 0.00010737941281369378,
+   "n_cond": 204567
+  },
+  "count_skeletons_day": {
+   "est": 0.15503478078086885,
+   "se": 0.0058596338136299685,
+   "n_cond": 204567
+  },
+  "appear_edge_skeletons_night": {
+   "est": 0.02624313522241381,
+   "se": 0.0008430758735731421,
+   "n_cond": 100331
+  },
+  "appear_interior_skeletons_night": {
+   "est": 0.0009767669015558502,
+   "se": 0.00010547425143013012,
+   "n_cond": 100331
+  },
+  "vanish_skeletons_night": {
+   "est": 0.003229310980654035,
+   "se": 0.00018951280287046913,
+   "n_cond": 100331
+  },
+  "count_skeletons_night": {
+   "est": 0.20310771346841952,
+   "se": 0.007914859540822725,
+   "n_cond": 100331
+  },
+  "appear_edge_arrows_day": {
+   "est": 0.007425440075867564,
+   "se": 0.00032411296897024377,
+   "n_cond": 204567
+  },
+  "appear_interior_arrows_day": {
+   "est": 0.01626362023200223,
+   "se": 0.0006995759358862701,
+   "n_cond": 204567
+  },
+  "vanish_arrows_day": {
+   "est": 0.012797763080066677,
+   "se": 0.0005599718368816433,
+   "n_cond": 204567
+  },
+  "count_arrows_day": {
+   "est": 0.08716948481426623,
+   "se": 0.0037168698610758645,
+   "n_cond": 204567
+  },
+  "appear_edge_arrows_night": {
+   "est": 0.009099879399188686,
+   "se": 0.0005020133219924741,
+   "n_cond": 100331
+  },
+  "appear_interior_arrows_night": {
+   "est": 0.02213672743219942,
+   "se": 0.0009414918596480252,
+   "n_cond": 100331
+  },
+  "vanish_arrows_night": {
+   "est": 0.017492101145209358,
+   "se": 0.0007754995185115926,
+   "n_cond": 100331
+  },
+  "count_arrows_night": {
+   "est": 0.11881671666782949,
+   "se": 0.00449791938489169,
+   "n_cond": 100331
+  },
+  "drop_given_adj_since1": {
+   "est": 0.022594364699627858,
+   "se": 0.002396328937995106,
+   "n_cond": 3762
+  },
+  "drop_given_adj_since2": {
+   "est": 0.039305949008498584,
+   "se": 0.003588417854188859,
+   "n_cond": 2824
+  },
+  "drop_given_adj_since3": {
+   "est": 0.033304867634500426,
+   "se": 0.004245915514202951,
+   "n_cond": 2342
+  },
+  "drop_given_adj_since4": {
+   "est": 0.03926320891904993,
+   "se": 0.004540472427404594,
+   "n_cond": 2063
+  },
+  "drop_given_adj_since5": {
+   "est": 0.0373675404350251,
+   "se": 0.00488108480419019,
+   "n_cond": 1793
+  },
+  "drop_given_adj_since6": {
+   "est": 0.35344447384669664,
+   "se": 0.014028276240899567,
+   "n_cond": 11337
+  },
+  "drop_given_no_adj": {
+   "est": 0.0060581885268380245,
+   "se": 0.00019228738362452591,
+   "n_cond": 280777
+  },
+  "arrow_given_skel_range": {
+   "est": 0.16965447751794785,
+   "se": 0.0030500598226614398,
+   "n_cond": 23819
+  },
+  "arrow_given_no_skel_range": {
+   "est": 0.013835967823992544,
+   "se": 0.00047185817728269966,
+   "n_cond": 281079
+  },
+  "moved_given_move": {
+   "est": 0.7848446408001983,
+   "se": 0.002861743128967218,
+   "n_cond": 137166
+  },
+  "dir_ok_given_moved_move": {
+   "est": 1.0,
+   "se": 0.0,
+   "n_cond": 107654
+  }
+ },
+ "power": {
+  "real_half_B": {
+   "rejected_by": [],
+   "n_rejecting_gates": 0,
+   "c2st": {
+    "accuracy": 0.49504759277141674,
+    "n_test": 36245
+   }
+  },
+  "shuffled_history": {
+   "rejected_by": [
+    "appear_edge_zombies_day",
+    "appear_interior_zombies_day",
+    "vanish_zombies_day",
+    "count_zombies_day",
+    "appear_edge_zombies_night",
+    "appear_interior_zombies_night",
+    "vanish_zombies_night",
+    "count_zombies_night",
+    "appear_edge_cows_day",
+    "appear_interior_cows_day",
+    "vanish_cows_day",
+    "appear_edge_cows_night",
+    "appear_interior_cows_night",
+    "vanish_cows_night",
+    "appear_edge_skeletons_day",
+    "appear_interior_skeletons_day",
+    "vanish_skeletons_day",
+    "appear_edge_skeletons_night",
+    "appear_interior_skeletons_night",
+    "vanish_skeletons_night",
+    "appear_edge_arrows_day",
+    "appear_interior_arrows_day",
+    "vanish_arrows_day",
+    "appear_edge_arrows_night",
+    "appear_interior_arrows_night",
+    "vanish_arrows_night",
+    "count_arrows_night",
+    "drop_given_adj_since1",
+    "drop_given_adj_since2",
+    "drop_given_adj_since3",
+    "drop_given_adj_since4",
+    "drop_given_adj_since5",
+    "drop_given_adj_since6",
+    "drop_given_no_adj",
+    "arrow_given_skel_range",
+    "arrow_given_no_skel_range",
+    "moved_given_move",
+    "dir_ok_given_moved_move"
+   ],
+   "n_rejecting_gates": 38,
+   "c2st": {
+    "accuracy": 0.9221095236947985,
+    "n_test": 41507
+   }
+  },
+  "mismatched_actions": {
+   "rejected_by": [
+    "moved_given_move",
+    "dir_ok_given_moved_move"
+   ],
+   "n_rejecting_gates": 2,
+   "c2st": {
+    "accuracy": 0.7582978505104396,
+    "n_test": 38986
+   }
+  },
+  "duplicated_entities": {
+   "rejected_by": [
+    "appear_interior_zombies_day",
+    "appear_interior_zombies_night",
+    "count_zombies_night",
+    "appear_interior_cows_day",
+    "count_cows_day",
+    "appear_interior_cows_night",
+    "count_cows_night",
+    "appear_interior_skeletons_day",
+    "appear_interior_skeletons_night",
+    "count_skeletons_night",
+    "appear_interior_arrows_night"
+   ],
+   "n_rejecting_gates": 11,
+   "c2st": {
+    "accuracy": 0.5429773355706284,
+    "n_test": 42313
+   }
+  },
+  "delayed_consequences": {
+   "rejected_by": [
+    "drop_given_adj_since2",
+    "drop_given_adj_since3",
+    "drop_given_adj_since4",
+    "drop_given_adj_since5",
+    "drop_given_adj_since6",
+    "drop_given_no_adj"
+   ],
+   "n_rejecting_gates": 6,
+   "c2st": {
+    "accuracy": 0.49525742268496054,
+    "n_test": 45334
+   }
+  },
+  "frozen_time": {
+   "rejected_by": [
+    "appear_edge_zombies_day",
+    "appear_interior_zombies_day",
+    "vanish_zombies_day",
+    "appear_edge_zombies_night",
+    "appear_interior_zombies_night",
+    "vanish_zombies_night",
+    "appear_edge_cows_day",
+    "appear_interior_cows_day",
+    "vanish_cows_day",
+    "appear_edge_cows_night",
+    "appear_interior_cows_night",
+    "vanish_cows_night",
+    "appear_edge_skeletons_day",
+    "appear_interior_skeletons_day",
+    "vanish_skeletons_day",
+    "appear_edge_skeletons_night",
+    "appear_interior_skeletons_night",
+    "vanish_skeletons_night",
+    "appear_edge_arrows_day",
+    "appear_interior_arrows_day",
+    "vanish_arrows_day",
+    "appear_edge_arrows_night",
+    "appear_interior_arrows_night",
+    "vanish_arrows_night",
+    "drop_given_adj_since1",
+    "drop_given_adj_since2",
+    "drop_given_adj_since3",
+    "drop_given_adj_since4",
+    "drop_given_adj_since5",
+    "drop_given_adj_since6",
+    "drop_given_no_adj",
+    "arrow_given_skel_range",
+    "arrow_given_no_skel_range",
+    "moved_given_move"
+   ],
+   "n_rejecting_gates": 34,
+   "c2st": {
+    "accuracy": 0.811919770773639,
+    "n_test": 43625
+   }
+  }
+ }
+}

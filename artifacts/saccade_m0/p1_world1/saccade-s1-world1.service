@@ -1,0 +1,13 @@
+[Unit]
+Description=One-shot full S1 after P1 world seed 1
+After=saccade-p1-world1.service
+
+[Service]
+Type=exec
+WorkingDirectory=/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA
+Environment=OMP_NUM_THREADS=6 MKL_NUM_THREADS=6
+Environment=SACCADE_P1_UNIT=saccade-p1-world1.service SACCADE_P1_INVOCATION=a467ea58282948e5883e02590cf03ca2
+Environment=SACCADE_S1_SHA256=21178b5adca2efa1f505f901a31d83bc16290a1d7a7e2f65d7e3267ff01bbd82
+MemoryMax=24G
+Restart=no
+ExecStart=/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/bin/python -u -m saccade.eval.after_p1 /home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1 1

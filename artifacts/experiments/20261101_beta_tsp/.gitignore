@@ -1,0 +1,4 @@
+*.pt
+__pycache__/
+*.npz
+readings/codex/panel.json

@@ -1,0 +1,76 @@
+{
+  "checkpoint": 10,
+  "monitor_loss": 0.019083376973867416,
+  "three_increases_triggered": false,
+  "rule": "final unless any three successive strict increases; then global minimum, earliest tie",
+  "monitor_history": [
+    {
+      "checkpoint": 1,
+      "frames": 2560000,
+      "loss": 0.0703008696436882
+    },
+    {
+      "checkpoint": 2,
+      "frames": 5120000,
+      "loss": 0.04680776596069336
+    },
+    {
+      "checkpoint": 3,
+      "frames": 7680000,
+      "loss": 0.031677741557359695
+    },
+    {
+      "checkpoint": 4,
+      "frames": 10240000,
+      "loss": 0.025534797459840775
+    },
+    {
+      "checkpoint": 5,
+      "frames": 12800000,
+      "loss": 0.022344546392560005
+    },
+    {
+      "checkpoint": 6,
+      "frames": 15360000,
+      "loss": 0.019970564171671867
+    },
+    {
+      "checkpoint": 7,
+      "frames": 17920000,
+      "loss": 0.019929958507418633
+    },
+    {
+      "checkpoint": 8,
+      "frames": 20480000,
+      "loss": 0.019377926364541054
+    },
+    {
+      "checkpoint": 9,
+      "frames": 23040000,
+      "loss": 0.01916564628481865
+    },
+    {
+      "checkpoint": 10,
+      "frames": 25600000,
+      "loss": 0.019083376973867416
+    }
+  ],
+  "parent": {
+    "MONITOR_UNIT": "saccade-p1-world1.service",
+    "MONITOR_INVOCATION_ID": "a467ea58282948e5883e02590cf03ca2",
+    "MONITOR_SERVICE_RESULT": "success",
+    "MONITOR_EXIT_CODE": "exited",
+    "MONITOR_EXIT_STATUS": "0"
+  },
+  "checkpoint_path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_10.pt",
+  "checkpoint_sha256": "74eccc433bf5a785edd6d565edc1a970f8b468510abf2c0b07e24d28b547ebe5",
+  "evaluation_source_sha256": "21178b5adca2efa1f505f901a31d83bc16290a1d7a7e2f65d7e3267ff01bbd82",
+  "command": [
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/bin/python",
+    "-u",
+    "-m",
+    "saccade.eval.s1",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_10.pt",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/s1/results.json"
+  ]
+}

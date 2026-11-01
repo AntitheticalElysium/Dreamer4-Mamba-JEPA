@@ -1,0 +1,204 @@
+{
+  "real": {
+    "all": {
+      "adjacent_zombie_reader_rate": {
+        "est": 0.08266666666666667,
+        "se": 0.0022486141594213996,
+        "n_cond": 30000
+      },
+      "reader_adjacent": {
+        "n": 2480,
+        "negative_reward_probability": {
+          "est": 0.17935766254940905,
+          "se": 0.0071884053230854734,
+          "n_cond": 2480
+        },
+        "death_probability": {
+          "est": 0.030642459140252452,
+          "se": 0.003751160317427245,
+          "n_cond": 2480
+        }
+      },
+      "reader_not_adjacent": {
+        "n": 27520,
+        "negative_reward_probability": {
+          "est": 0.004211061628663123,
+          "se": 0.000366775844138269,
+          "n_cond": 27520
+        },
+        "death_probability": {
+          "est": 0.00028956694223150836,
+          "se": 0.00010326527440178608,
+          "n_cond": 27520
+        }
+      }
+    },
+    "past_zombie_adjacent": {
+      "adjacent_zombie_reader_rate": {
+        "est": 0.8120719178082192,
+        "se": 0.008603914617920132,
+        "n_cond": 2336
+      },
+      "reader_adjacent": {
+        "n": 1897,
+        "negative_reward_probability": {
+          "est": 0.21894988690555894,
+          "se": 0.008790306196725904,
+          "n_cond": 1897
+        },
+        "death_probability": {
+          "est": 0.039005742214861513,
+          "se": 0.004821017675105442,
+          "n_cond": 1897
+        }
+      },
+      "reader_not_adjacent": {
+        "n": 439,
+        "negative_reward_probability": {
+          "est": 0.004843364046691528,
+          "se": 0.0019643338223274036,
+          "n_cond": 439
+        },
+        "death_probability": {
+          "est": 5.480969072880952e-10,
+          "se": 3.1453825454101057e-10,
+          "n_cond": 439
+        }
+      }
+    },
+    "past_low_health_adjacent": {
+      "adjacent_zombie_reader_rate": {
+        "est": 0.8471849865951743,
+        "se": 0.01977109035236485,
+        "n_cond": 373
+      },
+      "reader_adjacent": {
+        "n": 316,
+        "negative_reward_probability": {
+          "est": 0.13547971082835028,
+          "se": 0.019087648049997637,
+          "n_cond": 316
+        },
+        "death_probability": {
+          "est": 0.1328815856195621,
+          "se": 0.01920508658673753,
+          "n_cond": 316
+        }
+      },
+      "reader_not_adjacent": {
+        "n": 57,
+        "negative_reward_probability": {
+          "est": 0.0020314705874058922,
+          "se": 0.001548831794448981,
+          "n_cond": 57
+        },
+        "death_probability": {
+          "est": 3.4332125102586313e-12,
+          "se": 2.7008447035219213e-12,
+          "n_cond": 57
+        }
+      }
+    }
+  },
+  "generated": {
+    "all": {
+      "adjacent_zombie_reader_rate": {
+        "est": 0.057466666666666666,
+        "se": 0.0017624191366596754,
+        "n_cond": 30000
+      },
+      "reader_adjacent": {
+        "n": 1724,
+        "negative_reward_probability": {
+          "est": 0.04435297167048228,
+          "se": 0.003939142920745448,
+          "n_cond": 1724
+        },
+        "death_probability": {
+          "est": 2.8777637378454772e-06,
+          "se": 2.1816730772491516e-06,
+          "n_cond": 1724
+        }
+      },
+      "reader_not_adjacent": {
+        "n": 28276,
+        "negative_reward_probability": {
+          "est": 0.003973173931868765,
+          "se": 0.00033726436910353055,
+          "n_cond": 28276
+        },
+        "death_probability": {
+          "est": 3.536812654707896e-05,
+          "se": 3.5410218698444e-05,
+          "n_cond": 28276
+        }
+      }
+    },
+    "past_zombie_adjacent": {
+      "adjacent_zombie_reader_rate": {
+        "est": 0.6455479452054794,
+        "se": 0.0105474656938065,
+        "n_cond": 2336
+      },
+      "reader_adjacent": {
+        "n": 1508,
+        "negative_reward_probability": {
+          "est": 0.04932985855397923,
+          "se": 0.004556826909916282,
+          "n_cond": 1508
+        },
+        "death_probability": {
+          "est": 3.2899628209417313e-06,
+          "se": 2.497964862953359e-06,
+          "n_cond": 1508
+        }
+      },
+      "reader_not_adjacent": {
+        "n": 828,
+        "negative_reward_probability": {
+          "est": 0.030377649035758306,
+          "se": 0.005266215866050407,
+          "n_cond": 828
+        },
+        "death_probability": {
+          "est": 1.9380106874590512e-08,
+          "se": 1.6866458218028928e-08,
+          "n_cond": 828
+        }
+      }
+    },
+    "past_low_health_adjacent": {
+      "adjacent_zombie_reader_rate": {
+        "est": 0.7238605898123325,
+        "se": 0.021734822837725987,
+        "n_cond": 373
+      },
+      "reader_adjacent": {
+        "n": 270,
+        "negative_reward_probability": {
+          "est": 0.040442298260124215,
+          "se": 0.008298613898422213,
+          "n_cond": 270
+        },
+        "death_probability": {
+          "est": 4.3833273928322894e-07,
+          "se": 3.9236152932905667e-07,
+          "n_cond": 270
+        }
+      },
+      "reader_not_adjacent": {
+        "n": 103,
+        "negative_reward_probability": {
+          "est": 0.020946600006552827,
+          "se": 0.011454942281791187,
+          "n_cond": 103
+        },
+        "death_probability": {
+          "est": 4.4858498739432516e-12,
+          "se": 2.11047779485251e-12,
+          "n_cond": 103
+        }
+      }
+    }
+  }
+}

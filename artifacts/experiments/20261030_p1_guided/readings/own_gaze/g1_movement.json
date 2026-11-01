@@ -1,0 +1,256 @@
+{
+ "w1": {
+  "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_10.pt",
+  "sha256": "74eccc433bf5a785edd6d565edc1a970f8b468510abf2c0b07e24d28b547ebe5",
+  "frames_refixated": 0.16785769164562225,
+  "random": {
+   "class_losses": {
+    "drink_up": {
+     "se_per_element": 0.15806424643611536,
+     "elements": 6400.0
+    },
+    "wood_up": {
+     "se_per_element": 0.1062581393267354,
+     "elements": 12112.0
+    },
+    "sapling_up": {
+     "se_per_element": 0.44306742618126527,
+     "elements": 560.0
+    },
+    "table_placed": {
+     "se_per_element": 0.13236638539758055,
+     "elements": 3008.0
+    },
+    "zombie_hit": {
+     "se_per_element": 0.20130275964720157,
+     "elements": 3552.0
+    },
+    "health_other": {
+     "se_per_element": 0.14815733093590963,
+     "elements": 8400.0
+    },
+    "hud_other_change": {
+     "se_per_element": 0.13711021302700563,
+     "elements": 88032.0
+    },
+    "hud_static": {
+     "se_per_element": 0.007946979435810634,
+     "elements": 7253744.0
+    },
+    "map_moved": {
+     "se_per_element": 0.033566829066984265,
+     "elements": 9314928.0
+    },
+    "map_still": {
+     "se_per_element": 0.02158751598020561,
+     "elements": 16486864.0
+    },
+    "glimpse": {
+     "se_per_element": 0.0324596860839261,
+     "elements": 14745600.0
+    },
+    "lighting": {
+     "se_per_element": 0.005648779955226928,
+     "elements": 204800.0
+    },
+    "periphery_all": {
+     "se_per_element": 0.02240074361235752,
+     "elements": 33177600.0
+    }
+   },
+   "movement_shift_sample": {
+    "est": 0.9103944325819612,
+    "se": 0.003947317965985787,
+    "n_cond": 2000
+   }
+  },
+  "guided": {
+   "class_losses": {
+    "drink_up": {
+     "se_per_element": 0.1614414102071896,
+     "elements": 6400.0
+    },
+    "wood_up": {
+     "se_per_element": 0.10846161728268403,
+     "elements": 12112.0
+    },
+    "sapling_up": {
+     "se_per_element": 0.4379938062679555,
+     "elements": 560.0
+    },
+    "table_placed": {
+     "se_per_element": 0.13113232510798473,
+     "elements": 3008.0
+    },
+    "zombie_hit": {
+     "se_per_element": 0.20304186813751454,
+     "elements": 3552.0
+    },
+    "health_other": {
+     "se_per_element": 0.14828934059079205,
+     "elements": 8400.0
+    },
+    "hud_other_change": {
+     "se_per_element": 0.13701042609837047,
+     "elements": 88032.0
+    },
+    "hud_static": {
+     "se_per_element": 0.00794722064004793,
+     "elements": 7253744.0
+    },
+    "map_moved": {
+     "se_per_element": 0.03356560258175732,
+     "elements": 9314928.0
+    },
+    "map_still": {
+     "se_per_element": 0.021591096037988658,
+     "elements": 16486864.0
+    },
+    "glimpse": {
+     "se_per_element": 0.0348105725646019,
+     "elements": 14745600.0
+    },
+    "lighting": {
+     "se_per_element": 0.005663771410472691,
+     "elements": 204800.0
+    },
+    "periphery_all": {
+     "se_per_element": 0.022403444223076198,
+     "elements": 33177600.0
+    }
+   },
+   "movement_shift_sample": {
+    "est": 0.9104320067167282,
+    "se": 0.003945933678809765,
+    "n_cond": 2000
+   }
+  }
+ },
+ "p1f": {
+  "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261030_p1_guided/run/ckpt_10.pt",
+  "sha256": "82b0ecc037a5d538597ed0639fe3823ca73046448cc9c6837704f8aada6e6271",
+  "frames_refixated": 0.16785769164562225,
+  "random": {
+   "class_losses": {
+    "drink_up": {
+     "se_per_element": 0.37812719275942075,
+     "elements": 6400.0
+    },
+    "wood_up": {
+     "se_per_element": 0.39835471743926937,
+     "elements": 12112.0
+    },
+    "sapling_up": {
+     "se_per_element": 0.516794820668708,
+     "elements": 560.0
+    },
+    "table_placed": {
+     "se_per_element": 0.12159936635091187,
+     "elements": 3008.0
+    },
+    "zombie_hit": {
+     "se_per_element": 0.30314480955922257,
+     "elements": 3552.0
+    },
+    "health_other": {
+     "se_per_element": 0.3027146143368667,
+     "elements": 8400.0
+    },
+    "hud_other_change": {
+     "se_per_element": 0.1540850511424024,
+     "elements": 88032.0
+    },
+    "hud_static": {
+     "se_per_element": 0.007047050473735044,
+     "elements": 7253744.0
+    },
+    "map_moved": {
+     "se_per_element": 0.06459373069588877,
+     "elements": 9314928.0
+    },
+    "map_still": {
+     "se_per_element": 0.04227114646073781,
+     "elements": 16486864.0
+    },
+    "glimpse": {
+     "se_per_element": 0.023886467102501127,
+     "elements": 14745600.0
+    },
+    "lighting": {
+     "se_per_element": 0.0034302931127604096,
+     "elements": 204800.0
+    },
+    "periphery_all": {
+     "se_per_element": 0.04143778164509811,
+     "elements": 33177600.0
+    }
+   },
+   "movement_shift_sample": {
+    "est": 0.8582115888148546,
+    "se": 0.0046526859869781825,
+    "n_cond": 2000
+   }
+  },
+  "guided": {
+   "class_losses": {
+    "drink_up": {
+     "se_per_element": 0.08709219489770476,
+     "elements": 6400.0
+    },
+    "wood_up": {
+     "se_per_element": 0.030740817732274866,
+     "elements": 12112.0
+    },
+    "sapling_up": {
+     "se_per_element": 0.22957546607857304,
+     "elements": 560.0
+    },
+    "table_placed": {
+     "se_per_element": 0.09488473956948741,
+     "elements": 3008.0
+    },
+    "zombie_hit": {
+     "se_per_element": 0.21251247001723764,
+     "elements": 3552.0
+    },
+    "health_other": {
+     "se_per_element": 0.2970410879204671,
+     "elements": 8400.0
+    },
+    "hud_other_change": {
+     "se_per_element": 0.152758173143504,
+     "elements": 88032.0
+    },
+    "hud_static": {
+     "se_per_element": 0.006797540976123847,
+     "elements": 7253744.0
+    },
+    "map_moved": {
+     "se_per_element": 0.06460821491236299,
+     "elements": 9314928.0
+    },
+    "map_still": {
+     "se_per_element": 0.04226425364782077,
+     "elements": 16486864.0
+    },
+    "glimpse": {
+     "se_per_element": 0.02444285700718562,
+     "elements": 14745600.0
+    },
+    "lighting": {
+     "se_per_element": 0.0034328677481971683,
+     "elements": 204800.0
+    },
+    "periphery_all": {
+     "se_per_element": 0.041171597386796356,
+     "elements": 33177600.0
+    }
+   },
+   "movement_shift_sample": {
+    "est": 0.8582449177354574,
+    "se": 0.004634031722117827,
+    "n_cond": 2000
+   }
+  }
+ }
+}

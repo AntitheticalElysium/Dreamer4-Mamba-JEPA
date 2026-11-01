@@ -1,0 +1,15 @@
+{
+  "a": "/tmp/pytest-of-antithetical/pytest-8/test_resumed_run_equals_uninte0/a/latest.pt",
+  "b": "/tmp/pytest-of-antithetical/pytest-8/test_resumed_run_equals_uninte0/b/latest.pt",
+  "state_a": {
+    "frames": 1536,
+    "update": 3,
+    "next_ckpt": 4
+  },
+  "state_b": {
+    "frames": 1536,
+    "update": 3,
+    "next_ckpt": 4
+  },
+  "model_max_abs_delta": 0.0
+}

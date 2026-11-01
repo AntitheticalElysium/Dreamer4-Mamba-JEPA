@@ -1,0 +1,11 @@
+{
+  "bare_user_unit": {
+    "cwd": "/home/antithetical",
+    "saccade_spec": null
+  },
+  "explicit_working_directory": {
+    "cwd": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA",
+    "saccade_spec": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/saccade/__init__.py"
+  },
+  "command_scope": "harmless Python -c lookup only; both transient units finished"
+}

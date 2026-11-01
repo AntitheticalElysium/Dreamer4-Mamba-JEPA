@@ -1,0 +1,474 @@
+{
+  "health": {
+    "n": 1192,
+    "n_variable_rgb_coordinates": 45,
+    "classes": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "raw_template_accuracy": {
+      "est": 1.0,
+      "se": 0.0,
+      "n_cond": 1192
+    },
+    "canonical_digit_likelihood_accuracy": {
+      "est": 0.5620805369127517,
+      "se": 0.016190256993427476,
+      "n_cond": 1192
+    },
+    "reference_digit_likelihood_accuracy": {
+      "est": 0.5620805369127517,
+      "se": 0.016190256993427476,
+      "n_cond": 1192
+    },
+    "conditional_confidence_median": 0.6420273780822754,
+    "canonical_log_legal_mass_quantiles": [
+      -68.05967712402344,
+      -66.94206237792969,
+      -65.63687896728516
+    ],
+    "reference_log_legal_mass_quantiles": [
+      -68.05967712402344,
+      -66.94207763671875,
+      -65.63689422607422
+    ],
+    "canonical_prediction_histogram": [
+      14,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1178
+    ],
+    "truth_histogram": [
+      2,
+      16,
+      31,
+      41,
+      50,
+      57,
+      87,
+      127,
+      111,
+      670
+    ],
+    "by_value": {
+      "0": {
+        "n": 2,
+        "canonical_accuracy": 1.0,
+        "reference_accuracy": 1.0
+      },
+      "1": {
+        "n": 16,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "2": {
+        "n": 31,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "3": {
+        "n": 41,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "4": {
+        "n": 50,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "5": {
+        "n": 57,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "6": {
+        "n": 87,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "7": {
+        "n": 127,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "8": {
+        "n": 111,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "9": {
+        "n": 670,
+        "canonical_accuracy": 0.9970149253731343,
+        "reference_accuracy": 0.9970149253731343
+      }
+    }
+  },
+  "food": {
+    "n": 2439,
+    "n_variable_rgb_coordinates": 45,
+    "classes": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "raw_template_accuracy": {
+      "est": 1.0,
+      "se": 0.0,
+      "n_cond": 2439
+    },
+    "canonical_digit_likelihood_accuracy": {
+      "est": 0.03444034440344403,
+      "se": 0.004448336459025386,
+      "n_cond": 2439
+    },
+    "reference_digit_likelihood_accuracy": {
+      "est": 0.03444034440344403,
+      "se": 0.004448336459025386,
+      "n_cond": 2439
+    },
+    "conditional_confidence_median": 0.19376476109027863,
+    "canonical_log_legal_mass_quantiles": [
+      -53.37801742553711,
+      -52.19459533691406,
+      -50.183807373046875
+    ],
+    "reference_log_legal_mass_quantiles": [
+      -53.378013610839844,
+      -52.194583892822266,
+      -50.18381118774414
+    ],
+    "canonical_prediction_histogram": [
+      428,
+      0,
+      2011,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "truth_histogram": [
+      35,
+      54,
+      86,
+      120,
+      205,
+      245,
+      350,
+      374,
+      491,
+      479
+    ],
+    "by_value": {
+      "0": {
+        "n": 35,
+        "canonical_accuracy": 1.0,
+        "reference_accuracy": 1.0
+      },
+      "1": {
+        "n": 54,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "2": {
+        "n": 86,
+        "canonical_accuracy": 0.5697674418604651,
+        "reference_accuracy": 0.5697674418604651
+      },
+      "3": {
+        "n": 120,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "4": {
+        "n": 205,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "5": {
+        "n": 245,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "6": {
+        "n": 350,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "7": {
+        "n": 374,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "8": {
+        "n": 491,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "9": {
+        "n": 479,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      }
+    }
+  },
+  "drink": {
+    "n": 3605,
+    "n_variable_rgb_coordinates": 45,
+    "classes": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "raw_template_accuracy": {
+      "est": 1.0,
+      "se": 0.0,
+      "n_cond": 3605
+    },
+    "canonical_digit_likelihood_accuracy": {
+      "est": 0.12371705963938974,
+      "se": 0.007531290839526709,
+      "n_cond": 3605
+    },
+    "reference_digit_likelihood_accuracy": {
+      "est": 0.12371705963938974,
+      "se": 0.007531290839526709,
+      "n_cond": 3605
+    },
+    "conditional_confidence_median": 0.9995878338813782,
+    "canonical_log_legal_mass_quantiles": [
+      -75.852783203125,
+      -68.42953491210938,
+      -55.5102424621582
+    ],
+    "reference_log_legal_mass_quantiles": [
+      -75.85275268554688,
+      -68.42953491210938,
+      -55.5102424621582
+    ],
+    "canonical_prediction_histogram": [
+      2529,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1076,
+      0,
+      0,
+      0
+    ],
+    "truth_histogram": [
+      303,
+      283,
+      346,
+      441,
+      449,
+      379,
+      392,
+      367,
+      330,
+      315
+    ],
+    "by_value": {
+      "0": {
+        "n": 303,
+        "canonical_accuracy": 1.0,
+        "reference_accuracy": 1.0
+      },
+      "1": {
+        "n": 283,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "2": {
+        "n": 346,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "3": {
+        "n": 441,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "4": {
+        "n": 449,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "5": {
+        "n": 379,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "6": {
+        "n": 392,
+        "canonical_accuracy": 0.3647959183673469,
+        "reference_accuracy": 0.3647959183673469
+      },
+      "7": {
+        "n": 367,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "8": {
+        "n": 330,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "9": {
+        "n": 315,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      }
+    }
+  },
+  "energy": {
+    "n": 3590,
+    "n_variable_rgb_coordinates": 45,
+    "classes": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "raw_template_accuracy": {
+      "est": 1.0,
+      "se": 0.0,
+      "n_cond": 3590
+    },
+    "canonical_digit_likelihood_accuracy": {
+      "est": 0.012256267409470752,
+      "se": 0.002217367220873648,
+      "n_cond": 3590
+    },
+    "reference_digit_likelihood_accuracy": {
+      "est": 0.012256267409470752,
+      "se": 0.002217367220873648,
+      "n_cond": 3590
+    },
+    "conditional_confidence_median": 0.3115408420562744,
+    "canonical_log_legal_mass_quantiles": [
+      -49.45528030395508,
+      -46.77693557739258,
+      -42.13835144042969
+    ],
+    "reference_log_legal_mass_quantiles": [
+      -49.45528030395508,
+      -46.77693557739258,
+      -42.13835144042969
+    ],
+    "canonical_prediction_histogram": [
+      1596,
+      1994,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "truth_histogram": [
+      28,
+      36,
+      65,
+      122,
+      187,
+      228,
+      322,
+      496,
+      1012,
+      1094
+    ],
+    "by_value": {
+      "0": {
+        "n": 28,
+        "canonical_accuracy": 1.0,
+        "reference_accuracy": 1.0
+      },
+      "1": {
+        "n": 36,
+        "canonical_accuracy": 0.4444444444444444,
+        "reference_accuracy": 0.4444444444444444
+      },
+      "2": {
+        "n": 65,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "3": {
+        "n": 122,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "4": {
+        "n": 187,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "5": {
+        "n": 228,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "6": {
+        "n": 322,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "7": {
+        "n": 496,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "8": {
+        "n": 1012,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      },
+      "9": {
+        "n": 1094,
+        "canonical_accuracy": 0.0,
+        "reference_accuracy": 0.0
+      }
+    }
+  }
+}

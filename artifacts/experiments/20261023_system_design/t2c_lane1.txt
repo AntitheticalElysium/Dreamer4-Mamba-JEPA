@@ -1,0 +1,5 @@
+sg_slow sg 16 1 --enc-lr-scale 0.02
+ema_glimpse ema 16 1 --glimpse 10
+sg_glimpse sg 16 2 --glimpse 10
+sg_fullpix sg 16 2 --glimpse 10 --glimpse-all
+sigreg_idm sigreg 16 1 --idm 1

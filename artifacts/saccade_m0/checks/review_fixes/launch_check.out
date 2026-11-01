@@ -1,0 +1,7 @@
+Running as unit: saccade-launch-check.service
+{"cwd": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA", "saccade": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/saccade/__init__.py", "lightgbm": "4.6.0"}
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 555ms
+             CPU time consumed: 1.333s
+                   Memory peak: 76.4M (swap: 0B)

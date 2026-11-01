@@ -1,0 +1,36 @@
+{
+  "checkpoint_parity": {
+    "terms_max_abs_delta": 0.0,
+    "grad_max_abs_delta": 2.3283064365386963e-10,
+    "worst_parameter": "perception.fovea.6.weight",
+    "grad_max_relative_to_parameter_max": 1.4534919635702588e-07,
+    "allclose": true
+  },
+  "segmented_kernel": {
+    "tokens": 513,
+    "reset_tokens_stream0": [
+      7,
+      255,
+      256,
+      300,
+      511
+    ],
+    "reset_tokens_stream1": [
+      0,
+      1,
+      129,
+      257,
+      500
+    ],
+    "output_max_abs_delta": 0.0007674247026443481,
+    "conv_carry_max_abs_delta": 0.0,
+    "ssm_carry_max_abs_delta": 2.9567629098892212e-05,
+    "gradient_max_abs_delta": [
+      8.533243089914322e-07,
+      1.2479686120059341e-06,
+      8.259958121925592e-07
+    ],
+    "reset_stream_incoming_conv_grad_max": 0.0,
+    "reset_stream_incoming_ssm_grad_max": 0.0
+  }
+}

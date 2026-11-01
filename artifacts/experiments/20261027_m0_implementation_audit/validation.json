@@ -1,0 +1,38 @@
+{
+  "reviewed_commits": [
+    "e81302d6af44e9fc1aa947b21ce087e2b44fe94d",
+    "17c2a39c7f85742a48cf8fd4635362d9070da61a",
+    "f4d1b6727d1b31be461846f179755d515116e320"
+  ],
+  "current_head": "f4d1b6727d1b31be461846f179755d515116e320",
+  "canonical_hashes_unchanged": true,
+  "saccade_worktree_diff_empty": true,
+  "tests": {
+    "passed": 17,
+    "skipped": 0,
+    "seconds": 38.92
+  },
+  "production_p1_processes": [],
+  "audit_updates": {
+    "seed": 1897,
+    "updates_per_shape": 8,
+    "shapes": [
+      64,
+      256
+    ],
+    "checkpoints_written": false
+  },
+  "project_environment_modified": false,
+  "temporary_dependency": "/tmp/saccade_m0_audit_deps/lightgbm 4.6.0",
+  "paper_edm_sha256": "0cf53de9ac234366fdba08d472afa236d46edd8202fda340f579aa2db866087a",
+  "source_hashes": {
+    "saccade/data.py": "9f7c19ba92a626954940bea2dbf03bed8e01983dc0a6584f9f68d8f672258c7e",
+    "saccade/model.py": "e25640bc1c0c51352fcafb480db83ec269494c49a4d677d5d4b7a94076c0d1c5",
+    "saccade/train.py": "106e3d41285dd63b47b0d96491646e21c0064cf628f39102574a287db4e4a883",
+    "saccade/eval/s1.py": "51866c5ba32726af500a06bd1d0a29405a229cc9ddecaed90effe3e852c2d44f",
+    "saccade/tests/test_m0.py": "5f744bde24215aeb5e6fcfd880a8fc0d07bfbb8184aaf4ed5695c239d3b0d021",
+    "saccade/m0.yaml": "e17da04bca011c2730a5412e9aff39d239116761433421f830232ccd1b8d5900",
+    "artifacts/saccade_m0/targets/change_teacher.txt": "69862f6b98e3ba770395d07bdb516c2cc0e326917c0f848c4a8aedadd109406f",
+    "artifacts/saccade_m0/targets/change_targets.npy": "f1a79ed7dba730db02b5efb537cc8f44fd580406c2da7894005b4e3e84c87b97"
+  }
+}

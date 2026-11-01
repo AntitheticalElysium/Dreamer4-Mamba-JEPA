@@ -1,0 +1,226 @@
+{
+  "periphery/real": {
+    "crop_entity_counts_per_frame": {
+      "zombies": 0.05673333333333333,
+      "cows": 0.05683333333333333,
+      "skeletons": 0.015933333333333334,
+      "arrows": 0.014233333333333334
+    },
+    "real_label_kind_recall": {
+      "zombies": 0.9329639889196676,
+      "cows": 0.9351291918636614,
+      "skeletons": 0.8530465949820788,
+      "arrows": 0.8622881355932204
+    },
+    "hud_exact": {
+      "health": 1.0,
+      "food": 1.0,
+      "drink": 1.0,
+      "energy": 1.0,
+      "wood": 1.0,
+      "stone": 1.0,
+      "coal": 1.0,
+      "iron": 1.0,
+      "diamond": 1.0,
+      "sapling": 1.0,
+      "wood_pickaxe": 1.0,
+      "stone_pickaxe": 1.0,
+      "iron_pickaxe": 1.0,
+      "wood_sword": 0.9983862291554599,
+      "stone_sword": 1.0,
+      "iron_sword": 1.0
+    }
+  },
+  "periphery/generated": {
+    "crop_entity_counts_per_frame": {
+      "zombies": 0.0346,
+      "cows": 0.029533333333333335,
+      "skeletons": 0.0093,
+      "arrows": 0.0157
+    }
+  },
+  "fovea/real": {
+    "crop_entity_counts_per_frame": {
+      "zombies": 0.05196666666666667,
+      "cows": 0.0582,
+      "skeletons": 0.011633333333333334,
+      "arrows": 0.0
+    },
+    "real_label_kind_recall": {
+      "zombies": 0.8454293628808864,
+      "cows": 0.9477735019241341,
+      "skeletons": 0.6218637992831542,
+      "arrows": 0.0
+    },
+    "hud_exact": {
+      "health": 0.9815436241610739,
+      "food": 0.980319803198032,
+      "drink": 0.9902912621359223,
+      "energy": 0.9972144846796658,
+      "wood": 0.9816612729234089,
+      "stone": 0.9676037483266399,
+      "coal": 0.9753036437246964,
+      "iron": 0.989202657807309,
+      "diamond": 1.0,
+      "sapling": 0.998059866962306,
+      "wood_pickaxe": 0.9943639291465378,
+      "stone_pickaxe": 0.9962385814078453,
+      "iron_pickaxe": 1.0,
+      "wood_sword": 0.9973103819257665,
+      "stone_sword": 0.9957356076759062,
+      "iron_sword": 0.9947201689545935
+    }
+  },
+  "fovea/generated": {
+    "crop_entity_counts_per_frame": {
+      "zombies": 0.023433333333333334,
+      "cows": 0.0148,
+      "skeletons": 0.0399,
+      "arrows": 0.019
+    }
+  },
+  "joint/real": {
+    "crop_entity_counts_per_frame": {
+      "zombies": 0.0581,
+      "cows": 0.058633333333333336,
+      "skeletons": 0.017166666666666667,
+      "arrows": 0.013666666666666667
+    },
+    "real_label_kind_recall": {
+      "zombies": 0.9506925207756233,
+      "cows": 0.9587685541506322,
+      "skeletons": 0.9086021505376344,
+      "arrows": 0.8622881355932204
+    },
+    "hud_exact": {
+      "health": 1.0,
+      "food": 1.0,
+      "drink": 1.0,
+      "energy": 1.0,
+      "wood": 1.0,
+      "stone": 1.0,
+      "coal": 1.0,
+      "iron": 1.0,
+      "diamond": 1.0,
+      "sapling": 1.0,
+      "wood_pickaxe": 1.0,
+      "stone_pickaxe": 1.0,
+      "iron_pickaxe": 1.0,
+      "wood_sword": 0.9983862291554599,
+      "stone_sword": 1.0,
+      "iron_sword": 0.9989440337909187
+    }
+  },
+  "joint/generated": {
+    "crop_entity_counts_per_frame": {
+      "zombies": 0.036066666666666664,
+      "cows": 0.026466666666666666,
+      "skeletons": 0.022866666666666667,
+      "arrows": 0.0687
+    }
+  },
+  "pixels_full/raw": {
+    "crop_entity_counts_per_frame": {
+      "zombies": 0.058166666666666665,
+      "cows": 0.059333333333333335,
+      "skeletons": 0.016966666666666668,
+      "arrows": 0.0133
+    },
+    "real_label_kind_recall": {
+      "zombies": 0.9601108033240997,
+      "cows": 0.977460142935679,
+      "skeletons": 0.9121863799283154,
+      "arrows": 0.8432203389830508
+    },
+    "hud_exact": {
+      "health": 1.0,
+      "food": 1.0,
+      "drink": 1.0,
+      "energy": 1.0,
+      "wood": 1.0,
+      "stone": 1.0,
+      "coal": 1.0,
+      "iron": 1.0,
+      "diamond": 1.0,
+      "sapling": 1.0,
+      "wood_pickaxe": 1.0,
+      "stone_pickaxe": 1.0,
+      "iron_pickaxe": 1.0,
+      "wood_sword": 1.0,
+      "stone_sword": 1.0,
+      "iron_sword": 1.0
+    }
+  },
+  "pixels_full/real_rec": {
+    "crop_entity_counts_per_frame": {
+      "zombies": 0.0,
+      "cows": 0.0401,
+      "skeletons": 0.0,
+      "arrows": 0.0
+    },
+    "real_label_kind_recall": {
+      "zombies": 0.0,
+      "cows": 0.6613523914238593,
+      "skeletons": 0.0,
+      "arrows": 0.0
+    },
+    "hud_exact": {
+      "health": 0.015100671140939598,
+      "food": 0.036490364903649035,
+      "drink": 0.16255201109570042,
+      "energy": 0.017827298050139277,
+      "wood": 0.6556094929881338,
+      "stone": 0.43855421686746987,
+      "coal": 0.7016194331983806,
+      "iron": 0.8696013289036545,
+      "diamond": 1.0,
+      "sapling": 0.9950110864745011,
+      "wood_pickaxe": 0.8510466988727858,
+      "stone_pickaxe": 0.892530897367007,
+      "iron_pickaxe": 0.9690217391304348,
+      "wood_sword": 0.8977945131791286,
+      "stone_sword": 0.8390191897654584,
+      "iron_sword": 0.9424498416050686
+    }
+  },
+  "pixels_full/real_tsp": {
+    "crop_entity_counts_per_frame": {
+      "zombies": 0.0,
+      "cows": 0.04346666666666667,
+      "skeletons": 0.0,
+      "arrows": 0.0
+    },
+    "real_label_kind_recall": {
+      "zombies": 0.0,
+      "cows": 0.6542056074766355,
+      "skeletons": 0.0,
+      "arrows": 0.0
+    },
+    "hud_exact": {
+      "health": 0.015100671140939598,
+      "food": 0.036490364903649035,
+      "drink": 0.16255201109570042,
+      "energy": 0.017827298050139277,
+      "wood": 0.6556094929881338,
+      "stone": 0.43855421686746987,
+      "coal": 0.7016194331983806,
+      "iron": 0.8696013289036545,
+      "diamond": 1.0,
+      "sapling": 0.9950110864745011,
+      "wood_pickaxe": 0.8510466988727858,
+      "stone_pickaxe": 0.892530897367007,
+      "iron_pickaxe": 0.9690217391304348,
+      "wood_sword": 0.8977945131791286,
+      "stone_sword": 0.8390191897654584,
+      "iron_sword": 0.9424498416050686
+    }
+  },
+  "pixels_full/generated_rec": {
+    "crop_entity_counts_per_frame": {
+      "zombies": 0.0,
+      "cows": 0.012966666666666666,
+      "skeletons": 0.0,
+      "arrows": 0.0
+    }
+  }
+}

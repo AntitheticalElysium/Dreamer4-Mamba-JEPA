@@ -1,0 +1,30 @@
+{
+  "cases": [
+    {
+      "producer_exit": 0,
+      "handler_ran": true,
+      "metadata": {
+        "MONITOR_SERVICE_RESULT": "success",
+        "MONITOR_EXIT_CODE": "exited",
+        "MONITOR_EXIT_STATUS": "0",
+        "MONITOR_INVOCATION_ID": "d98a19b721d34bd08021e4cf32b5ffb8",
+        "MONITOR_UNIT": "saccade-hook-test-bc2d0c95-p.service"
+      },
+      "attached_without_restart": true
+    },
+    {
+      "producer_exit": 7,
+      "handler_ran": false,
+      "metadata": {
+        "ActiveState": "failed",
+        "Result": "exit-code",
+        "ExecMainStatus": "7"
+      },
+      "attached_without_restart": true
+    }
+  ],
+  "production_p1_identity_unchanged": {
+    "InvocationID": "a467ea58282948e5883e02590cf03ca2",
+    "MainPID": "30881"
+  }
+}

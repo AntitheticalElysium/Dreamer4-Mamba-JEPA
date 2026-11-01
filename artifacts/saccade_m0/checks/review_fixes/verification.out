@@ -1,0 +1,26 @@
+{
+  "checkpoint_identity": "matches current sources/config/data",
+  "updates": 20,
+  "s1_sections_written": 4,
+  "reader_reloaded_frozen": true,
+  "monitor_checkpoints": 2,
+  "source_sha256": {
+    "saccade/model.py": "7ea04a4957d2915c5dfbfb9a69ed5e44ae275d555bbea8e629edaa00330db148",
+    "saccade/data.py": "d4c865124e0cdf8819fb5cc258d519c5dcfb7ec05985eedcf821e2b632907698",
+    "saccade/train.py": "97d6b99e9d0b2cf6d3c55269315310e06b090d19495f89769038e77a33ded146",
+    "saccade/eval/s1.py": "21178b5adca2efa1f505f901a31d83bc16290a1d7a7e2f65d7e3267ff01bbd82",
+    "saccade/m0.yaml": "be601b79321c3df10e379ea117af64e0fca2fa2cf78fdc39c6134525c33322f5"
+  },
+  "data_sha256": {
+    "change_teacher.txt": "69862f6b98e3ba770395d07bdb516c2cc0e326917c0f848c4a8aedadd109406f",
+    "change_targets.npy": "f1a79ed7dba730db02b5efb537cc8f44fd580406c2da7894005b4e3e84c87b97"
+  },
+  "unlock": {
+    "transitions": 304898,
+    "unlocks": 10528,
+    "old_threshold_misses": 115,
+    "corrected_event_mismatches": 0,
+    "perfect_reward_unlock_brier": 0.0
+  },
+  "classifier_test_episodes": 5
+}

@@ -1,0 +1,182 @@
+# saccade M0: every hyperparameter of the architecture and its training, in one place (user, 10-27).
+# Each value carries its source. "working" = a declared starting value: changed only through a declared reading,
+# never tuned until a gate passes (TEST_SPEC rules). Reasons and contracts live in saccade/design/; numbers live here.
+# Source keys: JEDI = arXiv 2605.13013 (vendored LaTeX, Tables "architecture" / "training"); DIAMOND = config/trainer.yaml
+# (github eloialonso/diamond); D4 = Dreamer 4, arXiv 2509.24527 (vendored); DV3 = DreamerV3 configs.yaml (vendored);
+# LeWM = lucas-maes/le-wm (vendored) and d4mj/recipes/lewm_mamba_raw.json; Heo = RoPE for ViT, ECCV 2024; DiT = Peebles
+# & Xie 2023; GameNGen = arXiv 2408.14837; EDA = artifacts/experiments/20261023_system_design (scripts named there).
+
+seed: {world: [1, 2]}                         # CURRICULUM Budgets: two independently learned worlds
+
+data:
+  corpus: artifacts/craftax_support_v2        # 8,069 train episodes, 2.56 M transitions
+  monitor_fraction: 0.05                      # fixed held-out train episodes, same for every arm (CURRICULUM)
+  streams: 16                                 # episodes per optimizer update (E1 / E1d; DRAMA 16 x 128)
+  chunk_steps: [64, 256]                      # first / second half of P1's frames (CURRICULUM)
+  accumulate_at_256: 4                        # 4 microbatches x 4 distinct streams per update at 256 steps
+  context_prefix: 8                           # = the denoiser's effective temporal reach (denoiser below)
+  actions: 17                                 # Craftax-Classic action count
+
+perception:
+  periphery:
+    acuity: 3                                 # cell downsampled to 3 x 3 (8-bit); declared rule, eda_periphery_acuity.py
+    hidden: [256, 256]                        # working; the S0 probe family (MLP, GELU)
+    token_dim: 16                             # working; JEDI's 16 channels per latent position
+    tanh_clamp: 3.0                           # JEDI: C(z) = 3 tanh(z / 3), after the normalisation
+    normalise: layernorm_no_affine_per_token  # I-JEPA / V-JEPA 2-AC (vendored F.layer_norm); before the clamp (COLLAPSE.md)
+    film_from_lighting: true                  # PERCEPTION v4: gain control (Carandini & Heeger)
+  lighting:
+    dim: 8                                    # working; low-dimensional by contract (PERCEPTION v4, Codex)
+    hidden: [64]                              # working; MLP on the 6 pooled statistics
+    normalise: layernorm_no_affine_per_token  # as the periphery, then the same clamp
+    inputs: frame_pooled_statistics           # per-channel mean and std of the frame, nothing spatial
+  fovea:
+    crop_cells: 3                             # 3 x 3 cells, full resolution (user 10-26, working size)
+    token_dim: 64                             # working; per-cell glimpse token, higher capacity than periphery
+    channels: 64                              # working; conv 3x3, conv 3x3, per-cell 7x7 stride 7, conv 3x3 across the
+                                              # crop's cells (the fovea integrates its crop, PERCEPTION)
+    tanh_clamp: 3.0                           # JEDI
+    normalise: layernorm_no_affine_per_token  # as the periphery
+  fixation_prior: uniform_49_centres          # 3 x 3 window anywhere on the 9 x 9 screen, HUD included (STEP_SPEC 7)
+
+belief:                                       # Mamba-2; LeWM Raw recipe (our past working Mamba world)
+  layers: 6
+  width: 256
+  d_state: 64
+  headdim: 64
+  expand: 1
+  d_conv: 4
+  chunk_size: 256
+  A_init_range: [1.0, 16.0]
+  dt_range: [0.001, 0.1]
+  dt_init_floor: 1.0e-4
+  ngroups: 1                                  # LeWM Raw recipe (d4mj/recipes/lewm_mamba_raw.json) from here to norm_eps
+  norm_before_gate: false
+  bias: false
+  conv_bias: true
+  norm_eps: 1.0e-5                            # pre-norm RMSNorm residual blocks + final RMSNorm (d4mj LeWM world)
+  backend: triton                             # installed mamba_ssm kernel; "reference" = the pure-torch scan (tests)
+  inputs: interleaved                         # [percept + reward + termination]_t, then [action]_t (STEP_SPEC 7)
+  percept_projection: flatten_linear          # flattened periphery + glimpse + fixation + lighting -> width (DRAMA)
+  glimpse_placement: canvas_at_fixation_cells # glimpse tokens on a 9 x 9 canvas + mask: per-position weights (the
+                                              # denoiser places them the same way)
+
+denoiser:                                     # D4-style factorised space-time transformer
+  layers: 8                                   # working (cost: eda notes, READING 10-27)
+  width: 256
+  heads: 4
+  mlp: swiglu                                 # D4 (pre-norm RMSNorm, SwiGLU, QK-norm); logit soft-capping omitted (the
+  mlp_hidden: 688                             # fused SDPA kernels lack it; QK-norm kept); 688 = 4x MLP parameter count
+  temporal_every: 4                           # D4: temporal attention once every 4 layers (layers 4 and 8)
+  temporal_window: 4                          # past frames per temporal layer -> effective reach 8 frames
+  memory_tokens: 4                            # working; predicted belief -> K tokens per frame
+  positions: {spatial: rope_2d_axial_plus_absolute, temporal: rope_1d}   # D4 (RoPE); Heo (APE + RoPE at 7 x 7)
+  rope_theta_space: 100.0                     # Heo et al. code, compute_axial_cis default (naver-ai/rope-vit)
+  rope_theta_time: 10000.0                    # RoPE (Su et al.) standard base
+  cond_channels: 256                          # DIAMOND: Fourier features of c_noise + action embedding, projected
+  qk_norm: true                               # D4
+  conditioning: adaln_zero                    # DiT: noise level and action
+  type_embeddings: [periphery, glimpse, lighting, memory]   # D4 modality ids
+
+edm:
+  prediction: x                               # JEDI / D4 (x-space)
+  sigma_data: 1.0                             # JEDI
+  train_sigma: {lognormal_loc: -0.4, lognormal_scale: 1.2, min: 0.002, max: 20.0}   # DIAMOND
+  training_form: diffusion_forcing            # D4: each frame its own noise level; noisy past = context corruption
+  loss: raw_output_mse                        # DIAMOND code: MSE of F against (x0 - c_skip x) / c_out = EDM lambda = 1/c_out^2
+  loss_reduction: mean_over_percept_elements  # 81 x 16 + 9 x 64 + 8 = 1,880 scalars per frame, then mean over frames
+  noise_offset: 0.0                           # DIAMOND's 0.3 shifts image brightness; lighting has its own token
+  sampler:                                    # NVIDIA EDM Algorithm 2 (generate.py), order 1 (STEP_SPEC 7)
+    method: euler
+    steps: 3                                  # JEDI: 3 evaluations, then a final step to sigma 0
+    sigma_max: 5.0                            # DIAMOND
+    sigma_min: 0.002                          # DIAMOND
+    rho: 7                                    # DIAMOND / EDM
+    initial_noise: sigma_max_scaled           # EDM (the published DIAMOND sampler starts from unit noise)
+    s_churn: 1.0                              # JEDI, its stochastic-environment setting
+    s_tmin: 0.0                               # DIAMOND default: churn at every step
+    s_tmax: .inf
+    s_noise: 1.0
+    evaluate_at: sigma_hat                    # EDM; DIAMOND passes sigma (differs only with churn)
+    output_map: range_clamp                   # clip to [-3, 3]; another LN/tanh would change a correct target (audit R1)
+  inference_context_sigma: 0.1                # working; D4 "slightly corrupt" tau_ctx read as noise 0.1; GameNGen: 0 works
+  context_entry: one_extra_pass_per_frame     # one fresh draw at the context sigma, one pass writes the cache (STEP_SPEC 7)
+
+heads:
+  tsp: {likelihood: discretised_logistic, mean_from: [belief, periphery, lighting], scale_from: [lighting, pixel_position]}
+  fovea_reconstruction: {likelihood: discretised_logistic, mean_from: [glimpse, lighting], decoder: shared_with_tsp}  # 10-27
+  pixel_decoder: {hidden: 256, position_dim: 32, belief_dim: 128, log_scale_floor: -7,   # working; floor: PixelCNN++
+                  mean_loss: nll}   # nll: P1 world 1's recipe. faithful (10-31): mean by squared error in [-1, 1], scale by
+                                    # NLL on the detached mean and detached lighting latent (Stirn et al. 2023; Seitzer et al.
+                                    # 2022; decoder diagnosis 10-30: the NLL's per-position scale starved HUD cells)
+                                    # tsp_mean_loss (absent = faithful's squared error; set by a launcher, 11-01):
+                                    # scale_weighted_nll = stopgrad(scale) x NLL for TSP's mean only (Seitzer et al. 2022)
+  change_map: {target: a9b_soft_detector, rows: map_only, hidden: 256, position_dim: 32, belief_dim: 128}   # A9b + working widths
+  outcome: {hidden: 256}                      # working; DV3 size12m-like heads
+  reward: {density: categorical, space: symlog, bins: 256, support: [-0.9, 1.1], support_space: raw,
+           sampled_value: train_bin_mean}     # LOSSES G3 (revised 10-27, overfit check: the discretised logistic
+                                              # mixture's tail gradients ~1/scale took the clipped update; categorical
+                                              # reward as DIAMOND / JEDI / IRIS); sampled value: Lloyd 1982
+  continuation: {likelihood: bernoulli, conditioned_on: [predicted_belief, percept, reward]}
+
+losses:
+  harmoniser: harmonydream                    # L / sigma + log(1 + sigma) per group (LOSSES v1.1)
+  harmoniser_init_sigma: 1.0                  # working
+  groups: [G1, G2, G3]                        # P1 groups (LOSSES terms table); G2 = change map + TSP + fovea reconstruction
+  sigreg: null                                # dropped from M0 (10-27, LOSSES principle 7); comparison: LeWM module,
+                                              # lambda x N held at 0.09 x 128 (Epps-Pulley statistic scales with N)
+  stop_gradient: [denoiser_frame_inputs, denoiser_targets]   # REPA-E, JEDI; memory tokens stay differentiable
+  episode_start: dreamerv3_reset              # zero belief and zero action input for an episode's first frame
+
+optimizer:                                    # JEDI / DIAMOND
+  name: adamw
+  lr: 1.0e-4
+  eps: 1.0e-8
+  weight_decay: 0.01
+  grad_clip: 1.0
+  encoder_lr_scale: 0.3                       # JEDI; Tang et al. 2023: predictor faster than representation
+  warmup_frames: 1024000                      # JEDI's 1,000 warm-up updates at 1,024 frames per update
+  schedule: cosine_by_frames                  # CURRICULUM: follows frames, not updates
+  min_lr_ratio: 0.1                           # LeWM 5e-6 / 5e-5
+  betas: [0.9, 0.999]                         # torch AdamW default (JEDI / DIAMOND do not change it)
+  weight_decay_on: linear_and_conv_weights    # DIAMOND configure_opt: biases, norms, embeddings excluded
+
+p1:                                           # CURRICULUM Budgets
+  frames: 25600000
+  checkpoint_every_fraction: 0.1
+  precision: bf16_autocast                    # RTX 3060; losses and the SSM state in fp32
+  activation_checkpointing: true              # per denoiser block (6 GB card)
+  out_dir: artifacts/saccade_m0
+  monitor: {windows: 2000, sigma_levels: 8, fixed_noise_seed: 0, fixed_fixation_seed: 0, objective: edm.loss}   # the G1 loss as declared
+
+p2:
+  updates: 6000
+  horizons: [2, 4, 8, 16]                     # 1,500 updates each
+  windows_per_update: 16
+  rollouts_per_window: 2                      # m = 2: unbiased energy score (Pacchiardi; NeuralGCM)
+  one_step_streams: 8                         # one-step losses continue on 8 real streams x 64
+  one_step_groups: [G1, G3]                   # outcome heads keep up with the changing belief; G2 frozen with the encoder
+  grad_last_steps: 2
+  summary: {patch: padded_3x3_on_11x11_centres, global: full_trajectory, scale_windows: 10000}   # every token in 9 windows
+
+p3:
+  updates: 2500                               # the 09-03 count (the only measured success)
+  batch: 64
+  horizon: 16                                 # D4 / JEDI 15, DV3 15
+  gamma: 0.997                                # D4
+  lambda: 0.95                                # DV3, JEDI
+  policy_objective: {name: pmpo, alpha: 0.5, prior_kl_beta: 0.3, prior_kl: reverse}   # D4
+  value: {output: symexp_twohot, bins: 255, slow_target_rate: 0.02}                  # DV3
+  mlp: {layers: 3, units: 256}                # DV3 size12m units
+  seeds: {actor: 3, bc: 3}                    # per world seed
+  eval_env_seeds: 512                         # paired DEV seeds
+  bc_data: expert_branch_steps                # train-split steps whose collector flag is not exogenous (A8)
+  features: corrected_belief                  # Mamba's output after the percept of t (b_t), stop-gradient; actor and BC alike
+  fixation: random_prior                      # TEST_SPEC S3.1: the same fixation controller for actor and BC
+  bc:                                         # our 09-03 pipeline (d4_mamba_jepa/craftax_runners.train_craftax_bc)
+    optimizer: {name: adamw, lr: 1.0e-4, weight_decay: 0.01, grad_clip: 1.0, warmup_updates: 250}
+    batch: {streams: 16, steps: 64}           # P1's chunk shape
+    stop: {eval_every: 1000, patience: 3, max_updates: 20000}   # held-out monitor NLL; patience as the S0 probes
+  actor_init: bc_same_seed                    # D4: the policy continues from BC; actor seed i pairs with BC seed i
+  prior: frozen_bc_copy                       # D4: a frozen copy of the BC policy; KL(pi_actor || pi_bc)
+  value_init: fresh                           # D4

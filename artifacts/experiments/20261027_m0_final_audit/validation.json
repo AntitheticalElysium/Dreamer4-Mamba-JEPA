@@ -1,0 +1,34 @@
+{
+  "requested_commit": "fc120c63f004655ecea656d41b89daae142ed7df",
+  "concurrent_revision_reviewed": "e1b4cb40c68b90b5988fba7fd7942f4abf7b37e8",
+  "current_head": "e1b4cb40c68b90b5988fba7fd7942f4abf7b37e8",
+  "original_hashes_match_requested_commit": [
+    "saccade/m0.yaml",
+    "saccade/design/M0_CODE.md",
+    "saccade/design/STEP_SPEC.md",
+    "saccade/design/CURRICULUM.md",
+    "saccade/design/LOSSES.md",
+    "saccade/design/TEST_SPEC.md",
+    "saccade/design/PERCEPTION.md",
+    "saccade/eval/calib.py",
+    "d4mj/lewm.py",
+    "artifacts/experiments/20261023_system_design/eda_periphery_acuity.py"
+  ],
+  "original_untracked_data_hashes_unchanged": [
+    "artifacts/eda/system_design_v1/acuity/acuity.json"
+  ],
+  "concurrent_snapshot_hashes_verified": true,
+  "current_saccade_worktree_diff": "",
+  "existing_eval_tests": {
+    "passed": 6,
+    "seconds": 0.13
+  },
+  "existing_mamba_recurrence_tests": {
+    "passed": 3,
+    "seconds": 7.44
+  },
+  "cpu_contract_checks": "passed",
+  "cuda_profiles_and_parity": "completed",
+  "m0_implementation_or_training": "not performed",
+  "canonical_edits_by_this_audit": false
+}

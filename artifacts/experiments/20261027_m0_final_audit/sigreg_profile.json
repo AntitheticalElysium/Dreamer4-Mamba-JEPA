@@ -1,0 +1,21 @@
+{
+  "torch": "2.13.0+cu130",
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "dtype": "float32",
+  "tokens_each_family": 4096,
+  "projections": 1024,
+  "knots": 17,
+  "elapsed_forward_backward_s": 0.14226698000038596,
+  "base_allocated_MiB": 0.00146484375,
+  "peak_allocated_MiB": 1913.82421875,
+  "peak_reserved_MiB": 1978.0,
+  "values": [
+    0.956672728061676,
+    1.0602169036865234
+  ],
+  "grad_finite": [
+    true,
+    true
+  ],
+  "interpretation": "Isolated regularizer cost; not M0 peak or throughput."
+}
