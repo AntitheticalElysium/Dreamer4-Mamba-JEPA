@@ -1,0 +1,173 @@
+"""Learned-fixation design reading H (PLAN.md H): does choosing WHICH crop of each frame is trained on make the
+look-local predictions learn faster than uniform crops? A controlled data-selection test on frozen P1-F checkpoint-10
+inputs: fresh TSP heads (`sr`: the crop at w from frame t's periphery, lighting and predicted belief; `fwd`: from frame
+t-1's periphery and lighting and frame t's predicted belief, i.e. through the action), P1-F's faithful loss,
+identically seeded, the same frames, batches and budget; the arms differ only in the window trained per frame:
+uniform; learnability (RHO-LOSS: current loss minus an irreducible-loss model's, the IL learner trained uniformly on
+the held-out half); error (current loss); progress (gamma-progress, |EMA-copy loss - current loss|, Kim et al.'s
+gamma 0.9995). Every non-uniform arm takes its arg-max with probability 0.8, a uniform window otherwise (MAGELLAN's
+final epsilon 0.2). Labels select evaluation rows, label windows and describe the selections; they never score.
+Usage (project venv, GPU): python -m artifacts.experiments.20261031_learned_fixation_sweep.selection OUT_DIR [--smoke]
+"""
+import copy, importlib, json, os, sys, time
+from pathlib import Path
+
+os.environ.setdefault("JAX_PLATFORMS", "cpu")
+import numpy as np
+import torch
+
+from saccade import data as D, model as M, train as TR
+from saccade.eval import s1 as S
+
+F = importlib.import_module("artifacts.experiments.20261031_learned_fixation_sweep.locus")
+LS = importlib.import_module("artifacts.experiments.20261031_learned_fixation_sweep.landscape")
+DEV, ROOT = F.DEV, TR.ROOT
+CKPT = ROOT / "artifacts/experiments/20261030_p1_guided/run/ckpt_10.pt"
+CEN = F.CENTRES.to(DEV)                                                  # [49, 2]
+ARMS, MODES = ("uniform", "learnability", "error", "progress"), ("sr", "fwd")
+STEPS, BATCH, WARMUP, SEED, EPS, GAMMA = 6000, 512, 250, 0, 0.2, 0.9995
+EVALS = (0, 250, 500, 1000, 2000, 3000, 4500, 6000)
+
+
+def collect(model, cfg, L):
+    """Per frame t >= 1 of every episode: frame t's periphery / lighting, frame t-1's, frame t's predicted belief, the
+    frame's pixels, episode index, light, faced screen cell, whether a_{t-1} was DO."""
+    enc, eps = S.encode(model, L, cfg), S.episodes(L)
+    s_off, a_off = np.r_[0, np.cumsum(L["ep_T"] + 1)], np.r_[0, np.cumsum(L["ep_T"])]
+    out = {k: [] for k in ("p", "pp", "v", "vp", "bp", "frame", "ep", "light", "faced", "do")}
+    for e, r in enumerate(enc):
+        T = len(r["p"])
+        g = s_off[e] + np.arange(1, T)
+        d = F.FC.DIRS[L["s_dir"][g - 1]]
+        for k, x in (("p", r["p"][1:]), ("pp", r["p"][:-1]), ("v", r["v"][1:]), ("vp", r["v"][:-1]), ("bp", r["bp"][1:]),
+                     ("frame", D.RP.episode_fields(eps[e].shard, eps[e].slot)["observations"][1:T]),
+                     ("ep", torch.full((T - 1,), e)), ("light", torch.as_tensor(L["s_light"][g])),
+                     ("faced", torch.as_tensor((3 + d[:, 0]) * 9 + 4 + d[:, 1])),
+                     ("do", torch.as_tensor(L["t_action"][a_off[e] + np.arange(T - 1)] == F.FC.DO))):
+            out[k].append(torch.as_tensor(x))
+    return {k: torch.cat(v) for k, v in out.items()}
+
+
+def learner(cfg):
+    torch.manual_seed(SEED)
+    tsp, pixd = M.TSP(cfg).to(DEV), M.PixelDecoder(cfg).to(DEV)
+    return tsp, pixd, [p for m in (tsp.tsp, tsp.belief, tsp.cell, pixd) for p in m.parameters()]
+
+
+def outputs(tsp, pixd, X, idx, w, mode):
+    """Decoded mean / log-scale and the target pixels for rows idx at windows w ([n] or [n, k] window indices)."""
+    fix = CEN[w]
+    cells = M.window(fix)
+    bp, p, v = X["bp"][idx].to(DEV).float(), X["p" if mode == "sr" else "pp"][idx].to(DEV).float(), X["v" if mode == "sr" else "vp"][idx].to(DEV).float()
+    frames = X["frame"][idx].to(DEV)
+    if w.ndim == 2:
+        k = w.shape[1]
+        bp, p, v, frames = (x[:, None].expand(-1, k, *x.shape[1:]) for x in (bp, p, v, frames))
+    mean, ls = pixd(tsp.predict(bp, p, v, cells), v, cells)
+    return mean.float(), ls.float(), M.cell_pixels(M.crop(frames, fix))
+
+
+def loss_all(tsp, pixd, X, idx, mode, cfg):
+    """Pixel MSE (decoded mean clamped to [-1, 1]) at every window of rows idx: [n, 49]."""
+    out = []
+    with torch.no_grad(), TR.autocast(DEV, cfg):
+        for b in torch.as_tensor(idx).split(64):
+            mean, _, pix = outputs(tsp, pixd, X, b, torch.arange(49, device=DEV).expand(len(b), -1), mode)
+            out.append((mean.clamp(-1, 1) - (pix.float() / 127.5 - 1)).square().flatten(2).mean(-1).cpu())
+    return torch.cat(out)
+
+
+def train(arm, mode, X, train_idx, cfg, il=None, evalfn=None):
+    tsp, pixd, params = learner(cfg)
+    ema = (copy.deepcopy(tsp).eval(), copy.deepcopy(pixd).eval()) if arm == "progress" else None
+    o = cfg["optimizer"]
+    opt = torch.optim.AdamW(params, lr=o["lr"], betas=tuple(o["betas"]), eps=o["eps"])
+    gen = torch.Generator().manual_seed(SEED)                              # the same frames and coin flips in every arm
+    log, sel = [], {k: 0.0 for k in ("n", "faced", "hud", "night", "do_faced", "do")}
+    hudw = torch.as_tensor((F.WIN.numpy() >= 63).any(-1), device=DEV)
+    for step in range(STEPS + 1):
+        if evalfn and step in EVALS:
+            log.append({"step": step, **evalfn(tsp, pixd)})
+        if step == STEPS:
+            break
+        for gp in opt.param_groups:
+            gp["lr"] = o["lr"] * min(1.0, (step + 1) / WARMUP)
+        idx = train_idx[torch.randint(0, len(train_idx), (BATCH,), generator=gen)]
+        coin = torch.rand(BATCH, generator=gen).to(DEV) < EPS
+        w = torch.randint(0, 49, (BATCH,), generator=gen).to(DEV)
+        if arm != "uniform":
+            score = loss_all(tsp, pixd, X, idx, mode, cfg).to(DEV)
+            if arm == "learnability":
+                score = score - loss_all(*il, X, idx, mode, cfg).to(DEV)
+            elif arm == "progress":
+                score = (loss_all(*ema, X, idx, mode, cfg).to(DEV) - score).abs()
+            w = torch.where(coin, w, score.argmax(1))
+        fw = CEN[w]
+        cover = (M.window(fw) == X["faced"][idx].to(DEV)[:, None]).any(1)
+        dn = X["do"][idx].to(DEV)
+        for k, x in (("n", torch.ones_like(cover)), ("faced", cover), ("hud", hudw[w]), ("night", X["light"][idx].to(DEV) < 0.5),
+                     ("do_faced", cover & dn), ("do", dn)):
+            sel[k] += float(x.float().sum())
+        with TR.autocast(DEV, cfg):
+            mean, ls, pix = outputs(tsp, pixd, X, idx, w, mode)
+        loss = (mean - (pix.float() / 127.5 - 1)).square().mean() + M.pixel_nll(mean.detach(), ls, pix).mean()   # faithful
+        opt.zero_grad(set_to_none=True)
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(params, o["grad_clip"])
+        opt.step()
+        if ema is not None:
+            with torch.no_grad():
+                for m_old, m_new in zip(ema, (tsp, pixd)):
+                    for a, b in zip(m_old.parameters(), m_new.parameters()):
+                        a.mul_(GAMMA).add_(b, alpha=1 - GAMMA)
+    stats = {"faced": sel["faced"] / sel["n"], "hud": sel["hud"] / sel["n"], "night_frames": sel["night"] / sel["n"],
+             "faced_given_do": sel["do_faced"] / max(sel["do"], 1)}
+    return (tsp.eval(), pixd.eval()), log, stats
+
+
+def main():
+    global STEPS, EVALS
+    out_dir, smoke = Path(sys.argv[1]), "--smoke" in sys.argv
+    out_dir.mkdir(parents=True, exist_ok=True)
+    if smoke:
+        STEPS, EVALS = 40, (0, 20, 40)
+    ck = torch.load(CKPT, weights_only=False, map_location="cpu")
+    cfg = ck["cfg"]
+    model = M.M0(cfg).to(DEV); model.load_state_dict(ck["model"]); model.eval()
+    Ltr = S.first_episodes(dict(np.load(ROOT / "artifacts/eda/s0/s0_train400_labels.npz")), 20 if smoke else 400)
+    Ldv = S.first_episodes(dict(np.load(S.LABELS / "s0_dev_labels.npz")), 12 if smoke else F.N_EP)
+    X = collect(model, cfg, Ltr)
+    ctx, face, d = F.contexts(Ldv, np.random.default_rng(2031))            # G's (F's) evaluation rows
+    if smoke:
+        ctx = {c: r[:6] for c, r in ctx.items() if r}
+    rows = [r for c in ctx for r in ctx[c]]
+    E_all = collect(model, cfg, Ldv)
+    s_off = np.r_[0, np.cumsum(Ldv["ep_T"])]                               # collect drops frame 0 of each episode
+    eval_idx = torch.as_tensor([s_off[e] + t - 1 for e, t in rows])
+    lab = LS.window_labels(Ldv, rows, ctx, d)
+    np.savez_compressed(out_dir / "labels.npz", **lab)
+    del model
+    torch.cuda.empty_cache()
+    held = (X["ep"] % 2 == 1).nonzero()[:, 0]                              # the IL learner's half (RHO's holdout split)
+    fit = (X["ep"] % 2 == 0).nonzero()[:, 0]
+    res = {"checkpoint": str(CKPT), "frames": {"fit": len(fit), "il": len(held)}, "eval_rows": len(rows), "runs": {}}
+    for mode in MODES:
+        evalfn = lambda tsp, pixd: {"loss": loss_all(tsp, pixd, E_all, eval_idx, mode, cfg).numpy()}
+        t0 = time.time()
+        il, _, _ = train("uniform", mode, X, held, cfg)
+        res["runs"][f"{mode}_il"] = {"seconds": time.time() - t0}
+        il_eval = loss_all(*il, E_all, eval_idx, mode, cfg).numpy()
+        np.save(out_dir / f"{mode}_il_eval.npy", il_eval)
+        for arm in ARMS:
+            t0 = time.time()
+            _, log, stats = train(arm, mode, X, fit, cfg, il=il, evalfn=evalfn)
+            np.savez_compressed(out_dir / f"{mode}_{arm}.npz", steps=np.array([x["step"] for x in log]),
+                                loss=np.stack([x["loss"] for x in log]))
+            res["runs"][f"{mode}_{arm}"] = {"seconds": time.time() - t0, "selection": stats,
+                                            "eval_mean": [float(x["loss"].mean()) for x in log]}
+            print(mode, arm, round(time.time() - t0), "s", json.dumps(res["runs"][f"{mode}_{arm}"]), flush=True)
+            (out_dir / "results.json").write_text(json.dumps(res, indent=1))
+
+
+if __name__ == "__main__":
+    main()

@@ -266,3 +266,46 @@ random looks would meet, before anything is built.
   rows the median is 0.06%, p99 0.64%. The check now bounds the MEDIAN at 2% (a misalignment shifts it) and records the
   max. Limit: the half-precision belief adds a small per-row noise to every instrument, equal across checkpoints and
   worlds. Rerun from the start.
+
+## H. Does choosing which crop is trained on speed up look-local learning? (`selection.py`, GPU; user 11-01: "I'm not sure we should be dropping learning-progress so easily ... maybe we're missing something")
+Why (TEACHING 12): G measured progress between checkpoints under uniform looks, credited to no look. The validated
+forms are different: progress credited to the samples that caused it (Graves et al.'s prediction gain, the strategic
+student's slope against the samples allocated, Kim et al.'s gamma-progress, Poli et al.'s per-trial information
+gain), and learnability against a reference (RHO-LOSS: current loss minus an irreducible-loss model's, 18x fewer
+steps on Clothing-1M; JEST, up to 13x; PLR's value loss + staleness, +28% on Procgen). P1 is an offline data-selection
+problem (the chooser picks which crop of a stored frame becomes a training target), the setting RHO-LOSS / JEST address.
+The premise every such chooser rests on is causal and untested here: selecting crops makes the look-local predictions
+learn faster than uniform crops.
+- **Learners.** Fresh TSP heads (adapter + belief projection + cell embedding + PixelDecoder), identically seeded,
+  P1-F's faithful loss, on frozen P1-F checkpoint-10 inputs (train-400; periphery, lighting, predicted belief): `sr`,
+  the crop at w from frame t's periphery (super-resolution, decision 1's glimpse stage near sigma_p = 0); `fwd`, the
+  crop at w of frame t from frame t-1's periphery and lighting and frame t's predicted belief (which has read a_{t-1}):
+  the next fine view through the action (decision 1's forward mode).
+- **Arms** (the same frames, batches and coin flips; 6,000 steps x 512 frames, refit.py's budget; per frame one window
+  trained): uniform; learnability (RHO-LOSS approximation 2: current loss minus the IL learner's loss, the IL learner
+  trained uniformly for the same budget on the other half of the episodes, never updated); error (current loss:
+  Haber et al.'s adversarial signal, the noise-prone control); progress (|EMA-copy loss - current loss|, Kim et al.'s
+  gamma 0.9995, bidirectional as Kanitscheider / MAGELLAN / Ten). Non-uniform arms take the arg-max window with
+  probability 0.8, a uniform one otherwise (MAGELLAN's final epsilon 0.2). Full feedback (all 49 windows scored per
+  frame) is what offline P1 allows; an online agent would need a predictor of the score (not tested here).
+- **Readings** (held-out: G's rows, dev first 400 episodes, all 49 windows, steps 0-6000; episode-bootstrap SEs):
+  1. Global: mean pixel MSE over all windows of the 600 random rows (the uniform-target distribution), per step; steps
+     for each arm to reach uniform's final value.
+  2. Consequences: the DO classes' consequence windows (G's definition), same.
+  3. Night vs day (random rows): does the arm buy day or night error.
+  4. Selection statistics on the training frames: share of trained windows covering the faced tile (all frames; DO
+     frames), the HUD, night frames, against the uniform arm.
+- **Claim.** Learnability selection reaches uniform's final held-out loss on (1) and (2) in clearly fewer steps.
+- **Competing.** (a) No exploitable redundancy for this learner: every arm ~ uniform (Graves et al.'s implicit
+  curriculum). (b) Selection buys the selected crops only: (2) improves, (1) worsens (a trade-off). (c) Error selection
+  is captured by night static (3, 4) and is slower on (1); progress at this horizon chases fluctuations.
+- **Control.** The uniform arm; the IL learner's own held-out loss; day / night strata.
+- **Rules out.** Learnability ~ uniform on (1) and (2) for both learners: crop selection has no data-efficiency value
+  for look-local learning in this data (the learned part of a chooser buys nothing; contingency / floor suffice).
+  Learnability > uniform: the selection premise holds here (supports a learnability chooser; does not show the joint
+  system benefits, nor that an online predictor of the score can be learned). Error ~ learnability: no noise problem
+  here at this scale.
+- **About the data / environment.** How redundant the 49 crops of a Craftax frame are for these predictions, and
+  whether the learnable part is where consequences are.
+- **Limits.** Frozen representation (P1-F checkpoint 10), the head not the joint system; full feedback; one seed;
+  the IL learner is this architecture on half the episodes (RHO used a smaller model: its ablations kept the gains).
