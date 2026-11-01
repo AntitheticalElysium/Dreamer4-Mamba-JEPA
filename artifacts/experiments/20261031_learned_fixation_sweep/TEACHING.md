@@ -500,3 +500,53 @@ on DO frames 19-20% vs uniform 18%): location stays contingency's (F).
 joint-system test (decision 1 built; P1-F2 arms on the factorised world: need x learnability + floor against
 contingency + floor, uniform if the user wants the baseline); (3) the reference's blind spot (it cannot point at what
 it never learned; the floor and contingency are what reach the starved).
+
+## 13. Learnability without a reference, and when the eye decides (11-01 evening; user: a separately pretrained reference is an artificial dependency for an autonomous learner; for discussion)
+**What the reference does.** A look's raw error mixes learnable error (the predictor is wrong and could be right)
+with irreducible error (renderer static, outcomes that were random, information absent from the inputs). Chasing raw
+error chases the second (H: error-seeking on the forward target +17% overall). RHO's reference is only a noise-floor
+estimator: learnability = error - estimated irreducible error. The user is right that an external, converged model
+is the wrong place to get it: it is a dependency an autonomous learner does not have, and it is blind exactly where it
+never learned (P1-F's rare-block errors 13-37) — a common failure mode, not just a cost.
+**Endogenous noise floors exist in the literature, and we already have one.**
+- AMA (Mavor-Parker, Young, Barry, Griffin, ICML 2022): one model predicts the next state's mean and aleatoric
+  variance; reward = ||s - mu||^2 - eta Tr(Sigma), the variance head by Gaussian NLL with a width prior; it passed
+  action-dependent noisy TVs and uniform salt-and-pepper noise where error curiosity, RND and ensembles failed
+  ("ensemble and RND epistemic estimates break down" when the trap has many novel states). Stated limit: "no
+  guarantee that AMAs are able to surgically subtract those errors due to aleatoric dynamics". Brain: they propose
+  cortical acetylcholine signals expected aleatoric uncertainty (Yu & Dayan's expected vs unexpected uncertainty).
+- DEUP (Lahlou et al.): epistemic uncertainty = excess risk = predicted error - aleatoric; the error predictor is
+  trained on out-of-sample errors ("the future acquired points as out-of-sample examples for the past predictors": the
+  prequential error), with "stationarizing" features because the main predictor changes; aleatoric from repeated
+  outcomes, or 0 as the conservative fallback; better calibrated than ensembles / MC-dropout, which "are unable to
+  generalize their uncertainty estimates".
+- Ours: faithful's pixel scale head IS an aleatoric model, trained by NLL on the detached mean (Stirn et al.), and it
+  reads only the lighting latent and the cell's position: it can model renderer static (light x position) but cannot
+  see content, so it cannot explain away content-specific learnable error (AMA's surgical-subtraction worry), only
+  position-wide error. Excess error = MSE - its predicted variance needs no other model. Its limit: for the FORWARD
+  view, randomness that depends on content (a mob's move, the sapling coin) is not light x position; there the floor
+  must come from the generator's own spread, or the forward score is used with care (H's warning).
+**When the eye decides — the obvious thing we had not questioned.** Codex (P1-F2 review section 2): a crop chosen
+by its realized score makes the choice depend on the outcome, so the glimpse conditional and outcome heads learn
+"the chosen window is where something happened" (its counterexample: true 0.5, learned posterior 0.9 at the chosen
+view, despite full support). Any signal computed from the crop's own content has this leak. The brain does not choose
+that way: LIP / FEF hold a priority map (Bisley & Goldberg 2010: activity proportional to behavioural priority,
+bottom-up and top-down, its peak targets the saccade) computed from the CURRENT peripheral view; the fovea is then
+sent there. Daucé et al. (2020) map the log-polar periphery to the value of each saccade; GFNet (Wang et al., NeurIPS
+2020) glances at a low-resolution whole image and an RL policy picks the high-resolution patches. M0 instead chooses
+f_t at t-1, before frame t exists. A same-frame timeline — periphery of frame t first, then the fovea chosen from
+(belief, periphery), then the glimpse — removes the leak by construction (f is a function of what the conditional
+already sees), matches the brain and GFNet, and fits decision 1's cascade exactly: in imagination, sample X', choose
+f from (B-, X'), then sample G' | X', f. It also gives VoI a same-step look. It is a STEP_SPEC change (the fixation
+becomes a within-step perceptual act, not part of the previous action), to decide on its own.
+**The resulting chooser (candidate, nothing built).** A small priority head pi(w | B-_t, X_t, a_{t-1}) over the 49
+windows, stop-gradient into the world, trained by regression on the REALIZED excess error of the look-local
+predictions at each window (MSE - the scale head's variance; prequential: measured before training on that crop) —
+all 49 windows in offline P1 (full feedback), the looked-at one online — and used to choose from pre-crop inputs only;
+plus the floor. Every part is endogenous: the predictors (TSP, the glimpse stage), their noise model (the scale head),
+and one head that learns where the learnable error is (Daucé's where-map, LIP's priority map, DEUP's error predictor).
+Need (contingency) stays a separate factor whose value H2 measures. Learning progress is not dropped: a prequentially
+trained excess-error predictor tracks the falling level, whose decrease is the progress; a rate term stays an option.
+**What it must show before being built:** that the pre-crop priority head recovers RHO's gain without a reference
+(H3, proposed: in H's harness, arms uniform / RHO / realized excess error / predicted excess error), and that the
+same-frame timeline is accepted.
