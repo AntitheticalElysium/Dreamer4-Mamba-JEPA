@@ -75,15 +75,15 @@ def main():
         s = json.loads(sp.read_text())["models"]
         out["sampler"] = {}
         for n in s:
-            c, m = s[n]["panels"]["counts"], s[n]["panels"]["move"]
-            out["sampler"][n] = {"real_count": {k: v["est"] for k, v in c["real_count"].items()},
-                                 **{alg: {"count": {k: c[alg][k]["count"]["est"] for k in c[alg]},
-                                          "shift": m[alg]["shift"]["est"]} for alg in ("euler_3_churn_1", "euler_8_churn_0", "euler_32_churn_1")},
-                                 "real_shift": m["real"]["est"]}
+            c, m = s[n]["panels"]["counts"]["summary"], s[n]["panels"]["move"]["summary"]
+            out["sampler"][n] = {"real_count": {k: v["mean"] for k, v in c["real_count"].items()},
+                                 **{alg: {"count": {k: c[alg][k]["count"]["mean"] for k in c[alg]},
+                                          "shift": m[alg]["shift"]["mean"]} for alg in ("euler_3_churn_1", "euler_8_churn_0", "euler_32_churn_1")},
+                                 "real_shift": m["real"]["mean"]}
     (HERE / "readings/codex_summary.json").write_text(json.dumps(out, indent=1))
     pp = out["panel_paired"]
     for st in ("bright", "dark"):
-        print(st, {k: (round(v["mean"], 5), [round(x, 5) for x in v["ci95"]]) if isinstance(v, dict) else round(v, 3) for k, v in pp[st].items()})
+        print(st, {k: (round(v["mean"], 5), [round(x, 5) for x in v["ci95"]]) if isinstance(v, dict) else v for k, v in pp[st].items()})
     print("movement", {n: {k: round(v["mean"], 4) for k, v in out["movement"][n].items()} for n in (A, B)},
           "paired", round(out["movement"]["paired_residual_beta_minus_p1f"]["mean"], 4), out["movement"]["paired_residual_beta_minus_p1f"]["ci95"])
     for n in (A, B):

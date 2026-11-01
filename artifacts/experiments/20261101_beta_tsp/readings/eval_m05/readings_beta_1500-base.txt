@@ -1,0 +1,24 @@
+guided    drink_appearance       INCONCLUSIVE  +0.005 [-0.028, +0.038] MEI 0.010  unknown [0.014705882352941176, 0.029411764705882353]  real-token [1.0, 1.0]
+guided    drink_increment        POSITIVE      +0.103 [+0.076, +0.130] MEI 0.088  unknown [0.03173719376391982, 0.028953229398663696]  real-token [1.0, 1.0]
+guided    wood_appearance        NEGATIVE      -0.024 [-0.044, -0.004] MEI 0.006  unknown [0.006578947368421052, 0.008771929824561403]  real-token [1.0, 1.0]
+guided    wood_increment         DETECTED      +0.016 [+0.003, +0.029] MEI 0.020  unknown [0.011010362694300517, 0.011658031088082901]  real-token [1.0, 1.0]
+guided    table_all              DETECTED      +0.107 [+0.082, +0.132] MEI 0.133  unknown [0.0, 0.0]  real-token [1.0, 1.0]
+periphery drink_appearance       BOUNDED NULL  +0.000 [+0.000, +0.000] MEI 0.250  unknown [0.0, 0.0]  real-token [1.0, 1.0]
+periphery drink_increment        BOUNDED NULL  UNKNOWN-HEAVY +0.000 [+0.000, +0.000] MEI 0.250  unknown [0.06797966963151207, 0.09783989834815757]  real-token [1.0, 1.0]
+periphery wood_appearance        BOUNDED NULL  +0.000 [+0.000, +0.000] MEI 0.250  unknown [0.0, 0.0]  real-token [1.0, 1.0]
+periphery wood_increment         BOUNDED NULL  UNKNOWN-HEAVY +0.001 [-0.001, +0.004] MEI 0.250  unknown [0.03863298662704309, 0.01411589895988113]  real-token [1.0, 1.0]
+periphery table_all              POSITIVE      UNKNOWN-HEAVY +0.277 [+0.246, +0.308] MEI 0.144  unknown [0.007566204287515763, 0.0012610340479192938]  real-token [1.0, 1.0]
+perception drink_appearance {'rec_cell': 'WORSE', 'tsp_cell': 'BETTER', 'rec_window': 'WORSE', 'tsp_window': 'BETTER'}
+perception drink_increment {'rec_cell': 'WORSE', 'tsp_cell': 'BETTER', 'rec_window': 'WORSE', 'tsp_window': 'BETTER'}
+perception wood_appearance {'rec_cell': 'WORSE', 'tsp_cell': 'BETTER', 'rec_window': 'WORSE', 'tsp_window': 'BETTER'}
+perception wood_increment {'rec_cell': 'WORSE', 'tsp_cell': 'BETTER', 'rec_window': 'WORSE', 'tsp_window': 'BETTER'}
+perception table_all {'rec_cell': 'WORSE', 'tsp_cell': 'BETTER', 'rec_window': 'WORSE', 'tsp_window': 'BETTER'}
+perception sapling_all {'rec_cell': 'WORSE', 'tsp_cell': 'BETTER', 'rec_window': 'WORSE', 'tsp_window': 'BETTER'}
+action routing drink_appearance NO CHANGE
+action routing drink_increment NO CHANGE
+action routing wood_appearance LESS
+action routing wood_increment LESS
+action routing table_all MORE
+failed guided {'drink_fail': 'NO CHANGE', 'table_fail': 'MORE'}
+failed periphery {'drink_fail': 'MORE', 'table_fail': 'MORE'}
+regression {"reward_nll": -0.0006, "continuation_bce": -0.0, "tsp_nll": -0.1832, "movement_shift": {"est": 0.0075089714229106905, "se": 0.0011586388165153799, "n_cond": 2000, "ci95": [0.005238039342540546, 0.009779903503280835], "rows": 2000}, "entity_gap_generated_minus_real": {"a": {"zombies": -0.188, "cows": -0.19340000000000002, "skeletons": -0.1032, "arrows": 0.039199999999999985}, "b": {"zombies": -0.11320000000000002, "cows": -0.2682, "skeletons": -0.1056, "arrows": 0.06399999999999999}}, "belief_hud_exact_mean": {"a": 0.781402926379586, "b": 0.7924971886880653}, "qualification_lost": []}
