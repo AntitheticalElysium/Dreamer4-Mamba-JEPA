@@ -228,10 +228,11 @@ def main():
     step, pre, scratch = sys.argv[1], Path(sys.argv[2]), Path(sys.argv[3])
     f = HERE / "checks.json"
     res = json.loads(f.read_text()) if f.exists() else {}
-    res[step] = {"disabled": lambda: disabled(pre), "launcher": lambda: launcher(scratch), "invariance": invariance, "cost": cost}[step]()
-    res.setdefault("code", {})[step] = {**TR.run_provenance(TR.load_cfg()), "pre_sha256": {
+    step_key = step + ("" if os.environ.get("MAMBA_DETERMINISTIC") == "1" else "_autotuned")   # mamba_ssm's mode
+    res[step_key] = {"disabled": lambda: disabled(pre), "launcher": lambda: launcher(scratch), "invariance": invariance, "cost": cost}[step]()
+    res.setdefault("code", {})[step_key] = {**TR.run_provenance(TR.load_cfg()), "pre_sha256": {
         f: TR.file_sha256(pre / f) for f in ("model.py", "train.py")}}
-    print(step, json.dumps(res[step], default=str)[:3000], flush=True)
+    print(step_key, json.dumps(res[step_key], default=str)[:3000], flush=True)
     f.write_text(json.dumps(res, indent=1, default=str))
 
 

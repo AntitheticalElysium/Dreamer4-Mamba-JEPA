@@ -1,0 +1,242 @@
+{
+ "disabled": {
+  "init_params_equal": true,
+  "init": {
+   "terms_equal": true,
+   "grad_keys_equal": true,
+   "grad_max_abs": 0.0,
+   "param_after_step_max_abs": 0.0,
+   "terms": [
+    {
+     "g1": 0.9459614753723145,
+     "change": 0.6835982799530029,
+     "tsp": 0.523267924785614,
+     "rec": 0.522933840751648,
+     "reward": 5.606320858001709,
+     "cont": 0.6781133413314819,
+     "noise": 10.402547836303711
+    },
+    {
+     "g1": 0.9459614753723145,
+     "change": 0.6835982799530029,
+     "tsp": 0.523267924785614,
+     "rec": 0.522933840751648,
+     "reward": 5.606320858001709,
+     "cont": 0.6781133413314819,
+     "noise": 10.402547836303711
+    }
+   ]
+  },
+  "ckpt_05": {
+   "terms_equal": true,
+   "grad_keys_equal": true,
+   "grad_max_abs": 0.0,
+   "param_after_step_max_abs": 0.0,
+   "terms": [
+    {
+     "g1": 0.04062431678175926,
+     "change": 0.023914843797683716,
+     "tsp": 0.00116146809887141,
+     "rec": 0.0006657387129962444,
+     "reward": 0.014767898246645927,
+     "cont": 7.0280396086142005e-12,
+     "noise": 4.35963773727417
+    },
+    {
+     "g1": 0.04062431678175926,
+     "change": 0.023914843797683716,
+     "tsp": 0.00116146809887141,
+     "rec": 0.0006657387129962444,
+     "reward": 0.014767898246645927,
+     "cont": 7.0280396086142005e-12,
+     "noise": 4.35963773727417
+    }
+   ]
+  }
+ },
+ "code": {
+  "disabled": {
+   "git_commit": "a86442204f1b493fc83e3e05c795cf4938de7aa5",
+   "source_sha256": {
+    "saccade/model.py": "f769fedfadc17a13f3c54ec71d3330b01b875de9354d77826af1c68103edf034",
+    "saccade/train.py": "3eeda34a11c2c56209a3285c4c42c555a5a5a2eac4fbe5dcaedca7a9c506c850",
+    "saccade/data.py": "d4c865124e0cdf8819fb5cc258d519c5dcfb7ec05985eedcf821e2b632907698",
+    "saccade/m0.yaml": "cfe6adeea4ea3699409c6b441ba588a02724ef056eaf78ef1cbc8fc9b31c7fcb"
+   },
+   "manifest_sha256": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
+   "targets_sha256": "f1a79ed7dba730db02b5efb537cc8f44fd580406c2da7894005b4e3e84c87b97",
+   "torch": "2.13.0+cu130",
+   "pre_sha256": {
+    "model.py": "7ea04a4957d2915c5dfbfb9a69ed5e44ae275d555bbea8e629edaa00330db148",
+    "train.py": "4fc5658c79c87c2a014cc720775c8c909c28120d93d2bc2e87535e9c208e1e25"
+   }
+  },
+  "launcher": {
+   "git_commit": "a86442204f1b493fc83e3e05c795cf4938de7aa5",
+   "source_sha256": {
+    "saccade/model.py": "f769fedfadc17a13f3c54ec71d3330b01b875de9354d77826af1c68103edf034",
+    "saccade/train.py": "3eeda34a11c2c56209a3285c4c42c555a5a5a2eac4fbe5dcaedca7a9c506c850",
+    "saccade/data.py": "d4c865124e0cdf8819fb5cc258d519c5dcfb7ec05985eedcf821e2b632907698",
+    "saccade/m0.yaml": "cfe6adeea4ea3699409c6b441ba588a02724ef056eaf78ef1cbc8fc9b31c7fcb"
+   },
+   "manifest_sha256": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
+   "targets_sha256": "f1a79ed7dba730db02b5efb537cc8f44fd580406c2da7894005b4e3e84c87b97",
+   "torch": "2.13.0+cu130",
+   "pre_sha256": {
+    "model.py": "7ea04a4957d2915c5dfbfb9a69ed5e44ae275d555bbea8e629edaa00330db148",
+    "train.py": "4fc5658c79c87c2a014cc720775c8c909c28120d93d2bc2e87535e9c208e1e25"
+   }
+  },
+  "invariance": {
+   "git_commit": "a86442204f1b493fc83e3e05c795cf4938de7aa5",
+   "source_sha256": {
+    "saccade/model.py": "f769fedfadc17a13f3c54ec71d3330b01b875de9354d77826af1c68103edf034",
+    "saccade/train.py": "3eeda34a11c2c56209a3285c4c42c555a5a5a2eac4fbe5dcaedca7a9c506c850",
+    "saccade/data.py": "d4c865124e0cdf8819fb5cc258d519c5dcfb7ec05985eedcf821e2b632907698",
+    "saccade/m0.yaml": "cfe6adeea4ea3699409c6b441ba588a02724ef056eaf78ef1cbc8fc9b31c7fcb"
+   },
+   "manifest_sha256": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
+   "targets_sha256": "f1a79ed7dba730db02b5efb537cc8f44fd580406c2da7894005b4e3e84c87b97",
+   "torch": "2.13.0+cu130",
+   "pre_sha256": {
+    "model.py": "7ea04a4957d2915c5dfbfb9a69ed5e44ae275d555bbea8e629edaa00330db148",
+    "train.py": "4fc5658c79c87c2a014cc720775c8c909c28120d93d2bc2e87535e9c208e1e25"
+   }
+  },
+  "cost": {
+   "git_commit": "a86442204f1b493fc83e3e05c795cf4938de7aa5",
+   "source_sha256": {
+    "saccade/model.py": "f769fedfadc17a13f3c54ec71d3330b01b875de9354d77826af1c68103edf034",
+    "saccade/train.py": "3eeda34a11c2c56209a3285c4c42c555a5a5a2eac4fbe5dcaedca7a9c506c850",
+    "saccade/data.py": "d4c865124e0cdf8819fb5cc258d519c5dcfb7ec05985eedcf821e2b632907698",
+    "saccade/m0.yaml": "cfe6adeea4ea3699409c6b441ba588a02724ef056eaf78ef1cbc8fc9b31c7fcb"
+   },
+   "manifest_sha256": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
+   "targets_sha256": "f1a79ed7dba730db02b5efb537cc8f44fd580406c2da7894005b4e3e84c87b97",
+   "torch": "2.13.0+cu130",
+   "pre_sha256": {
+    "model.py": "7ea04a4957d2915c5dfbfb9a69ed5e44ae275d555bbea8e629edaa00330db148",
+    "train.py": "4fc5658c79c87c2a014cc720775c8c909c28120d93d2bc2e87535e9c208e1e25"
+   }
+  }
+ },
+ "launcher": {
+  "update1_differs": {},
+  "update25_differs": {
+   "grad_norm": [
+    6.431418418884277,
+    6.431410312652588
+   ],
+   "g1": [
+    0.941421627998352,
+    0.9414216876029968
+   ],
+   "change": [
+    0.6811922788619995,
+    0.681190550327301
+   ],
+   "reward": [
+    5.57370662689209,
+    5.573710918426514
+   ],
+   "cont": [
+    0.6778006553649902,
+    0.6778005361557007
+   ]
+  },
+  "updates_compared": [
+   1,
+   25
+  ],
+  "timing_p1f_vs_now": [
+   [
+    12.025598526000977,
+    3.398198366165161,
+    3.893925666809082,
+    3.895857334136963
+   ],
+   [
+    1.3573387364546459,
+    1.3638824025789897,
+    4.005721092224121,
+    4.003421783447266
+   ]
+  ]
+ },
+ "invariance": {
+  "frames": [
+   2,
+   72
+  ],
+  "fixations_distinct_in_window": 46,
+  "fixation_sweep_equal_of_49": {
+   "p": 49,
+   "v": 49,
+   "g": 0
+  },
+  "glimpse_inputs_and_level_replaced_equal": {
+   "p": true,
+   "v": true,
+   "g": false
+  },
+  "output_scale": [
+   0.7523875832557678,
+   0.6303983926773071,
+   0.7992537617683411
+  ],
+  "cascade_equal_to_w0_of_49": {
+   "p": 49,
+   "g": 1,
+   "v": 49
+  },
+  "choose_hook": {
+   "fix_returned": true,
+   "frame_equals_draw_at_it": true
+  },
+  "training_path": {
+   "terms_finite": true,
+   "grad_keys_equal": true,
+   "terms_factorised": {
+    "g1": 0.9471152424812317,
+    "change": 0.6835982799530029,
+    "tsp": 0.523267924785614,
+    "rec": 0.522933840751648,
+    "reward": 5.606320858001709,
+    "cont": 0.6781133413314819,
+    "noise": 10.402547836303711
+   },
+   "terms_joint": {
+    "g1": 0.9459614753723145,
+    "change": 0.6835982799530029,
+    "tsp": 0.523267924785614,
+    "rec": 0.522933840751648,
+    "reward": 5.606320858001709,
+    "cont": 0.6781133413314819,
+    "noise": 10.402547836303711
+   }
+  }
+ },
+ "cost": {
+  "joint_update_64": {
+   "sec_per_update": 1.319828748703003,
+   "peak_gib": 4.003422737121582
+  },
+  "joint_update_256": {
+   "sec_per_update": 4.972175240516663,
+   "peak_gib": 3.824735164642334
+  },
+  "factorised_update_64": {
+   "sec_per_update": 1.5958764553070068,
+   "peak_gib": 4.0976996421813965
+  },
+  "factorised_update_256": {
+   "sec_per_update": 5.882069826126099,
+   "peak_gib": 3.8683524131774902
+  },
+  "sample": {
+   "joint_ms_per_call": 89.77768421173096,
+   "cascade_ms_per_call": 198.49107265472412,
+   "ratio": 2.2109177174430608
+  }
+ }
+}
