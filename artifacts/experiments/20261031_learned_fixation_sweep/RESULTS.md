@@ -419,10 +419,11 @@ share of saturated pixels, 0 or 255):
   DO-consequence windows; with the HUD digits learned as well as the map (0.00128 vs 0.00109), the scale head still
   calls them noisy. Mechanism (pixel_nll's formula, and the measured condition): an edge bin absorbs everything beyond
   it, so for a saturated pixel whose mean sits inside the range by more than half a bin, the NLL falls monotonically
-  toward log 2 as s grows, rewarding an unbounded scale; faithful's squared-error mean regresses to exactly 0 / 255
-  from inside about half the time, so the position-only scale inflates wherever such pixels are common (12% of HUD
-  pixels under uniform; 0.4% on the map). PixelCNN++ trains its mean by the same likelihood, which can push it beyond
-  the edge; our faithful mean cannot. pi^2 s^2 / 3 then amplifies it (unbounded, where the bounded variance stays
+  toward log 2 as s grows, rewarding an unbounded scale; faithful's squared-error mean is pulled to the edge value,
+  not past it, so a saturated pixel's remaining error lands in that regime, and the position-only scale inflates
+  wherever such pixels are common (saturated with the clamped mean off by more than a bin, i.e. inside the range:
+  12% of HUD pixels under uniform, 0.4% on the map). PixelCNN++ trains its mean by the same likelihood, which pushes
+  it past the edge; ours is not. pi^2 s^2 / 3 then amplifies it (unbounded, where the bounded variance stays
   below 1: at s = 20 it gives 1,327 against 0.98).
 - **Selection then locks it in.** The floor-subtracting arms look at HUD and consequence windows less, so those are
   learned less (sr excess: HUD error 3.5x uniform's), more saturated pixels stay mispredicted (19% vs 12%) and the
