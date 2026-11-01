@@ -77,8 +77,10 @@ denoiser:                                     # D4-style factorised space-time t
   qk_norm: true                               # D4
   conditioning: adaln_zero                    # DiT: noise level and action
   type_embeddings: [periphery, glimpse, lighting, memory]   # D4 modality ids
-  factorised: false                           # decision 1 (TEACHING 10 / 10a, agreed 11-01): physical tokens never attend to
-                                              # glimpse tokens in spatial layers; per-group noise levels and adaLN (UniDiffuser)
+                                              # factorised (absent = false, P1 world 1's joint denoiser; set by a launcher, so
+                                              # the launchers' P1-world-1 identity checks hold): decision 1 (learned-fixation
+                                              # TEACHING 10 / 10a, agreed 11-01): physical tokens never attend to glimpse
+                                              # tokens in spatial layers; per-group noise levels and adaLN (UniDiffuser)
 
 edm:
   prediction: x                               # JEDI / D4 (x-space)
@@ -99,9 +101,10 @@ edm:
     s_tmin: 0.0                               # DIAMOND default: churn at every step
     s_tmax: .inf
     s_noise: 1.0
-    glimpse_conditioning_sigma: 0.1           # decision 1's cascade: the finished periphery noised once to this level as the
-                                              # glimpse stage's conditioning (Ho et al. 2022's conditioning augmentation; its
-                                              # level is a post-training choice there); the context level, declared
+                                              # glimpse_conditioning_sigma (factorised only, set with it): 0.1, decision 1's
+                                              # cascade: the finished periphery noised once to this level as the glimpse
+                                              # stage's conditioning (Ho et al. 2022's conditioning augmentation; its level is
+                                              # a post-training choice there); the context level, declared
     evaluate_at: sigma_hat                    # EDM; DIAMOND passes sigma (differs only with churn)
     output_map: range_clamp                   # clip to [-3, 3]; another LN/tanh would change a correct target (audit R1)
   inference_context_sigma: 0.1                # working; D4 "slightly corrupt" tau_ctx read as noise 0.1; GameNGen: 0 works

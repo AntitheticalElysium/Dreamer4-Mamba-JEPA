@@ -211,7 +211,7 @@ def _factorised(cfg):
     """A factorised denoiser with non-trivial adaLN, final modulation and output heads (zero-initialised heads would
     pass a broken mask vacuously, Codex)."""
     c = copy.deepcopy(cfg)
-    c["denoiser"]["factorised"] = True
+    c["denoiser"]["factorised"], c["edm"]["sampler"]["glimpse_conditioning_sigma"] = True, 0.1   # as a launcher sets them
     torch.manual_seed(0)
     den = M.Denoiser(c).eval()
     for blk in den.blocks:
