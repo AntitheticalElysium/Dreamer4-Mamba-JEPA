@@ -1,0 +1,20 @@
+{
+ "episodes": 400,
+ "contexts": {
+  "drink": 300,
+  "wood": 300,
+  "sapling": 300,
+  "stone": 300,
+  "coal": 300,
+  "iron": 300,
+  "stone_no_tool": 217,
+  "random": 600
+ },
+ "checkpoints": {
+  "p1f15": {
+   "path": "artifacts/experiments/20261101_p1f15/run/ckpt_10.pt",
+   "sha256": "95fa2cc82cb9dc3cae11cbf9f44f880aff17e250de639911f39d159564978128",
+   "belief_replay_worst_rel_l2": 0.009995893575251102
+  }
+ }
+}

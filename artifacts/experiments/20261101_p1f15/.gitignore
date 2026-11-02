@@ -1,3 +1,5 @@
-run/
 *.pt
+*.npz
 __pycache__/
+readings/codex/panel.json
+readings/codex_vs_p1f/

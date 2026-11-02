@@ -1,0 +1,23 @@
+{
+ "world_seed": 1,
+ "recipe": "P1 world 1 + faithful decoder + factorised denoiser, uniform fixations",
+ "script_sha256": "5a23bfd2b56a2f6da6cc65a1b46be0f19d58cbd0bdafeffae0535ee52505ab20",
+ "mamba_deterministic": true,
+ "cuda_alloc_conf": "expandable_segments:True",
+ "provenance": {
+  "source_sha256": {
+   "saccade/model.py": "94ccc8ec06fc66aa03851bc3df9d24500f19dcf5bc13296bf2c01cfb6d6475dc",
+   "saccade/train.py": "3eeda34a11c2c56209a3285c4c42c555a5a5a2eac4fbe5dcaedca7a9c506c850",
+   "saccade/data.py": "d4c865124e0cdf8819fb5cc258d519c5dcfb7ec05985eedcf821e2b632907698",
+   "saccade/m0.yaml": "cfe6adeea4ea3699409c6b441ba588a02724ef056eaf78ef1cbc8fc9b31c7fcb"
+  },
+  "manifest_sha256": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
+  "targets_sha256": "f1a79ed7dba730db02b5efb537cc8f44fd580406c2da7894005b4e3e84c87b97",
+  "torch": "2.13.0+cu130"
+ },
+ "control": {
+  "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/saccade_m0/p1_world1/ckpt_10.pt",
+  "sha256": "74eccc433bf5a785edd6d565edc1a970f8b468510abf2c0b07e24d28b547ebe5"
+ },
+ "git_commit": "9049f19dfb1bc8344d9b6f2b5c7a4ad62a42f027"
+}
