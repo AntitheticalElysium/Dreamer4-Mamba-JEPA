@@ -1,6 +1,8 @@
 """P1-F2 under its own gaze (PLAN.md): F2 checkpoint 10's saved online head chooses the windows along every real dev
-episode exactly as in training; then the actor interface (F1.6 random, F2 random, F2 own: one process, paired) and S1 for
-F2 with its encoding bound to the own gaze. Requires MAMBA_DETERMINISTIC=1 (the archived F2 / F1.6 readings' mode).
+episode exactly as in training; then the actor interface (F1.6 random, F2 random, F2 own conditional, F2 own closed-loop:
+one process, paired) and S1 for F2 with its encoding bound to the own gaze. Conditional: the generated frame keeps the
+window chosen on the RECORDED frame (its surprise saw the recorded outcome: Codex, 11-04); closed-loop (the amendment):
+the head chooses it from the generated physical stage. Requires MAMBA_DETERMINISTIC=1 (the archived readings' mode).
 Usage (project venv, GPU): MAMBA_DETERMINISTIC=1 python -m artifacts.experiments.20261104_f2_own_gaze.own_gaze [--smoke]
 """
 import importlib, json, os, sys
@@ -36,9 +38,12 @@ def head_of(path):
 def own_windows(model, head, L, cfg, seed=GAZE_SEED):
     """S.encode's window array ([states, 2]; frame t >= 1 at row offsets[e] + t - 1; -1 keeps the seeded prior) from the
     chooser's training path (chooser.Controller.prepare): coarse encoding without a crop, eight-frame history with
-    episode-start padding, float32 actual / NOOP forecasts, C / S window maps, the existing policy, a seeded sample."""
+    episode-start padding, float32 actual / NOOP forecasts, C / S window maps, the existing policy, a seeded sample.
+    Also returns, per row, the actual forecast, the C window map (both history-only) and the uniform draw: closed_loop's
+    inputs."""
     offsets = np.r_[0, np.cumsum(L["ep_T"] + 1)]
     W, index = np.full((offsets[-1], 2), -1, np.int64), np.full(offsets[-1], -1, np.int64)
+    taken_all, c_all, u_all = torch.zeros(offsets[-1], 81, 16), torch.zeros(offsets[-1], 49), torch.zeros(offsets[-1], 1, dtype=torch.float64)
     gen, win = torch.Generator(device=DEV).manual_seed(seed), Q.WIN.to(DEV)
     for e, ep in enumerate(S.episodes(L)):
         c = D.gather([ep], [[(0, 1, t, 1, 1) for t in range(ep.T + 1)]])
@@ -58,13 +63,38 @@ def own_windows(model, head, L, cfg, seed=GAZE_SEED):
             x = tuple(z[ix] for z in xx)
             with torch.autocast(DEV.type, enabled=False):
                 taken, noop = head(x), head((x[0], x[1], torch.zeros_like(x[2])))
-                prob = Q.policy((taken - noop).square().sum(-1)[:, win].sum(-1), (y[ix] - taken).square().sum(-1)[:, win].sum(-1))
+                c_win = (taken - noop).square().sum(-1)[:, win].sum(-1)
+                prob = Q.policy(c_win, (y[ix] - taken).square().sum(-1)[:, win].sum(-1))
             u = torch.rand(len(ix), 1, device=DEV, generator=gen, dtype=torch.float64)
             choice = torch.searchsorted(prob.double().cumsum(-1), u).squeeze(-1).clamp(max=48).cpu()
             t = ix.cpu().numpy()
             assert (t >= 1).all()
             W[offsets[e] + t - 1], index[offsets[e] + t - 1] = Q.CENTRES[choice].numpy(), choice.numpy()
-    return W, index
+            taken_all[offsets[e] + t - 1], c_all[offsets[e] + t - 1], u_all[offsets[e] + t - 1] = taken.cpu(), c_win.cpu(), u.cpu()
+    return W, index, (taken_all, c_all, u_all)
+
+
+def closed_loop(L, forecasts, index):
+    """IF.futures' `choose`: the generated frame's window from the head's history-only forecasts (C) and the generated
+    periphery (S: the same error, against the generated coarse frame instead of the recorded one), the training policy,
+    sampled with the conditional run's own uniform draw (common random numbers: identical maps give identical windows,
+    so closed - conditional is the policy change alone; the world's own draws are untouched, so the two pair exactly).
+    `choose.same` collects, per future, whether the window equals the conditional one."""
+    offsets = np.r_[0, np.cumsum(L["ep_T"] + 1)]
+    taken, cmap, draw = forecasts
+    win, centres = Q.WIN.to(DEV), Q.CENTRES.to(DEV)
+    def choose(rows):
+        i = np.array([offsets[e] + t - 1 for e, t in rows])
+        y, c, u = taken[i].to(DEV), cmap[i].to(DEV), draw[i].to(DEV)
+        def hook(p, v):
+            with torch.autocast(DEV.type, enabled=False):
+                prob = Q.policy(c, (p[:, 0].float() - y).square().sum(-1)[:, win].sum(-1))
+            k = torch.searchsorted(prob.double().cumsum(-1), u).squeeze(-1).clamp(max=48)
+            choose.same.append(k.cpu().numpy() == index[i])
+            return centres[k][:, None]
+        return hook
+    choose.same = []
+    return choose
 
 
 def gaze_descriptives(L, enc_prior, W, index):
@@ -97,26 +127,35 @@ def interface(L, cls, runs, out_path):
     per, head = {}, head_of(F2)
     for label, path, gaze in runs:
         model, cfg = IF.load(path)
-        if gaze == "own":
-            W, index = own_windows(model, head, L, cfg)
-            enc = S.encode(model, L, cfg, windows=W)
-            res["gaze"][label] = gaze_descriptives(L, S.encode(model, L, cfg), W, index)
-            print(label, "gaze", json.dumps({k: v for k, v in res["gaze"][label].items() if k != "window_histogram"}), flush=True)
-        else:
+        choose = None
+        if gaze == "random":
             enc = S.encode(model, L, cfg)
+        else:
+            W, index, fc = own_windows(model, head, L, cfg)
+            enc = S.encode(model, L, cfg, windows=W)
+            if gaze == "own":
+                res["gaze"][label] = gaze_descriptives(L, S.encode(model, L, cfg), W, index)
+                print(label, "gaze", json.dumps({k: v for k, v in res["gaze"][label].items() if k != "window_histogram"}), flush=True)
+            else:
+                choose = closed_loop(L, fc, index)
+            del fc
         res["checkpoints"][label] = {"path": str(path), "sha256": TR.file_sha256(path), "gaze": gaze, "classes": {}}
         for i, (name, tuples) in enumerate(cls.items()):
             if not tuples:
                 continue
-            o = IF.futures(model, enc, L, tuples, 4, cfg, torch.Generator(device=DEV).manual_seed(3000 + i))
+            if choose is not None:
+                choose.same.clear()
+            o = IF.futures(model, enc, L, tuples, 4, cfg, torch.Generator(device=DEV).manual_seed(3000 + i), choose)
             ep = np.array([tuples[j][0] for j in o["tuple"]])
             per[(label, name)] = (o, ep)
             res["checkpoints"][label]["classes"][name] = IF.summary(o, ep)
+            if choose is not None:
+                res["checkpoints"][label]["classes"][name]["window_as_conditional"] = float(np.concatenate(choose.same).mean())
         out_path.write_text(json.dumps(res, indent=1, default=str))
         print(label, "done", flush=True)
         del model, enc
         torch.cuda.empty_cache()
-    for a, b in (("p1f16", "p1f2_own"), ("p1f2", "p1f2_own"), ("p1f16", "p1f2")):
+    for a, b in (("p1f16", "p1f2_closed"), ("p1f2", "p1f2_closed"), ("p1f2_own", "p1f2_closed"), ("p1f16", "p1f2")):
         res["differences"][f"{b}-{a}"] = {}
         for name in cls:
             if (a, name) not in per:
@@ -126,6 +165,8 @@ def interface(L, cls, runs, out_path):
             for q in ("unlock_p", "exp_reward", "neg_p", "term_p"):
                 est = G.estimate(ob[f"gen_{q}"] - oa[f"gen_{q}"], np.ones(len(ep), bool), ep)
                 res["differences"][f"{b}-{a}"][name][q] = {**est, "ci95": [est["est"] - 1.96 * est["se"], est["est"] + 1.96 * est["se"]]}
+    res["closed_pairs_conditional"] = max(float(np.abs(per[("p1f2_own", n)][0][k].astype(float) - per[("p1f2_closed", n)][0][k]).max())
+                                          for n in cls if ("p1f2_own", n) in per for k in per[("p1f2_own", n)][0] if k.startswith("rec_"))
     out_path.write_text(json.dumps(res, indent=1, default=str))
     return res
 
@@ -153,12 +194,14 @@ def main():
     cls = IF.classes(L, np.random.default_rng(2031))
     if smoke:
         cls = {k: v[:8] for k, v in cls.items()}
-    res = interface(L, cls, [("p1f16", F16, "random"), ("p1f2", F2, "random"), ("p1f2_own", F2, "own")], out / "interface.json")
+    res = interface(L, cls, [("p1f16", F16, "random"), ("p1f2", F2, "random"), ("p1f2_own", F2, "own"),
+                             ("p1f2_closed", F2, "closed")], out / "interface.json")
     if not smoke:
         res["reproduction_of_archived_random"] = reproduction(res)
         print("reproduction", res["reproduction_of_archived_random"], flush=True)
         (out / "interface.json").write_text(json.dumps(res, indent=1, default=str))
-    head, encode = head_of(F2), S.encode                                  # S1 with every encoding bound to the own gaze
+    head, encode = head_of(F2), S.encode       # S1 with every encoding bound to the own gaze (S1.3's generated frame:
+                                               # conditional window; its C2ST / generated outcomes are not closed-loop)
     S.encode = lambda model_, L_, cfg_, untrained=None: encode(model_, L_, cfg_, untrained, windows=own_windows(model_, head, L_, cfg_)[0])
     sys.argv = ["s1", str(F2), str(out / "s1_p1f2_own.json")] + (["20", "20"] if smoke else [])
     S.main()

@@ -31,3 +31,25 @@ under random gaze shrinks to within its paired interval or reverses under own ga
 stays, it is a property of the recipe (acquisition changed what the world learned). Both are reported per class; no class
 is dropped. Under own gaze F2 also gets easier fixations for its own heads; the random-gaze reading stays the robustness
 reading, not replaced. One world seed each; intervals are evaluation uncertainty, not training-seed uncertainty.
+
+## Amendment (11-04, Codex's review; user: stop, fix, rerun): closed-loop generated window
+**Defect.** In the run above, the GENERATED frame t kept the window `own_windows` chose for the RECORDED frame t, whose
+surprise term was scored against the recorded coarse frame, and the outcome heads read the generated percept at that
+window (`interface.futures`: `take("fix", 0)`). The window could therefore carry the recorded outcome's location into the
+generated reading. F2's training is unaffected (the cascade's physical tokens never read the current fixation) and so
+are: the history encoding, the real-successor heads, S1's reader counts (periphery stage only), the gaze descriptives.
+The first run was stopped after F1.6 (its partial output is discarded); nothing from it is reported.
+**Fix.** `interface.futures(..., choose=None)`: optional cascade hook (`model.sample`'s existing `choose(p, v)`, between
+the physical and glimpse stages). `closed_loop`: the saved head's history-only forecasts and C map (as for the recorded
+frame), S scored against the GENERATED periphery, the training policy, sampled with the conditional run's own uniform
+draw per row (common random numbers: identical maps give identical windows). The outcome heads read the generated
+percept at the chosen window. The real-successor heads keep the conditional window (the real frame's own gaze).
+**Checks done before launch.** Smoke: random and conditional worlds reproduce the pre-amendment smoke output in every
+field (max difference 0); conditional vs closed-loop real-successor outputs identical (shared encodings and world
+draws). The hook fed the RECORDED coarse frame reproduces all 2,384 conditional windows of six dev episodes exactly.
+**Readings now.** Interface worlds: p1f16 random, p1f2 random, p1f2_own (conditional, kept as Codex's conditional
+reading), p1f2_closed. Primary: p1f2_closed - p1f16; also p1f2_closed - p1f2, and p1f2_closed - p1f2_own (the leak:
+paired on identical physical samples, the window alone differs; with each class's window agreement). S1 is run as
+before: its S1.3 C2ST and generated outcomes are CONDITIONAL (a closed-loop C2ST needs the window moved into the
+outcome features, a different instrument, not run); its reader counts, probes and calibration are valid.
+**Declared reading** unchanged, read on p1f2_closed.
