@@ -1,0 +1,22 @@
+{
+  "saved_611601": {
+    "global_reduction": 0.0009586501982994378,
+    "sum_disjoint_category_contributions": 0.0009586500818841159,
+    "paired_identical_errors_max": 0.0
+  },
+  "saved_611602": {
+    "global_reduction": 0.00017928627494256943,
+    "sum_disjoint_category_contributions": 0.00017928627494256943,
+    "paired_identical_errors_max": 0.0
+  },
+  "confirmation_611601": {
+    "global_reduction": 0.0008484118152409792,
+    "sum_disjoint_category_contributions": 0.000848411931656301,
+    "paired_identical_errors_max": 0.0
+  },
+  "confirmation_611602": {
+    "global_reduction": 4.41440824943129e-05,
+    "sum_disjoint_category_contributions": 4.4144086132291704e-05,
+    "paired_identical_errors_max": 0.0
+  }
+}

@@ -1,0 +1,4098 @@
+{
+  "saved": {
+    "611601": {
+      "coal": {
+        "all": {
+          "coarse_mse": {
+            "mean": 1.3197389669468005,
+            "low": 1.2437520674754279,
+            "high": 1.4071193842623606,
+            "n": 300,
+            "episodes": 144,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.3206337724750241,
+            "low": 1.2451535223165915,
+            "high": 1.4088273047367235,
+            "n": 300,
+            "episodes": 144,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0008948055282235146,
+            "low": -0.0027926155974727107,
+            "high": 0.0009643866856807955,
+            "n": 300,
+            "episodes": 144,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.06780170470878175,
+            "low": -0.2086370481498586,
+            "high": 0.07415277192004843,
+            "n": 300,
+            "episodes": 144,
+            "denominator": 395.92169008404016,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 1.3197389669468005,
+            "low": 1.2437520674754279,
+            "high": 1.4071193842623606,
+            "n": 300,
+            "episodes": 144,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.3206337724750241,
+            "low": 1.2451535223165915,
+            "high": 1.4088273047367235,
+            "n": 300,
+            "episodes": 144,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0008948055282235146,
+            "low": -0.0027926155974727107,
+            "high": 0.0009643866856807955,
+            "n": 300,
+            "episodes": 144,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.06780170470878175,
+            "low": -0.2086370481498586,
+            "high": 0.07415277192004843,
+            "n": 300,
+            "episodes": 144,
+            "denominator": 395.92169008404016,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.213328686253778,
+            "low": 2.2109472492161917,
+            "high": 2.215714323753433,
+            "n": 116,
+            "episodes": 109,
+            "denominator": 116.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 2.224146232522767,
+            "low": 2.2203357701430693,
+            "high": 2.2282382637935845,
+            "n": 116,
+            "episodes": 109,
+            "denominator": 116.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0108175462689893,
+            "low": -0.014645427389670226,
+            "high": -0.007081017044532895,
+            "n": 116,
+            "episodes": 109,
+            "denominator": 116.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.48874558650838235,
+            "low": -0.6618441690667145,
+            "high": -0.31981402097098216,
+            "n": 116,
+            "episodes": 109,
+            "denominator": 256.74612760543823,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.7563889265141409,
+            "low": 0.7212449502328812,
+            "high": 0.795085363326309,
+            "n": 184,
+            "episodes": 89,
+            "denominator": 184.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.7510280911405773,
+            "low": 0.715653746770637,
+            "high": 0.7904496782288731,
+            "n": 184,
+            "episodes": 89,
+            "denominator": 184.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.005360835373563611,
+            "low": 0.0035275080842171323,
+            "high": 0.007149076899424904,
+            "n": 184,
+            "episodes": 89,
+            "denominator": 184.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.7087405967305623,
+            "low": 0.46832000368620647,
+            "high": 0.947539429307761,
+            "n": 184,
+            "episodes": 89,
+            "denominator": 139.17556247860193,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "drink": {
+        "all": {
+          "coarse_mse": {
+            "mean": 0.793055731455485,
+            "low": 0.7358829868235759,
+            "high": 0.8484063186007691,
+            "n": 300,
+            "episodes": 105,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.7839583927889665,
+            "low": 0.7268851807295525,
+            "high": 0.8389346379405145,
+            "n": 300,
+            "episodes": 105,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.00909733866651853,
+            "low": 0.007248593797301079,
+            "high": 0.011026039738020302,
+            "n": 300,
+            "episodes": 105,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 1.1471247585547695,
+            "low": 0.9071361387889616,
+            "high": 1.406640722818175,
+            "n": 300,
+            "episodes": 105,
+            "denominator": 237.9167194366455,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 0.793055731455485,
+            "low": 0.7358829868235759,
+            "high": 0.8484063186007691,
+            "n": 300,
+            "episodes": 105,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.7839583927889665,
+            "low": 0.7268851807295525,
+            "high": 0.8389346379405145,
+            "n": 300,
+            "episodes": 105,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.00909733866651853,
+            "low": 0.007248593797301079,
+            "high": 0.011026039738020302,
+            "n": 300,
+            "episodes": 105,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 1.1471247585547695,
+            "low": 0.9071361387889616,
+            "high": 1.406640722818175,
+            "n": 300,
+            "episodes": 105,
+            "denominator": 237.9167194366455,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.2097660303115845,
+            "low": 2.19381180573787,
+            "high": 2.2247439192980525,
+            "n": 34,
+            "episodes": 30,
+            "denominator": 34.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 2.2069882189526275,
+            "low": 2.1860030987107004,
+            "high": 2.2262881354374042,
+            "n": 34,
+            "episodes": 30,
+            "denominator": 34.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.0027778113589567296,
+            "low": -0.00489360056504482,
+            "high": 0.011154859334902656,
+            "n": 34,
+            "episodes": 30,
+            "denominator": 34.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.12570613000893352,
+            "low": -0.22126282690776328,
+            "high": 0.5067084285552953,
+            "n": 34,
+            "episodes": 30,
+            "denominator": 75.13204503059387,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.6119724601731265,
+            "low": 0.5827911071378548,
+            "high": 0.63907391661352,
+            "n": 266,
+            "episodes": 100,
+            "denominator": 266.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.6020673623770699,
+            "low": 0.5727921879953602,
+            "high": 0.6285922085896557,
+            "n": 266,
+            "episodes": 100,
+            "denominator": 266.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.009905097796056504,
+            "low": 0.008349323395456873,
+            "high": 0.011681619006575989,
+            "n": 266,
+            "episodes": 100,
+            "denominator": 266.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 1.6185528624287804,
+            "low": 1.3684636818587756,
+            "high": 1.908313477481519,
+            "n": 266,
+            "episodes": 100,
+            "denominator": 162.78467440605164,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "iron": {
+        "all": {
+          "coarse_mse": {
+            "mean": 1.5160816871374845,
+            "low": 1.447339862750836,
+            "high": 1.5900664467767853,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.510845694144567,
+            "low": 1.442597422291542,
+            "high": 1.5847557628043532,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.005235992992917697,
+            "low": 0.003434892314301192,
+            "high": 0.007032605824428905,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.34536351472927995,
+            "low": 0.22488996008543927,
+            "high": 0.47002768315862437,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 454.82450614124537,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 1.5160816871374845,
+            "low": 1.447339862750836,
+            "high": 1.5900664467767853,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.510845694144567,
+            "low": 1.442597422291542,
+            "high": 1.5847557628043532,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.005235992992917697,
+            "low": 0.003434892314301192,
+            "high": 0.007032605824428905,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.34536351472927995,
+            "low": 0.22488996008543927,
+            "high": 0.47002768315862437,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 454.82450614124537,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.0837213789544453,
+            "low": 2.082174204251146,
+            "high": 2.085268002392669,
+            "n": 164,
+            "episodes": 120,
+            "denominator": 164.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 2.0841935451437785,
+            "low": 2.0823488256677667,
+            "high": 2.0862502989699805,
+            "n": 164,
+            "episodes": 120,
+            "denominator": 164.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0004721661893332877,
+            "low": -0.002675411880741671,
+            "high": 0.0016437655618024378,
+            "n": 164,
+            "episodes": 120,
+            "denominator": 164.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.022659756438752277,
+            "low": -0.12841972679588318,
+            "high": 0.07890475317105917,
+            "n": 164,
+            "episodes": 120,
+            "denominator": 341.73030614852905,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.8315749999464435,
+            "low": 0.8069550668902576,
+            "high": 0.8576618959261126,
+            "n": 136,
+            "episodes": 72,
+            "denominator": 136.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.8194556385278702,
+            "low": 0.7953883463270626,
+            "high": 0.8451684008817605,
+            "n": 136,
+            "episodes": 72,
+            "denominator": 136.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.012119361418573296,
+            "low": 0.009428855337357104,
+            "high": 0.0148794259622525,
+            "n": 136,
+            "episodes": 72,
+            "denominator": 136.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 1.457398483225759,
+            "low": 1.1336931240443233,
+            "high": 1.7820613351282117,
+            "n": 136,
+            "episodes": 72,
+            "denominator": 113.09419999271631,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "sapling": {
+        "all": {
+          "coarse_mse": {
+            "mean": 0.07679298265966887,
+            "low": 0.039043201968211594,
+            "high": 0.11956254206533103,
+            "n": 300,
+            "episodes": 192,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.07672144434710693,
+            "low": 0.03907053603475279,
+            "high": 0.11965405838441562,
+            "n": 300,
+            "episodes": 192,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 7.153831137353942e-05,
+            "low": -0.00021676297251323044,
+            "high": 0.0004114096136227841,
+            "n": 300,
+            "episodes": 192,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.09315735476208382,
+            "low": -0.3054944074558172,
+            "high": 0.5601288010614263,
+            "n": 300,
+            "episodes": 192,
+            "denominator": 23.037894797900663,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 1.7617343434920678,
+            "low": 1.5531970418416539,
+            "high": 1.8705590000519385,
+            "n": 13,
+            "episodes": 13,
+            "denominator": 13.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.7586893576842089,
+            "low": 1.546071614439671,
+            "high": 1.8673889515491633,
+            "n": 13,
+            "episodes": 13,
+            "denominator": 13.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.0030449858078589807,
+            "low": -0.0034216132301550647,
+            "high": 0.010176778985903814,
+            "n": 13,
+            "episodes": 13,
+            "denominator": 13.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.1728402366172463,
+            "low": -0.18753882111472747,
+            "high": 0.6288230233638399,
+            "n": 13,
+            "episodes": 13,
+            "denominator": 22.90254646539688,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 1.86466180284818,
+            "low": 1.855818934738636,
+            "high": 1.8725851975381376,
+            "n": 12,
+            "episodes": 12,
+            "denominator": 12.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.8638887504736583,
+            "low": 1.8584058987597625,
+            "high": 1.8687780310710271,
+            "n": 12,
+            "episodes": 12,
+            "denominator": 12.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.0007730523745218912,
+            "low": -0.0043896404405434925,
+            "high": 0.006631652017434438,
+            "n": 12,
+            "episodes": 12,
+            "denominator": 12.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.04145804742399353,
+            "low": -0.2362005287948985,
+            "high": 0.35493529204139695,
+            "n": 12,
+            "episodes": 12,
+            "denominator": 22.37594163417816,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.5266048312187195,
+            "low": 0.5266048312187195,
+            "high": 0.5266048312187195,
+            "n": 1,
+            "episodes": 1,
+            "denominator": 1.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.49629664421081543,
+            "low": 0.49629664421081543,
+            "high": 0.49629664421081543,
+            "n": 1,
+            "episodes": 1,
+            "denominator": 1.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.030308187007904053,
+            "low": 0.030308187007904053,
+            "high": 0.030308187007904053,
+            "n": 1,
+            "episodes": 1,
+            "denominator": 1.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 5.755394787731426,
+            "low": 5.755394787731426,
+            "high": 5.755394787731426,
+            "n": 1,
+            "episodes": 1,
+            "denominator": 0.5266048312187195,
+            "valid_bootstraps": 2000
+          }
+        },
+        "no_increment": {
+          "coarse_mse": {
+            "mean": 0.0004715969773650921,
+            "low": 0.0002679965011773473,
+            "high": 0.0008077829947636939,
+            "n": 287,
+            "episodes": 188,
+            "denominator": 287.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.000534744439851444,
+            "low": 0.00034967443585428226,
+            "high": 0.0007943839282111675,
+            "n": 287,
+            "episodes": 188,
+            "denominator": 287.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -6.314746372858858e-05,
+            "low": -0.0001479108469781193,
+            "high": 3.658233466902766e-05,
+            "n": 287,
+            "episodes": 188,
+            "denominator": 287.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -13.390133280780859,
+            "low": -43.733240651865444,
+            "high": 4.88340594059602,
+            "n": 287,
+            "episodes": 188,
+            "denominator": 0.13534833250378142,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "stone": {
+        "all": {
+          "coarse_mse": {
+            "mean": 0.7529857500021656,
+            "low": 0.6675445307465957,
+            "high": 0.8452039903670734,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.7333407657345136,
+            "low": 0.6490861084590126,
+            "high": 0.8255486537117224,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.019644984267652033,
+            "low": 0.01660728987294021,
+            "high": 0.023041629657933375,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 2.6089450196618933,
+            "low": 2.1225844739478794,
+            "high": 3.127067735300595,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 225.8957250006497,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 0.7529857500021656,
+            "low": 0.6675445307465957,
+            "high": 0.8452039903670734,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.7333407657345136,
+            "low": 0.6490861084590126,
+            "high": 0.8255486537117224,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.019644984267652033,
+            "low": 0.01660728987294021,
+            "high": 0.023041629657933375,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 2.6089450196618933,
+            "low": 2.1225844739478794,
+            "high": 3.127067735300595,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 225.8957250006497,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.081355184316635,
+            "low": 2.0618283073826613,
+            "high": 2.0997276255694572,
+            "n": 48,
+            "episodes": 40,
+            "denominator": 48.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 2.0673148160179458,
+            "low": 2.0404478797463237,
+            "high": 2.092185945129306,
+            "n": 48,
+            "episodes": 40,
+            "denominator": 48.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.014040368298689524,
+            "low": 0.004452821780586575,
+            "high": 0.024232100012401742,
+            "n": 48,
+            "episodes": 40,
+            "denominator": 48.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.6745781981127529,
+            "low": 0.21233702629809828,
+            "high": 1.170721943932865,
+            "n": 48,
+            "episodes": 40,
+            "denominator": 99.90504884719849,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.49996300060893334,
+            "low": 0.4611933460846797,
+            "high": 0.5374645891846302,
+            "n": 252,
+            "episodes": 101,
+            "denominator": 252.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.4792504704424313,
+            "low": 0.4418463925593859,
+            "high": 0.51568034680032,
+            "n": 252,
+            "episodes": 101,
+            "denominator": 252.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.020712530166502038,
+            "low": 0.01730714183133568,
+            "high": 0.02429725671932419,
+            "n": 252,
+            "episodes": 101,
+            "denominator": 252.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 4.142812585860944,
+            "low": 3.5319100407837634,
+            "high": 4.751525980521133,
+            "n": 252,
+            "episodes": 101,
+            "denominator": 125.9906761534512,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "stone_no_tool": {
+        "all": {
+          "coarse_mse": {
+            "mean": 0.0011795156818818868,
+            "low": 0.0011064591414598813,
+            "high": 0.001254311522893836,
+            "n": 217,
+            "episodes": 86,
+            "denominator": 217.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.0008276192863549059,
+            "low": 0.0007817624485072446,
+            "high": 0.0008844864765724411,
+            "n": 217,
+            "episodes": 86,
+            "denominator": 217.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.000351896396063457,
+            "low": 0.00023597949999076603,
+            "high": 0.00045961258425753165,
+            "n": 217,
+            "episodes": 86,
+            "denominator": 217.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 29.83397348321718,
+            "low": 21.216233655631818,
+            "high": 36.91809540727905,
+            "n": 217,
+            "episodes": 86,
+            "denominator": 0.2559549029683694,
+            "valid_bootstraps": 2000
+          }
+        },
+        "no_increment": {
+          "coarse_mse": {
+            "mean": 0.0011795156818818868,
+            "low": 0.0011064591414598813,
+            "high": 0.001254311522893836,
+            "n": 217,
+            "episodes": 86,
+            "denominator": 217.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.0008276192863549059,
+            "low": 0.0007817624485072446,
+            "high": 0.0008844864765724411,
+            "n": 217,
+            "episodes": 86,
+            "denominator": 217.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.000351896396063457,
+            "low": 0.00023597949999076603,
+            "high": 0.00045961258425753165,
+            "n": 217,
+            "episodes": 86,
+            "denominator": 217.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 29.83397348321718,
+            "low": 21.216233655631818,
+            "high": 36.91809540727905,
+            "n": 217,
+            "episodes": 86,
+            "denominator": 0.2559549029683694,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "wood": {
+        "all": {
+          "coarse_mse": {
+            "mean": 1.1923031331102054,
+            "low": 1.136393954830578,
+            "high": 1.2575992210184077,
+            "n": 300,
+            "episodes": 187,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.1567448198795318,
+            "low": 1.1002355655594416,
+            "high": 1.2211070922400638,
+            "n": 300,
+            "episodes": 187,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.035558313230673474,
+            "low": 0.030334467267657546,
+            "high": 0.04113450052219425,
+            "n": 300,
+            "episodes": 187,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 2.9823215371918406,
+            "low": 2.513474325325925,
+            "high": 3.4637340132726684,
+            "n": 300,
+            "episodes": 187,
+            "denominator": 357.6909399330616,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 1.1923031331102054,
+            "low": 1.136393954830578,
+            "high": 1.2575992210184077,
+            "n": 300,
+            "episodes": 187,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.1567448198795318,
+            "low": 1.1002355655594416,
+            "high": 1.2211070922400638,
+            "n": 300,
+            "episodes": 187,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.035558313230673474,
+            "low": 0.030334467267657546,
+            "high": 0.04113450052219425,
+            "n": 300,
+            "episodes": 187,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 2.9823215371918406,
+            "low": 2.513474325325925,
+            "high": 3.4637340132726684,
+            "n": 300,
+            "episodes": 187,
+            "denominator": 357.6909399330616,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.076159156031079,
+            "low": 2.068223501104294,
+            "high": 2.0838946665678306,
+            "n": 72,
+            "episodes": 66,
+            "denominator": 72.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 2.069311396943198,
+            "low": 2.060574113521023,
+            "high": 2.077747755091484,
+            "n": 72,
+            "episodes": 66,
+            "denominator": 72.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.006847759087880452,
+            "low": 0.0021310417755553714,
+            "high": 0.011719675351312193,
+            "n": 72,
+            "episodes": 66,
+            "denominator": 72.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.3298282344100765,
+            "low": 0.10274647231314554,
+            "high": 0.5655721090469521,
+            "n": 72,
+            "episodes": 66,
+            "denominator": 149.48345923423767,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.9131907048194032,
+            "low": 0.8765554615226772,
+            "high": 0.9507276803414573,
+            "n": 228,
+            "episodes": 154,
+            "denominator": 228.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.8685659008067951,
+            "low": 0.8366560464049265,
+            "high": 0.900359322624686,
+            "n": 228,
+            "episodes": 154,
+            "denominator": 228.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.04462480401260811,
+            "low": 0.03778625145923899,
+            "high": 0.051703749676209484,
+            "n": 228,
+            "episodes": 154,
+            "denominator": 228.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 4.886690550085363,
+            "low": 4.26427323535147,
+            "high": 5.480486717971562,
+            "n": 228,
+            "episodes": 154,
+            "denominator": 208.20748069882393,
+            "valid_bootstraps": 2000
+          }
+        }
+      }
+    },
+    "611602": {
+      "coal": {
+        "all": {
+          "coarse_mse": {
+            "mean": 1.3113622714703281,
+            "low": 1.2356937178823237,
+            "high": 1.397562439110883,
+            "n": 300,
+            "episodes": 144,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.3083084186911582,
+            "low": 1.2339814367545443,
+            "high": 1.3944640519988902,
+            "n": 300,
+            "episodes": 144,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.003053852779169877,
+            "low": 0.0008623644605672503,
+            "high": 0.005156277873242894,
+            "n": 300,
+            "episodes": 144,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.23287636369838982,
+            "low": 0.06503698212336345,
+            "high": 0.39211624516959076,
+            "n": 300,
+            "episodes": 144,
+            "denominator": 393.40868144109845,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 1.3113622714703281,
+            "low": 1.2356937178823237,
+            "high": 1.397562439110883,
+            "n": 300,
+            "episodes": 144,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.3083084186911582,
+            "low": 1.2339814367545443,
+            "high": 1.3944640519988902,
+            "n": 300,
+            "episodes": 144,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.003053852779169877,
+            "low": 0.0008623644605672503,
+            "high": 0.005156277873242894,
+            "n": 300,
+            "episodes": 144,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.23287636369838982,
+            "low": 0.06503698212336345,
+            "high": 0.39211624516959076,
+            "n": 300,
+            "episodes": 144,
+            "denominator": 393.40868144109845,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.2002648526224595,
+            "low": 2.197211996714274,
+            "high": 2.203380180839179,
+            "n": 116,
+            "episodes": 109,
+            "denominator": 116.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 2.188222447345997,
+            "low": 2.1844637629740564,
+            "high": 2.1918086317306695,
+            "n": 116,
+            "episodes": 109,
+            "denominator": 116.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.012042405276462949,
+            "low": 0.008220498301344551,
+            "high": 0.01605516374960499,
+            "n": 116,
+            "episodes": 109,
+            "denominator": 116.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.5473161679654067,
+            "low": 0.3738761770544336,
+            "high": 0.7292296297341684,
+            "n": 116,
+            "episodes": 109,
+            "denominator": 255.23072290420532,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.7509671659613757,
+            "low": 0.7152852292968537,
+            "high": 0.7900943122946119,
+            "n": 184,
+            "episodes": 89,
+            "denominator": 184.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.7535800093218036,
+            "low": 0.7170852463818577,
+            "high": 0.7928042486146694,
+            "n": 184,
+            "episodes": 89,
+            "denominator": 184.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.002612843360427929,
+            "low": -0.005102526406125817,
+            "high": -4.3546145955116767e-05,
+            "n": 184,
+            "episodes": 89,
+            "denominator": 184.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.34793044082173746,
+            "low": -0.668421783181544,
+            "high": -0.0060194650674752544,
+            "n": 184,
+            "episodes": 89,
+            "denominator": 138.17795853689313,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "drink": {
+        "all": {
+          "coarse_mse": {
+            "mean": 0.7787052803238232,
+            "low": 0.7217491401955706,
+            "high": 0.8336235713154142,
+            "n": 300,
+            "episodes": 105,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.7801547600825628,
+            "low": 0.7246485103490072,
+            "high": 0.8334419401770392,
+            "n": 300,
+            "episodes": 105,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0014494797587394715,
+            "low": -0.0037323238156898985,
+            "high": 0.0011026919257752243,
+            "n": 300,
+            "episodes": 105,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.18613971181718098,
+            "low": -0.5020701778719051,
+            "high": 0.1349284713475406,
+            "n": 300,
+            "episodes": 105,
+            "denominator": 233.611584097147,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 0.7787052803238232,
+            "low": 0.7217491401955706,
+            "high": 0.8336235713154142,
+            "n": 300,
+            "episodes": 105,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.7801547600825628,
+            "low": 0.7246485103490072,
+            "high": 0.8334419401770392,
+            "n": 300,
+            "episodes": 105,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0014494797587394715,
+            "low": -0.0037323238156898985,
+            "high": 0.0011026919257752243,
+            "n": 300,
+            "episodes": 105,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.18613971181718098,
+            "low": -0.5020701778719051,
+            "high": 0.1349284713475406,
+            "n": 300,
+            "episodes": 105,
+            "denominator": 233.611584097147,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.1838609471040615,
+            "low": 2.1663937191953284,
+            "high": 2.2005808506959252,
+            "n": 34,
+            "episodes": 30,
+            "denominator": 34.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 2.1561676754670986,
+            "low": 2.1366945791708956,
+            "high": 2.174283364949127,
+            "n": 34,
+            "episodes": 30,
+            "denominator": 34.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.02769327163696289,
+            "low": 0.018449486470357938,
+            "high": 0.036130387178949404,
+            "n": 34,
+            "episodes": 30,
+            "denominator": 34.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 1.2680876808427721,
+            "low": 0.8435153963388589,
+            "high": 1.6558790312572413,
+            "n": 34,
+            "episodes": 30,
+            "denominator": 74.25127220153809,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.5990989169007853,
+            "low": 0.5701670616411859,
+            "high": 0.6260383934465104,
+            "n": 266,
+            "episodes": 100,
+            "denominator": 266.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.6042734099958176,
+            "low": 0.5751990424315697,
+            "high": 0.6309920671124192,
+            "n": 266,
+            "episodes": 100,
+            "denominator": 266.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.005174493095032254,
+            "low": -0.006996725163205919,
+            "high": -0.0033140861368613226,
+            "n": 266,
+            "episodes": 100,
+            "denominator": 266.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.8637126450708493,
+            "low": -1.1736405643136836,
+            "high": -0.5574908537926635,
+            "n": 266,
+            "episodes": 100,
+            "denominator": 159.3603118956089,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "iron": {
+        "all": {
+          "coarse_mse": {
+            "mean": 1.5059628820543487,
+            "low": 1.4373449051550335,
+            "high": 1.5816003625819113,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.498503201082349,
+            "low": 1.4305375900896116,
+            "high": 1.57195125546453,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.007459680971999963,
+            "low": 0.0048542292573967765,
+            "high": 0.009929827977497124,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.495342950934566,
+            "low": 0.3202051554257108,
+            "high": 0.6605233107070014,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 451.78886461630464,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 1.5059628820543487,
+            "low": 1.4373449051550335,
+            "high": 1.5816003625819113,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.498503201082349,
+            "low": 1.4305375900896116,
+            "high": 1.57195125546453,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.007459680971999963,
+            "low": 0.0048542292573967765,
+            "high": 0.009929827977497124,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.495342950934566,
+            "low": 0.3202051554257108,
+            "high": 0.6605233107070014,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 451.78886461630464,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.074132766665482,
+            "low": 2.071720618863877,
+            "high": 2.0765849564756667,
+            "n": 164,
+            "episodes": 120,
+            "denominator": 164.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 2.0668748399106467,
+            "low": 2.0642183465063315,
+            "high": 2.0695849425225123,
+            "n": 164,
+            "episodes": 120,
+            "denominator": 164.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.007257926754835175,
+            "low": 0.004225437343120575,
+            "high": 0.010243137031637884,
+            "n": 164,
+            "episodes": 120,
+            "denominator": 164.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.34992585197443826,
+            "low": 0.20406871580018035,
+            "high": 0.49398645204517927,
+            "n": 164,
+            "episodes": 120,
+            "denominator": 340.15777373313904,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.8208168447291588,
+            "low": 0.7954451809259427,
+            "high": 0.846867015525629,
+            "n": 136,
+            "episodes": 72,
+            "denominator": 136.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.8131138719070483,
+            "low": 0.7886793493996859,
+            "high": 0.8386699937974872,
+            "n": 136,
+            "episodes": 72,
+            "denominator": 136.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.007702972822110443,
+            "low": 0.003899569963300925,
+            "high": 0.01133119209149441,
+            "n": 136,
+            "episodes": 72,
+            "denominator": 136.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.9384520906345356,
+            "low": 0.48511526505250535,
+            "high": 1.3740206088837115,
+            "n": 136,
+            "episodes": 72,
+            "denominator": 111.6310908831656,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "sapling": {
+        "all": {
+          "coarse_mse": {
+            "mean": 0.0771412234523935,
+            "low": 0.03917945539531476,
+            "high": 0.120262846293536,
+            "n": 300,
+            "episodes": 192,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.077083979372134,
+            "low": 0.03932870474031707,
+            "high": 0.12028916495899149,
+            "n": 300,
+            "episodes": 192,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 5.7244086322801496e-05,
+            "low": -0.00037691042044742817,
+            "high": 0.000491610853162402,
+            "n": 300,
+            "episodes": 192,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.07420686833844728,
+            "low": -0.6156389330264669,
+            "high": 0.6591577145707688,
+            "n": 300,
+            "episodes": 192,
+            "denominator": 23.142367035718053,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 1.7713866829872131,
+            "low": 1.559878574884855,
+            "high": 1.8815223762622246,
+            "n": 13,
+            "episodes": 13,
+            "denominator": 13.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.766895516560628,
+            "low": 1.5511650949716569,
+            "high": 1.8771681022185545,
+            "n": 13,
+            "episodes": 13,
+            "denominator": 13.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.004491166426585271,
+            "low": -0.0040122236196811385,
+            "high": 0.01369911879301071,
+            "n": 13,
+            "episodes": 13,
+            "denominator": 13.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.25353957879552586,
+            "low": -0.21518355743352435,
+            "high": 0.8399527300882306,
+            "n": 13,
+            "episodes": 13,
+            "denominator": 23.02802687883377,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 1.8758361240228016,
+            "low": 1.8680522950987022,
+            "high": 1.883597085624933,
+            "n": 12,
+            "episodes": 12,
+            "denominator": 12.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.8736462493737538,
+            "low": 1.8680868980785212,
+            "high": 1.878053115308285,
+            "n": 12,
+            "episodes": 12,
+            "denominator": 12.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.0021898746490478516,
+            "low": -0.00571843832731247,
+            "high": 0.010578345259030656,
+            "n": 12,
+            "episodes": 12,
+            "denominator": 12.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.11674125585936486,
+            "low": -0.30568314915782463,
+            "high": 0.5622642612569657,
+            "n": 12,
+            "episodes": 12,
+            "denominator": 22.51003348827362,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.5179933905601501,
+            "low": 0.5179933905601501,
+            "high": 0.5179933905601501,
+            "n": 1,
+            "episodes": 1,
+            "denominator": 1.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.48588672280311584,
+            "low": 0.48588672280311584,
+            "high": 0.48588672280311584,
+            "n": 1,
+            "episodes": 1,
+            "denominator": 1.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.0321066677570343,
+            "low": 0.0321066677570343,
+            "high": 0.0321066677570343,
+            "n": 1,
+            "episodes": 1,
+            "denominator": 1.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 6.1982772657044425,
+            "low": 6.1982772657044425,
+            "high": 6.1982772657044425,
+            "n": 1,
+            "episodes": 1,
+            "denominator": 0.5179933905601501,
+            "valid_bootstraps": 2000
+          }
+        },
+        "no_increment": {
+          "coarse_mse": {
+            "mean": 0.0003983977591786826,
+            "low": 0.000293640955304572,
+            "high": 0.0005396049714288921,
+            "n": 287,
+            "episodes": 188,
+            "denominator": 287.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.0005419933670802766,
+            "low": 0.00028710616931540883,
+            "high": 0.0009437454342187424,
+            "n": 287,
+            "episodes": 188,
+            "denominator": 287.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0001435956015636518,
+            "low": -0.00041353178143303473,
+            "high": 2.253072459607271e-05,
+            "n": 287,
+            "episodes": 188,
+            "denominator": 287.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -36.04327441900285,
+            "low": -81.52728171693423,
+            "high": 6.841549670183437,
+            "n": 287,
+            "episodes": 188,
+            "denominator": 0.1143401568842819,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "stone": {
+        "all": {
+          "coarse_mse": {
+            "mean": 0.7216272356361151,
+            "low": 0.6393134646953966,
+            "high": 0.812253124202435,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.7234294409801563,
+            "low": 0.6418175046022507,
+            "high": 0.812570867237381,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0018022053440411886,
+            "low": -0.004857486596586834,
+            "high": 0.001432173442824376,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.24974187664590505,
+            "low": -0.7213531020769668,
+            "high": 0.1884237332481754,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 216.48817069083452,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 0.7216272356361151,
+            "low": 0.6393134646953966,
+            "high": 0.812253124202435,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.7234294409801563,
+            "low": 0.6418175046022507,
+            "high": 0.812570867237381,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0018022053440411886,
+            "low": -0.004857486596586834,
+            "high": 0.001432173442824376,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.24974187664590505,
+            "low": -0.7213531020769668,
+            "high": 0.1884237332481754,
+            "n": 300,
+            "episodes": 121,
+            "denominator": 216.48817069083452,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.0316533595323563,
+            "low": 2.008254661947489,
+            "high": 2.0538999233048516,
+            "n": 48,
+            "episodes": 40,
+            "denominator": 48.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.9948140929142635,
+            "low": 1.9686328576886263,
+            "high": 2.020105623987814,
+            "n": 48,
+            "episodes": 40,
+            "denominator": 48.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.03683926661809286,
+            "low": 0.027080579540308784,
+            "high": 0.04776398599147795,
+            "n": 48,
+            "episodes": 40,
+            "denominator": 48.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 1.8132653509302554,
+            "low": 1.3320994340057672,
+            "high": 2.348069016731687,
+            "n": 48,
+            "episodes": 40,
+            "denominator": 97.5193612575531,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.47209845013206914,
+            "low": 0.43384012122161125,
+            "high": 0.509042068228367,
+            "n": 252,
+            "episodes": 101,
+            "denominator": 252.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.48126093584985014,
+            "low": 0.4433256560892993,
+            "high": 0.5181367675042642,
+            "n": 252,
+            "episodes": 101,
+            "denominator": 252.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.009162485717781006,
+            "low": -0.011625648363704959,
+            "high": -0.0066891864993993,
+            "n": 252,
+            "episodes": 101,
+            "denominator": 252.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -1.940799793937812,
+            "low": -2.5456674777989785,
+            "high": -1.386800334948676,
+            "n": 252,
+            "episodes": 101,
+            "denominator": 118.96880943328142,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "stone_no_tool": {
+        "all": {
+          "coarse_mse": {
+            "mean": 0.0020858639639840903,
+            "low": 0.0020070392264336895,
+            "high": 0.0021756271843013366,
+            "n": 217,
+            "episodes": 86,
+            "denominator": 217.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.002428670491044697,
+            "low": 0.002297431553509054,
+            "high": 0.002540250631336655,
+            "n": 217,
+            "episodes": 86,
+            "denominator": 217.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.00034280652706060677,
+            "low": -0.00046077785642286383,
+            "high": -0.00020856352037718868,
+            "n": 217,
+            "episodes": 86,
+            "denominator": 217.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -16.434750070544975,
+            "low": -22.54085717238449,
+            "high": -9.865182728841722,
+            "n": 217,
+            "episodes": 86,
+            "denominator": 0.4526324801845476,
+            "valid_bootstraps": 2000
+          }
+        },
+        "no_increment": {
+          "coarse_mse": {
+            "mean": 0.0020858639639840903,
+            "low": 0.0020070392264336895,
+            "high": 0.0021756271843013366,
+            "n": 217,
+            "episodes": 86,
+            "denominator": 217.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.002428670491044697,
+            "low": 0.002297431553509054,
+            "high": 0.002540250631336655,
+            "n": 217,
+            "episodes": 86,
+            "denominator": 217.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.00034280652706060677,
+            "low": -0.00046077785642286383,
+            "high": -0.00020856352037718868,
+            "n": 217,
+            "episodes": 86,
+            "denominator": 217.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -16.434750070544975,
+            "low": -22.54085717238449,
+            "high": -9.865182728841722,
+            "n": 217,
+            "episodes": 86,
+            "denominator": 0.4526324801845476,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "wood": {
+        "all": {
+          "coarse_mse": {
+            "mean": 1.1476794750491779,
+            "low": 1.0928303372805213,
+            "high": 1.2105643617320863,
+            "n": 300,
+            "episodes": 187,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.1488276022175947,
+            "low": 1.0945784618195096,
+            "high": 1.2102991808636194,
+            "n": 300,
+            "episodes": 187,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0011481271684169769,
+            "low": -0.003916818947793697,
+            "high": 0.0016167495093924653,
+            "n": 300,
+            "episodes": 187,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.10003900926389452,
+            "low": -0.34541766476473523,
+            "high": 0.13937557438706794,
+            "n": 300,
+            "episodes": 187,
+            "denominator": 344.30384251475334,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 1.1476794750491779,
+            "low": 1.0928303372805213,
+            "high": 1.2105643617320863,
+            "n": 300,
+            "episodes": 187,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.1488276022175947,
+            "low": 1.0945784618195096,
+            "high": 1.2102991808636194,
+            "n": 300,
+            "episodes": 187,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0011481271684169769,
+            "low": -0.003916818947793697,
+            "high": 0.0016167495093924653,
+            "n": 300,
+            "episodes": 187,
+            "denominator": 300.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.10003900926389452,
+            "low": -0.34541766476473523,
+            "high": 0.13937557438706794,
+            "n": 300,
+            "episodes": 187,
+            "denominator": 344.30384251475334,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.0340400569968753,
+            "low": 2.02456947052801,
+            "high": 2.043317710510302,
+            "n": 72,
+            "episodes": 66,
+            "denominator": 72.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 2.0170648131105633,
+            "low": 2.005123219413417,
+            "high": 2.02937494084455,
+            "n": 72,
+            "episodes": 66,
+            "denominator": 72.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.016975243886311848,
+            "low": 0.011349972475652403,
+            "high": 0.02233721724878893,
+            "n": 72,
+            "episodes": 66,
+            "denominator": 72.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.8345579934829143,
+            "low": 0.5586940261415848,
+            "high": 1.1002606941408664,
+            "n": 72,
+            "episodes": 66,
+            "denominator": 146.45088410377502,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.8677761333814838,
+            "low": 0.8361791937641577,
+            "high": 0.8993802716681856,
+            "n": 228,
+            "episodes": 154,
+            "denominator": 228.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.8746474303566573,
+            "low": 0.8423465371850087,
+            "high": 0.9078840919658542,
+            "n": 228,
+            "episodes": 154,
+            "denominator": 228.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.006871296975173448,
+            "low": -0.009868418132504001,
+            "high": -0.004107151360227858,
+            "n": 228,
+            "episodes": 154,
+            "denominator": 228.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.7918282977955221,
+            "low": -1.1165284962103177,
+            "high": -0.4816544659102748,
+            "n": 228,
+            "episodes": 154,
+            "denominator": 197.85295841097832,
+            "valid_bootstraps": 2000
+          }
+        }
+      }
+    }
+  },
+  "confirmation": {
+    "611601": {
+      "coal": {
+        "all": {
+          "coarse_mse": {
+            "mean": 1.5303035684628412,
+            "low": 1.4142456603236406,
+            "high": 1.6672782580564287,
+            "n": 128,
+            "episodes": 71,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.533094328129664,
+            "low": 1.4160979958811362,
+            "high": 1.6711361847676292,
+            "n": 128,
+            "episodes": 71,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0027907596668228507,
+            "low": -0.006094943909159227,
+            "high": 0.00043077429480328555,
+            "n": 128,
+            "episodes": 71,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.18236640914495886,
+            "low": -0.3840142203883778,
+            "high": 0.030053699390169487,
+            "n": 128,
+            "episodes": 71,
+            "denominator": 195.87885676324368,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 1.5303035684628412,
+            "low": 1.4142456603236406,
+            "high": 1.6672782580564287,
+            "n": 128,
+            "episodes": 71,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.533094328129664,
+            "low": 1.4160979958811362,
+            "high": 1.6711361847676292,
+            "n": 128,
+            "episodes": 71,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0027907596668228507,
+            "low": -0.006094943909159227,
+            "high": 0.00043077429480328555,
+            "n": 128,
+            "episodes": 71,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.18236640914495886,
+            "low": -0.3840142203883778,
+            "high": 0.030053699390169487,
+            "n": 128,
+            "episodes": 71,
+            "denominator": 195.87885676324368,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.2137487484858585,
+            "low": 2.210291421320289,
+            "high": 2.217189688887447,
+            "n": 65,
+            "episodes": 64,
+            "denominator": 65.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 2.2268600720625655,
+            "low": 2.221498490571976,
+            "high": 2.232323263864964,
+            "n": 65,
+            "episodes": 64,
+            "denominator": 65.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.013111323576707107,
+            "low": -0.017931885737925767,
+            "high": -0.007888129805073594,
+            "n": 65,
+            "episodes": 64,
+            "denominator": 65.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.5922679159355767,
+            "low": -0.8108005648763975,
+            "high": -0.356856493233291,
+            "n": 65,
+            "episodes": 64,
+            "denominator": 143.8936686515808,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.8251617160581407,
+            "low": 0.7784380814050148,
+            "high": 0.8785837282027517,
+            "n": 63,
+            "episodes": 33,
+            "denominator": 63.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.8173042748655591,
+            "low": 0.7714590727631002,
+            "high": 0.8687030138429971,
+            "n": 63,
+            "episodes": 33,
+            "denominator": 63.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.00785744119258154,
+            "low": 0.004807985248610839,
+            "high": 0.01179885754853467,
+            "n": 63,
+            "episodes": 33,
+            "denominator": 63.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.9522304585478256,
+            "low": 0.5871435762862255,
+            "high": 1.39763015128325,
+            "n": 63,
+            "episodes": 33,
+            "denominator": 51.985188111662865,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "drink": {
+        "all": {
+          "coarse_mse": {
+            "mean": 0.8523852650541812,
+            "low": 0.7454718969872577,
+            "high": 0.9533450843577439,
+            "n": 128,
+            "episodes": 53,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.8429537338670343,
+            "low": 0.7365070879916222,
+            "high": 0.9433838500306486,
+            "n": 128,
+            "episodes": 53,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.009431531187146902,
+            "low": 0.0070546040637181106,
+            "high": 0.012293913894833215,
+            "n": 128,
+            "episodes": 53,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 1.1064868873052838,
+            "low": 0.8258913624147352,
+            "high": 1.4878962129243605,
+            "n": 128,
+            "episodes": 53,
+            "denominator": 109.1053139269352,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 0.8523852650541812,
+            "low": 0.7454718969872577,
+            "high": 0.9533450843577439,
+            "n": 128,
+            "episodes": 53,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.8429537338670343,
+            "low": 0.7365070879916222,
+            "high": 0.9433838500306486,
+            "n": 128,
+            "episodes": 53,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.009431531187146902,
+            "low": 0.0070546040637181106,
+            "high": 0.012293913894833215,
+            "n": 128,
+            "episodes": 53,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 1.1064868873052838,
+            "low": 0.8258913624147352,
+            "high": 1.4878962129243605,
+            "n": 128,
+            "episodes": 53,
+            "denominator": 109.1053139269352,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.197539894204391,
+            "low": 2.1814212776788136,
+            "high": 2.2154055649148567,
+            "n": 19,
+            "episodes": 14,
+            "denominator": 19.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 2.1908803111628483,
+            "low": 2.171114901502927,
+            "high": 2.207769424915314,
+            "n": 19,
+            "episodes": 14,
+            "denominator": 19.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.0066595830415424545,
+            "low": -0.0007218981188450133,
+            "high": 0.01675631787095751,
+            "n": 19,
+            "episodes": 14,
+            "denominator": 19.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.30304719650850875,
+            "low": -0.03275363254546819,
+            "high": 0.7606062252556803,
+            "n": 19,
+            "episodes": 14,
+            "denominator": 41.75325798988342,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.6179087700646951,
+            "low": 0.5774330930765338,
+            "high": 0.6571447945018181,
+            "n": 109,
+            "episodes": 51,
+            "denominator": 109.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.6079940552558374,
+            "low": 0.5685168380854081,
+            "high": 0.6456456562459824,
+            "n": 109,
+            "episodes": 51,
+            "denominator": 109.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.009914714808857769,
+            "low": 0.007035462083822151,
+            "high": 0.012798006519524738,
+            "n": 109,
+            "episodes": 51,
+            "denominator": 109.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 1.604559651713585,
+            "low": 1.1746864469975618,
+            "high": 2.0287106391659044,
+            "n": 109,
+            "episodes": 51,
+            "denominator": 67.35205593705177,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "iron": {
+        "all": {
+          "coarse_mse": {
+            "mean": 1.7163463343934315,
+            "low": 1.5695479332376825,
+            "high": 1.8602697277598317,
+            "n": 82,
+            "episodes": 46,
+            "denominator": 82.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.7128868488276876,
+            "low": 1.5660362220723991,
+            "high": 1.8576963367334693,
+            "n": 82,
+            "episodes": 46,
+            "denominator": 82.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.003459485565743795,
+            "low": -0.00017243454378124666,
+            "high": 0.006712681336535347,
+            "n": 82,
+            "episodes": 46,
+            "denominator": 82.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.20156104426568647,
+            "low": -0.009769333099416988,
+            "high": 0.38941254667108205,
+            "n": 82,
+            "episodes": 46,
+            "denominator": 140.74039942026138,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 1.7163463343934315,
+            "low": 1.5695479332376825,
+            "high": 1.8602697277598317,
+            "n": 82,
+            "episodes": 46,
+            "denominator": 82.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.7128868488276876,
+            "low": 1.5660362220723991,
+            "high": 1.8576963367334693,
+            "n": 82,
+            "episodes": 46,
+            "denominator": 82.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.003459485565743795,
+            "low": -0.00017243454378124666,
+            "high": 0.006712681336535347,
+            "n": 82,
+            "episodes": 46,
+            "denominator": 82.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.20156104426568647,
+            "low": -0.009769333099416988,
+            "high": 0.38941254667108205,
+            "n": 82,
+            "episodes": 46,
+            "denominator": 140.74039942026138,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.0850535903060647,
+            "low": 2.082225769376014,
+            "high": 2.088116912346966,
+            "n": 57,
+            "episodes": 46,
+            "denominator": 57.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 2.0858449057528845,
+            "low": 2.0824228791694104,
+            "high": 2.089418397413677,
+            "n": 57,
+            "episodes": 46,
+            "denominator": 57.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0007913154468201755,
+            "low": -0.005035575975823243,
+            "high": 0.0034987580205835204,
+            "n": 57,
+            "episodes": 46,
+            "denominator": 57.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.037951803756948926,
+            "low": -0.24139631212982104,
+            "high": 0.16767599691684967,
+            "n": 57,
+            "episodes": 46,
+            "denominator": 118.84805464744568,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.8756937909126282,
+            "low": 0.8206600334495306,
+            "high": 0.9375665273856033,
+            "n": 25,
+            "episodes": 17,
+            "denominator": 25.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.8625424790382386,
+            "low": 0.8122696382495074,
+            "high": 0.9200544370545282,
+            "n": 25,
+            "episodes": 17,
+            "denominator": 25.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.013151311874389648,
+            "low": 0.006688995497382205,
+            "high": 0.02122867204248904,
+            "n": 25,
+            "episodes": 17,
+            "denominator": 25.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 1.5018162862672673,
+            "low": 0.7761840366870217,
+            "high": 2.3203907719140893,
+            "n": 25,
+            "episodes": 17,
+            "denominator": 21.892344772815704,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "sapling": {
+        "all": {
+          "coarse_mse": {
+            "mean": 0.08781490771863787,
+            "low": 0.02874094233881089,
+            "high": 0.16204210243411113,
+            "n": 128,
+            "episodes": 85,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.08767536029063194,
+            "low": 0.028808979939607758,
+            "high": 0.16166583406405247,
+            "n": 128,
+            "episodes": 85,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.0001395474270680097,
+            "low": -0.00010754184917749342,
+            "high": 0.0004312170212428163,
+            "n": 128,
+            "episodes": 85,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.1589108635224495,
+            "low": -0.31876026630364107,
+            "high": 0.3511684898977502,
+            "n": 128,
+            "episodes": 85,
+            "denominator": 11.240308187985647,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 1.8670342167218525,
+            "low": 1.8546793659528096,
+            "high": 1.8771100044250488,
+            "n": 6,
+            "episodes": 6,
+            "denominator": 6.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.8613657156626384,
+            "low": 1.8484345475832622,
+            "high": 1.8715111017227173,
+            "n": 6,
+            "episodes": 6,
+            "denominator": 6.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.005668501059214274,
+            "low": 0.002856274445851644,
+            "high": 0.008597715198993681,
+            "n": 6,
+            "episodes": 6,
+            "denominator": 6.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.30360991825672345,
+            "low": 0.15241971236704652,
+            "high": 0.4621826420520963,
+            "n": 6,
+            "episodes": 6,
+            "denominator": 11.202205300331116,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 1.8670342167218525,
+            "low": 1.8546793659528096,
+            "high": 1.8771100044250488,
+            "n": 6,
+            "episodes": 6,
+            "denominator": 6.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.8613657156626384,
+            "low": 1.8484345475832622,
+            "high": 1.8715111017227173,
+            "n": 6,
+            "episodes": 6,
+            "denominator": 6.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.005668501059214274,
+            "low": 0.002856274445851644,
+            "high": 0.008597715198993681,
+            "n": 6,
+            "episodes": 6,
+            "denominator": 6.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.30360991825672345,
+            "low": 0.15241971236704652,
+            "high": 0.4621826420520963,
+            "n": 6,
+            "episodes": 6,
+            "denominator": 11.202205300331116,
+            "valid_bootstraps": 2000
+          }
+        },
+        "no_increment": {
+          "coarse_mse": {
+            "mean": 0.00031231875126665177,
+            "low": 0.00021903062745114133,
+            "high": 0.0004440625840241323,
+            "n": 122,
+            "episodes": 82,
+            "denominator": 122.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.00044468707561523454,
+            "low": 0.0002608954561243787,
+            "high": 0.0006911598566411514,
+            "n": 122,
+            "episodes": 82,
+            "denominator": 122.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.00013236832533262624,
+            "low": -0.0002526838841954021,
+            "high": -3.830075141391228e-05,
+            "n": 122,
+            "episodes": 82,
+            "denominator": 122.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -42.38244538731827,
+            "low": -60.219891164531816,
+            "high": -16.488272342689996,
+            "n": 122,
+            "episodes": 82,
+            "denominator": 0.038102887654531514,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "stone": {
+        "all": {
+          "coarse_mse": {
+            "mean": 0.9771015852456912,
+            "low": 0.8581526084069099,
+            "high": 1.1191066305726955,
+            "n": 128,
+            "episodes": 66,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.9543247027031612,
+            "low": 0.8341839872209167,
+            "high": 1.098630169617451,
+            "n": 128,
+            "episodes": 66,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.022776882542530075,
+            "low": 0.01780188984288608,
+            "high": 0.027795818446977445,
+            "n": 128,
+            "episodes": 66,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 2.331065957850399,
+            "low": 1.7243852376238549,
+            "high": 2.988171010597422,
+            "n": 128,
+            "episodes": 66,
+            "denominator": 125.06900291144848,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 0.9771015852456912,
+            "low": 0.8581526084069099,
+            "high": 1.1191066305726955,
+            "n": 128,
+            "episodes": 66,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.9543247027031612,
+            "low": 0.8341839872209167,
+            "high": 1.098630169617451,
+            "n": 128,
+            "episodes": 66,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.022776882542530075,
+            "low": 0.01780188984288608,
+            "high": 0.027795818446977445,
+            "n": 128,
+            "episodes": 66,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 2.331065957850399,
+            "low": 1.7243852376238549,
+            "high": 2.988171010597422,
+            "n": 128,
+            "episodes": 66,
+            "denominator": 125.06900291144848,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.0999940387133895,
+            "low": 2.079922790420907,
+            "high": 2.118696718615264,
+            "n": 29,
+            "episodes": 26,
+            "denominator": 29.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 2.0938120792652,
+            "low": 2.0681291462528324,
+            "high": 2.1172117179233907,
+            "n": 29,
+            "episodes": 26,
+            "denominator": 29.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.006181959448189571,
+            "low": -0.00417157164935408,
+            "high": 0.016040845794810188,
+            "n": 29,
+            "episodes": 26,
+            "denominator": 29.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.29437985700078906,
+            "low": -0.19855650135109493,
+            "high": 0.7660992352310998,
+            "n": 29,
+            "episodes": 26,
+            "denominator": 60.89982712268829,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.6481734928157594,
+            "low": 0.5962314753250849,
+            "high": 0.7059739825157781,
+            "n": 99,
+            "episodes": 51,
+            "denominator": 99.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.6205354711849882,
+            "low": 0.5703425218916052,
+            "high": 0.6750740355236561,
+            "n": 99,
+            "episodes": 51,
+            "denominator": 99.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.027638021630771233,
+            "low": 0.022318088779823154,
+            "high": 0.033167016699273376,
+            "n": 99,
+            "episodes": 51,
+            "denominator": 99.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 4.263985150286856,
+            "low": 3.538927977674728,
+            "high": 4.988239605466214,
+            "n": 99,
+            "episodes": 51,
+            "denominator": 64.16917578876019,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "stone_no_tool": {
+        "all": {
+          "coarse_mse": {
+            "mean": 0.0012024870411551092,
+            "low": 0.001146395099367391,
+            "high": 0.0012575888924922511,
+            "n": 128,
+            "episodes": 45,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.0008397771000545617,
+            "low": 0.0007869711231833054,
+            "high": 0.0008889775980562385,
+            "n": 128,
+            "episodes": 45,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.00036270994087317376,
+            "low": 0.0002806281132830514,
+            "high": 0.00044650358165410385,
+            "n": 128,
+            "episodes": 45,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 30.163313932295065,
+            "low": 24.154638367677855,
+            "high": 35.95754935041961,
+            "n": 128,
+            "episodes": 45,
+            "denominator": 0.15391834126785398,
+            "valid_bootstraps": 2000
+          }
+        },
+        "no_increment": {
+          "coarse_mse": {
+            "mean": 0.0012024870411551092,
+            "low": 0.001146395099367391,
+            "high": 0.0012575888924922511,
+            "n": 128,
+            "episodes": 45,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.0008397771000545617,
+            "low": 0.0007869711231833054,
+            "high": 0.0008889775980562385,
+            "n": 128,
+            "episodes": 45,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.00036270994087317376,
+            "low": 0.0002806281132830514,
+            "high": 0.00044650358165410385,
+            "n": 128,
+            "episodes": 45,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 30.163313932295065,
+            "low": 24.154638367677855,
+            "high": 35.95754935041961,
+            "n": 128,
+            "episodes": 45,
+            "denominator": 0.15391834126785398,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "wood": {
+        "all": {
+          "coarse_mse": {
+            "mean": 1.2121346325147897,
+            "low": 1.1357802648659374,
+            "high": 1.2934991681546515,
+            "n": 128,
+            "episodes": 76,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.1740486106136814,
+            "low": 1.0949581909847015,
+            "high": 1.2566537820574741,
+            "n": 128,
+            "episodes": 76,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.038086021901108325,
+            "low": 0.029217639702008535,
+            "high": 0.047333953642948595,
+            "n": 128,
+            "episodes": 76,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 3.142062030774889,
+            "low": 2.378607199066883,
+            "high": 3.9464186469220235,
+            "n": 128,
+            "episodes": 76,
+            "denominator": 155.15323296189308,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 1.2121346325147897,
+            "low": 1.1357802648659374,
+            "high": 1.2934991681546515,
+            "n": 128,
+            "episodes": 76,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.1740486106136814,
+            "low": 1.0949581909847015,
+            "high": 1.2566537820574741,
+            "n": 128,
+            "episodes": 76,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.038086021901108325,
+            "low": 0.029217639702008535,
+            "high": 0.047333953642948595,
+            "n": 128,
+            "episodes": 76,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 3.142062030774889,
+            "low": 2.378607199066883,
+            "high": 3.9464186469220235,
+            "n": 128,
+            "episodes": 76,
+            "denominator": 155.15323296189308,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.092799340524981,
+            "low": 2.084423006383145,
+            "high": 2.1013553708984007,
+            "n": 31,
+            "episodes": 29,
+            "denominator": 31.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 2.0861173598997054,
+            "low": 2.077093335909228,
+            "high": 2.095185026675463,
+            "n": 31,
+            "episodes": 29,
+            "denominator": 31.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.006681980625275643,
+            "low": 0.0024024424227801237,
+            "high": 0.011127812708577793,
+            "n": 31,
+            "episodes": 29,
+            "denominator": 31.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.3192843430273377,
+            "low": 0.11480753023550173,
+            "high": 0.5338562003812887,
+            "n": 31,
+            "episodes": 29,
+            "denominator": 64.87677955627441,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.9306850866558626,
+            "low": 0.8814410764311644,
+            "high": 0.9822674003972909,
+            "n": 97,
+            "episodes": 63,
+            "denominator": 97.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.8825627216666015,
+            "low": 0.8403190332386514,
+            "high": 0.9270358150737728,
+            "n": 97,
+            "episodes": 63,
+            "denominator": 97.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.048122364989261035,
+            "low": 0.03825811084635048,
+            "high": 0.059372412150627676,
+            "n": 97,
+            "episodes": 63,
+            "denominator": 97.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 5.170638906314507,
+            "low": 4.237794175395838,
+            "high": 6.105872716609252,
+            "n": 97,
+            "episodes": 63,
+            "denominator": 90.27645340561867,
+            "valid_bootstraps": 2000
+          }
+        }
+      }
+    },
+    "611602": {
+      "coal": {
+        "all": {
+          "coarse_mse": {
+            "mean": 1.520961323287338,
+            "low": 1.4064185716805933,
+            "high": 1.6566390686949608,
+            "n": 128,
+            "episodes": 71,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.51687405933626,
+            "low": 1.4035558462802415,
+            "high": 1.6506276285594206,
+            "n": 128,
+            "episodes": 71,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.004087263951078057,
+            "low": 0.0010859486108282738,
+            "high": 0.007643773688332117,
+            "n": 128,
+            "episodes": 71,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.2687289866282745,
+            "low": 0.0736545322399218,
+            "high": 0.47898970936860746,
+            "n": 128,
+            "episodes": 71,
+            "denominator": 194.68304938077927,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 1.520961323287338,
+            "low": 1.4064185716805933,
+            "high": 1.6566390686949608,
+            "n": 128,
+            "episodes": 71,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.51687405933626,
+            "low": 1.4035558462802415,
+            "high": 1.6506276285594206,
+            "n": 128,
+            "episodes": 71,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.004087263951078057,
+            "low": 0.0010859486108282738,
+            "high": 0.007643773688332117,
+            "n": 128,
+            "episodes": 71,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.2687289866282745,
+            "low": 0.0736545322399218,
+            "high": 0.47898970936860746,
+            "n": 128,
+            "episodes": 71,
+            "denominator": 194.68304938077927,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.2018596172332763,
+            "low": 2.196885448433459,
+            "high": 2.2066758554801345,
+            "n": 65,
+            "episodes": 64,
+            "denominator": 65.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 2.1890850654015175,
+            "low": 2.1845813623678723,
+            "high": 2.1933459977805616,
+            "n": 65,
+            "episodes": 64,
+            "denominator": 65.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.01277455183175894,
+            "low": 0.00825013644563464,
+            "high": 0.017320939988800972,
+            "n": 65,
+            "episodes": 64,
+            "denominator": 65.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.580171039596551,
+            "low": 0.3752424314881944,
+            "high": 0.7855496090728158,
+            "n": 65,
+            "episodes": 64,
+            "denominator": 143.12087512016296,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.818447210485973,
+            "low": 0.7725655401532946,
+            "high": 0.8696756443295341,
+            "n": 63,
+            "episodes": 33,
+            "denominator": 63.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.8233230213324229,
+            "low": 0.7759081059356489,
+            "high": 0.8764734463188154,
+            "n": 63,
+            "episodes": 33,
+            "denominator": 63.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.004875810846449837,
+            "low": -0.008521847784996015,
+            "high": -0.0012622493253119573,
+            "n": 63,
+            "episodes": 33,
+            "denominator": 63.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.5957391978347272,
+            "low": -1.0184720546426993,
+            "high": -0.15630271187110834,
+            "n": 63,
+            "episodes": 33,
+            "denominator": 51.5621742606163,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "drink": {
+        "all": {
+          "coarse_mse": {
+            "mean": 0.835325337247923,
+            "low": 0.7300596068944776,
+            "high": 0.9332272369831445,
+            "n": 128,
+            "episodes": 53,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.8332142994040623,
+            "low": 0.7302121905674942,
+            "high": 0.9299118516364816,
+            "n": 128,
+            "episodes": 53,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.002111037843860686,
+            "low": -0.0019477081090524678,
+            "high": 0.0064605384784806085,
+            "n": 128,
+            "episodes": 53,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.25272043881556205,
+            "low": -0.2490297312435869,
+            "high": 0.741851939268264,
+            "n": 128,
+            "episodes": 53,
+            "denominator": 106.92164316773415,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 0.835325337247923,
+            "low": 0.7300596068944776,
+            "high": 0.9332272369831445,
+            "n": 128,
+            "episodes": 53,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.8332142994040623,
+            "low": 0.7302121905674942,
+            "high": 0.9299118516364816,
+            "n": 128,
+            "episodes": 53,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.002111037843860686,
+            "low": -0.0019477081090524678,
+            "high": 0.0064605384784806085,
+            "n": 128,
+            "episodes": 53,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.25272043881556205,
+            "low": -0.2490297312435869,
+            "high": 0.741851939268264,
+            "n": 128,
+            "episodes": 53,
+            "denominator": 106.92164316773415,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.1670044848793433,
+            "low": 2.144893112656666,
+            "high": 2.1896724598358075,
+            "n": 19,
+            "episodes": 14,
+            "denominator": 19.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 2.1424056981739246,
+            "low": 2.1235960277915,
+            "high": 2.161658856868744,
+            "n": 19,
+            "episodes": 14,
+            "denominator": 19.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.024598786705418638,
+            "low": 0.013059784550415841,
+            "high": 0.03593995768683296,
+            "n": 19,
+            "episodes": 14,
+            "denominator": 19.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 1.1351516287603933,
+            "low": 0.6045522889160423,
+            "high": 1.6505428243116695,
+            "n": 19,
+            "episodes": 14,
+            "denominator": 41.17308521270752,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.6031977794039141,
+            "low": 0.5633879705942397,
+            "high": 0.64152277913675,
+            "n": 109,
+            "episodes": 51,
+            "denominator": 109.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.6050066243891322,
+            "low": 0.5658040308223969,
+            "high": 0.6425981705071085,
+            "n": 109,
+            "episodes": 51,
+            "denominator": 109.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0018088449852182232,
+            "low": -0.005761638543507054,
+            "high": 0.002250766317099159,
+            "n": 109,
+            "episodes": 51,
+            "denominator": 109.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.2998759329984261,
+            "low": -0.9524671229322073,
+            "high": 0.3795916133291001,
+            "n": 109,
+            "episodes": 51,
+            "denominator": 65.74855795502663,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "iron": {
+        "all": {
+          "coarse_mse": {
+            "mean": 1.7023394703865051,
+            "low": 1.5557842026056037,
+            "high": 1.8456736570199295,
+            "n": 82,
+            "episodes": 46,
+            "denominator": 82.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.6993235567720926,
+            "low": 1.5544650388184775,
+            "high": 1.8421821701481487,
+            "n": 82,
+            "episodes": 46,
+            "denominator": 82.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.0030159136144126335,
+            "low": -0.0015625829471868637,
+            "high": 0.007623225105171267,
+            "n": 82,
+            "episodes": 46,
+            "denominator": 82.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.17716287719349263,
+            "low": -0.09307601547484408,
+            "high": 0.43508331232147734,
+            "n": 82,
+            "episodes": 46,
+            "denominator": 139.59183657169342,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 1.7023394703865051,
+            "low": 1.5557842026056037,
+            "high": 1.8456736570199295,
+            "n": 82,
+            "episodes": 46,
+            "denominator": 82.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.6993235567720926,
+            "low": 1.5544650388184775,
+            "high": 1.8421821701481487,
+            "n": 82,
+            "episodes": 46,
+            "denominator": 82.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.0030159136144126335,
+            "low": -0.0015625829471868637,
+            "high": 0.007623225105171267,
+            "n": 82,
+            "episodes": 46,
+            "denominator": 82.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.17716287719349263,
+            "low": -0.09307601547484408,
+            "high": 0.43508331232147734,
+            "n": 82,
+            "episodes": 46,
+            "denominator": 139.59183657169342,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.0708309558399938,
+            "low": 2.066600922017262,
+            "high": 2.0752045962028767,
+            "n": 57,
+            "episodes": 46,
+            "denominator": 57.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 2.0669461467809844,
+            "low": 2.062862752807922,
+            "high": 2.071084044897846,
+            "n": 57,
+            "episodes": 46,
+            "denominator": 57.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.0038848090590092176,
+            "low": -0.0011433739366231265,
+            "high": 0.008712505433337597,
+            "n": 57,
+            "episodes": 46,
+            "denominator": 57.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.18759662868925087,
+            "low": -0.05520546819980264,
+            "high": 0.41978914550257224,
+            "n": 57,
+            "episodes": 46,
+            "denominator": 118.03736448287964,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.8621788835525512,
+            "low": 0.8130792685393449,
+            "high": 0.9211824560866636,
+            "n": 25,
+            "episodes": 17,
+            "denominator": 25.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.8611440515518188,
+            "low": 0.8123410269618034,
+            "high": 0.9194310377581396,
+            "n": 25,
+            "episodes": 17,
+            "denominator": 25.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.0010348320007324218,
+            "low": -0.008614124057964348,
+            "high": 0.011455285659542788,
+            "n": 25,
+            "episodes": 17,
+            "denominator": 25.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.1200251972190543,
+            "low": -0.9866764915836391,
+            "high": 1.3191096001275857,
+            "n": 25,
+            "episodes": 17,
+            "denominator": 21.55447208881378,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "sapling": {
+        "all": {
+          "coarse_mse": {
+            "mean": 0.08759015672109172,
+            "low": 0.02858237571897115,
+            "high": 0.16163407585863787,
+            "n": 128,
+            "episodes": 85,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.08827293307081163,
+            "low": 0.02882968848093421,
+            "high": 0.1629255988144325,
+            "n": 128,
+            "episodes": 85,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.000682776349890446,
+            "low": -0.0013786372767535997,
+            "high": -0.00014639641086412164,
+            "n": 128,
+            "episodes": 85,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.7795126482790472,
+            "low": -1.1330533176068665,
+            "high": -0.42141542423601197,
+            "n": 128,
+            "episodes": 85,
+            "denominator": 11.21154006029974,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 1.86135337750117,
+            "low": 1.850142632921537,
+            "high": 1.8725782667597135,
+            "n": 6,
+            "episodes": 6,
+            "denominator": 6.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.876759926478068,
+            "low": 1.8667519236604373,
+            "high": 1.8850243488947551,
+            "n": 6,
+            "episodes": 6,
+            "denominator": 6.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.015406548976898193,
+            "low": -0.021606922149658203,
+            "high": -0.010395447413126627,
+            "n": 6,
+            "episodes": 6,
+            "denominator": 6.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.8277068268241027,
+            "low": -1.1646452021077955,
+            "high": -0.5560737490551253,
+            "n": 6,
+            "episodes": 6,
+            "denominator": 11.168120265007019,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 1.86135337750117,
+            "low": 1.850142632921537,
+            "high": 1.8725782667597135,
+            "n": 6,
+            "episodes": 6,
+            "denominator": 6.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.876759926478068,
+            "low": 1.8667519236604373,
+            "high": 1.8850243488947551,
+            "n": 6,
+            "episodes": 6,
+            "denominator": 6.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.015406548976898193,
+            "low": -0.021606922149658203,
+            "high": -0.010395447413126627,
+            "n": 6,
+            "episodes": 6,
+            "denominator": 6.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.8277068268241027,
+            "low": -1.1646452021077955,
+            "high": -0.5560737490551253,
+            "n": 6,
+            "episodes": 6,
+            "denominator": 11.168120265007019,
+            "valid_bootstraps": 2000
+          }
+        },
+        "no_increment": {
+          "coarse_mse": {
+            "mean": 0.00035589996141574315,
+            "low": 0.0002382573986653283,
+            "high": 0.0005194539234934544,
+            "n": 122,
+            "episodes": 82,
+            "denominator": 122.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.00031455634586459604,
+            "low": 0.00020991700392221144,
+            "high": 0.00045233918198829223,
+            "n": 122,
+            "episodes": 82,
+            "denominator": 122.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 4.13436153722301e-05,
+            "low": 6.244692811413458e-06,
+            "high": 8.506502114671644e-05,
+            "n": 122,
+            "episodes": 82,
+            "denominator": 122.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 11.61663934727482,
+            "low": 2.1599026906638383,
+            "high": 19.62455648054172,
+            "n": 122,
+            "episodes": 82,
+            "denominator": 0.043419795292720664,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "stone": {
+        "all": {
+          "coarse_mse": {
+            "mean": 0.9414131431258284,
+            "low": 0.823581656036291,
+            "high": 1.0838310076431816,
+            "n": 128,
+            "episodes": 66,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.9435675922723021,
+            "low": 0.8296287287912353,
+            "high": 1.0821050063632311,
+            "n": 128,
+            "episodes": 66,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0021544491464737803,
+            "low": -0.008312721498597155,
+            "high": 0.004346190914062351,
+            "n": 128,
+            "episodes": 66,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.22885268386089327,
+            "low": -0.9366995965942815,
+            "high": 0.4310782338836012,
+            "n": 128,
+            "episodes": 66,
+            "denominator": 120.50088232010603,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 0.9414131431258284,
+            "low": 0.823581656036291,
+            "high": 1.0838310076431816,
+            "n": 128,
+            "episodes": 66,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.9435675922723021,
+            "low": 0.8296287287912353,
+            "high": 1.0821050063632311,
+            "n": 128,
+            "episodes": 66,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0021544491464737803,
+            "low": -0.008312721498597155,
+            "high": 0.004346190914062351,
+            "n": 128,
+            "episodes": 66,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.22885268386089327,
+            "low": -0.9366995965942815,
+            "high": 0.4310782338836012,
+            "n": 128,
+            "episodes": 66,
+            "denominator": 120.50088232010603,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.05437983726633,
+            "low": 2.0269896100307334,
+            "high": 2.077276268005371,
+            "n": 29,
+            "episodes": 26,
+            "denominator": 29.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 2.025536459067772,
+            "low": 1.99957167477377,
+            "high": 2.0495570509141436,
+            "n": 29,
+            "episodes": 26,
+            "denominator": 29.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.028843378198557888,
+            "low": 0.017331647473276802,
+            "high": 0.04039688683446795,
+            "n": 29,
+            "episodes": 26,
+            "denominator": 29.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 1.403994415995557,
+            "low": 0.8487060422969088,
+            "high": 1.9652637438080591,
+            "n": 29,
+            "episodes": 26,
+            "denominator": 59.57701528072357,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.6153925963573985,
+            "low": 0.563262162930912,
+            "high": 0.6710565650747283,
+            "n": 99,
+            "episodes": 51,
+            "denominator": 99.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.6266272171503968,
+            "low": 0.5758686431722789,
+            "high": 0.6817308767824276,
+            "n": 99,
+            "episodes": 51,
+            "denominator": 99.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.011234620792998208,
+            "low": -0.017838586865649843,
+            "high": -0.005338728107399231,
+            "n": 99,
+            "episodes": 51,
+            "denominator": 99.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -1.8256022230250601,
+            "low": -2.9736487908026885,
+            "high": -0.827913848312491,
+            "n": 99,
+            "episodes": 51,
+            "denominator": 60.92386703938246,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "stone_no_tool": {
+        "all": {
+          "coarse_mse": {
+            "mean": 0.0020371459654597857,
+            "low": 0.001921781820312237,
+            "high": 0.0021402298046552092,
+            "n": 128,
+            "episodes": 45,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.0023042898806124867,
+            "low": 0.002146322471931847,
+            "high": 0.0024581772458131135,
+            "n": 128,
+            "episodes": 45,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0002671439160621958,
+            "low": -0.0004666818110151859,
+            "high": -9.228346080592095e-05,
+            "n": 128,
+            "episodes": 45,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -13.113636547124436,
+            "low": -23.68354467741276,
+            "high": -4.424800958896952,
+            "n": 128,
+            "episodes": 45,
+            "denominator": 0.26075468357885256,
+            "valid_bootstraps": 2000
+          }
+        },
+        "no_increment": {
+          "coarse_mse": {
+            "mean": 0.0020371459654597857,
+            "low": 0.001921781820312237,
+            "high": 0.0021402298046552092,
+            "n": 128,
+            "episodes": 45,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.0023042898806124867,
+            "low": 0.002146322471931847,
+            "high": 0.0024581772458131135,
+            "n": 128,
+            "episodes": 45,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0002671439160621958,
+            "low": -0.0004666818110151859,
+            "high": -9.228346080592095e-05,
+            "n": 128,
+            "episodes": 45,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -13.113636547124436,
+            "low": -23.68354467741276,
+            "high": -4.424800958896952,
+            "n": 128,
+            "episodes": 45,
+            "denominator": 0.26075468357885256,
+            "valid_bootstraps": 2000
+          }
+        }
+      },
+      "wood": {
+        "all": {
+          "coarse_mse": {
+            "mean": 1.1671878714114428,
+            "low": 1.0910317339094644,
+            "high": 1.2482963195336716,
+            "n": 128,
+            "episodes": 76,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.1685819737613201,
+            "low": 1.0938194167741213,
+            "high": 1.24767772787714,
+            "n": 128,
+            "episodes": 76,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0013941023498773575,
+            "low": -0.00494040565290412,
+            "high": 0.0022468696262788125,
+            "n": 128,
+            "episodes": 76,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.11944112717616868,
+            "low": -0.43988331625242516,
+            "high": 0.1818711863769205,
+            "n": 128,
+            "episodes": 76,
+            "denominator": 149.40004754066467,
+            "valid_bootstraps": 2000
+          }
+        },
+        "increment": {
+          "coarse_mse": {
+            "mean": 1.1671878714114428,
+            "low": 1.0910317339094644,
+            "high": 1.2482963195336716,
+            "n": 128,
+            "episodes": 76,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 1.1685819737613201,
+            "low": 1.0938194167741213,
+            "high": 1.24767772787714,
+            "n": 128,
+            "episodes": 76,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.0013941023498773575,
+            "low": -0.00494040565290412,
+            "high": 0.0022468696262788125,
+            "n": 128,
+            "episodes": 76,
+            "denominator": 128.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.11944112717616868,
+            "low": -0.43988331625242516,
+            "high": 0.1818711863769205,
+            "n": 128,
+            "episodes": 76,
+            "denominator": 149.40004754066467,
+            "valid_bootstraps": 2000
+          }
+        },
+        "first_increment": {
+          "coarse_mse": {
+            "mean": 2.0518158751149334,
+            "low": 2.040147612460198,
+            "high": 2.0616577872364172,
+            "n": 31,
+            "episodes": 29,
+            "denominator": 31.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 2.0345897174650625,
+            "low": 2.018867995981127,
+            "high": 2.0483752673221454,
+            "n": 31,
+            "episodes": 29,
+            "denominator": 31.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": 0.01722615764987084,
+            "low": 0.009533102006040593,
+            "high": 0.024897610038639075,
+            "n": 31,
+            "episodes": 29,
+            "denominator": 31.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": 0.8395566999356564,
+            "low": 0.46379867213700937,
+            "high": 1.2123326795781033,
+            "n": 31,
+            "episodes": 29,
+            "denominator": 63.60629212856293,
+            "valid_bootstraps": 2000
+          }
+        },
+        "positive_increment": {
+          "coarse_mse": {
+            "mean": 0.8844717052793994,
+            "low": 0.8423089624400875,
+            "high": 0.9279926996018205,
+            "n": 97,
+            "episodes": 63,
+            "denominator": 97.0,
+            "valid_bootstraps": 2000
+          },
+          "rich_mse": {
+            "mean": 0.8918166123714644,
+            "low": 0.8482921643442333,
+            "high": 0.9358619767680079,
+            "n": 97,
+            "episodes": 63,
+            "denominator": 97.0,
+            "valid_bootstraps": 2000
+          },
+          "absolute_reduction": {
+            "mean": -0.007344907092064926,
+            "low": -0.010899691452780667,
+            "high": -0.003830394679518342,
+            "n": 97,
+            "episodes": 63,
+            "denominator": 97.0,
+            "valid_bootstraps": 2000
+          },
+          "percent_reduction": {
+            "mean": -0.8304287235219936,
+            "low": -1.2278839968374895,
+            "high": -0.4348572127639117,
+            "n": 97,
+            "episodes": 63,
+            "denominator": 85.79375541210175,
+            "valid_bootstraps": 2000
+          }
+        }
+      }
+    }
+  }
+}
