@@ -1,0 +1,7 @@
+run/
+checks/
+*.pt
+*.npz
+*.log
+__pycache__/
+STATUS.json
