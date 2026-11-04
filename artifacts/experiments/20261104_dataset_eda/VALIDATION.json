@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "mass_balance_checks": {
+    "old": "action, age, outcome, risk, night, increment-histogram and exogenous-window mass balances passed",
+    "advanced": "action, age, outcome, risk, night, increment-histogram and exogenous-window mass balances passed",
+    "danger": "action, age, outcome, risk, night, increment-histogram and exogenous-window mass balances passed",
+    "combined": "action, age, outcome, risk, night, increment-histogram and exogenous-window mass balances passed"
+  },
+  "source_pins_match_current_files": true,
+  "census_source_hash_matches": true,
+  "unique_train_ids": 22267,
+  "additional_provenance_sha256": {
+    "artifacts/craftax_support_v2/manifest.json": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
+    "saccade/data.py": "d4c865124e0cdf8819fb5cc258d519c5dcfb7ec05985eedcf821e2b632907698",
+    "saccade/train.py": "3eeda34a11c2c56209a3285c4c42c555a5a5a2eac4fbe5dcaedca7a9c506c850",
+    ".venv/lib/python3.12/site-packages/craftax/craftax_classic/game_logic.py": "e5812a161b485a5edba6da0e34b7e3352550fe29ed7d0c8f66c8071ecac20755",
+    ".venv/lib/python3.12/site-packages/craftax/craftax_classic/constants.py": "5b00ec29b51f7d011bb01c98aa74e5fd6b8a7cee6ab717f61dc59d6407f6baa4",
+    "artifacts/experiments/20261104_dataset_eda/analyze.py": "be704c82d573c6c7c13a9253f88fd0e944caa7297eaea2c1df75273beafd5f8b"
+  },
+  "cpu_contract_tests": {
+    "passed": 3,
+    "failed": 0
+  },
+  "collection_services": {
+    "saccade-coverage-v1.service": "inactive/success/0",
+    "saccade-risk-v1.service": "inactive/success/0"
+  }
+}

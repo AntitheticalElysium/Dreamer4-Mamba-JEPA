@@ -1,0 +1,187 @@
+{
+  "complete": true,
+  "frame_budget": 25600000,
+  "exposure_is_approximate": true,
+  "denominator": "transitions + episodes, matching the emitted-frame budget in saccade.train",
+  "pools": {
+    "old": {
+      "episodes": 7672,
+      "transitions": 2432119,
+      "frames": 2439791,
+      "passes_at_budget": 10.492702038822177,
+      "length_quantiles": {
+        "min": 30.0,
+        "p10": 79.0,
+        "p50": 213.0,
+        "p90": 624.9000000000005,
+        "p99": 2265.669999999999,
+        "max": 2500.0
+      },
+      "episodes_reaching_1024": 403,
+      "truncated": 51
+    },
+    "advanced": {
+      "episodes": 2932,
+      "transitions": 3711420,
+      "frames": 3714352,
+      "passes_at_budget": 6.89218469331932,
+      "length_quantiles": {
+        "min": 38.0,
+        "p10": 284.1,
+        "p50": 1085.5,
+        "p90": 2500.0,
+        "p99": 2500.0,
+        "max": 2500.0
+      },
+      "episodes_reaching_1024": 1602,
+      "truncated": 621
+    },
+    "danger": {
+      "episodes": 11663,
+      "transitions": 2771363,
+      "frames": 2783026,
+      "passes_at_budget": 9.198620494382734,
+      "length_quantiles": {
+        "min": 19.0,
+        "p10": 63.0,
+        "p50": 180.0,
+        "p90": 522.0,
+        "p99": 1190.3799999999992,
+        "max": 1457.0
+      },
+      "episodes_reaching_1024": 482,
+      "truncated": 16
+    },
+    "combined": {
+      "episodes": 22267,
+      "transitions": 8914902,
+      "frames": 8937169,
+      "passes_at_budget": 2.8644417488356773,
+      "length_quantiles": {
+        "min": 19.0,
+        "p10": 74.0,
+        "p50": 211.0,
+        "p90": 1064.0,
+        "p99": 2500.0,
+        "max": 2500.0
+      },
+      "episodes_reaching_1024": 2487,
+      "truncated": 688
+    }
+  },
+  "selected": {
+    "ach/EAT_PLANT": {
+      "label": "Plant first unlock",
+      "unique_growth": 5.875,
+      "rate_fold": 1.603838097388558,
+      "original": 184,
+      "combined": 1081,
+      "expected_original": 1930.6571751432807,
+      "expected_combined": 3096.4615304913673
+    },
+    "ach/COLLECT_DIAMOND": {
+      "label": "Diamond first unlock",
+      "unique_growth": 5.310160427807487,
+      "rate_fold": 1.449640442104301,
+      "original": 187,
+      "combined": 993,
+      "expected_original": 1962.1352812597474,
+      "expected_combined": 2844.3906565938273
+    },
+    "ach/COLLECT_COAL": {
+      "label": "Coal first unlock",
+      "unique_growth": 2.731312536786345,
+      "rate_fold": 0.7456311663613492,
+      "original": 3398,
+      "combined": 9281,
+      "expected_original": 35654.201527917765,
+      "expected_combined": 26584.883870943922
+    },
+    "ach/COLLECT_IRON": {
+      "label": "Iron first unlock",
+      "unique_growth": 3.025344597598933,
+      "rate_fold": 0.8259000720609063,
+      "original": 2249,
+      "combined": 6804,
+      "expected_original": 23598.086885311077,
+      "expected_combined": 19489.66165907795
+    },
+    "inc/coal": {
+      "label": "Coal increments",
+      "unique_growth": 3.4626297933586923,
+      "rate_fold": 0.9452761837857601,
+      "original": 9727,
+      "combined": 33681,
+      "expected_original": 102062.51273162333,
+      "expected_combined": 96477.26254253444
+    },
+    "inc/iron": {
+      "label": "Iron increments",
+      "unique_growth": 3.9553586356796524,
+      "rate_fold": 1.0797880627638903,
+      "original": 5981,
+      "combined": 23657,
+      "expected_original": 62756.85089419545,
+      "expected_combined": 67764.09845220561
+    },
+    "body_inc/drink": {
+      "label": "Drink increases",
+      "unique_growth": 4.35879295042475,
+      "rate_fold": 1.18992309659913,
+      "original": 39435,
+      "combined": 171889,
+      "expected_original": 413779.70490095264,
+      "expected_combined": 492366.0277656157
+    },
+    "event/damage": {
+      "label": "Damage (net health loss)",
+      "unique_growth": 3.142488134738964,
+      "rate_fold": 0.8578795218869546,
+      "original": 47618,
+      "combined": 149639,
+      "expected_original": 499641.4856846345,
+      "expected_combined": 428632.19885402184
+    },
+    "event/death": {
+      "label": "Deaths",
+      "unique_growth": 2.831518173468049,
+      "rate_fold": 0.7729866757542331,
+      "original": 7621,
+      "combined": 21579,
+      "expected_original": 79964.88223786381,
+      "expected_combined": 61811.788498125075
+    },
+    "event/risk": {
+      "label": "Low-health zombie risk",
+      "unique_growth": 2.8317815236578867,
+      "rate_fold": 0.7730585687018785,
+      "original": 28891,
+      "combined": 81813,
+      "expected_original": 303144.6546036115,
+      "expected_combined": 234348.57279749325
+    },
+    "event/risk_death": {
+      "label": "Deaths in that risk class",
+      "unique_growth": 2.9983788165360714,
+      "rate_fold": 0.8185385832107862,
+      "original": 3701,
+      "combined": 11097,
+      "expected_original": 38833.49024568088,
+      "expected_combined": 31786.710086829513
+    }
+  },
+  "source_pins": {
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/eda/s0/s0_train_labels.npz": "e244ec87e5e6784dda4ae1747dad9ed9acd1d5b6bf3109002841d2ed418a288c",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/craftax_coverage_v1/manifest.json": "6aba94b0624f4dd2f03894a727a8223abd16d56700ae562281e9f3be1c00a3e1",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/craftax_risk_v1/manifest.json": "dd5653b2f116b7da89babb06ba9b3abfdbb158a282dc17aeb3132e769ed1de14"
+  },
+  "census_sha256": "33f563b9b59153e3001f59779d57f1eb9699c0862bcde4647f3e7b42b9979ecd",
+  "archive": {
+    "all_episodes": 25440,
+    "all_transitions": 9973386,
+    "original_dev_episodes": 1009,
+    "original_final_episodes": 1002,
+    "new_monitor_episodes": 765,
+    "new_monitor_transitions": 311541
+  }
+}
