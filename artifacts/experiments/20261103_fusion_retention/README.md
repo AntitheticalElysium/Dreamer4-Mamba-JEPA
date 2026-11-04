@@ -46,3 +46,7 @@ the local fusion); F1.6's emissions / memory carry a small, mostly positive amou
 tokens live at a different scale (base error .052 vs .0095), so only within-world percentages compare. Same limits
 as the README: the forecast lacks the next coarse frame, and access is not native use. The next audit
 (`../20261103_fusion_projection`) tests the global projection directly.
+Correction (11-04, Codex's review): these are reductions of these frozen readers' next-fine error, not fractions of
+information, and "carries essentially none" holds for these readers only. The projection audit recodes the component
+the projection retains and recovers +4.8 / +7.2% whole-crop error (two reader seeds; no entity-cell rescue): an
+accessibility deficit with some surviving information, not demonstrated deletion.
