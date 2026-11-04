@@ -1,0 +1,11 @@
+{
+  "shape": [
+    1024,
+    256
+  ],
+  "rank": 256,
+  "condition": 14.010678059885294,
+  "singular_min": 0.39033934872872217,
+  "singular_max": 5.468918949143422,
+  "checkpoint_path": "artifacts/experiments/20261102_p1f16/run/ckpt_10.pt"
+}
