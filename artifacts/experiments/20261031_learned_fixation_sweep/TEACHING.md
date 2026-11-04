@@ -614,19 +614,22 @@ multiplied by a life-long RND factor whose modulation vanishes over time.
   clean estimate from noise (design reading F's D), gives two signals per window w (sums over its 9 cells):
   contingency(w) = ||D(a_taken) - D(NOOP)||^2 (F's: where my action changed things); surprise(w) =
   ||p_t - D(a_taken)||^2 (the observed periphery against the expectation: where things did not go as expected;
-  pre-crop under section 14's same-frame timeline). No memory, no new network; both sharpen as the world learns
-  (the emergence). They come from the periphery stream, which learns from every frame wherever the eye goes, so
-  neither can self-confirm as H3's floor did, and they cover the whole screen, HUD included (the belief's change head
-  is map-only: HUD-blind by omission). Noisy TV (error-seeking fixated noise in 8 of 8 runs in Kim et al.): windows
-  compete within one frame, so screen-wide randomness (rendering static) cancels; Craftax's local randomness is mostly
-  mobs; the floor (and inhibition of return, if needed) bounds the dwell.
+  pre-crop under section 14's same-frame timeline). No new reference model or scoring network; which locations
+  score highly can change as the world learns (the emergence). D is the implemented first clean denoising estimate
+  from pure noise, not a calibrated conditional mean or a Bayesian information gain. The signals cover the screen,
+  HUD included (the change head is map-only). Correction 11-02 (Codex): full-frame G1 does not make their learning
+  gaze-independent, since selected-window TSP also trains the periphery and gaze affects the belief. This avoids
+  H3's faulty scale subtraction, not every possible feedback/blind-spot mechanism. Within-frame competition
+  cancels an EXACT common offset, not heterogeneous/realized renderer noise; irreducible prediction variance can
+  still attract gaze. The floor guarantees support, not useful learning or a hard dwell bound. Contingency can
+  remain high on an already mastered action; only reducible prediction error is expected to fall with learning.
 - Selection: sample from a softmax over scores normalised across the frame's 49 windows, plus the uniform floor
   (0.2), never arg-max (deterministic placement keyed the heads on the window's position, 10a; per-fixation
   calibration and policy confounding need overlap).
-- Inhibition of return waits for P1-F1.5's reading 5: if a look reaches the belief and improves the expectation
-  there, surprise falls by itself (habituation emerging from the belief update); if the belief does not take up
-  glimpses, an explicit short trace over the 49 windows (decaying within a few frames; spatial, shifted with the
-  view's scroll if needed).
+- A short recency trace is the working proposal for controlling revisits (decaying within a few frames, with
+  overlap and scrolling semantics to be specified). Correction 11-02: reading 5 is evidence about weak one-step
+  evidence uptake, not a direct test of controller-surprise habituation and not proof that a trace is necessary.
+  The trace does not substitute for the belief learning to use the glimpse. Its exact behavior remains for discussion.
 - The combination's weights are ours; the emergence is in the signals. Learning the policy (VoI in P3) comes later.
 - Validation: P1-F1.5's fixed readings (what uniform gaze leaves unlearned; reading 5 for inhibition of return) and
   reading 6 (added before any result): F re-read on P1-F1.5 with surprise added to its signals (does the world's own
@@ -642,3 +645,235 @@ periphery) reconciled with the real step's. (4) Content the periphery cannot sho
 floor's and P3's VoI's role.
 **Superseded:** section 13's chooser (the priority head on realized excess error) and 12b's need x learnability
 proposal; H3's floor (RESULTS H3). **Kept:** section 14's same-frame timeline; decision 1.
+
+## 16. Ownership and current investigation (11-02, user request)
+Codex now owns this experiment segment. P1-F1.5 must be mapped as a world model for P2, beyond comparison with P1-F:
+curriculum attribution, loss/gradient routes, real/generated perception and outcome consistency, useful evidence
+uptake, free-running belief stability, and the credit/coverage limits of the P2 objective. The current evidence
+review is `../20261102_p1f15_review/REVIEW.md`; the active diagnosis protocol is
+`../20261102_p1f15_readiness/PLAN.md` and the living synthesis is `saccade/design/P2_READINESS.md`.
+No new controller, pixel loss or P2 objective is selected by these corrections. Consequential choices are discussed
+with the user before P1-F2 is built/launched. Historical measurements and negative results remain recorded.
+
+First bounded diagnosis complete (11-02; details in that synthesis): weighted fine-view supervision is still
+substantial (checkpoint-10 shared-denoiser glimpse-G1 gradient .173 -> .153; fovea reconstruction .055 -> .051),
+while paths toward future physical predictions through memory are weaker. This is not evidence that all fine
+teaching vanished. Expected event-crop coverage fell from 95.2% under the hand rule to 11.2% under uniform gaze;
+the two completed recipes still cannot isolate curriculum from factorization. Native own-history predictions
+show severe entity-readout decline by step 16; a real-percept replay through the same stepwise update does not.
+Native outcomes also remain wrong on generated evidence, beyond any external digit-reader ambiguity. A chooser
+can therefore be tested as a teaching curriculum without claiming it already repairs uptake, recursion or VoI.
+P2's detached discrete-outcome credit and sparse long exogenous support are separate open issues, not new choices
+made by this note. The user asked to decide the lasting action-contingency bias after seeing the diagnostics.
+
+### 11-02 bounded follow-through, for discussion
+
+The user-approved four checks are exercised in
+`../20261102_p1f15_readiness/UPTAKE_RESULTS.md` (protocol and raw evidence linked there).
+Both fine readers expose entity content, but the frozen native local next-denoising benefit
+is negligible even after verifying fine readability and matching control-crop rows. The
+input path is connected; redundancy versus weak memory acquisition/export/use remains
+unresolved. A periphery reader's mistake is not proof of absent information; a stronger
+reader recovers many of those cases. No architecture or loss repair follows automatically.
+
+The working equal-normalized C/S policy with a .2 uniform floor redirects held-out replay
+gaze toward mobs (29.4% versus 12.2% under uniform), without a repeat trap in these 12 episode
+prefixes. A four-frame half-life recency trace adds little behaviorally here. Neither that
+result nor action contingency itself proves learning progress or settling of mastered
+effects. Lasting C weight and recency remain decisions for discussion, not new constants.
+
+Full native objective routes are exercised by a correctness prototype, including real
+prefix fixation retention, no global-RNG consumption and no double advance of training
+carry. A pre-action fork must be saved/recomputed consistently for actual and NOOP scoring;
+mixing differently computed cached outputs gave false C at update boundaries. The prototype
+is not a production launcher. B=16, T=64 collection costs 3.245 s per 1,024 frames, implying
+about 22.5 extra hours at 25.6M frames before training, if throughput carries over. A normal
+overnight duration is not qualified. No frame-budget/refresh approximation was installed.
+
+Per the user, self-feeding is P2's training task; outcome/query consistency and sampler
+tuning are parked. F2 remains a possible TEACHING comparison, not a demonstrated evidence/
+VoI repair. The campaign stops here for discussion before further diagnostics or launch.
+
+
+### Conditional uptake and cheap endogenous chooser follow-up (11-02)
+
+Completed source-first campaign: [RESULTS](../20261102_foveal_information/RESULTS.md),
+[chooser research](../20261102_foveal_information/CHOOSER_RESEARCH.md). Raw fine observations
+add current entity information beyond full coarse/history/prior/action (+3.3–8.9 points
+night macro recall across four readers). Genuine paired crop effects on exported memory
+are smaller and reader-dependent, not universally zero; no irreversible erasure or unique
+training cause established. Frozen-carry query instrument overfits, so its negative result
+is inconclusive. No selector-only overnight run is qualified as a solution to this gap.
+
+H3's high R² belonged to a flawed excess-error target. Raw-error ranking was .38/.56 on
+evaluation; it helped super-resolution temporarily and hurt forward learning overall.
+Head adequacy and target adequacy are separate. The strongest cheap candidates for a
+matched native feasibility comparison are sparse self-distillation of native C/S and a
+direct action-conditioned coarse-expectation head. Both need a coarse-only input path to
+restore batched P1 collection; using the fine-history main belief retains the sequential
+dependency. Teacher prefix/NOOP/context costs must be benchmarked, not omitted. Research
+families and primary-paper limits are recorded; no controller, refresh rate or bias is
+canonized. Corpus work deferred per user. Stop for discussion before extending diagnostics.
+
+Batching qualification: a block-start native belief plus coarse-only within-block history
+is another explicit candidate; it delays fine feedback rather than dropping all fine
+history. Block length and own-history behavior need validation. See CHOOSER_RESEARCH.md
+for the computational contract; it is not equivalent to the per-frame full-belief chooser.
+
+
+### 11-03 user-authorized development of the cheap spatial chooser
+The user reopened the head's developmental question: surprise may initially find
+unpredicted remote effects, with contingency developing as associations are learned.
+The previous checkpoint10 qualification did not test that process. It did measure
+the combined policy, which lost remote mass versus native but exceeded uniform.
+New bounded protocol: `../20261103_chooser_development/PLAN.md`. Cached policy
+ablation completed; all three head-learning/adaptation/input experiments are
+authorized irrespective of its result and queued after the F1.6 evaluation. No
+policy is selected or installed. Component C/S readouts diagnose the combined
+policy; immediate perfect remote C is not a requirement of the new acquisition
+question. A shadow-head trajectory is not closed-loop world-learning evidence.
+P0 raw/paired reports: POLICY_RESULTS.md/policy_results.json in that folder.
+Changing how fixed scores combine does not generally restore remote looks;
+surprise-only gains remote looks while giving up contact looks. Both scopes are
+reported, not folded into an aggregate that could hide the trade-off.
+
+
+### 11-03 E1–E3: acquisition can produce the user's C/S handover
+Full evidence: `../20261103_chooser_development/DISSECTION.md`. Original4k
+qualification stands, but it was not a verdict against the spatial-head family.
+Longer/different-schedule coarse-only fits sometimes acquire drink,stone,wood:
+their factual counter errors fall, remote C grows, and S generally weakens there.
+An exact instrumented replay proves this can happen at a FIXED encoder, with
+unchanged endpoint scores. It is not reliable across two head seeds/training
+histories; carrying optimizer/head helps one seed and hurts the other. Main belief
+input gives small improvements, not a4k rescue. No input/loss change selected.
+Coal/iron mostly stay surprising; their own C remains tiny. Useful crop coverage
+can still occur through S and3x3 overlap, so lack of perfect component C alone
+does not settle policy utility. Sapling successes are rare; surprise focuses on
+actual drops (small-n), while its all-attempt average is low. Do not lump this
+with qualified coal/iron cases that all increment in the reporting cohort.
+The head is an auxiliary learner. These tests do not show that its fixations
+improve the world or that its competence matches the world's. C remains after
+mastery, preserving action-directed gaze rather than guaranteeing habituation.
+Keep the coarse-only MSE head as a candidate; reliable online learning clocks,
+combined coverage, noise/other-content behavior and matched teaching benefit
+remain for discussion. No new diagnostics or overnight run automatically follow.
+
+### 2026-11-03: whole-screen gaze / native-belief dissection
+
+User-requested follow-up is complete in
+`../20261103_gaze_belief/RESULTS.md`. No head/world fitting or architecture change.
+The cheap chooser is broadly scene-directed, not mostly counter-directed:
+~48–50% entity crop coverage when entities are present vs~44–45% native and~20–22%
+uniform, across the two disjoint random-frame cohorts. Most advantage is daylight;
+S supplies much of entity concentration. HUD centers remain~10–12%. Conditional
+coverage and disjoint center/crop-cell allocation are distinct metrics.
+Fixed-physics night rerenders identify43–47% finite-repeat noise contribution to
+cheap surprise energy,51% native; mixed-policy probability redistribution~4%.
+Raw surprise is therefore not a reducible-error estimate, and native is not a
+noise-free teacher. Neither number establishes a population wasted-gaze rate.
+E3 has a repeatable movement-frame benefit (~3–5% token MSE), but no robust large
+coal/iron, entity or long-history rescue. A substantial edited-terrain gain in one
+head reverses in the other. Input is one global native-belief projection broadcast
+to locations; the result constrains that route/fit, not all spatial belief inputs.
+Ready for the user's cheap-head architecture discussion. No policy adopted and
+no automatic extra experiment or training run follows. F1.6 results remain parked.
+
+### 2026-11-03 user direction: belief/history comparison; adaptive weights deferred
+
+The user proposes1 coarse frame+native belief versus a1-frame cheap baseline,
+motivated by redundancy with the existing8 coarse frames and a desire to reuse
+the main model's knowledge rather than duplicate temporal inference. Proposed
+matched2x2 (1/8 frames x coarse auxiliary/native belief), leakage/parameter controls,
+longer acquisition budget and readings are in
+`../20261103_chooser_history/PLAN.md`. Discussion only: no fits launched, no input
+route adopted. Shared belief is shared information, not guaranteed agreement with
+the main diffusion model. Fresh fine-dependent belief may reintroduce sequential
+gaze collection; an offline gain would not establish production cost or own-history
+behavior. A1-frame+belief gain over1-frame alone is insufficient if it loses the
+existing8-frame chooser's useful capabilities.
+
+**Deferred at the user's request:** investigate adaptive weighting of surprise and
+contingency in a future experiment. The fixed mixture remains unchanged now. The
+observed surprise-to-contingency handover motivates this direction but is not
+universal across events/fits; mean-normalized C/S magnitudes are not calibrated
+competence estimates. Weight adaptation and the20% random exploration floor are
+separate choices. The user does not consider current noise sensitivity a priority
+or a new launch blocker. Keep the distinction:~4% TV measures response to fresh
+render noise, not wasted gaze. No further noise or adaptive-weight diagnostics now.
+
+### 2026-11-03: approved history/belief comparison and real collection cost complete
+
+`../20261103_chooser_history/SYNTHESIS.md` is the interpretation; paired readings,
+trajectories, source pins, raw forecasts and all optimizer states are retained.
+Four capacity-matched E3 arms, two head seeds,12k updates each. Old4k schedules/
+missing optimizer states prevented an exact matched extension, so all controls
+were refit on the common clock; originals preserved.1B improves full fresh-cohort
+MSE2.93% inA but worsens1.18% inB;8B gains0.01/0.17%. The redundancy interaction
+is positive inA and not replicated inB. One frame alone is competitive in global
+MSE. Combined gaze remains mixed:1B versus8C loses stoneA5.26pp, while woodA gains
+2.41pp despite worse counter prediction. No perfect-component-C requirement or
+prediction-loss-only rejection. All arms are the118032-parameter matched reader;
+original101584-parameter coarse-only head references remain separate and include
+stronger remote drink fits. Do not silently replace that operational baseline.
+
+Fresh belief cost was measured with OWN selected glimpses, batched coarse cache,
+no denoiser scorer or NOOP Mamba fork, and per-frame Mamba updates. Eager extrapolated
+extra collection8.45h; compiled Mamba3.42h; compiling scorer too2.87h at25.6M frames
+split across16x64 and4x256. Last implementation's1B collection0.205/0.702s per1024
+frames versus1C0.041/0.040s. Collection+native P1 forward/backward/clip adds10%/44%
+in these two shapes; Adam/IO/monitor not included. Mathematical compaction, actual
+probability distortion, native reset/replay and unchanged-weight checks documented;
+failed strict numerical checks preserved. Cost is not an irreducible bound. No
+further optimization or scientific tests automatically follow. Current evidence
+does not justify adopting1B for P1-F2; discuss with user. No world launch performed.
+
+### 2026-11-03: user shelves belief-conditioned chooser; history cost and F1.6
+
+The user chose to defer belief integration until after a first P1-F2 test. They
+allowed2C/4C only if a material processing-speed tradeoff justified them. A bounded
+same-head1/2/4/8-history shape benchmark found essentially identical cost:
+35.3/35.5/36.7/35.6ms per1024 scored frames;141.5/142.4/146.5/145.4ms per4096.
+Eight-minus-one extrapolates to~17s over25.6M frames, excluding common work.
+Therefore no2C/4C fits were launched. This is not equal-quality evidence, and the
+original101584-param operational head remains distinct from E3's matched controls.
+FP64 folding and FP32 policy checks, retained initial numerical-check failure:
+`../20261103_p1f16_review/history_cost.json` and its script/logs.
+
+The same review now opens the previously parked F1.6 results. Simple local
+fusion improves some consequences but does not demonstrate useful native
+fine-to-future uptake, including matched local reads. Its real reconstruction
+gains cannot substitute for that claim. Gaze that TEACHES through objective
+placement and gaze that INFORMS deployed memory remain separate capabilities.
+No new chooser design or overnight launch follows automatically. Full dissection:
+`../20261103_p1f16_review/RESULTS.md`.
+
+
+### 2026-11-03: P1-F2 preparation, policy explicitly confirmed
+
+The user chose F1.6 as the unchanged world baseline and confirmed the ORIGINAL
+combined-score softmax, not the separately normalized probability mixture.
+Preparation lives in `../20261103_p1f2/PLAN.md`; no overnight launch authorized.
+Original101584-parameter eight-frame coarse-only Head; no E3 belief/sketch branch.
+An isolated online head optimizer trains detached coarse forecasts after gaze
+selection, with one B256 update per1024 world frames (explicit new working clock,
+not a frozen-head experimental result). World objective/config/seed/data order
+remain F1.6's. Uniform monitor and common random/guided evaluations stay fixed.
+Additional saved-head held-out policy reads and genuine-look uptake distinguish
+useful acquisition/teaching from better fine-evidence use. No native benefit is
+claimed before this full comparison; no other repair or data amendment is folded in.
+
+
+### 2026-11-03: mixer/belief audit closes; do not equate chooser success with fine necessity
+
+`../20261103_belief_information/RESULTS.md`: raw current fine helps next-fine
+prediction8.7–9.9% under future-coarse conditioning; local fusion8.5–8.8%, mixed
+3.9–4.0%, native belief no overall incremental readout benefit. Genuine-look
+controls confirm a practical joint-to-mixed accessibility loss; native fine-use
+contrast is effectively zero on this64-scene panel. This is latent prediction
+value, not proof of unique behavior-relevant information. Next peripheral targets
+show no qualified raw-fine benefit: their downstream nulls cannot diagnose lost
+useful evidence. A coarse-only C/S chooser may improve teaching without revealing
+facts absent from periphery. P1-F2 therefore tests acquisition/teaching, with its
+already queued common-gaze and genuine-look reads distinguishing future use.
+No new chooser/world changes or experiment ladder follow this interpretation.

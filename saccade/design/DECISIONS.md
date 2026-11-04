@@ -7,6 +7,19 @@ artifacts/experiments/20261023_system_design/, the S0 results in artifacts/exper
 
 The first build, M0, is defined in STEP_SPEC §7; entries below marked [superseded] are history.
 
+## Active experiment ownership (2026-11-02)
+At the user's request, Codex owns the P1-F1.5 readiness and emergent-fovea experiment segment. The living evidence
+map is [P2_READINESS.md](P2_READINESS.md); its bounded diagnostic protocol is
+`artifacts/experiments/20261102_p1f15_readiness/PLAN.md`. This does not authorise a new architecture or loss by itself.
+Decision 2 remains under discussion; the user asked to decide the controller's lasting action-contingency bias
+after the diagnostics. P1-F2 is still intended as the clean architectural baseline plus the agreed chooser.
+The user-approved bounded campaign is now reported in
+`artifacts/experiments/20261102_p1f15_readiness/UPTAKE_RESULTS.md`: weak native evidence use, positive exploratory
+gaze allocation, and a substantial online collection cost. These are discussion inputs, not new gates or a
+controller decision. Self-feeding is P2's training target; outcome/query consistency and sampler tuning are parked.
+P2 must reconcile detached-outcome credit and terminal-inclusive admission before implementation. P1's corpus
+was not exogenous-filtered. No overnight launch or architecture/loss/corpus change was made by the campaign.
+
 ## Agreed
 - Offline only; the actor trains in imagination. (The point of imagination training.)
 - No full-frame pixel reconstruction and no pixel-equivalent persistent state; limited pixel grounding is intended:
@@ -158,3 +171,59 @@ M0's architecture, budgets and held-out split remain as declared. Corrections:
 - Correct the launch working directory and the reward-gradient explanation: clipping factor is not Adam update size.
 - Original audit results remain in artifacts/experiments/20261027_m0_implementation_audit; correction protocol/results
   are in artifacts/saccade_m0/checks/review_fixes. P2/P3 and their gradient checks remain deferred.
+
+
+### 2026-11-02 status: conditional fine-evidence follow-up (no new design choice)
+
+See [campaign results](../../artifacts/experiments/20261102_foveal_information/RESULTS.md)
+and P2_READINESS §8. Raw fine tokens add entity information beyond full coarse history,
+prior emitted belief and action. Much less consistent advantage is accessible through
+whole-crop mixing and existing emitted memory; negative carry probing does not prove
+erasure. No unique causal training diagnosis or repair selected. Cheap endogenous
+self-distillation/direct expectation heads are research candidates, with batching and
+proper NOOP-prefix teacher contracts explicit. No P1-F2 launch authorized by these tests.
+
+### 2026-11-02: approved P1-F1.6 spatial fusion experiment
+The user approved a from-scratch F1.5 comparison: every fine-to-belief input passes
+through a shared local88->128->64 GELU joint coarse/fine/light transform. Its output
+uses the existing token out_map; the raw fine bypass is removed, the ordinary coarse
+path and256D projection remain. This supersedes the untrained optional16D residual
+prototype. No new chooser, loss, sampler, corpus or budget. The observation targets,
+TSP timeline and short fine-context cache are unchanged; this is a belief-interface
+experiment, not a demonstrated global architectural repair. Protocol, papers,
+pre-launch proof and one-shot training/evaluation orchestration:
+`artifacts/experiments/20261102_p1f16/`. Seed1 only; matched F1.5 battery follows
+automatically on the checkpoint selected by the existing monitor rule.
+
+### 2026-11-03: F1.6 evaluated; no new architecture selected
+Training25.6M frames and the full matched battery completed; checkpoint10 by the
+original monitor rule. All48 pinned sources match; F1.5's repeated actor-interface
+readings reproduce exactly. Fusion improves several consequences and real-pixel
+reconstruction but worsens risky generated damage/death and cows. The intended
+useful-look repair is not demonstrated: the original whole-map reading and a
+matched58-scene source-local/native-TSP follow-up remain negligible, including
+the40-scene common fine-readable subset. Connected sensitivity is not semantic
+retention. Detailed evidence and limits:
+[review](../../artifacts/experiments/20261103_p1f16_review/RESULTS.md).
+No automatic adoption as a global upgrade, no new repair or P2/actor launch.
+
+
+### 2026-11-03 — P1-F2 single-change preparation
+
+User specifies F1.6 base, changing only fixation policy; explicitly retains the
+original combined-score softmax with equal normalized C/S weights and20% uniform
+exploration. Original8-frame101584-param coarse-only Head, not E3's matched
+ablation architecture. No belief-conditioned chooser, new world loss, corpus
+change or foveal-route repair. Experiment contract, online-clock working choice,
+isolation/resume checks and paired automatic evaluation:
+`artifacts/experiments/20261103_p1f2/PLAN.md`. Preparation/smokes authorized;
+overnight training remains unlaunched until requested. This is a first online
+acquisition test, not an adopted proven replacement for P2/P3 VoI.
+
+### 2026-11-03 — P1-F2 launch authorized
+
+User authorized the prepared P1-F2 and its automatic post-training evaluation;
+mixer diagnosis is on hold pending those results. Launched22:38AEDT,
+`saccade-p1f2.service`, invocation`08ad625927a347fd927753069220097f`.
+No recipe amendment. Frozen pre-launch PLAN remains historical; launch identity,
+source archive and live status reside in`artifacts/experiments/20261103_p1f2/`.
