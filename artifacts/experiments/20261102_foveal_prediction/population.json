@@ -1,0 +1,10 @@
+{
+  "diagnosis": {
+    "primary_frames": 2628,
+    "primary_episodes": 164
+  },
+  "confirmation": {
+    "primary_frames": 1824,
+    "primary_episodes": 102
+  }
+}

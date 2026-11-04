@@ -1,0 +1,7 @@
+{
+  "copy_coarse_expressible": true,
+  "whole_crop_present": true,
+  "targets_not_inputs": true,
+  "fine_gradient_connected": true,
+  "baseline_dimension": 14310
+}

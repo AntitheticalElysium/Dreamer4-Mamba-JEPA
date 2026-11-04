@@ -1,0 +1,124 @@
+{
+  "files": {
+    "PLAN.md": {
+      "sha256": "43943986a72ca4810c9f0d9120121596d9cc4bece938bf8935ff309ae1042461",
+      "bytes": 6116
+    },
+    "RESULTS.md": {
+      "sha256": "0ee72a772df398c67c4ee17c1004ae2d76100e8625532de058bb849c0bc2d09d",
+      "bytes": 7806
+    },
+    "analysis.log": {
+      "sha256": "d2f5a6f5c6fbbefb5442455a3495c58249675799cb698a948f0f1a75dace4a35",
+      "bytes": 3151
+    },
+    "analyze.py": {
+      "sha256": "67b20051b99060777b09bdc06cc48660b4c27cf8150841e0df543453ab7ff6bb",
+      "bytes": 4749
+    },
+    "checks.json": {
+      "sha256": "d4afe470aca5200c75ff7e82d7c9766de112b1093c45f8f67da4f9c287f9ea9b",
+      "bytes": 163
+    },
+    "collect.log": {
+      "sha256": "1641788d144259a5aa3ec598f35f2ccab93a7ef1e3b0e526e0bf5a0852351c11",
+      "bytes": 521
+    },
+    "collection_identity.json": {
+      "sha256": "51f663925603e3be98cc71522d1f487cdbea1363301a12ec400dc5a943b39300",
+      "bytes": 212
+    },
+    "dev_400.pt": {
+      "sha256": "cd095258dc31da7867efba5e5e79be6ec628601eca7ea2a249cc0026f439a39c",
+      "bytes": 854000045
+    },
+    "dev_400_future.pt": {
+      "sha256": "e66a47fdd3f9997f49fc884ab924deaf948dc5485c8041101d667df1d47e6d03",
+      "bytes": 488481510
+    },
+    "dev_metadata.pt": {
+      "sha256": "4eb2045454178703a88e9172d0a884d16b7ef080f99514ee07e4f97af17e3bcd",
+      "bytes": 91577044
+    },
+    "errors_base_611701.pt": {
+      "sha256": "9bf0712152061ca9e8ef3b90f3ae28458350b6df41b9be96e5c9b0e2d46f5a7a",
+      "bytes": 46895869
+    },
+    "errors_base_611702.pt": {
+      "sha256": "5dc6bfd74a762999313c3c297b4eb2f268fff8bbc0883a104d3c0730a0645917",
+      "bytes": 46895869
+    },
+    "errors_fine_611701.pt": {
+      "sha256": "fe29ecb77f972e7e5665f1d347324ef4c01fb06eb304695d34d36cdef90ace0e",
+      "bytes": 46895869
+    },
+    "errors_fine_611702.pt": {
+      "sha256": "8b8473c88152f50eaa8f4797f621935ac355fbf8f595406fd7d8da0e181fd207",
+      "bytes": 46895869
+    },
+    "errors_input_611701.pt": {
+      "sha256": "3bd89b6c25f7ca6e665daedf43f063af615e4fee5459d04a1248999009791d60",
+      "bytes": 46895941
+    },
+    "errors_input_611702.pt": {
+      "sha256": "c361025715852736d514fd2658897a01c2fc62b9e84d34e3ee86d5c406127f48",
+      "bytes": 46895941
+    },
+    "errors_memory_611701.pt": {
+      "sha256": "52dd400f09fb92b9be8c40b01b88ee59f70fc44a7c189aa646c4aa738a431103",
+      "bytes": 46895949
+    },
+    "errors_memory_611702.pt": {
+      "sha256": "e8ced5b136c36b8b01051499554c9f96af9d0a60596e561a824a67d1feecb886",
+      "bytes": 46895949
+    },
+    "errors_predicted_611701.pt": {
+      "sha256": "3ae3ad4db5432b52d31a958b5ebeaacebb688e711f7cf25d02e577d12bc6e0a5",
+      "bytes": 46896037
+    },
+    "errors_predicted_611702.pt": {
+      "sha256": "8a14328f076315b28a66c67ed7b10deee425d66090cf5b03fdedb49fe037bacd",
+      "bytes": 46896037
+    },
+    "fit.json": {
+      "sha256": "828b8d9645498021691a1f0afc349c04257ec3a25189d7528ed15eabaea1cadb",
+      "bytes": 19972
+    },
+    "fit.log": {
+      "sha256": "51c74634dbd575d58796687676fa2a1400f7fa6f974e69c7c39397f159496cc2",
+      "bytes": 15510
+    },
+    "identity.json": {
+      "sha256": "9d09d6e494951bc2c4e4724aef540c22f9951594768f1038d918c6cd6f395675",
+      "bytes": 330
+    },
+    "population.json": {
+      "sha256": "e1f037292a7f1e6ee90a04a5f44ed997094b0bc943f9a0d169d6407daa5121f4",
+      "bytes": 161
+    },
+    "predict.py": {
+      "sha256": "0324e1774c032b93c509254ced628cb0d7619ef61b54e2d0cb274ab3b96eb759",
+      "bytes": 11378
+    },
+    "predictors.pt": {
+      "sha256": "830a22378b5195ac0911f089c67ccfb65fdeb2efa55ef1fbcd17ae9392c0edfb",
+      "bytes": 338604745
+    },
+    "results.json": {
+      "sha256": "ba6635f7cf64587d327fd1015b3679637b6495425b44a5588bbf067a15871b82",
+      "bytes": 504107
+    },
+    "smoke.json": {
+      "sha256": "6601edb7d99e1934b22896c28776c7f08865104c83222f51e7012ec5fe6b0878",
+      "bytes": 840
+    },
+    "smoke.log": {
+      "sha256": "ace2878e1f581b52612242870675cc3ee0f0c586ff4d6fc4352ee2d8522cdf9c",
+      "bytes": 811
+    },
+    "train_400_future.pt": {
+      "sha256": "55166d1286275533ae7f9fe1217889a626e04daebca5eb7be498a81e030c0f41",
+      "bytes": 482117756
+    }
+  }
+}

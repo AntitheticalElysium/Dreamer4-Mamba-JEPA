@@ -1,0 +1,31 @@
+{
+  "seed": 611799,
+  "mode": "fine",
+  "steps": 3,
+  "fit_rows": 107091,
+  "validation_rows": 16403,
+  "parameters": 8464208,
+  "curve": [
+    {
+      "step": 1,
+      "train_coarse": 0.12191499769687653,
+      "train_fine": 0.2884284257888794,
+      "val_coarse": 0.11081953346729279,
+      "val_fine": 1.5831230878829956,
+      "gradient_norm_physical": 0.0014575901441276073,
+      "gradient_norm_fine": 0.29468703269958496,
+      "seconds": 0.19501447677612305
+    },
+    {
+      "step": 3,
+      "train_coarse": 0.12132368236780167,
+      "train_fine": 0.5468366742134094,
+      "val_coarse": 0.11343124508857727,
+      "val_fine": 0.3079238533973694,
+      "gradient_norm_physical": 0.03788452222943306,
+      "gradient_norm_fine": 3.4009616374969482,
+      "seconds": 0.2401564121246338
+    }
+  ],
+  "seconds": 0.24025368690490723
+}
