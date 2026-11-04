@@ -1,0 +1,37 @@
+{
+  "drink": {
+    "fit_attempts": 1716,
+    "fit_episodes": 183,
+    "exogenous_fit_attempts": 19
+  },
+  "wood": {
+    "fit_attempts": 2848,
+    "fit_episodes": 301,
+    "exogenous_fit_attempts": 38
+  },
+  "sapling": {
+    "fit_attempts": 3432,
+    "fit_episodes": 343,
+    "exogenous_fit_attempts": 269
+  },
+  "stone": {
+    "fit_attempts": 4040,
+    "fit_episodes": 223,
+    "exogenous_fit_attempts": 0
+  },
+  "coal": {
+    "fit_attempts": 462,
+    "fit_episodes": 166,
+    "exogenous_fit_attempts": 0
+  },
+  "iron": {
+    "fit_attempts": 269,
+    "fit_episodes": 99,
+    "exogenous_fit_attempts": 0
+  },
+  "stone_no_tool": {
+    "fit_attempts": 227,
+    "fit_episodes": 80,
+    "exogenous_fit_attempts": 34
+  }
+}

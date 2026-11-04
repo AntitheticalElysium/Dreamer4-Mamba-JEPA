@@ -1,0 +1,14 @@
+{
+  "identity_passes": true,
+  "uniform_rejected_all": true,
+  "uniform_gates": {
+    "drink_C_remote_argmax": "fail",
+    "drink_mixed_remote_mass": "fail",
+    "stone_C_remote_argmax": "fail",
+    "stone_mixed_remote_mass": "fail",
+    "coal_S_remote_argmax": "fail",
+    "coal_mixed_remote_mass": "fail",
+    "iron_S_remote_argmax": "fail",
+    "iron_mixed_remote_mass": "fail"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "history_target_exclusion": true,
+  "reset_padding": true,
+  "noop_exact_zero": true,
+  "policy_exact_match": true,
+  "gradients_head_only": true,
+  "parameters": 101584
+}
