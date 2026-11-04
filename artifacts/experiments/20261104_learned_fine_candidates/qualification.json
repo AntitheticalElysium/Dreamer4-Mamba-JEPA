@@ -1,0 +1,6194 @@
+[
+  {
+    "index": 0,
+    "meta": {
+      "e": 0,
+      "t": 149,
+      "f": 149,
+      "shard": 0,
+      "slot": 9,
+      "action": 2,
+      "light": 0.48257118463516235,
+      "cell": 4,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        3
+      ],
+      "world": [
+        8,
+        41
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.016357421875
+  },
+  {
+    "index": 1,
+    "meta": {
+      "e": 0,
+      "t": 168,
+      "f": 168,
+      "shard": 0,
+      "slot": 9,
+      "action": 3,
+      "light": 0.2592070698738098,
+      "cell": 3,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        12
+      ],
+      "world": [
+        0,
+        46
+      ]
+    },
+    "current_coarse": [
+      5,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01806640625
+  },
+  {
+    "index": 2,
+    "meta": {
+      "e": 0,
+      "t": 187,
+      "f": 187,
+      "shard": 0,
+      "slot": 9,
+      "action": 3,
+      "light": 0.0841214656829834,
+      "cell": 28,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 0,
+      "previous8_visible": 0,
+      "coarse_kind": 1,
+      "coarse_terrain": 13,
+      "missed": false,
+      "target_cells": [
+        37,
+        28,
+        46,
+        36,
+        38
+      ],
+      "world": [
+        3,
+        43
+      ]
+    },
+    "current_coarse": [
+      1,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        4
+      ],
+      [
+        1,
+        4
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.017333984375
+  },
+  {
+    "index": 3,
+    "meta": {
+      "e": 0,
+      "t": 198,
+      "f": 198,
+      "shard": 0,
+      "slot": 9,
+      "action": 4,
+      "light": 0.023469798266887665,
+      "cell": 62,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 7,
+      "missed": true,
+      "target_cells": [
+        53
+      ],
+      "world": [
+        12,
+        52
+      ]
+    },
+    "current_coarse": [
+      7,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0181884765625
+  },
+  {
+    "index": 4,
+    "meta": {
+      "e": 0,
+      "t": 506,
+      "f": 506,
+      "shard": 0,
+      "slot": 9,
+      "action": 0,
+      "light": 0.0026291129179298878,
+      "cell": 17,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 3,
+      "missed": true,
+      "target_cells": [
+        17
+      ],
+      "world": [
+        31,
+        48
+      ]
+    },
+    "current_coarse": [
+      3,
+      2
+    ],
+    "fine_readings": [
+      1,
+      1
+    ],
+    "fine_ok": false,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      false,
+      false
+    ],
+    "target_ok": false,
+    "cached_periphery_max_difference": 0.01922607421875
+  },
+  {
+    "index": 5,
+    "meta": {
+      "e": 1,
+      "t": 173,
+      "f": 735,
+      "shard": 0,
+      "slot": 16,
+      "action": 2,
+      "light": 0.20631003379821777,
+      "cell": 8,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        7
+      ],
+      "world": [
+        6,
+        32
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.015625
+  },
+  {
+    "index": 6,
+    "meta": {
+      "e": 1,
+      "t": 209,
+      "f": 771,
+      "shard": 0,
+      "slot": 16,
+      "action": 1,
+      "light": 0.0001645028096390888,
+      "cell": 0,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": true,
+      "target_cells": [
+        1
+      ],
+      "world": [
+        2,
+        21
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0191650390625
+  },
+  {
+    "index": 7,
+    "meta": {
+      "e": 1,
+      "t": 229,
+      "f": 791,
+      "shard": 0,
+      "slot": 16,
+      "action": 3,
+      "light": 0.05802669748663902,
+      "cell": 3,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        12
+      ],
+      "world": [
+        0,
+        18
+      ]
+    },
+    "current_coarse": [
+      5,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01837158203125
+  },
+  {
+    "index": 8,
+    "meta": {
+      "e": 2,
+      "t": 150,
+      "f": 1166,
+      "shard": 0,
+      "slot": 18,
+      "action": 1,
+      "light": 0.4704913794994354,
+      "cell": 9,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        10
+      ],
+      "world": [
+        15,
+        35
+      ]
+    },
+    "current_coarse": [
+      5,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.014404296875
+  },
+  {
+    "index": 9,
+    "meta": {
+      "e": 2,
+      "t": 150,
+      "f": 1166,
+      "shard": 0,
+      "slot": 18,
+      "action": 1,
+      "light": 0.4704913794994354,
+      "cell": 45,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        46
+      ],
+      "world": [
+        19,
+        35
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.014404296875
+  },
+  {
+    "index": 10,
+    "meta": {
+      "e": 2,
+      "t": 233,
+      "f": 1249,
+      "shard": 0,
+      "slot": 18,
+      "action": 2,
+      "light": 0.08412180840969086,
+      "cell": 6,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 13,
+      "missed": true,
+      "target_cells": [
+        5
+      ],
+      "world": [
+        12,
+        56
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0228271484375
+  },
+  {
+    "index": 11,
+    "meta": {
+      "e": 2,
+      "t": 564,
+      "f": 1580,
+      "shard": 0,
+      "slot": 18,
+      "action": 3,
+      "light": 0.3980877101421356,
+      "cell": 10,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 0,
+      "previous8_visible": 0,
+      "coarse_kind": 2,
+      "coarse_terrain": 13,
+      "missed": false,
+      "target_cells": [
+        19,
+        10,
+        28,
+        18,
+        20
+      ],
+      "world": [
+        16,
+        44
+      ]
+    },
+    "current_coarse": [
+      2,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01708984375
+  },
+  {
+    "index": 12,
+    "meta": {
+      "e": 3,
+      "t": 148,
+      "f": 2175,
+      "shard": 2,
+      "slot": 12,
+      "action": 0,
+      "light": 0.4946335554122925,
+      "cell": 56,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        56
+      ],
+      "world": [
+        34,
+        28
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0126953125
+  },
+  {
+    "index": 13,
+    "meta": {
+      "e": 3,
+      "t": 172,
+      "f": 2199,
+      "shard": 2,
+      "slot": 12,
+      "action": 3,
+      "light": 0.21657153964042664,
+      "cell": 36,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        45
+      ],
+      "world": [
+        29,
+        23
+      ]
+    },
+    "current_coarse": [
+      5,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01611328125
+  },
+  {
+    "index": 14,
+    "meta": {
+      "e": 6,
+      "t": 162,
+      "f": 2546,
+      "shard": 4,
+      "slot": 5,
+      "action": 3,
+      "light": 0.32707229256629944,
+      "cell": 3,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        12
+      ],
+      "world": [
+        48,
+        3
+      ]
+    },
+    "current_coarse": [
+      5,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.016357421875
+  },
+  {
+    "index": 15,
+    "meta": {
+      "e": 6,
+      "t": 162,
+      "f": 2546,
+      "shard": 4,
+      "slot": 5,
+      "action": 3,
+      "light": 0.32707229256629944,
+      "cell": 4,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        13
+      ],
+      "world": [
+        48,
+        4
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.016357421875
+  },
+  {
+    "index": 16,
+    "meta": {
+      "e": 6,
+      "t": 193,
+      "f": 2577,
+      "shard": 4,
+      "slot": 5,
+      "action": 3,
+      "light": 0.04666764289140701,
+      "cell": 0,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 9,
+      "missed": true,
+      "target_cells": [
+        9
+      ],
+      "world": [
+        45,
+        8
+      ]
+    },
+    "current_coarse": [
+      9,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.017578125
+  },
+  {
+    "index": 17,
+    "meta": {
+      "e": 7,
+      "t": 160,
+      "f": 3058,
+      "shard": 4,
+      "slot": 8,
+      "action": 1,
+      "light": 0.35048070549964905,
+      "cell": 59,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        60
+      ],
+      "world": [
+        49,
+        17
+      ]
+    },
+    "current_coarse": [
+      5,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01171875
+  },
+  {
+    "index": 18,
+    "meta": {
+      "e": 7,
+      "t": 245,
+      "f": 3143,
+      "shard": 4,
+      "slot": 8,
+      "action": 2,
+      "light": 0.18631711602210999,
+      "cell": 62,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        61
+      ],
+      "world": [
+        38,
+        27
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01171875
+  },
+  {
+    "index": 19,
+    "meta": {
+      "e": 8,
+      "t": 151,
+      "f": 3310,
+      "shard": 4,
+      "slot": 16,
+      "action": 1,
+      "light": 0.45840173959732056,
+      "cell": 0,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        1
+      ],
+      "world": [
+        21,
+        20
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.014892578125
+  },
+  {
+    "index": 20,
+    "meta": {
+      "e": 8,
+      "t": 155,
+      "f": 3314,
+      "shard": 4,
+      "slot": 16,
+      "action": 4,
+      "light": 0.41010570526123047,
+      "cell": 51,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 1,
+      "previous8_visible": 0,
+      "coarse_kind": 2,
+      "coarse_terrain": 13,
+      "missed": false,
+      "target_cells": [
+        42,
+        33,
+        51,
+        41,
+        43
+      ],
+      "world": [
+        28,
+        25
+      ]
+    },
+    "current_coarse": [
+      2,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.016357421875
+  },
+  {
+    "index": 21,
+    "meta": {
+      "e": 8,
+      "t": 156,
+      "f": 3315,
+      "shard": 4,
+      "slot": 16,
+      "action": 4,
+      "light": 0.3980869650840759,
+      "cell": 56,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        47
+      ],
+      "world": [
+        30,
+        21
+      ]
+    },
+    "current_coarse": [
+      5,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0146484375
+  },
+  {
+    "index": 22,
+    "meta": {
+      "e": 8,
+      "t": 190,
+      "f": 3349,
+      "shard": 4,
+      "slot": 16,
+      "action": 3,
+      "light": 0.06413495540618896,
+      "cell": 0,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 13,
+      "missed": true,
+      "target_cells": [
+        9
+      ],
+      "world": [
+        21,
+        19
+      ]
+    },
+    "current_coarse": [
+      13,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0185699462890625
+  },
+  {
+    "index": 23,
+    "meta": {
+      "e": 8,
+      "t": 210,
+      "f": 3369,
+      "shard": 4,
+      "slot": 16,
+      "action": 4,
+      "light": 0.0,
+      "cell": 62,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": true,
+      "target_cells": [
+        53
+      ],
+      "world": [
+        30,
+        24
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      0,
+      0
+    ],
+    "fine_ok": false,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.02001953125
+  },
+  {
+    "index": 24,
+    "meta": {
+      "e": 10,
+      "t": 149,
+      "f": 4292,
+      "shard": 5,
+      "slot": 16,
+      "action": 1,
+      "light": 0.48257118463516235,
+      "cell": 45,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        46
+      ],
+      "world": [
+        36,
+        31
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01513671875
+  },
+  {
+    "index": 25,
+    "meta": {
+      "e": 10,
+      "t": 191,
+      "f": 4334,
+      "shard": 5,
+      "slot": 16,
+      "action": 4,
+      "light": 0.058026351034641266,
+      "cell": 56,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        47
+      ],
+      "world": [
+        42,
+        22
+      ]
+    },
+    "current_coarse": [
+      5,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01708984375
+  },
+  {
+    "index": 26,
+    "meta": {
+      "e": 10,
+      "t": 191,
+      "f": 4334,
+      "shard": 5,
+      "slot": 16,
+      "action": 4,
+      "light": 0.058026351034641266,
+      "cell": 62,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 13,
+      "missed": true,
+      "target_cells": [
+        53
+      ],
+      "world": [
+        42,
+        28
+      ]
+    },
+    "current_coarse": [
+      13,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01708984375
+  },
+  {
+    "index": 27,
+    "meta": {
+      "e": 10,
+      "t": 218,
+      "f": 4361,
+      "shard": 5,
+      "slot": 16,
+      "action": 4,
+      "light": 0.010484576225280762,
+      "cell": 56,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        47
+      ],
+      "world": [
+        49,
+        26
+      ]
+    },
+    "current_coarse": [
+      2,
+      2
+    ],
+    "fine_readings": [
+      1,
+      1
+    ],
+    "fine_ok": false,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.017578125
+  },
+  {
+    "index": 28,
+    "meta": {
+      "e": 11,
+      "t": 185,
+      "f": 4598,
+      "shard": 6,
+      "slot": 3,
+      "action": 1,
+      "light": 0.09877881407737732,
+      "cell": 55,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        56
+      ],
+      "world": [
+        43,
+        24
+      ]
+    },
+    "current_coarse": [
+      5,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.017822265625
+  },
+  {
+    "index": 29,
+    "meta": {
+      "e": 11,
+      "t": 210,
+      "f": 4623,
+      "shard": 6,
+      "slot": 3,
+      "action": 3,
+      "light": 0.0,
+      "cell": 15,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 2,
+      "previous8_visible": 0,
+      "coarse_kind": 2,
+      "coarse_terrain": 2,
+      "missed": false,
+      "target_cells": [
+        24,
+        15,
+        33,
+        23,
+        25
+      ],
+      "world": [
+        31,
+        24
+      ]
+    },
+    "current_coarse": [
+      2,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01953125
+  },
+  {
+    "index": 30,
+    "meta": {
+      "e": 11,
+      "t": 231,
+      "f": 4644,
+      "shard": 6,
+      "slot": 3,
+      "action": 1,
+      "light": 0.0705237165093422,
+      "cell": 9,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        10
+      ],
+      "world": [
+        25,
+        16
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.02020263671875
+  },
+  {
+    "index": 31,
+    "meta": {
+      "e": 17,
+      "t": 153,
+      "f": 5358,
+      "shard": 8,
+      "slot": 1,
+      "action": 4,
+      "light": 0.43422532081604004,
+      "cell": 57,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        48
+      ],
+      "world": [
+        20,
+        7
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01806640625
+  },
+  {
+    "index": 32,
+    "meta": {
+      "e": 17,
+      "t": 165,
+      "f": 5370,
+      "shard": 8,
+      "slot": 1,
+      "action": 3,
+      "light": 0.29263633489608765,
+      "cell": 1,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        10
+      ],
+      "world": [
+        12,
+        10
+      ]
+    },
+    "current_coarse": [
+      5,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.020263671875
+  },
+  {
+    "index": 33,
+    "meta": {
+      "e": 17,
+      "t": 201,
+      "f": 5406,
+      "shard": 8,
+      "slot": 1,
+      "action": 2,
+      "light": 0.013254975900053978,
+      "cell": 8,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 7,
+      "missed": true,
+      "target_cells": [
+        7
+      ],
+      "world": [
+        4,
+        23
+      ]
+    },
+    "current_coarse": [
+      7,
+      5
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": false,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.021392822265625
+  },
+  {
+    "index": 34,
+    "meta": {
+      "e": 18,
+      "t": 173,
+      "f": 6612,
+      "shard": 8,
+      "slot": 11,
+      "action": 2,
+      "light": 0.20631003379821777,
+      "cell": 8,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        7
+      ],
+      "world": [
+        29,
+        36
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.016357421875
+  },
+  {
+    "index": 35,
+    "meta": {
+      "e": 18,
+      "t": 180,
+      "f": 6619,
+      "shard": 8,
+      "slot": 11,
+      "action": 2,
+      "light": 0.1397610753774643,
+      "cell": 60,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        59
+      ],
+      "world": [
+        36,
+        38
+      ]
+    },
+    "current_coarse": [
+      5,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.02001953125
+  },
+  {
+    "index": 36,
+    "meta": {
+      "e": 18,
+      "t": 211,
+      "f": 6650,
+      "shard": 8,
+      "slot": 11,
+      "action": 2,
+      "light": 0.0001645028096390888,
+      "cell": 2,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": true,
+      "target_cells": [
+        1
+      ],
+      "world": [
+        18,
+        41
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      1,
+      1
+    ],
+    "fine_ok": false,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0208740234375
+  },
+  {
+    "index": 37,
+    "meta": {
+      "e": 18,
+      "t": 541,
+      "f": 6980,
+      "shard": 8,
+      "slot": 11,
+      "action": 4,
+      "light": 0.14865337312221527,
+      "cell": 45,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 1,
+      "missed": true,
+      "target_cells": [
+        36
+      ],
+      "world": [
+        15,
+        12
+      ]
+    },
+    "current_coarse": [
+      1,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.015533447265625
+  },
+  {
+    "index": 38,
+    "meta": {
+      "e": 20,
+      "t": 158,
+      "f": 8195,
+      "shard": 9,
+      "slot": 11,
+      "action": 2,
+      "light": 0.37417417764663696,
+      "cell": 8,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        7
+      ],
+      "world": [
+        40,
+        18
+      ]
+    },
+    "current_coarse": [
+      5,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.018310546875
+  },
+  {
+    "index": 39,
+    "meta": {
+      "e": 20,
+      "t": 158,
+      "f": 8195,
+      "shard": 9,
+      "slot": 11,
+      "action": 2,
+      "light": 0.37417417764663696,
+      "cell": 35,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        34
+      ],
+      "world": [
+        43,
+        18
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.018310546875
+  },
+  {
+    "index": 40,
+    "meta": {
+      "e": 20,
+      "t": 188,
+      "f": 8225,
+      "shard": 9,
+      "slot": 11,
+      "action": 4,
+      "light": 0.0771874189376831,
+      "cell": 46,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 2,
+      "previous8_visible": 0,
+      "coarse_kind": 2,
+      "coarse_terrain": 2,
+      "missed": false,
+      "target_cells": [
+        37,
+        28,
+        46,
+        36,
+        38
+      ],
+      "world": [
+        54,
+        15
+      ]
+    },
+    "current_coarse": [
+      2,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01708984375
+  },
+  {
+    "index": 41,
+    "meta": {
+      "e": 20,
+      "t": 206,
+      "f": 8243,
+      "shard": 9,
+      "slot": 11,
+      "action": 1,
+      "light": 0.0026291129179298878,
+      "cell": 60,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        61
+      ],
+      "world": [
+        56,
+        22
+      ]
+    },
+    "current_coarse": [
+      2,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.02099609375
+  },
+  {
+    "index": 42,
+    "meta": {
+      "e": 20,
+      "t": 221,
+      "f": 8258,
+      "shard": 9,
+      "slot": 11,
+      "action": 3,
+      "light": 0.019750306382775307,
+      "cell": 1,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 7,
+      "missed": true,
+      "target_cells": [
+        1
+      ],
+      "world": [
+        44,
+        12
+      ]
+    },
+    "current_coarse": [
+      7,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.016845703125
+  },
+  {
+    "index": 43,
+    "meta": {
+      "e": 21,
+      "t": 213,
+      "f": 9038,
+      "shard": 9,
+      "slot": 19,
+      "action": 1,
+      "light": 0.0014796752948313951,
+      "cell": 54,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 7,
+      "missed": true,
+      "target_cells": [
+        55
+      ],
+      "world": [
+        7,
+        18
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01904296875
+  },
+  {
+    "index": 44,
+    "meta": {
+      "e": 29,
+      "t": 209,
+      "f": 10491,
+      "shard": 14,
+      "slot": 13,
+      "action": 3,
+      "light": 0.0001645028096390888,
+      "cell": 0,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": true,
+      "target_cells": [
+        9
+      ],
+      "world": [
+        23,
+        36
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      0,
+      0
+    ],
+    "fine_ok": false,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01708984375
+  },
+  {
+    "index": 45,
+    "meta": {
+      "e": 32,
+      "t": 165,
+      "f": 10987,
+      "shard": 16,
+      "slot": 0,
+      "action": 3,
+      "light": 0.29263633489608765,
+      "cell": 25,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 1,
+      "previous8_visible": 0,
+      "coarse_kind": 1,
+      "coarse_terrain": 16,
+      "missed": false,
+      "target_cells": [
+        34,
+        25,
+        43,
+        33,
+        35
+      ],
+      "world": [
+        32,
+        29
+      ]
+    },
+    "current_coarse": [
+      1,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0157470703125
+  },
+  {
+    "index": 46,
+    "meta": {
+      "e": 35,
+      "t": 200,
+      "f": 11861,
+      "shard": 17,
+      "slot": 3,
+      "action": 2,
+      "light": 0.01634441688656807,
+      "cell": 53,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        52
+      ],
+      "world": [
+        26,
+        41
+      ]
+    },
+    "current_coarse": [
+      2,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.020751953125
+  },
+  {
+    "index": 47,
+    "meta": {
+      "e": 36,
+      "t": 205,
+      "f": 12122,
+      "shard": 17,
+      "slot": 13,
+      "action": 2,
+      "light": 0.0041056289337575436,
+      "cell": 61,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 7,
+      "missed": true,
+      "target_cells": [
+        60
+      ],
+      "world": [
+        51,
+        27
+      ]
+    },
+    "current_coarse": [
+      7,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0201416015625
+  },
+  {
+    "index": 48,
+    "meta": {
+      "e": 36,
+      "t": 515,
+      "f": 12432,
+      "shard": 17,
+      "slot": 13,
+      "action": 3,
+      "light": 0.00410580774769187,
+      "cell": 27,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        36
+      ],
+      "world": [
+        62,
+        29
+      ]
+    },
+    "current_coarse": [
+      2,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      false,
+      false
+    ],
+    "target_ok": false,
+    "cached_periphery_max_difference": 0.0185546875
+  },
+  {
+    "index": 49,
+    "meta": {
+      "e": 36,
+      "t": 521,
+      "f": 12438,
+      "shard": 17,
+      "slot": 13,
+      "action": 3,
+      "light": 0.019750306382775307,
+      "cell": 37,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 2,
+      "previous8_visible": 0,
+      "coarse_kind": 1,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        46,
+        37,
+        55,
+        45,
+        47
+      ],
+      "world": [
+        61,
+        26
+      ]
+    },
+    "current_coarse": [
+      1,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0208740234375
+  },
+  {
+    "index": 50,
+    "meta": {
+      "e": 41,
+      "t": 173,
+      "f": 13415,
+      "shard": 20,
+      "slot": 8,
+      "action": 1,
+      "light": 0.20631003379821777,
+      "cell": 46,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 0,
+      "previous8_visible": 0,
+      "coarse_kind": 2,
+      "coarse_terrain": 2,
+      "missed": false,
+      "target_cells": [
+        47,
+        38,
+        56,
+        46,
+        48
+      ],
+      "world": [
+        32,
+        14
+      ]
+    },
+    "current_coarse": [
+      2,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0162353515625
+  },
+  {
+    "index": 51,
+    "meta": {
+      "e": 41,
+      "t": 190,
+      "f": 13432,
+      "shard": 20,
+      "slot": 8,
+      "action": 4,
+      "light": 0.06413495540618896,
+      "cell": 62,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 13,
+      "missed": true,
+      "target_cells": [
+        53
+      ],
+      "world": [
+        35,
+        21
+      ]
+    },
+    "current_coarse": [
+      13,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.021728515625
+  },
+  {
+    "index": 52,
+    "meta": {
+      "e": 42,
+      "t": 203,
+      "f": 14249,
+      "shard": 20,
+      "slot": 21,
+      "action": 1,
+      "light": 0.008034844882786274,
+      "cell": 54,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        55
+      ],
+      "world": [
+        51,
+        25
+      ]
+    },
+    "current_coarse": [
+      2,
+      2
+    ],
+    "fine_readings": [
+      0,
+      1
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0166015625
+  },
+  {
+    "index": 53,
+    "meta": {
+      "e": 42,
+      "t": 264,
+      "f": 14310,
+      "shard": 20,
+      "slot": 21,
+      "action": 1,
+      "light": 0.3980877101421356,
+      "cell": 46,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 1,
+      "previous8_visible": 0,
+      "coarse_kind": 2,
+      "coarse_terrain": 13,
+      "missed": false,
+      "target_cells": [
+        47,
+        38,
+        56,
+        46,
+        48
+      ],
+      "world": [
+        57,
+        6
+      ]
+    },
+    "current_coarse": [
+      2,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.013671875
+  },
+  {
+    "index": 54,
+    "meta": {
+      "e": 44,
+      "t": 177,
+      "f": 15062,
+      "shard": 21,
+      "slot": 7,
+      "action": 1,
+      "light": 0.1670788675546646,
+      "cell": 28,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 0,
+      "previous8_visible": 0,
+      "coarse_kind": 1,
+      "coarse_terrain": 16,
+      "missed": false,
+      "target_cells": [
+        29,
+        20,
+        38,
+        28,
+        30
+      ],
+      "world": [
+        36,
+        28
+      ]
+    },
+    "current_coarse": [
+      1,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01995849609375
+  },
+  {
+    "index": 55,
+    "meta": {
+      "e": 44,
+      "t": 213,
+      "f": 15098,
+      "shard": 21,
+      "slot": 7,
+      "action": 3,
+      "light": 0.0014796752948313951,
+      "cell": 8,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": true,
+      "target_cells": [
+        17
+      ],
+      "world": [
+        32,
+        28
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      1,
+      1
+    ],
+    "fine_ok": false,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      true
+    ],
+    "target_ok": false,
+    "cached_periphery_max_difference": 0.0180206298828125
+  },
+  {
+    "index": 56,
+    "meta": {
+      "e": 46,
+      "t": 157,
+      "f": 15559,
+      "shard": 21,
+      "slot": 12,
+      "action": 4,
+      "light": 0.38610735535621643,
+      "cell": 52,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 0,
+      "previous8_visible": 0,
+      "coarse_kind": 3,
+      "coarse_terrain": 13,
+      "missed": false,
+      "target_cells": [
+        43,
+        34,
+        52,
+        42,
+        44
+      ],
+      "world": [
+        38,
+        20
+      ]
+    },
+    "current_coarse": [
+      3,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.017333984375
+  },
+  {
+    "index": 57,
+    "meta": {
+      "e": 51,
+      "t": 214,
+      "f": 16397,
+      "shard": 24,
+      "slot": 4,
+      "action": 3,
+      "light": 0.0026291129179298878,
+      "cell": 8,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": true,
+      "target_cells": [
+        17
+      ],
+      "world": [
+        19,
+        32
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      1,
+      1
+    ],
+    "fine_ok": false,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0185546875
+  },
+  {
+    "index": 58,
+    "meta": {
+      "e": 52,
+      "t": 209,
+      "f": 16917,
+      "shard": 24,
+      "slot": 6,
+      "action": 1,
+      "light": 0.0001645028096390888,
+      "cell": 54,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": true,
+      "target_cells": [
+        55
+      ],
+      "world": [
+        21,
+        27
+      ]
+    },
+    "current_coarse": [
+      4,
+      2
+    ],
+    "fine_readings": [
+      1,
+      1
+    ],
+    "fine_ok": false,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      false,
+      false
+    ],
+    "target_ok": false,
+    "cached_periphery_max_difference": 0.01568603515625
+  },
+  {
+    "index": 59,
+    "meta": {
+      "e": 53,
+      "t": 152,
+      "f": 17627,
+      "shard": 25,
+      "slot": 15,
+      "action": 2,
+      "light": 0.44631052017211914,
+      "cell": 11,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 0,
+      "previous8_visible": 0,
+      "coarse_kind": 2,
+      "coarse_terrain": 13,
+      "missed": false,
+      "target_cells": [
+        10,
+        1,
+        19,
+        9,
+        11
+      ],
+      "world": [
+        55,
+        16
+      ]
+    },
+    "current_coarse": [
+      2,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.016845703125
+  },
+  {
+    "index": 60,
+    "meta": {
+      "e": 53,
+      "t": 555,
+      "f": 18030,
+      "shard": 25,
+      "slot": 15,
+      "action": 4,
+      "light": 0.29263705015182495,
+      "cell": 52,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 2,
+      "previous8_visible": 0,
+      "coarse_kind": 1,
+      "coarse_terrain": 16,
+      "missed": false,
+      "target_cells": [
+        43,
+        34,
+        52,
+        42,
+        44
+      ],
+      "world": [
+        21,
+        17
+      ]
+    },
+    "current_coarse": [
+      1,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0146484375
+  },
+  {
+    "index": 61,
+    "meta": {
+      "e": 60,
+      "t": 767,
+      "f": 19569,
+      "shard": 28,
+      "slot": 13,
+      "action": 4,
+      "light": 0.27022531628608704,
+      "cell": 19,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 1,
+      "previous8_visible": 0,
+      "coarse_kind": 2,
+      "coarse_terrain": 13,
+      "missed": false,
+      "target_cells": [
+        10,
+        1,
+        19,
+        9,
+        11
+      ],
+      "world": [
+        48,
+        35
+      ]
+    },
+    "current_coarse": [
+      2,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.017333984375
+  },
+  {
+    "index": 62,
+    "meta": {
+      "e": 62,
+      "t": 206,
+      "f": 20170,
+      "shard": 28,
+      "slot": 21,
+      "action": 2,
+      "light": 0.0026291129179298878,
+      "cell": 25,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 1,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        24,
+        15,
+        33,
+        23,
+        25
+      ],
+      "world": [
+        54,
+        16
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        4
+      ],
+      [
+        2,
+        3
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.017578125
+  },
+  {
+    "index": 63,
+    "meta": {
+      "e": 62,
+      "t": 254,
+      "f": 20218,
+      "shard": 28,
+      "slot": 21,
+      "action": 3,
+      "light": 0.2813713848590851,
+      "cell": 43,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 0,
+      "previous8_visible": 0,
+      "coarse_kind": 2,
+      "coarse_terrain": 2,
+      "missed": false,
+      "target_cells": [
+        52,
+        43,
+        61,
+        51,
+        53
+      ],
+      "world": [
+        59,
+        15
+      ]
+    },
+    "current_coarse": [
+      2,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0166015625
+  },
+  {
+    "index": 64,
+    "meta": {
+      "e": 63,
+      "t": 787,
+      "f": 21566,
+      "shard": 29,
+      "slot": 5,
+      "action": 1,
+      "light": 0.08412112295627594,
+      "cell": 19,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 1,
+      "previous8_visible": 0,
+      "coarse_kind": 1,
+      "coarse_terrain": 15,
+      "missed": false,
+      "target_cells": [
+        20,
+        11,
+        29,
+        19,
+        21
+      ],
+      "world": [
+        51,
+        24
+      ]
+    },
+    "current_coarse": [
+      1,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.015380859375
+  },
+  {
+    "index": 65,
+    "meta": {
+      "e": 65,
+      "t": 165,
+      "f": 21989,
+      "shard": 29,
+      "slot": 15,
+      "action": 3,
+      "light": 0.29263633489608765,
+      "cell": 19,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 0,
+      "previous8_visible": 0,
+      "coarse_kind": 2,
+      "coarse_terrain": 13,
+      "missed": false,
+      "target_cells": [
+        28,
+        19,
+        37,
+        27,
+        29
+      ],
+      "world": [
+        25,
+        3
+      ]
+    },
+    "current_coarse": [
+      2,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.015380859375
+  },
+  {
+    "index": 66,
+    "meta": {
+      "e": 70,
+      "t": 212,
+      "f": 23157,
+      "shard": 32,
+      "slot": 1,
+      "action": 4,
+      "light": 0.0006578794564120471,
+      "cell": 51,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 1,
+      "previous8_visible": 0,
+      "coarse_kind": 2,
+      "coarse_terrain": 2,
+      "missed": false,
+      "target_cells": [
+        42,
+        33,
+        51,
+        41,
+        43
+      ],
+      "world": [
+        56,
+        36
+      ]
+    },
+    "current_coarse": [
+      2,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        1
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0203857421875
+  },
+  {
+    "index": 67,
+    "meta": {
+      "e": 71,
+      "t": 163,
+      "f": 23384,
+      "shard": 32,
+      "slot": 4,
+      "action": 3,
+      "light": 0.3154950737953186,
+      "cell": 25,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 2,
+      "previous8_visible": 0,
+      "coarse_kind": 2,
+      "coarse_terrain": 2,
+      "missed": false,
+      "target_cells": [
+        34,
+        25,
+        43,
+        33,
+        35
+      ],
+      "world": [
+        45,
+        35
+      ]
+    },
+    "current_coarse": [
+      2,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01611328125
+  },
+  {
+    "index": 68,
+    "meta": {
+      "e": 73,
+      "t": 202,
+      "f": 23972,
+      "shard": 32,
+      "slot": 15,
+      "action": 2,
+      "light": 0.010484576225280762,
+      "cell": 48,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 1,
+      "previous8_visible": 0,
+      "coarse_kind": 1,
+      "coarse_terrain": 13,
+      "missed": false,
+      "target_cells": [
+        47,
+        38,
+        56,
+        46,
+        48
+      ],
+      "world": [
+        44,
+        34
+      ]
+    },
+    "current_coarse": [
+      1,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        4
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.017822265625
+  },
+  {
+    "index": 69,
+    "meta": {
+      "e": 95,
+      "t": 501,
+      "f": 30221,
+      "shard": 40,
+      "slot": 23,
+      "action": 4,
+      "light": 0.013254975900053978,
+      "cell": 50,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 0,
+      "previous8_visible": 0,
+      "coarse_kind": 3,
+      "coarse_terrain": 13,
+      "missed": false,
+      "target_cells": [
+        41,
+        32,
+        50,
+        40,
+        42
+      ],
+      "world": [
+        12,
+        5
+      ]
+    },
+    "current_coarse": [
+      3,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.019256591796875
+  },
+  {
+    "index": 70,
+    "meta": {
+      "e": 96,
+      "t": 236,
+      "f": 32438,
+      "shard": 41,
+      "slot": 8,
+      "action": 1,
+      "light": 0.10649134963750839,
+      "cell": 19,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 2,
+      "previous8_visible": 0,
+      "coarse_kind": 1,
+      "coarse_terrain": 16,
+      "missed": false,
+      "target_cells": [
+        20,
+        11,
+        29,
+        19,
+        21
+      ],
+      "world": [
+        20,
+        27
+      ]
+    },
+    "current_coarse": [
+      1,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01904296875
+  },
+  {
+    "index": 71,
+    "meta": {
+      "e": 98,
+      "t": 262,
+      "f": 32870,
+      "shard": 41,
+      "slot": 17,
+      "action": 1,
+      "light": 0.3741748034954071,
+      "cell": 14,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 1,
+      "previous8_visible": 0,
+      "coarse_kind": 3,
+      "coarse_terrain": 13,
+      "missed": false,
+      "target_cells": [
+        15,
+        6,
+        24,
+        14,
+        16
+      ],
+      "world": [
+        38,
+        29
+      ]
+    },
+    "current_coarse": [
+      3,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.017822265625
+  },
+  {
+    "index": 72,
+    "meta": {
+      "e": 99,
+      "t": 237,
+      "f": 33119,
+      "shard": 41,
+      "slot": 18,
+      "action": 2,
+      "light": 0.11445185542106628,
+      "cell": 11,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 0,
+      "previous8_visible": 0,
+      "coarse_kind": 1,
+      "coarse_terrain": 15,
+      "missed": false,
+      "target_cells": [
+        10,
+        1,
+        19,
+        9,
+        11
+      ],
+      "world": [
+        45,
+        35
+      ]
+    },
+    "current_coarse": [
+      1,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0184326171875
+  },
+  {
+    "index": 73,
+    "meta": {
+      "e": 100,
+      "t": 184,
+      "f": 34143,
+      "shard": 42,
+      "slot": 1,
+      "action": 2,
+      "light": 0.10649117827415466,
+      "cell": 34,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 1,
+      "previous8_visible": 0,
+      "coarse_kind": 3,
+      "coarse_terrain": 13,
+      "missed": false,
+      "target_cells": [
+        33,
+        24,
+        42,
+        32,
+        34
+      ],
+      "world": [
+        25,
+        42
+      ]
+    },
+    "current_coarse": [
+      3,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        4
+      ],
+      [
+        3,
+        4
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.017333984375
+  },
+  {
+    "index": 74,
+    "meta": {
+      "e": 116,
+      "t": 1695,
+      "f": 39479,
+      "shard": 48,
+      "slot": 16,
+      "action": 3,
+      "light": 0.03648187592625618,
+      "cell": 15,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 2,
+      "previous8_visible": 0,
+      "coarse_kind": 1,
+      "coarse_terrain": 15,
+      "missed": false,
+      "target_cells": [
+        24,
+        15,
+        33,
+        23,
+        25
+      ],
+      "world": [
+        9,
+        35
+      ]
+    },
+    "current_coarse": [
+      1,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0166015625
+  },
+  {
+    "index": 75,
+    "meta": {
+      "e": 117,
+      "t": 202,
+      "f": 39778,
+      "shard": 48,
+      "slot": 19,
+      "action": 1,
+      "light": 0.010484576225280762,
+      "cell": 46,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 0,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 7,
+      "missed": true,
+      "target_cells": [
+        47,
+        38,
+        56,
+        46,
+        48
+      ],
+      "world": [
+        31,
+        38
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        4
+      ],
+      [
+        3,
+        4
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01708984375
+  },
+  {
+    "index": 76,
+    "meta": {
+      "e": 121,
+      "t": 454,
+      "f": 40881,
+      "shard": 52,
+      "slot": 4,
+      "action": 1,
+      "light": 0.4221542179584503,
+      "cell": 28,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 1,
+      "previous8_visible": 0,
+      "coarse_kind": 1,
+      "coarse_terrain": 13,
+      "missed": false,
+      "target_cells": [
+        29,
+        20,
+        38,
+        28,
+        30
+      ],
+      "world": [
+        29,
+        34
+      ]
+    },
+    "current_coarse": [
+      1,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01416015625
+  },
+  {
+    "index": 77,
+    "meta": {
+      "e": 139,
+      "t": 181,
+      "f": 48851,
+      "shard": 61,
+      "slot": 7,
+      "action": 4,
+      "light": 0.13109271228313446,
+      "cell": 48,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 1,
+      "previous8_visible": 0,
+      "coarse_kind": 1,
+      "coarse_terrain": 16,
+      "missed": false,
+      "target_cells": [
+        39,
+        30,
+        48,
+        38,
+        40
+      ],
+      "world": [
+        26,
+        35
+      ]
+    },
+    "current_coarse": [
+      1,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.017578125
+  },
+  {
+    "index": 78,
+    "meta": {
+      "e": 166,
+      "t": 228,
+      "f": 56517,
+      "shard": 73,
+      "slot": 18,
+      "action": 3,
+      "light": 0.05220245569944382,
+      "cell": 16,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 1,
+      "previous8_visible": 0,
+      "coarse_kind": 3,
+      "coarse_terrain": 11,
+      "missed": false,
+      "target_cells": [
+        25,
+        16,
+        34,
+        24,
+        26
+      ],
+      "world": [
+        30,
+        25
+      ]
+    },
+    "current_coarse": [
+      3,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        4
+      ],
+      [
+        3,
+        4
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.017822265625
+  },
+  {
+    "index": 79,
+    "meta": {
+      "e": 186,
+      "t": 214,
+      "f": 62071,
+      "shard": 80,
+      "slot": 3,
+      "action": 2,
+      "light": 0.0026291129179298878,
+      "cell": 34,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 0,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        33,
+        24,
+        42,
+        32,
+        34
+      ],
+      "world": [
+        10,
+        43
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      false,
+      false
+    ],
+    "target_ok": false,
+    "cached_periphery_max_difference": 0.0166015625
+  },
+  {
+    "index": 80,
+    "meta": {
+      "e": 243,
+      "t": 471,
+      "f": 76387,
+      "shard": 104,
+      "slot": 12,
+      "action": 2,
+      "light": 0.22699932754039764,
+      "cell": 34,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 0,
+      "previous8_visible": 0,
+      "coarse_kind": 3,
+      "coarse_terrain": 13,
+      "missed": false,
+      "target_cells": [
+        33,
+        24,
+        42,
+        32,
+        34
+      ],
+      "world": [
+        31,
+        32
+      ]
+    },
+    "current_coarse": [
+      3,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0159912109375
+  },
+  {
+    "index": 81,
+    "meta": {
+      "e": 281,
+      "t": 158,
+      "f": 86968,
+      "shard": 117,
+      "slot": 16,
+      "action": 2,
+      "light": 0.37417417764663696,
+      "cell": 16,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 0,
+      "previous8_visible": 0,
+      "coarse_kind": 3,
+      "coarse_terrain": 10,
+      "missed": false,
+      "target_cells": [
+        15,
+        6,
+        24,
+        14,
+        16
+      ],
+      "world": [
+        33,
+        34
+      ]
+    },
+    "current_coarse": [
+      3,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01220703125
+  },
+  {
+    "index": 82,
+    "meta": {
+      "e": 308,
+      "t": 507,
+      "f": 93575,
+      "shard": 128,
+      "slot": 3,
+      "action": 3,
+      "light": 0.0014794965973123908,
+      "cell": 37,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 0,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        46,
+        37,
+        55,
+        45,
+        47
+      ],
+      "world": [
+        35,
+        40
+      ]
+    },
+    "current_coarse": [
+      1,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.02001953125
+  },
+  {
+    "index": 83,
+    "meta": {
+      "e": 313,
+      "t": 216,
+      "f": 95076,
+      "shard": 128,
+      "slot": 15,
+      "action": 4,
+      "light": 0.005908160004764795,
+      "cell": 52,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 2,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": true,
+      "target_cells": [
+        43,
+        34,
+        52,
+        42,
+        44
+      ],
+      "world": [
+        19,
+        30
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        4,
+        4
+      ],
+      [
+        4,
+        4
+      ]
+    ],
+    "fine_ok": false,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      false,
+      false
+    ],
+    "target_ok": false,
+    "cached_periphery_max_difference": 0.01715087890625
+  },
+  {
+    "index": 84,
+    "meta": {
+      "e": 342,
+      "t": 212,
+      "f": 107042,
+      "shard": 138,
+      "slot": 20,
+      "action": 1,
+      "light": 0.0006578794564120471,
+      "cell": 10,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 2,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 13,
+      "missed": true,
+      "target_cells": [
+        10,
+        1,
+        19,
+        9,
+        11
+      ],
+      "world": [
+        36,
+        29
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ]
+    ],
+    "fine_ok": false,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      false,
+      false
+    ],
+    "target_ok": false,
+    "cached_periphery_max_difference": 0.0181884765625
+  },
+  {
+    "index": 85,
+    "meta": {
+      "e": 386,
+      "t": 504,
+      "f": 125280,
+      "shard": 156,
+      "slot": 11,
+      "action": 4,
+      "light": 0.005908160004764795,
+      "cell": 46,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 1,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        37,
+        28,
+        46,
+        36,
+        38
+      ],
+      "world": [
+        44,
+        27
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.017578125
+  },
+  {
+    "index": 86,
+    "meta": {
+      "e": 387,
+      "t": 458,
+      "f": 126168,
+      "shard": 156,
+      "slot": 21,
+      "action": 4,
+      "light": 0.3741738796234131,
+      "cell": 50,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 0,
+      "previous8_visible": 0,
+      "coarse_kind": 3,
+      "coarse_terrain": 13,
+      "missed": false,
+      "target_cells": [
+        41,
+        32,
+        50,
+        40,
+        42
+      ],
+      "world": [
+        20,
+        24
+      ]
+    },
+    "current_coarse": [
+      3,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.017578125
+  },
+  {
+    "index": 87,
+    "meta": {
+      "e": 0,
+      "t": 162,
+      "f": 162,
+      "shard": 0,
+      "slot": 9,
+      "action": 2,
+      "light": 0.32707229256629944,
+      "cell": 43,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 0,
+      "previous8_visible": 6,
+      "coarse_kind": 3,
+      "coarse_terrain": 13,
+      "missed": false,
+      "target_cells": [
+        42,
+        33,
+        51,
+        41,
+        43
+      ],
+      "world": [
+        6,
+        47
+      ]
+    },
+    "current_coarse": [
+      3,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.017822265625
+  },
+  {
+    "index": 88,
+    "meta": {
+      "e": 0,
+      "t": 204,
+      "f": 204,
+      "shard": 0,
+      "slot": 9,
+      "action": 2,
+      "light": 0.005908160004764795,
+      "cell": 25,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 1,
+      "previous8_visible": 8,
+      "coarse_kind": 0,
+      "coarse_terrain": 13,
+      "missed": true,
+      "target_cells": [
+        24,
+        15,
+        33,
+        23,
+        25
+      ],
+      "world": [
+        10,
+        54
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.020263671875
+  },
+  {
+    "index": 89,
+    "meta": {
+      "e": 1,
+      "t": 194,
+      "f": 756,
+      "shard": 0,
+      "slot": 16,
+      "action": 1,
+      "light": 0.041426222771406174,
+      "cell": 19,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 1,
+      "previous8_visible": 6,
+      "coarse_kind": 3,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        20,
+        11,
+        29,
+        19,
+        21
+      ],
+      "world": [
+        4,
+        28
+      ]
+    },
+    "current_coarse": [
+      3,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0179443359375
+  },
+  {
+    "index": 90,
+    "meta": {
+      "e": 2,
+      "t": 228,
+      "f": 1244,
+      "shard": 0,
+      "slot": 18,
+      "action": 2,
+      "light": 0.05220245569944382,
+      "cell": 34,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 0,
+      "previous8_visible": 1,
+      "coarse_kind": 3,
+      "coarse_terrain": 9,
+      "missed": false,
+      "target_cells": [
+        33,
+        24,
+        42,
+        32,
+        34
+      ],
+      "world": [
+        16,
+        56
+      ]
+    },
+    "current_coarse": [
+      3,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0201263427734375
+  },
+  {
+    "index": 91,
+    "meta": {
+      "e": 6,
+      "t": 455,
+      "f": 2839,
+      "shard": 4,
+      "slot": 5,
+      "action": 2,
+      "light": 0.41010570526123047,
+      "cell": 52,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 1,
+      "previous8_visible": 2,
+      "coarse_kind": 3,
+      "coarse_terrain": 10,
+      "missed": false,
+      "target_cells": [
+        51,
+        42,
+        60,
+        50,
+        52
+      ],
+      "world": [
+        42,
+        42
+      ]
+    },
+    "current_coarse": [
+      3,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0146484375
+  },
+  {
+    "index": 92,
+    "meta": {
+      "e": 8,
+      "t": 223,
+      "f": 3382,
+      "shard": 4,
+      "slot": 16,
+      "action": 1,
+      "light": 0.027500389143824577,
+      "cell": 46,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 1,
+      "previous8_visible": 2,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        47,
+        38,
+        56,
+        46,
+        48
+      ],
+      "world": [
+        32,
+        15
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0201416015625
+  },
+  {
+    "index": 93,
+    "meta": {
+      "e": 8,
+      "t": 802,
+      "f": 3961,
+      "shard": 4,
+      "slot": 16,
+      "action": 3,
+      "light": 0.010484576225280762,
+      "cell": 10,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 1,
+      "previous8_visible": 8,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        19,
+        10,
+        28,
+        18,
+        20
+      ],
+      "world": [
+        34,
+        21
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0185546875
+  },
+  {
+    "index": 94,
+    "meta": {
+      "e": 17,
+      "t": 198,
+      "f": 5403,
+      "shard": 8,
+      "slot": 1,
+      "action": 4,
+      "light": 0.023469798266887665,
+      "cell": 52,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 2,
+      "previous8_visible": 2,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        43,
+        34,
+        52,
+        42,
+        44
+      ],
+      "world": [
+        8,
+        20
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ]
+    ],
+    "fine_ok": false,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.016845703125
+  },
+  {
+    "index": 95,
+    "meta": {
+      "e": 18,
+      "t": 192,
+      "f": 6631,
+      "shard": 8,
+      "slot": 11,
+      "action": 3,
+      "light": 0.052202630788087845,
+      "cell": 10,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 0,
+      "previous8_visible": 8,
+      "coarse_kind": 0,
+      "coarse_terrain": 7,
+      "missed": true,
+      "target_cells": [
+        19,
+        10,
+        28,
+        18,
+        20
+      ],
+      "world": [
+        29,
+        37
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0177001953125
+  },
+  {
+    "index": 96,
+    "meta": {
+      "e": 18,
+      "t": 198,
+      "f": 6637,
+      "shard": 8,
+      "slot": 11,
+      "action": 3,
+      "light": 0.023469798266887665,
+      "cell": 10,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 2,
+      "previous8_visible": 2,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        19,
+        10,
+        28,
+        18,
+        20
+      ],
+      "world": [
+        25,
+        38
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      false,
+      false
+    ],
+    "target_ok": false,
+    "cached_periphery_max_difference": 0.0186767578125
+  },
+  {
+    "index": 97,
+    "meta": {
+      "e": 33,
+      "t": 216,
+      "f": 11385,
+      "shard": 16,
+      "slot": 4,
+      "action": 2,
+      "light": 0.005908160004764795,
+      "cell": 15,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 0,
+      "previous8_visible": 3,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        14,
+        5,
+        23,
+        13,
+        15
+      ],
+      "world": [
+        32,
+        10
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        1
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01953125
+  },
+  {
+    "index": 98,
+    "meta": {
+      "e": 41,
+      "t": 205,
+      "f": 13447,
+      "shard": 20,
+      "slot": 8,
+      "action": 2,
+      "light": 0.0041056289337575436,
+      "cell": 47,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 0,
+      "previous8_visible": 4,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": true,
+      "target_cells": [
+        46,
+        37,
+        55,
+        45,
+        47
+      ],
+      "world": [
+        40,
+        15
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0166015625
+  },
+  {
+    "index": 99,
+    "meta": {
+      "e": 41,
+      "t": 502,
+      "f": 13744,
+      "shard": 20,
+      "slot": 8,
+      "action": 1,
+      "light": 0.010484576225280762,
+      "cell": 10,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 0,
+      "previous8_visible": 1,
+      "coarse_kind": 0,
+      "coarse_terrain": 7,
+      "missed": true,
+      "target_cells": [
+        11,
+        2,
+        20,
+        10,
+        12
+      ],
+      "world": [
+        41,
+        2
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      false,
+      false
+    ],
+    "target_ok": false,
+    "cached_periphery_max_difference": 0.0181884765625
+  },
+  {
+    "index": 100,
+    "meta": {
+      "e": 41,
+      "t": 519,
+      "f": 13761,
+      "shard": 20,
+      "slot": 8,
+      "action": 4,
+      "light": 0.013255152851343155,
+      "cell": 52,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 0,
+      "previous8_visible": 8,
+      "coarse_kind": 0,
+      "coarse_terrain": 13,
+      "missed": true,
+      "target_cells": [
+        43,
+        34,
+        52,
+        42,
+        44
+      ],
+      "world": [
+        45,
+        5
+      ]
+    },
+    "current_coarse": [
+      3,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        3
+      ],
+      [
+        3,
+        3
+      ]
+    ],
+    "fine_ok": false,
+    "coarse_ok": true,
+    "absent_coarse_ok": true,
+    "source_missed_verified": false,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01904296875
+  },
+  {
+    "index": 101,
+    "meta": {
+      "e": 42,
+      "t": 212,
+      "f": 14258,
+      "shard": 20,
+      "slot": 21,
+      "action": 1,
+      "light": 0.0006578794564120471,
+      "cell": 51,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 2,
+      "previous8_visible": 1,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        51,
+        42,
+        60,
+        50,
+        52
+      ],
+      "world": [
+        54,
+        30
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0185546875
+  },
+  {
+    "index": 102,
+    "meta": {
+      "e": 43,
+      "t": 214,
+      "f": 14663,
+      "shard": 21,
+      "slot": 6,
+      "action": 1,
+      "light": 0.0026291129179298878,
+      "cell": 46,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 1,
+      "previous8_visible": 2,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": true,
+      "target_cells": [
+        47,
+        38,
+        56,
+        46,
+        48
+      ],
+      "world": [
+        32,
+        39
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        0,
+        0
+      ],
+      [
+        3,
+        0
+      ]
+    ],
+    "fine_ok": false,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      false,
+      false
+    ],
+    "target_ok": false,
+    "cached_periphery_max_difference": 0.0201568603515625
+  },
+  {
+    "index": 103,
+    "meta": {
+      "e": 44,
+      "t": 211,
+      "f": 15096,
+      "shard": 21,
+      "slot": 7,
+      "action": 3,
+      "light": 0.0001645028096390888,
+      "cell": 25,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 2,
+      "previous8_visible": 7,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        34,
+        25,
+        43,
+        33,
+        35
+      ],
+      "world": [
+        36,
+        27
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.018310546875
+  },
+  {
+    "index": 104,
+    "meta": {
+      "e": 51,
+      "t": 499,
+      "f": 16682,
+      "shard": 24,
+      "slot": 4,
+      "action": 4,
+      "light": 0.01975012943148613,
+      "cell": 46,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 0,
+      "previous8_visible": 8,
+      "coarse_kind": 0,
+      "coarse_terrain": 8,
+      "missed": true,
+      "target_cells": [
+        46,
+        37,
+        55,
+        45,
+        47
+      ],
+      "world": [
+        17,
+        28
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        4
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      false,
+      false
+    ],
+    "target_ok": false,
+    "cached_periphery_max_difference": 0.0169525146484375
+  },
+  {
+    "index": 105,
+    "meta": {
+      "e": 53,
+      "t": 503,
+      "f": 17978,
+      "shard": 25,
+      "slot": 15,
+      "action": 4,
+      "light": 0.008034844882786274,
+      "cell": 51,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 1,
+      "previous8_visible": 8,
+      "coarse_kind": 0,
+      "coarse_terrain": 7,
+      "missed": true,
+      "target_cells": [
+        42,
+        33,
+        51,
+        41,
+        43
+      ],
+      "world": [
+        27,
+        8
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        4
+      ],
+      [
+        3,
+        1
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0185546875
+  },
+  {
+    "index": 106,
+    "meta": {
+      "e": 53,
+      "t": 504,
+      "f": 17979,
+      "shard": 25,
+      "slot": 15,
+      "action": 3,
+      "light": 0.005908160004764795,
+      "cell": 16,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 2,
+      "previous8_visible": 7,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": true,
+      "target_cells": [
+        25,
+        16,
+        34,
+        24,
+        26
+      ],
+      "world": [
+        24,
+        9
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        4
+      ],
+      [
+        1,
+        4
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0201873779296875
+  },
+  {
+    "index": 107,
+    "meta": {
+      "e": 61,
+      "t": 221,
+      "f": 19833,
+      "shard": 28,
+      "slot": 19,
+      "action": 3,
+      "light": 0.019750306382775307,
+      "cell": 11,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 0,
+      "previous8_visible": 3,
+      "coarse_kind": 0,
+      "coarse_terrain": 13,
+      "missed": true,
+      "target_cells": [
+        20,
+        11,
+        29,
+        19,
+        21
+      ],
+      "world": [
+        26,
+        25
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.02099609375
+  },
+  {
+    "index": 108,
+    "meta": {
+      "e": 62,
+      "t": 204,
+      "f": 20168,
+      "shard": 28,
+      "slot": 21,
+      "action": 4,
+      "light": 0.005908160004764795,
+      "cell": 20,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 0,
+      "previous8_visible": 8,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": true,
+      "target_cells": [
+        11,
+        2,
+        20,
+        10,
+        12
+      ],
+      "world": [
+        53,
+        10
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        4
+      ],
+      [
+        3,
+        4
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      false,
+      false
+    ],
+    "target_ok": false,
+    "cached_periphery_max_difference": 0.0166015625
+  },
+  {
+    "index": 109,
+    "meta": {
+      "e": 63,
+      "t": 201,
+      "f": 20980,
+      "shard": 29,
+      "slot": 5,
+      "action": 2,
+      "light": 0.013254975900053978,
+      "cell": 52,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 0,
+      "previous8_visible": 8,
+      "coarse_kind": 0,
+      "coarse_terrain": 9,
+      "missed": true,
+      "target_cells": [
+        51,
+        42,
+        60,
+        50,
+        52
+      ],
+      "world": [
+        52,
+        35
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        0,
+        0
+      ]
+    ],
+    "fine_ok": false,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01904296875
+  },
+  {
+    "index": 110,
+    "meta": {
+      "e": 63,
+      "t": 518,
+      "f": 21297,
+      "shard": 29,
+      "slot": 5,
+      "action": 0,
+      "light": 0.010484576225280762,
+      "cell": 52,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 0,
+      "previous8_visible": 8,
+      "coarse_kind": 0,
+      "coarse_terrain": 13,
+      "missed": true,
+      "target_cells": [
+        52,
+        43,
+        61,
+        51,
+        53
+      ],
+      "world": [
+        60,
+        28
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      false,
+      false
+    ],
+    "target_ok": false,
+    "cached_periphery_max_difference": 0.020263671875
+  },
+  {
+    "index": 111,
+    "meta": {
+      "e": 65,
+      "t": 206,
+      "f": 22030,
+      "shard": 29,
+      "slot": 15,
+      "action": 2,
+      "light": 0.0026291129179298878,
+      "cell": 11,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 1,
+      "previous8_visible": 3,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": true,
+      "target_cells": [
+        10,
+        1,
+        19,
+        9,
+        11
+      ],
+      "world": [
+        6,
+        6
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      false,
+      false
+    ],
+    "target_ok": false,
+    "cached_periphery_max_difference": 0.0211944580078125
+  },
+  {
+    "index": 112,
+    "meta": {
+      "e": 68,
+      "t": 218,
+      "f": 22621,
+      "shard": 31,
+      "slot": 6,
+      "action": 2,
+      "light": 0.010484576225280762,
+      "cell": 52,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 1,
+      "previous8_visible": 3,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        51,
+        42,
+        60,
+        50,
+        52
+      ],
+      "world": [
+        31,
+        34
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01806640625
+  },
+  {
+    "index": 113,
+    "meta": {
+      "e": 76,
+      "t": 211,
+      "f": 24687,
+      "shard": 34,
+      "slot": 8,
+      "action": 0,
+      "light": 0.0001645028096390888,
+      "cell": 11,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 0,
+      "previous8_visible": 3,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": true,
+      "target_cells": [
+        11,
+        2,
+        20,
+        10,
+        12
+      ],
+      "world": [
+        28,
+        34
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0166015625
+  },
+  {
+    "index": 114,
+    "meta": {
+      "e": 76,
+      "t": 212,
+      "f": 24688,
+      "shard": 34,
+      "slot": 8,
+      "action": 1,
+      "light": 0.0006578794564120471,
+      "cell": 46,
+      "family": "mob",
+      "kind": "cows",
+      "ky": 2,
+      "j": 0,
+      "previous8_visible": 5,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        46,
+        37,
+        55,
+        45,
+        47
+      ],
+      "world": [
+        32,
+        33
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.018798828125
+  },
+  {
+    "index": 115,
+    "meta": {
+      "e": 93,
+      "t": 502,
+      "f": 27930,
+      "shard": 40,
+      "slot": 10,
+      "action": 4,
+      "light": 0.010484576225280762,
+      "cell": 37,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 1,
+      "previous8_visible": 6,
+      "coarse_kind": 0,
+      "coarse_terrain": 7,
+      "missed": true,
+      "target_cells": [
+        28,
+        19,
+        37,
+        27,
+        29
+      ],
+      "world": [
+        57,
+        8
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        4
+      ],
+      [
+        3,
+        4
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01898193359375
+  },
+  {
+    "index": 116,
+    "meta": {
+      "e": 95,
+      "t": 506,
+      "f": 30226,
+      "shard": 40,
+      "slot": 23,
+      "action": 4,
+      "light": 0.0026291129179298878,
+      "cell": 51,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 0,
+      "previous8_visible": 5,
+      "coarse_kind": 0,
+      "coarse_terrain": 7,
+      "missed": true,
+      "target_cells": [
+        42,
+        33,
+        51,
+        41,
+        43
+      ],
+      "world": [
+        14,
+        5
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        3
+      ],
+      [
+        3,
+        3
+      ]
+    ],
+    "fine_ok": false,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.01898193359375
+  },
+  {
+    "index": 117,
+    "meta": {
+      "e": 95,
+      "t": 1112,
+      "f": 30832,
+      "shard": 40,
+      "slot": 23,
+      "action": 2,
+      "light": 0.0006578794564120471,
+      "cell": 25,
+      "family": "mob",
+      "kind": "zombies",
+      "ky": 1,
+      "j": 1,
+      "previous8_visible": 2,
+      "coarse_kind": 0,
+      "coarse_terrain": 13,
+      "missed": true,
+      "target_cells": [
+        24,
+        15,
+        33,
+        23,
+        25
+      ],
+      "world": [
+        22,
+        8
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0184326171875
+  },
+  {
+    "index": 118,
+    "meta": {
+      "e": 98,
+      "t": 198,
+      "f": 32806,
+      "shard": 41,
+      "slot": 17,
+      "action": 3,
+      "light": 0.023469798266887665,
+      "cell": 43,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 1,
+      "previous8_visible": 8,
+      "coarse_kind": 0,
+      "coarse_terrain": 9,
+      "missed": true,
+      "target_cells": [
+        52,
+        43,
+        61,
+        51,
+        53
+      ],
+      "world": [
+        39,
+        31
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        3,
+        4
+      ],
+      [
+        3,
+        4
+      ]
+    ],
+    "fine_ok": true,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      true,
+      false
+    ],
+    "target_ok": true,
+    "cached_periphery_max_difference": 0.0185546875
+  },
+  {
+    "index": 119,
+    "meta": {
+      "e": 111,
+      "t": 205,
+      "f": 36101,
+      "shard": 45,
+      "slot": 21,
+      "action": 4,
+      "light": 0.0041056289337575436,
+      "cell": 52,
+      "family": "mob",
+      "kind": "skeletons",
+      "ky": 3,
+      "j": 1,
+      "previous8_visible": 3,
+      "coarse_kind": 0,
+      "coarse_terrain": 7,
+      "missed": true,
+      "target_cells": [
+        52,
+        43,
+        61,
+        51,
+        53
+      ],
+      "world": [
+        44,
+        29
+      ]
+    },
+    "current_coarse": [
+      0,
+      0
+    ],
+    "fine_readings": [
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "fine_ok": false,
+    "coarse_ok": false,
+    "absent_coarse_ok": true,
+    "source_missed_verified": true,
+    "target_readings": [
+      false,
+      false
+    ],
+    "target_ok": false,
+    "cached_periphery_max_difference": 0.017578125
+  }
+]

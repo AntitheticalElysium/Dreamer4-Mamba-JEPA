@@ -1,0 +1,2162 @@
+[
+  {
+    "index": 0,
+    "meta": {
+      "e": 0,
+      "t": 149,
+      "f": 149,
+      "shard": 0,
+      "slot": 9,
+      "action": 2,
+      "light": 0.48257118463516235,
+      "cell": 4,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        3
+      ],
+      "world": [
+        8,
+        41
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        1.8978345906361938e-05,
+        0.052768826484680176
+      ],
+      [
+        0.05286669731140137,
+        1.5429361155838706e-05
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 1.009128212928772,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.0001837711315602064,
+        0.048045072704553604
+      ],
+      [
+        0.05113665759563446,
+        3.5983470297651365e-05
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.9456843733787537,
+    "fine_mae": [
+      0.91234290599823,
+      0.7881324291229248
+    ],
+    "source_rgb_contrast_rms": 58.32923126220703
+  },
+  {
+    "index": 1,
+    "meta": {
+      "e": 0,
+      "t": 168,
+      "f": 168,
+      "shard": 0,
+      "slot": 9,
+      "action": 3,
+      "light": 0.2592070698738098,
+      "cell": 3,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        12
+      ],
+      "world": [
+        0,
+        46
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.00032110061147250235,
+        0.010470177978277206
+      ],
+      [
+        0.009824889712035656,
+        0.0002894585195463151
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.9738486409187317,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.00042071923962794244,
+        0.01103202160447836
+      ],
+      [
+        0.00980021059513092,
+        0.0002752085274551064
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.9962003231048584,
+    "fine_mae": [
+      3.812021493911743,
+      3.5267457962036133
+    ],
+    "source_rgb_contrast_rms": 22.376493453979492
+  },
+  {
+    "index": 3,
+    "meta": {
+      "e": 0,
+      "t": 198,
+      "f": 198,
+      "shard": 0,
+      "slot": 9,
+      "action": 4,
+      "light": 0.023469798266887665,
+      "cell": 62,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 7,
+      "missed": true,
+      "target_cells": [
+        53
+      ],
+      "world": [
+        12,
+        52
+      ]
+    },
+    "present_recognition": 0.953125,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.002465644385665655,
+        0.002680236706510186
+      ],
+      [
+        0.0028171504382044077,
+        0.002475464018061757
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.8353955745697021,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.002255246276035905,
+        0.002502600196748972
+      ],
+      [
+        0.0025186443235725164,
+        0.002286648377776146
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.719867467880249,
+    "fine_mae": [
+      11.151307106018066,
+      11.11716079711914
+    ],
+    "source_rgb_contrast_rms": 4.4918670654296875
+  },
+  {
+    "index": 5,
+    "meta": {
+      "e": 1,
+      "t": 173,
+      "f": 735,
+      "shard": 0,
+      "slot": 16,
+      "action": 2,
+      "light": 0.20631003379821777,
+      "cell": 8,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        7
+      ],
+      "world": [
+        6,
+        32
+      ]
+    },
+    "present_recognition": 0.984375,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.0006443790625780821,
+        0.012847316451370716
+      ],
+      [
+        0.013143339194357395,
+        0.0006367923924699426
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.9686547517776489,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.0008341618813574314,
+        0.011441283859312534
+      ],
+      [
+        0.013866974972188473,
+        0.0006370779010467231
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.9344525933265686,
+    "fine_mae": [
+      5.748136520385742,
+      5.764209747314453
+    ],
+    "source_rgb_contrast_rms": 28.404151916503906
+  },
+  {
+    "index": 6,
+    "meta": {
+      "e": 1,
+      "t": 209,
+      "f": 771,
+      "shard": 0,
+      "slot": 16,
+      "action": 1,
+      "light": 0.0001645028096390888,
+      "cell": 0,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": true,
+      "target_cells": [
+        1
+      ],
+      "world": [
+        2,
+        21
+      ]
+    },
+    "present_recognition": 0.46875,
+    "absent_recognition": 0.953125,
+    "fine_alternative_pixel_mse": [
+      [
+        0.0021410949993878603,
+        0.0021608273964375257
+      ],
+      [
+        0.0021898963022977114,
+        0.002171429106965661
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.6056495904922485,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.0022725702729076147,
+        0.0024230927228927612
+      ],
+      [
+        0.0021787763107568026,
+        0.002268702955916524
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      0
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.9607385993003845,
+    "fine_mae": [
+      10.475459098815918,
+      10.579334259033203
+    ],
+    "source_rgb_contrast_rms": 1.049781322479248
+  },
+  {
+    "index": 7,
+    "meta": {
+      "e": 1,
+      "t": 229,
+      "f": 791,
+      "shard": 0,
+      "slot": 16,
+      "action": 3,
+      "light": 0.05802669748663902,
+      "cell": 3,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        12
+      ],
+      "world": [
+        0,
+        18
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.0012887109769508243,
+        0.0025315317325294018
+      ],
+      [
+        0.001963203540071845,
+        0.0012481801677495241
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.7197669744491577,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.0014290068065747619,
+        0.0023276370484381914
+      ],
+      [
+        0.0023992937058210373,
+        0.0012793526984751225
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.7420923709869385,
+    "fine_mae": [
+      6.943305969238281,
+      7.1555986404418945
+    ],
+    "source_rgb_contrast_rms": 8.208590507507324
+  },
+  {
+    "index": 8,
+    "meta": {
+      "e": 2,
+      "t": 150,
+      "f": 1166,
+      "shard": 0,
+      "slot": 18,
+      "action": 1,
+      "light": 0.4704913794994354,
+      "cell": 9,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        10
+      ],
+      "world": [
+        15,
+        35
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        5.480341860675253e-05,
+        0.023779312148690224
+      ],
+      [
+        0.023681944236159325,
+        1.0082324479299132e-05
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 1.0095300674438477,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.00010916552855633199,
+        0.024690797552466393
+      ],
+      [
+        0.022925088182091713,
+        1.8393438949715346e-05
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 1.011488676071167,
+    "fine_mae": [
+      1.564705491065979,
+      0.6554980278015137
+    ],
+    "source_rgb_contrast_rms": 34.8555793762207
+  },
+  {
+    "index": 9,
+    "meta": {
+      "e": 2,
+      "t": 150,
+      "f": 1166,
+      "shard": 0,
+      "slot": 18,
+      "action": 1,
+      "light": 0.4704913794994354,
+      "cell": 45,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        46
+      ],
+      "world": [
+        19,
+        35
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        1.7745895092957653e-05,
+        0.0510629266500473
+      ],
+      [
+        0.05134852975606918,
+        1.8615040971781127e-05
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 1.0148996114730835,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        2.3372977011604235e-05,
+        0.05047895759344101
+      ],
+      [
+        0.049793776124715805,
+        1.6038336980273016e-05
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.99366694688797,
+    "fine_mae": [
+      0.8776319622993469,
+      0.8772587180137634
+    ],
+    "source_rgb_contrast_rms": 57.26784133911133
+  },
+  {
+    "index": 12,
+    "meta": {
+      "e": 3,
+      "t": 148,
+      "f": 2175,
+      "shard": 2,
+      "slot": 12,
+      "action": 0,
+      "light": 0.4946335554122925,
+      "cell": 56,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        56
+      ],
+      "world": [
+        34,
+        28
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        3.452551391092129e-05,
+        0.053320299834012985
+      ],
+      [
+        0.05331490933895111,
+        2.1995017959852703e-05
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.9781836867332458,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        3.200815262971446e-05,
+        0.0557984784245491
+      ],
+      [
+        0.05412604659795761,
+        1.5027016161184292e-05
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 1.0084604024887085,
+    "fine_mae": [
+      1.179147481918335,
+      0.9516701102256775
+    ],
+    "source_rgb_contrast_rms": 59.518245697021484
+  },
+  {
+    "index": 13,
+    "meta": {
+      "e": 3,
+      "t": 172,
+      "f": 2199,
+      "shard": 2,
+      "slot": 12,
+      "action": 3,
+      "light": 0.21657153964042664,
+      "cell": 36,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        45
+      ],
+      "world": [
+        29,
+        23
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.0005029688472859561,
+        0.00655169365927577
+      ],
+      [
+        0.008809313178062439,
+        0.0003919174487236887
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.9547937512397766,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.0008895006612874568,
+        0.006694700103253126
+      ],
+      [
+        0.007310853805392981,
+        0.0003644565003924072
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.8416315913200378,
+    "fine_mae": [
+      4.582522869110107,
+      4.213322162628174
+    ],
+    "source_rgb_contrast_rms": 19.372995376586914
+  },
+  {
+    "index": 14,
+    "meta": {
+      "e": 6,
+      "t": 162,
+      "f": 2546,
+      "shard": 4,
+      "slot": 5,
+      "action": 3,
+      "light": 0.32707229256629944,
+      "cell": 3,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        12
+      ],
+      "world": [
+        48,
+        3
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.00017685616330709308,
+        0.014605838805437088
+      ],
+      [
+        0.014809079468250275,
+        0.00011213751713512465
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 1.0390031337738037,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.00016837373550515622,
+        0.014883581548929214
+      ],
+      [
+        0.014109086245298386,
+        0.00010173231567023322
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 1.0246142148971558,
+    "fine_mae": [
+      2.590219020843506,
+      2.2522220611572266
+    ],
+    "source_rgb_contrast_rms": 26.702186584472656
+  },
+  {
+    "index": 15,
+    "meta": {
+      "e": 6,
+      "t": 162,
+      "f": 2546,
+      "shard": 4,
+      "slot": 5,
+      "action": 3,
+      "light": 0.32707229256629944,
+      "cell": 4,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        13
+      ],
+      "world": [
+        48,
+        4
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.00013305222091730684,
+        0.03002043254673481
+      ],
+      [
+        0.030261147767305374,
+        0.0001387541415169835
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 1.0308688879013062,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.00013132802268955857,
+        0.02834523841738701
+      ],
+      [
+        0.029242325574159622,
+        0.00013203998969402164
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.9847350716590881,
+    "fine_mae": [
+      2.4847238063812256,
+      2.584864616394043
+    ],
+    "source_rgb_contrast_rms": 43.356300354003906
+  },
+  {
+    "index": 16,
+    "meta": {
+      "e": 6,
+      "t": 193,
+      "f": 2577,
+      "shard": 4,
+      "slot": 5,
+      "action": 3,
+      "light": 0.04666764289140701,
+      "cell": 0,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 9,
+      "missed": true,
+      "target_cells": [
+        9
+      ],
+      "world": [
+        45,
+        8
+      ]
+    },
+    "present_recognition": 0.9375,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.002298610284924507,
+        0.003200777340680361
+      ],
+      [
+        0.003119533183053136,
+        0.002307709539309144
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.9003641605377197,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.0023684934712946415,
+        0.0034115922171622515
+      ],
+      [
+        0.0031517024617642164,
+        0.0023764250800013542
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.9551981687545776,
+    "fine_mae": [
+      10.981544494628906,
+      10.999847412109375
+    ],
+    "source_rgb_contrast_rms": 7.677602291107178
+  },
+  {
+    "index": 17,
+    "meta": {
+      "e": 7,
+      "t": 160,
+      "f": 3058,
+      "shard": 4,
+      "slot": 8,
+      "action": 1,
+      "light": 0.35048070549964905,
+      "cell": 59,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        60
+      ],
+      "world": [
+        49,
+        17
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.00012021853763144463,
+        0.01592332124710083
+      ],
+      [
+        0.014967442490160465,
+        6.225665129022673e-05
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.9888556003570557,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.00012834621884394437,
+        0.015784138813614845
+      ],
+      [
+        0.015622287057340145,
+        8.717294986126944e-05
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 1.004396677017212,
+    "fine_mae": [
+      2.256317615509033,
+      1.710661768913269
+    ],
+    "source_rgb_contrast_rms": 28.22648811340332
+  },
+  {
+    "index": 18,
+    "meta": {
+      "e": 7,
+      "t": 245,
+      "f": 3143,
+      "shard": 4,
+      "slot": 8,
+      "action": 2,
+      "light": 0.18631711602210999,
+      "cell": 62,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        61
+      ],
+      "world": [
+        38,
+        27
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.0007704037707298994,
+        0.01100874412804842
+      ],
+      [
+        0.010599381290376186,
+        0.000807940901722759
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.9405977129936218,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.0007818073499947786,
+        0.010738210752606392
+      ],
+      [
+        0.011641868390142918,
+        0.0007985663833096623
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.976753294467926,
+    "fine_mae": [
+      6.0011091232299805,
+      6.180544376373291
+    ],
+    "source_rgb_contrast_rms": 25.861087799072266
+  },
+  {
+    "index": 19,
+    "meta": {
+      "e": 8,
+      "t": 151,
+      "f": 3310,
+      "shard": 4,
+      "slot": 16,
+      "action": 1,
+      "light": 0.45840173959732056,
+      "cell": 0,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        1
+      ],
+      "world": [
+        21,
+        20
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        1.931812585098669e-05,
+        0.048484109342098236
+      ],
+      [
+        0.048376452177762985,
+        1.0266439858241938e-05
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 1.0042921304702759,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        5.0542341341497377e-05,
+        0.04711276665329933
+      ],
+      [
+        0.04877689853310585,
+        2.578288876975421e-05
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.9937376976013184,
+    "fine_mae": [
+      0.8911826014518738,
+      0.6714960932731628
+    ],
+    "source_rgb_contrast_rms": 55.98894119262695
+  },
+  {
+    "index": 21,
+    "meta": {
+      "e": 8,
+      "t": 156,
+      "f": 3315,
+      "shard": 4,
+      "slot": 16,
+      "action": 4,
+      "light": 0.3980869650840759,
+      "cell": 56,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        47
+      ],
+      "world": [
+        30,
+        21
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        7.014651055214927e-05,
+        0.01816183142364025
+      ],
+      [
+        0.01868780329823494,
+        5.390881415223703e-05
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 1.0013238191604614,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.00012422166764736176,
+        0.01863023079931736
+      ],
+      [
+        0.018201161175966263,
+        4.7567864385200664e-05
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.9995249509811401,
+    "fine_mae": [
+      1.6994911432266235,
+      1.5717648267745972
+    ],
+    "source_rgb_contrast_rms": 30.8075008392334
+  },
+  {
+    "index": 22,
+    "meta": {
+      "e": 8,
+      "t": 190,
+      "f": 3349,
+      "shard": 4,
+      "slot": 16,
+      "action": 3,
+      "light": 0.06413495540618896,
+      "cell": 0,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 13,
+      "missed": true,
+      "target_cells": [
+        9
+      ],
+      "world": [
+        21,
+        19
+      ]
+    },
+    "present_recognition": 0.9375,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.0011462719412520528,
+        0.002643476938828826
+      ],
+      [
+        0.0025116486940532923,
+        0.0012228050036355853
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.8700911998748779,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.0014177722623571754,
+        0.0029605552554130554
+      ],
+      [
+        0.0024723054375499487,
+        0.0015410759951919317
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.7726414203643799,
+    "fine_mae": [
+      7.259811878204346,
+      7.532565116882324
+    ],
+    "source_rgb_contrast_rms": 10.028191566467285
+  },
+  {
+    "index": 24,
+    "meta": {
+      "e": 10,
+      "t": 149,
+      "f": 4292,
+      "shard": 5,
+      "slot": 16,
+      "action": 1,
+      "light": 0.48257118463516235,
+      "cell": 45,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        46
+      ],
+      "world": [
+        36,
+        31
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        1.68011956702685e-05,
+        0.05241808667778969
+      ],
+      [
+        0.05222921818494797,
+        6.931502866791561e-06
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 1.0016453266143799,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        3.597240356612019e-05,
+        0.05074696987867355
+      ],
+      [
+        0.05232398211956024,
+        9.668645361671224e-06
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.9863438606262207,
+    "fine_mae": [
+      0.8257618546485901,
+      0.5376375317573547
+    ],
+    "source_rgb_contrast_rms": 58.27509307861328
+  },
+  {
+    "index": 25,
+    "meta": {
+      "e": 10,
+      "t": 191,
+      "f": 4334,
+      "shard": 5,
+      "slot": 16,
+      "action": 4,
+      "light": 0.058026351034641266,
+      "cell": 56,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        47
+      ],
+      "world": [
+        42,
+        22
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.0012799542164430022,
+        0.0020237965509295464
+      ],
+      [
+        0.0024143820628523827,
+        0.001231154426932335
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.7965075373649597,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.001485376968048513,
+        0.002447509905323386
+      ],
+      [
+        0.0024825255386531353,
+        0.0013497674372047186
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.865872323513031,
+    "fine_mae": [
+      7.63881778717041,
+      7.572610855102539
+    ],
+    "source_rgb_contrast_rms": 7.741574287414551
+  },
+  {
+    "index": 26,
+    "meta": {
+      "e": 10,
+      "t": 191,
+      "f": 4334,
+      "shard": 5,
+      "slot": 16,
+      "action": 4,
+      "light": 0.058026351034641266,
+      "cell": 62,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 13,
+      "missed": true,
+      "target_cells": [
+        53
+      ],
+      "world": [
+        42,
+        28
+      ]
+    },
+    "present_recognition": 0.96875,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.0015833791112527251,
+        0.002859680913388729
+      ],
+      [
+        0.0030384415294975042,
+        0.0016531316796317697
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.9858842492103577,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.0016167275607585907,
+        0.0026234432589262724
+      ],
+      [
+        0.00342008494772017,
+        0.0016846039798110723
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 1.0157334804534912,
+    "fine_mae": [
+      8.645586967468262,
+      8.859601020812988
+    ],
+    "source_rgb_contrast_rms": 9.208100318908691
+  },
+  {
+    "index": 28,
+    "meta": {
+      "e": 11,
+      "t": 185,
+      "f": 4598,
+      "shard": 6,
+      "slot": 3,
+      "action": 1,
+      "light": 0.09877881407737732,
+      "cell": 55,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        56
+      ],
+      "world": [
+        43,
+        24
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.0014547765022143722,
+        0.0028522091452032328
+      ],
+      [
+        0.003615695284679532,
+        0.001392459962517023
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.9083847999572754,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.0018253488233312964,
+        0.0034689735621213913
+      ],
+      [
+        0.0028961659409105778,
+        0.0015067702624946833
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.7609506845474243,
+    "fine_mae": [
+      8.327766418457031,
+      8.397653579711914
+    ],
+    "source_rgb_contrast_rms": 9.936532974243164
+  },
+  {
+    "index": 30,
+    "meta": {
+      "e": 11,
+      "t": 231,
+      "f": 4644,
+      "shard": 6,
+      "slot": 3,
+      "action": 1,
+      "light": 0.0705237165093422,
+      "cell": 9,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        10
+      ],
+      "world": [
+        25,
+        16
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.0015596565790474415,
+        0.003963482566177845
+      ],
+      [
+        0.003245894331485033,
+        0.0014910298632457852
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.9171672463417053,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.0016508263070136309,
+        0.0031649572774767876
+      ],
+      [
+        0.004515291657298803,
+        0.001541856792755425
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.989698052406311,
+    "fine_mae": [
+      8.228887557983398,
+      8.521923065185547
+    ],
+    "source_rgb_contrast_rms": 12.058813095092773
+  },
+  {
+    "index": 31,
+    "meta": {
+      "e": 17,
+      "t": 153,
+      "f": 5358,
+      "shard": 8,
+      "slot": 1,
+      "action": 4,
+      "light": 0.43422532081604004,
+      "cell": 57,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        48
+      ],
+      "world": [
+        20,
+        7
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        3.3972599339904264e-05,
+        0.04595383256673813
+      ],
+      [
+        0.045694880187511444,
+        2.2441510736825876e-05
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 1.0193318128585815,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        6.010889046592638e-05,
+        0.04481225460767746
+      ],
+      [
+        0.045556843280792236,
+        3.1594248866895214e-05
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 1.0046982765197754,
+    "fine_mae": [
+      1.1810462474822998,
+      0.9473031759262085
+    ],
+    "source_rgb_contrast_rms": 53.86598205566406
+  },
+  {
+    "index": 32,
+    "meta": {
+      "e": 17,
+      "t": 165,
+      "f": 5370,
+      "shard": 8,
+      "slot": 1,
+      "action": 3,
+      "light": 0.29263633489608765,
+      "cell": 1,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        10
+      ],
+      "world": [
+        12,
+        10
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.0003081170143559575,
+        0.012330939061939716
+      ],
+      [
+        0.010909879580140114,
+        0.00017318055324722081
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 1.0133329629898071,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.0003426934708841145,
+        0.011311633512377739
+      ],
+      [
+        0.011052865535020828,
+        0.00018123759946320206
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.972417950630188,
+    "fine_mae": [
+      3.7958319187164307,
+      2.950132131576538
+    ],
+    "source_rgb_contrast_rms": 24.004959106445312
+  },
+  {
+    "index": 34,
+    "meta": {
+      "e": 18,
+      "t": 173,
+      "f": 6612,
+      "shard": 8,
+      "slot": 11,
+      "action": 2,
+      "light": 0.20631003379821777,
+      "cell": 8,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        7
+      ],
+      "world": [
+        29,
+        36
+      ]
+    },
+    "present_recognition": 0.96875,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.00041600019903853536,
+        0.013366973027586937
+      ],
+      [
+        0.01267706323415041,
+        0.00043296461808495224
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.9804860949516296,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.00042854814091697335,
+        0.011401611380279064
+      ],
+      [
+        0.013760549947619438,
+        0.00036280593485571444
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.9484091401100159,
+    "fine_mae": [
+      4.029027938842773,
+      4.250644207000732
+    ],
+    "source_rgb_contrast_rms": 28.408462524414062
+  },
+  {
+    "index": 35,
+    "meta": {
+      "e": 18,
+      "t": 180,
+      "f": 6619,
+      "shard": 8,
+      "slot": 11,
+      "action": 2,
+      "light": 0.1397610753774643,
+      "cell": 60,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        59
+      ],
+      "world": [
+        36,
+        38
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.0010612827027216554,
+        0.0038348273374140263
+      ],
+      [
+        0.004709451925009489,
+        0.0007947505218908191
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.8794111013412476,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.0011865299893543124,
+        0.005061417818069458
+      ],
+      [
+        0.0043113077990710735,
+        0.00078210310311988
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.973534882068634,
+    "fine_mae": [
+      6.891302585601807,
+      6.373292446136475
+    ],
+    "source_rgb_contrast_rms": 13.90834903717041
+  },
+  {
+    "index": 37,
+    "meta": {
+      "e": 18,
+      "t": 541,
+      "f": 6980,
+      "shard": 8,
+      "slot": 11,
+      "action": 4,
+      "light": 0.14865337312221527,
+      "cell": 45,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 1,
+      "missed": true,
+      "target_cells": [
+        36
+      ],
+      "world": [
+        15,
+        12
+      ]
+    },
+    "present_recognition": 0.84375,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.000555974489543587,
+        0.008337040431797504
+      ],
+      [
+        0.0070469980128109455,
+        0.0006631530122831464
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.9268155694007874,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.0006121059996075928,
+        0.007487498689442873
+      ],
+      [
+        0.010227709077298641,
+        0.0007615523645654321
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 1.0692338943481445,
+    "fine_mae": [
+      5.100648880004883,
+      5.447823524475098
+    ],
+    "source_rgb_contrast_rms": 21.985925674438477
+  },
+  {
+    "index": 38,
+    "meta": {
+      "e": 20,
+      "t": 158,
+      "f": 8195,
+      "shard": 9,
+      "slot": 11,
+      "action": 2,
+      "light": 0.37417417764663696,
+      "cell": 8,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 5,
+      "missed": false,
+      "target_cells": [
+        7
+      ],
+      "world": [
+        40,
+        18
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.00010945572284981608,
+        0.017889320850372314
+      ],
+      [
+        0.016319574788212776,
+        6.0729806136805564e-05
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 1.0236848592758179,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.000177204332430847,
+        0.017545131966471672
+      ],
+      [
+        0.016447698697447777,
+        7.021729834377766e-05
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 1.0148639678955078,
+    "fine_mae": [
+      2.2251076698303223,
+      1.5548784732818604
+    ],
+    "source_rgb_contrast_rms": 29.081634521484375
+  },
+  {
+    "index": 39,
+    "meta": {
+      "e": 20,
+      "t": 158,
+      "f": 8195,
+      "shard": 9,
+      "slot": 11,
+      "action": 2,
+      "light": 0.37417417764663696,
+      "cell": 35,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 4,
+      "missed": false,
+      "target_cells": [
+        34
+      ],
+      "world": [
+        43,
+        18
+      ]
+    },
+    "present_recognition": 1.0,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        5.751601202064194e-05,
+        0.03619213029742241
+      ],
+      [
+        0.03623383119702339,
+        5.583507299888879e-05
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 1.0141589641571045,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.00015881044964771718,
+        0.03343040123581886
+      ],
+      [
+        0.0350843109190464,
+        5.4817595810163766e-05
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.9578986763954163,
+    "fine_mae": [
+      1.5856684446334839,
+      1.569136619567871
+    ],
+    "source_rgb_contrast_rms": 47.98405075073242
+  },
+  {
+    "index": 41,
+    "meta": {
+      "e": 20,
+      "t": 206,
+      "f": 8243,
+      "shard": 9,
+      "slot": 11,
+      "action": 1,
+      "light": 0.0026291129179298878,
+      "cell": 60,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        61
+      ],
+      "world": [
+        56,
+        22
+      ]
+    },
+    "present_recognition": 0.609375,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.0017331308918073773,
+        0.002047397429123521
+      ],
+      [
+        0.001901240204460919,
+        0.0018475732067599893
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.6889023184776306,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.001993247540667653,
+        0.0023297760635614395
+      ],
+      [
+        0.0020308522507548332,
+        0.00196258258074522
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.7579265832901001,
+    "fine_mae": [
+      9.254138946533203,
+      9.557391166687012
+    ],
+    "source_rgb_contrast_rms": 3.555201292037964
+  },
+  {
+    "index": 42,
+    "meta": {
+      "e": 20,
+      "t": 221,
+      "f": 8258,
+      "shard": 9,
+      "slot": 11,
+      "action": 3,
+      "light": 0.019750306382775307,
+      "cell": 1,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 7,
+      "missed": true,
+      "target_cells": [
+        1
+      ],
+      "world": [
+        44,
+        12
+      ]
+    },
+    "present_recognition": 0.9375,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.002531090984120965,
+        0.002908342517912388
+      ],
+      [
+        0.0027670348063111305,
+        0.0023937842343002558
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.8807991147041321,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.0027756798081099987,
+        0.0027950522489845753
+      ],
+      [
+        0.003150652628391981,
+        0.0025824778713285923
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.6895532608032227,
+    "fine_mae": [
+      11.638970375061035,
+      11.267020225524902
+    ],
+    "source_rgb_contrast_rms": 5.099686622619629
+  },
+  {
+    "index": 46,
+    "meta": {
+      "e": 35,
+      "t": 200,
+      "f": 11861,
+      "shard": 17,
+      "slot": 3,
+      "action": 2,
+      "light": 0.01634441688656807,
+      "cell": 53,
+      "family": "terrain",
+      "kind": "tree",
+      "ky": 5,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        52
+      ],
+      "world": [
+        26,
+        41
+      ]
+    },
+    "present_recognition": 0.9375,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.0015711577143520117,
+        0.001671358710154891
+      ],
+      [
+        0.001844310201704502,
+        0.0015760131645947695
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.7265164256095886,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.0015055194962769747,
+        0.0016033091815188527
+      ],
+      [
+        0.0017792186699807644,
+        0.001573898014612496
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.5976003408432007,
+    "fine_mae": [
+      8.210272789001465,
+      8.149394035339355
+    ],
+    "source_rgb_contrast_rms": 3.4807536602020264
+  },
+  {
+    "index": 47,
+    "meta": {
+      "e": 36,
+      "t": 205,
+      "f": 12122,
+      "shard": 17,
+      "slot": 13,
+      "action": 2,
+      "light": 0.0041056289337575436,
+      "cell": 61,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 7,
+      "missed": true,
+      "target_cells": [
+        60
+      ],
+      "world": [
+        51,
+        27
+      ]
+    },
+    "present_recognition": 0.953125,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.0022860660683363676,
+        0.0024254305753856897
+      ],
+      [
+        0.002388272900134325,
+        0.002283835783600807
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.8050460815429688,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.0024284077808260918,
+        0.0026007075794041157
+      ],
+      [
+        0.0024938518181443214,
+        0.0023811664432287216
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.9410362243652344,
+    "fine_mae": [
+      10.429786682128906,
+      10.384819030761719
+    ],
+    "source_rgb_contrast_rms": 2.9508445262908936
+  },
+  {
+    "index": 51,
+    "meta": {
+      "e": 41,
+      "t": 190,
+      "f": 13432,
+      "shard": 20,
+      "slot": 8,
+      "action": 4,
+      "light": 0.06413495540618896,
+      "cell": 62,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 13,
+      "missed": true,
+      "target_cells": [
+        53
+      ],
+      "world": [
+        35,
+        21
+      ]
+    },
+    "present_recognition": 0.96875,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.001972840866073966,
+        0.003491562558338046
+      ],
+      [
+        0.002892110962420702,
+        0.0016809436492621899
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.8467882871627808,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.001984331523999572,
+        0.002825805451720953
+      ],
+      [
+        0.0034917083103209734,
+        0.001734431367367506
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      0,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 0.8061102628707886,
+    "fine_mae": [
+      9.492433547973633,
+      8.860703468322754
+    ],
+    "source_rgb_contrast_rms": 9.9911527633667
+  },
+  {
+    "index": 52,
+    "meta": {
+      "e": 42,
+      "t": 203,
+      "f": 14249,
+      "shard": 20,
+      "slot": 21,
+      "action": 1,
+      "light": 0.008034844882786274,
+      "cell": 54,
+      "family": "terrain",
+      "kind": "stone",
+      "ky": 4,
+      "previous8_visible": 0,
+      "coarse_kind": 0,
+      "coarse_terrain": 2,
+      "missed": true,
+      "target_cells": [
+        55
+      ],
+      "world": [
+        51,
+        25
+      ]
+    },
+    "present_recognition": 0.953125,
+    "absent_recognition": 1.0,
+    "fine_alternative_pixel_mse": [
+      [
+        0.0021765870042145252,
+        0.002286115661263466
+      ],
+      [
+        0.0022938663605600595,
+        0.0022429926320910454
+      ]
+    ],
+    "fine_recovered_pixel_contrast": 0.8059072494506836,
+    "precrop_tsp_alternative_pixel_mse": [
+      [
+        0.0027393335476517677,
+        0.002635604003444314
+      ],
+      [
+        0.0031053556594997644,
+        0.0027850130572915077
+      ]
+    ],
+    "precrop_tsp_alternative_choice": [
+      1,
+      1
+    ],
+    "precrop_tsp_recovered_pixel_contrast": 1.0883246660232544,
+    "fine_mae": [
+      10.314200401306152,
+      10.397062301635742
+    ],
+    "source_rgb_contrast_rms": 2.3079278469085693
+  }
+]
