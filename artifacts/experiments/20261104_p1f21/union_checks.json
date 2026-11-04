@@ -1,0 +1,37 @@
+{
+ "monitor_identical_to_original": true,
+ "dev_identical_to_original": true,
+ "final_identical_to_original": true,
+ "original_train_is_prefix": true,
+ "episode_ids_unique": true,
+ "train_episodes": 22267,
+ "train_transitions": 8914902,
+ "census_train_matches": true,
+ "train_by_source": {
+  "artifacts/craftax_support_v2": 7672,
+  "artifacts/craftax_coverage_v1": 2932,
+  "artifacts/craftax_risk_v1": 11663
+ },
+ "held_out_by_source": {
+  "artifacts/craftax_support_v2": 0,
+  "artifacts/craftax_coverage_v1": 140,
+  "artifacts/craftax_risk_v1": 625
+ },
+ "census_held_out_matches": true,
+ "dev_final_from_original_only": true,
+ "shard_sha256_mismatches": [],
+ "all_shards_mapped_open_fds": 5,
+ "union_reads_equal_source_reads": 24,
+ "targets_shape_matches": true,
+ "targets_sha256_matches_build": true,
+ "targets_defined_share": {
+  "original": 0.930778555872978,
+  "new": 0.9338430025459764
+ },
+ "targets_mean_change_probability": {
+  "original": 0.022386305034160614,
+  "new": 0.02101469784975052
+ },
+ "targets_new_defined_share_within_0.05": true,
+ "passed": true
+}

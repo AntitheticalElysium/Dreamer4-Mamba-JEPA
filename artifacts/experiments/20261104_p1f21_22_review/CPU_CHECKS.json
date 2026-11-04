@@ -1,0 +1,100 @@
+{
+  "config_differences": {
+    "diversity": {
+      "p1.out_dir": [
+        "artifacts/saccade_m0",
+        "artifacts/saccade_m0_union"
+      ],
+      "data.corpus": [
+        "artifacts/craftax_support_v2",
+        "artifacts/craftax_union_v1"
+      ]
+    },
+    "acuity": {
+      "perception.periphery.acuity": [
+        3,
+        2
+      ]
+    }
+  },
+  "diversity_initialization": {
+    "equal_shape_tensors": 226,
+    "changed_tensors": 0,
+    "equal_shape_elements": 14460148,
+    "changed_elements": 0,
+    "shape_changes": {},
+    "post_initialization_rng_equal": true,
+    "first_changed_tensors": []
+  },
+  "acuity_initialization": {
+    "equal_shape_tensors": 225,
+    "changed_tensors": 149,
+    "equal_shape_elements": 14453236,
+    "changed_elements": 11106248,
+    "shape_changes": {
+      "perception.p_layers.0.weight": [
+        [
+          256,
+          27
+        ],
+        [
+          256,
+          12
+        ]
+      ]
+    },
+    "post_initialization_rng_equal": false,
+    "first_changed_tensors": [
+      "perception.p_layers.0.bias",
+      "perception.p_layers.1.weight",
+      "perception.p_layers.1.bias",
+      "perception.p_out.weight",
+      "perception.p_out.bias",
+      "perception.fovea.0.weight",
+      "perception.fovea.0.bias",
+      "perception.fovea.2.weight",
+      "perception.fovea.2.bias",
+      "perception.fovea.4.weight",
+      "perception.fovea.4.bias",
+      "perception.fovea.6.weight"
+    ]
+  },
+  "acuity_shared_dependencies_not_in_seal": [
+    "artifacts/experiments/20261104_p1f21/checks.py",
+    "artifacts/experiments/20261104_p1f21/pin_sources.py",
+    "artifacts/experiments/20261104_p1f21/run.py"
+  ],
+  "union_manifest": {
+    "episodes": 25440,
+    "transitions": 9973386,
+    "sources": [
+      {
+        "source": "artifacts/craftax_support_v2",
+        "shards": 420,
+        "order_paths_and_declared_hashes_match": true
+      },
+      {
+        "source": "artifacts/craftax_coverage_v1",
+        "shards": 128,
+        "order_paths_and_declared_hashes_match": true
+      },
+      {
+        "source": "artifacts/craftax_risk_v1",
+        "shards": 512,
+        "order_paths_and_declared_hashes_match": true
+      }
+    ]
+  },
+  "source_pins": {
+    "artifacts/experiments/20261104_p1f21/pin_sources.py": "8c1003cd1e89cfa0615a9d777879337d10554fa79c95e417b62aa8ac97b6b6bd",
+    "artifacts/experiments/20261104_p1f21/run.py": "5998fb67b3b6b938967aa7d14114a79992ae534f20f223a7610c276a2e6037ac",
+    "artifacts/experiments/20261104_p1f21/train_p1f21.py": "818cbded3672f422bd656bfa847cfdeac0d8e8b176b9280d56e6428c7b66bee8",
+    "artifacts/experiments/20261104_p1f21/union.py": "47521bca53ba91348a9d8fb4b193151c65f238de7c161cfd851c02da14eac8e9",
+    "artifacts/experiments/20261104_p1f21/checks.py": "7412c60206503c8502204869a2352555dacd9cdabe4b2fd61653526a3d8212fb",
+    "artifacts/experiments/20261104_p1f22/pin_sources.py": "15b1e7d1793997e9d9584d43acb72d9e1d04d32b0e062eb429c27e5811f15352",
+    "artifacts/experiments/20261104_p1f22/run.py": "2766dcb1a931b99fd06a2c340a6cb73c4c8b66b35a594997ae8c607acafeca23",
+    "artifacts/experiments/20261104_p1f22/train_p1f22.py": "ff8976ade4f445671082adf3ac1ef229ec655cac756ad0a9c71a310454c57533",
+    "artifacts/experiments/20261104_p1f22/checks.py": "f3d7bb9af6aa42f008a990a2a1dacdf8d42b5cea43f89f9a422652fa95d92f7d",
+    "artifacts/experiments/20261104_f2_train_dev/train_dev.py": "afe9fba953112122d2734fd13f7c3834622277041050425512598cc03103c9f1"
+  }
+}

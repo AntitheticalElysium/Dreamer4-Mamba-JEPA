@@ -1,0 +1,125 @@
+{
+  "passed": true,
+  "learned_resume": {
+    "model": true,
+    "streams": true,
+    "carry": true,
+    "cache": true,
+    "state": true,
+    "rng": true,
+    "fixation_controller": true,
+    "gaze_bytes": true
+  },
+  "learned_resume_optimizer_max_abs": 1.4210854715202004e-14,
+  "sustained64": {
+    "updates": 200,
+    "last": {
+      "update": 200,
+      "frames": 204800,
+      "steps": 64,
+      "lr": 1.9900000000000003e-05,
+      "grad_norm": 1.1575926542282104,
+      "sigma": [
+        1.001901388168335,
+        1.0018506050109863,
+        1.0007920265197754
+      ],
+      "g1": 0.6508375406265259,
+      "change": 0.12068849056959152,
+      "tsp": 0.26036199927330017,
+      "rec": 0.30394038558006287,
+      "reward": 0.36803582310676575,
+      "cont": 0.019348738715052605,
+      "noise": 11.26810073852539,
+      "sec_per_update": 1.7798642921447754,
+      "peak_gib": 4.296045303344727
+    },
+    "head_updates": 200,
+    "head_loss": 0.0067572505213320255,
+    "gaze_changed_fraction": 0.977060546875,
+    "mean_final_half_sec_per_update": 1.787545097351074
+  },
+  "monitor": {
+    "g1": 0.6459311842918396,
+    "g1_by_level": [
+      1.0354355573654175,
+      0.9544637203216553,
+      0.8795425891876221,
+      0.7718682885169983,
+      0.6204583048820496,
+      0.43906477093696594,
+      0.2673308551311493,
+      0.19928529858589172
+    ],
+    "levels": [
+      0.10635799169540405,
+      0.23117601871490479,
+      0.3728676438331604,
+      0.5550079345703125,
+      0.8095901012420654,
+      1.2050628662109375,
+      1.9436661005020142,
+      4.224684715270996
+    ],
+    "periphery_effective_rank": 2.6836862564086914,
+    "windows": 2000,
+    "raw_token_statistics": {
+      "lighting": {
+        "tokens": 122520,
+        "mean_channel_std": 0.01487972613820678,
+        "rms": 0.07579325376650765
+      },
+      "periphery": {
+        "tokens": 9924120,
+        "mean_channel_std": 0.015807569460634698,
+        "rms": 0.055694911020145114
+      },
+      "fovea": {
+        "tokens": 1102680,
+        "mean_channel_std": 0.007057185316573147,
+        "rms": 0.026011286705773264
+      }
+    }
+  },
+  "trained_frames_by_source": {
+    "artifacts/craftax_coverage_v1": 0.42822390382864584,
+    "artifacts/craftax_risk_v1": 0.29614492271245507,
+    "artifacts/craftax_support_v2": 0.2756311734588991
+  },
+  "union_frame_share_by_source": {
+    "artifacts/craftax_coverage_v1": 0.4156072241668475,
+    "artifacts/craftax_risk_v1": 0.3113990571287172,
+    "artifacts/craftax_support_v2": 0.2729937187044354
+  },
+  "trace_rows": 204302,
+  "phase256": {
+    "updates": 3,
+    "last": {
+      "update": 3,
+      "frames": 12288,
+      "steps": 256,
+      "lr": 8.000000000000001e-07,
+      "grad_norm": 6.467071533203125,
+      "sigma": [
+        1.0000011920928955,
+        1.0000011920928955,
+        1.0000011920928955
+      ],
+      "g1": 0.9449006468057632,
+      "change": 0.6866098791360855,
+      "tsp": 0.37713534384965897,
+      "rec": 0.3763764202594757,
+      "reward": 5.602861166000366,
+      "cont": 0.6789800822734833,
+      "noise": 11.416445016860962,
+      "sec_per_update": 6.499286413192749,
+      "peak_gib": 4.296045303344727
+    },
+    "head_updates": 12,
+    "head_loss": 0.02243323577567935,
+    "gaze_changed_fraction": 0.9752604166666666,
+    "mean_final_half_sec_per_update": 6.51073431968689
+  },
+  "elapsed_seconds": 731.1887404918671,
+  "peak_gib": 4.296045303344727
+}

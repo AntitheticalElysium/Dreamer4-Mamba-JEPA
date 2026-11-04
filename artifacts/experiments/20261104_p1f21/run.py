@@ -1,6 +1,6 @@
-"""One-shot worker for an F2 arm (F2.1 here; F2.2 calls main with its own launcher; launch requires user approval
-after review): preflight gates -> training -> F2's fixed checkpoint rule. Stops there: the evaluation queue (against
-F2) is written and reviewed while it trains."""
+"""One-shot worker: preflight gates -> training -> F2's fixed checkpoint rule -> evaluation.
+F2.2 can reuse the worker with no evaluation module; it remains deferred.
+"""
 import os
 os.environ.setdefault('JAX_PLATFORMS', 'cpu')
 os.environ.setdefault('PYTORCH_CUDA_ALLOC_CONF', 'expandable_segments:True')
@@ -52,10 +52,13 @@ def select(L, run):
     chosen = run / f"ckpt_{decision['checkpoint']:02d}.pt"
     decision.update(checkpoint_path=str(chosen), checkpoint_sha256=TR.file_sha256(chosen), selected_at=now())
     write(run / 'selection.json', decision)
+    (run / 's1').mkdir(exist_ok=True)
+    write(run / 's1/selection.json', decision)
     return decision
 
 
-def main(L=L, here=HERE, module='artifacts.experiments.20261104_p1f21.train_p1f21', gates=('union_checks.json', 'checks.json')):
+def main(L=L, here=HERE, module='artifacts.experiments.20261104_p1f21.train_p1f21', gates=('union_checks.json', 'checks.json', 'eval_checks.json'),
+         evaluation_module=None):
     assert os.environ.get('MAMBA_DETERMINISTIC') == '1'
     validate_sources(here); run = here / 'run'
     for gate in gates:
@@ -72,10 +75,17 @@ def main(L=L, here=HERE, module='artifacts.experiments.20261104_p1f21.train_p1f2
                            cwd=TR.ROOT, stdout=log, stderr=subprocess.STDOUT, check=True)
         validate_sources(here)
         state.update(phase='trained', training_completed_at=now(), selection=select(L, run)); write(status, state)
+        if evaluation_module:
+            state.update(phase='evaluation', evaluation_started_at=now()); write(status, state)
+            with open(here / 'evaluation.log', 'a') as log:
+                subprocess.run([sys.executable, '-u', '-m', evaluation_module, state['selection']['checkpoint_path']],
+                               cwd=TR.ROOT, stdout=log, stderr=subprocess.STDOUT, check=True)
+            validate_sources(here)
+            state.update(phase='complete', evaluation_completed_at=now()); write(status, state)
     except BaseException as e:
         state.update(failed_phase=state['phase'], phase='failed', failed_at=now(), error=repr(e))
         write(status, state); traceback.print_exc(); raise
 
 
 if __name__ == '__main__':
-    main()
+    main(evaluation_module='artifacts.experiments.20261104_p1f21.evaluation')

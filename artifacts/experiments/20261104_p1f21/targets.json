@@ -1,0 +1,59 @@
+{
+ "teacher_sha256": "69862f6b98e3ba770395d07bdb516c2cc0e326917c0f848c4a8aedadd109406f",
+ "original_targets_sha256": "f1a79ed7dba730db02b5efb537cc8f44fd580406c2da7894005b4e3e84c87b97",
+ "original_train_episodes": 7672,
+ "new_train_episodes": 14595,
+ "frames": 8937169,
+ "parts": 5,
+ "reproduction": [
+  {
+   "episode": 0,
+   "bitwise": true
+  },
+  {
+   "episode": 697,
+   "bitwise": true
+  },
+  {
+   "episode": 1394,
+   "bitwise": true
+  },
+  {
+   "episode": 2092,
+   "bitwise": true
+  },
+  {
+   "episode": 2789,
+   "bitwise": true
+  },
+  {
+   "episode": 3486,
+   "bitwise": true
+  },
+  {
+   "episode": 4184,
+   "bitwise": true
+  },
+  {
+   "episode": 4881,
+   "bitwise": true
+  },
+  {
+   "episode": 5578,
+   "bitwise": true
+  },
+  {
+   "episode": 6276,
+   "bitwise": true
+  },
+  {
+   "episode": 6973,
+   "bitwise": true
+  },
+  {
+   "episode": 7671,
+   "bitwise": true
+  }
+ ],
+ "union_targets_sha256": "fc16f3aa49fc1fc11680a2d30cac512845e766247027bd475baf9ec71407e7a3"
+}

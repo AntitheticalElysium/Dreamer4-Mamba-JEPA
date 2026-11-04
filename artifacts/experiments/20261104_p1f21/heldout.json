@@ -1,0 +1,21 @@
+{
+  "monitor_rule": "sha256(episode_id) % 10000 < 500",
+  "sources": {
+    "coverage": {
+      "file": "artifacts/experiments/20261104_p1f21/heldout_coverage.npz",
+      "sha256": "c82913c6cca4a783a26039a5e07a7528ea838581beaeef4efc411f2ef28f3faf",
+      "manifest_sha256": "6aba94b0624f4dd2f03894a727a8223abd16d56700ae562281e9f3be1c00a3e1",
+      "episodes": 140,
+      "transitions": 168701,
+      "note": "Scheduled-policy ep_eps is NaN; actual t_epsilon and t_exogenous are retained."
+    },
+    "risk": {
+      "file": "artifacts/experiments/20261104_p1f21/heldout_risk.npz",
+      "sha256": "e7495f3992dec642fa38d6c0c519239b7c9af285e027cc7849eda9e0a1be3958",
+      "manifest_sha256": "dd5653b2f116b7da89babb06ba9b3abfdbb158a282dc17aeb3132e769ed1de14",
+      "episodes": 625,
+      "transitions": 142840,
+      "note": "Scheduled-policy ep_eps is NaN; actual t_epsilon and t_exogenous are retained."
+    }
+  }
+}

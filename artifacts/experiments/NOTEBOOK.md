@@ -15056,3 +15056,66 @@ No claim that new data repairs native fine use, sampler, or P2 self-feeding.
 Recommend data-only3x3 comparison preserving F2 recipe;2x2 remains separate.
 Original monitor/evaluation should remain visible; new heldout strata reported
 separately rather than silently changing checkpoint selection.
+
+## 2026-11-04 — F2.1 diversity / F2.2 acuity preparation review
+
+User requested both arms reviewed and interpretation of train/dev diagnosis.
+Snapshot review in `20261104_p1f21_22_review/RESULTS.md`; CPU tests57passed,
+6CUDA-skipped. No arm/shared code edited; Claude's GPU and CPU jobs untouched.
+Independent CPU checks verify config deltas and the1,060-shard union's order,
+paths and declared source hashes. Original monitor retained by code; new monitors
+held out; frozen change teacher and bitwise old-target preservation reviewed.
+Runtime full union/target/GPU gates still required while build continues.
+
+Concrete2x2 findings: smaller first-layer draw shifts149 common-shape tensors,
+11,106,248 initial values, and post-init RNG; avoidable confound for one seed.
+Generated101-file source seal omits imported F2.1 run/checks/pin_sources helpers.
+Both workers stop after training/selection; automatic evaluation still unbuilt.
+
+Scientific qualification:2x2 classifier recall drop is not universal coarse/
+history information absence. Old58-scene panel remains descriptive unless
+fine cue, baseline miss, acquisition and native prediction prerequisites are
+qualified. Current-query gaze sensitivity alone is not a fine-use criterion:
+physical outcome marginals should be invariant to sensor choice for fixed prior
+belief/action; useful past real glimpses can change later belief/forecasts.
+Do not count a new query shortcut as repair or a null as architectural impossibility.
+
+Train/dev raw values verified: coal22.41/24.37%,iron7.23/9.18%,riskdeath1.00/1.27%,
+adjacentdamage1.05/1.23%. Shows generation deficiency on seen physical histories,
+not just held-out failure, but is not a measurement of native training-objective
+fit or a mixer/Mamba/sampler localization. Random-gaze training-history caveat
+retained. Closure1/3 is an operational large-train-advantage threshold; ratio CI
+propagation incomplete, but conservative local sensitivity stillupper<.063 for
+all4 primaries. More distinct data helping would NOT contradict these readings;
+the diversity plan's exclusion of those four classes is unsupported. Learning
+pressure/exposure, missing contexts and generalization are not exhaustive disjoint
+causes. Report all classes; no training launch or repair follows this audit.
+
+## 2026-11-04 — P1-F2.1 diversity arm authorized; launch repairs and qualification
+
+User selected the diversity arm, explicitly deferred 2x2, and authorized fixes,
+commit, watching data completion, launch and automatic evaluation. Architecture,
+3x3 acuity, faithful losses, original learned-gaze policy, optimizer, seed1,
+25.6M-frame budget and checkpoint rule remain F2's. Raw union increases distinct
+instances, not fixed-budget exposure to every rare failure.
+
+Adopted and inspected Claude's completed union assembly/verification and single
+GPU preflight (f21-checks); redundant/obsolete supervisors stopped, required
+workers preserved. All1060 shard hashes passed, original targets copied bitwise,
+12/12 teacher reproduction episodes exact. New teacher targets cover8937169
+emitted frames. Union train22267episodes/8914902transitions; original monitor
+unchanged. GPU actual-path resume exact except optimizer1.42e-14;200 short-chunk
+updates plus3 long-chunk updates, full2000-window monitor finite; peak4.296GiB.
+
+Fixed selected arm's missing post-training evaluation: explicit selected path,
+per-stage logs/failure status, output-isolated usual F2 battery, own closed-loop
+query-gaze interfaces on olddev and newheldout coverage/risk separately. New
+sidecar labels140coverage/625risk episodes built before launch, training exclusion
+and sampled actions/rewards/terminations verified. Closed-loop uses generated
+coarse evidence, not recorded successor outcomes. Same-F2-vs-itself GPU smoke on
+all3 distributions gives zero paired differences; actualunion checkpoint also
+passes new-heldout smoke. CPU suite61passed/6CUDA-skipped;4new launch/split tests.
+Sources/inputs sealed including shared helpers and immutable baseline inputs.
+Corrected PLAN's unsupported claim that diversity helping four primaries would
+contradict train/dev evidence. No claim that this run repairs fine-information
+use, and no P2/P3 launch. See20261104_p1f21/CHECKS.md and raw JSON gates.

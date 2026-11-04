@@ -171,6 +171,11 @@ def verify():
         tg = np.load(TARGETS / "change_targets.npy", mmap_mode="r")
         res["targets_shape_matches"] = tg.shape == (int(D.frame_offsets(s["train"])[-1]), 7, D.GRID)
         res["targets_sha256_matches_build"] = TR.file_sha256(TARGETS / "change_targets.npy") == t["union_targets_sha256"]
+        cut = int(D.frame_offsets(s["train"])[k])                        # content: every 97th frame of each block
+        blocks = {"original": np.asarray(tg[:cut:97], np.float32), "new": np.asarray(tg[cut::97], np.float32)}
+        res["targets_defined_share"] = {b: float(np.isfinite(x).mean()) for b, x in blocks.items()}
+        res["targets_mean_change_probability"] = {b: float(np.nanmean(x)) for b, x in blocks.items()}
+        res["targets_new_defined_share_within_0.05"] = abs(res["targets_defined_share"]["new"] - res["targets_defined_share"]["original"]) < .05
     res["passed"] = all(v for k_, v in res.items() if isinstance(v, bool)) and not bad and t is not None
     (HERE / "union_checks.json").write_text(json.dumps(res, indent=1) + "\n")
     print("verify", json.dumps(res), flush=True)

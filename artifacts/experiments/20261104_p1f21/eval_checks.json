@@ -1,0 +1,41 @@
+{
+  "passed": true,
+  "cpu_tests": {
+    "passed": 61,
+    "cuda_skipped": 6,
+    "log_sha256": "7b9df836c00d45cce5b0112df20fdf8a33f4c8700c09891a1dfca3899c46a42a"
+  },
+  "evaluation_commands": 20,
+  "identical_F2_checkpoint_max_paired_difference": {
+    "dev": 0.0,
+    "coverage": 0.0,
+    "risk": 0.0
+  },
+  "actual_union_checkpoint_on_new_heldout_passed": true,
+  "smoke_episodes_per_source": 2,
+  "smoke_futures_per_class_max": 8,
+  "smoke_log_sha256": "c55b133147c8f23171f75028e1f73319a15417474d6d726171b94b4ce7cef4a7",
+  "smoke_log": [
+    "SMOKE dev",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/mamba_ssm/utils/determinism.py:73: UserWarning: Deterministic mode: set TRITON_CACHE_AUTOTUNING=1 for cached autotuning.",
+    "  warnings.warn(msg)",
+    "encoded 0/2",
+    "encoded 0/2",
+    "IDENTICAL_CHECKPOINT_PAIRED_DIFFERENCE dev 0.0",
+    "SMOKE coverage",
+    "encoded 0/2",
+    "encoded 0/2",
+    "IDENTICAL_CHECKPOINT_PAIRED_DIFFERENCE coverage 0.0",
+    "SMOKE risk",
+    "encoded 0/2",
+    "encoded 0/2",
+    "IDENTICAL_CHECKPOINT_PAIRED_DIFFERENCE risk 0.0",
+    "ACTUAL_UNION_CHECKPOINT_SMOKE",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/lib/python3.12/site-packages/mamba_ssm/utils/determinism.py:73: UserWarning: Deterministic mode: set TRITON_CACHE_AUTOTUNING=1 for cached autotuning.",
+    "  warnings.warn(msg)",
+    "encoded 0/2",
+    "encoded 0/2",
+    "ACTUAL_UNION_CHECKPOINT_SMOKE_PASSED"
+  ],
+  "limits": "Bounded execution/provenance checks, not scientific competence readings. Full battery queued after unchanged selection."
+}
