@@ -1,0 +1,8 @@
+{
+  "checkpoint_sha256": "34bda77fe5ec5226c4f003301c972d918e2d4a4a554a5a6f279fcabbe922b045",
+  "script_sha256": "731e0727a775bf27b2ed0b9c073c674469e04ee91f43b04ab28c4395feaacf72",
+  "output_sha256": {
+    "counters": "0ca2225ec494d192a18bb2d71e6bd11e6da573b1375d1d71dd267efe0e64cc6b",
+    "noop_counters": "6682bf39c08c1773149f7b5ea00ae2f0599407bf94ada9fce7242b261da73ef7"
+  }
+}

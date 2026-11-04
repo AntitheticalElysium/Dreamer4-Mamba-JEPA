@@ -1,0 +1,7 @@
+# run checkpoints, raw arrays, logs and the live status file stay out; JSON / text outputs are committed (as P1-F1.5)
+*.pt
+*.npz
+__pycache__/
+*.log
+STATUS.json
+source_snapshot.tar.gz

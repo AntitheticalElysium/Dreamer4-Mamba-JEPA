@@ -176,6 +176,22 @@ class FunctionalMamba2(nn.Module):
             return torch.stack(outputs, 1), state
 
 
+class SpatialFusion(nn.Module):
+    """Joint coarse/fine evidence in crop coordinates; replaces the raw fine-to-belief path."""
+
+    def __init__(self, periphery_dim, fine_dim, lighting_dim, hidden, clamp):
+        super().__init__()
+        self.net = nn.Sequential(nn.Linear(periphery_dim + fine_dim + lighting_dim, hidden), nn.GELU(),
+                                 nn.Linear(hidden, fine_dim))
+        self.clamp = clamp
+
+    def forward(self, P: Percept, cells: Tensor) -> Tensor:
+        index = cells[..., None].expand(*cells.shape, P.p.shape[-1])
+        coarse = P.p.gather(-2, index)
+        light = P.v.unsqueeze(-2).expand(*P.g.shape[:-1], P.v.shape[-1])
+        return out_map(self.net(torch.cat([coarse, P.g, light], -1)), self.clamp)
+
+
 class Belief(nn.Module):
     """Mamba over the interleaved sequence [percept_t + reward + termination], [a_t] (STEP_SPEC 7). The output after
     the percept token is the corrected belief b_t (what the actor reads); after the action token, the predicted belief
@@ -195,13 +211,23 @@ class Belief(nn.Module):
         self.mixers = nn.ModuleList([FunctionalMamba2(b) for _ in range(b["layers"])])
         self.final_norm = nn.RMSNorm(W, eps=b["norm_eps"])
         self.memory_out = nn.Linear(W, self.K * Wd)
+        self.spatial_fusion = None
+        if fusion := b.get("spatial_fusion"):
+            if fusion["kind"] != "joint_fine":
+                raise ValueError("Unknown spatial fusion kind")
+            # Independent CPU initialization preserves all legacy parameter draws and the training RNG stream.
+            with torch.random.fork_rng(devices=[]):
+                torch.random.default_generator.manual_seed(fusion["init_seed"])
+                self.spatial_fusion = SpatialFusion(pc["periphery"]["token_dim"], pc["fovea"]["token_dim"],
+                                                    pc["lighting"]["dim"], fusion["hidden"], pc["periphery"]["tanh_clamp"])
 
     def initial(self, batch: int, device=None):
         return tuple(m.initial(batch, device) for m in self.mixers)
 
     def percept_embed(self, P: Percept) -> Tensor:
         cells = window(P.fix)
-        canvas = P.g.new_zeros(*P.g.shape[:-2], N, P.g.shape[-1]).scatter(-2, cells[..., None].expand_as(P.g), P.g)
+        fine = P.g if self.spatial_fusion is None else self.spatial_fusion(P, cells)
+        canvas = fine.new_zeros(*fine.shape[:-2], N, fine.shape[-1]).scatter(-2, cells[..., None].expand_as(fine), fine)
         mask = P.g.new_zeros(*P.g.shape[:-2], N).scatter(-1, cells, 1.0)
         return self.percept_in(torch.cat([P.p.flatten(-2), canvas.flatten(-2), mask, P.v], -1))
 

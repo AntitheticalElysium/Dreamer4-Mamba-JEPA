@@ -1,0 +1,27 @@
+{
+  "recipe": "P1-F1.5 + mandatory joint64 spatial fusion; from scratch",
+  "world_seed": 1,
+  "fusion": {
+    "kind": "joint_fine",
+    "hidden": 128,
+    "init_seed": 611901
+  },
+  "script_sha256": "5589b8427df43e50186417dd1f7f9792df6eb23f7bcbb451ab154d3d4c5dba66",
+  "mamba_deterministic": true,
+  "cuda_alloc_conf": "expandable_segments:True",
+  "control": {
+    "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261101_p1f15/run/ckpt_10.pt",
+    "sha256": "95fa2cc82cb9dc3cae11cbf9f44f880aff17e250de639911f39d159564978128"
+  },
+  "provenance": {
+    "source_sha256": {
+      "saccade/model.py": "5b63fb341fd5d9d983c2de7ccebcbc04a2e33182c13cc35a12e65c84954c76d3",
+      "saccade/train.py": "3eeda34a11c2c56209a3285c4c42c555a5a5a2eac4fbe5dcaedca7a9c506c850",
+      "saccade/data.py": "d4c865124e0cdf8819fb5cc258d519c5dcfb7ec05985eedcf821e2b632907698",
+      "saccade/m0.yaml": "cfe6adeea4ea3699409c6b441ba588a02724ef056eaf78ef1cbc8fc9b31c7fcb"
+    },
+    "manifest_sha256": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
+    "targets_sha256": "f1a79ed7dba730db02b5efb537cc8f44fd580406c2da7894005b4e3e84c87b97",
+    "torch": "2.13.0+cu130"
+  }
+}
