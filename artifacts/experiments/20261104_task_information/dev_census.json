@@ -1,0 +1,2002 @@
+[
+  {
+    "episode": 0,
+    "frames": 562,
+    "visible_arrows": 20
+  },
+  {
+    "episode": 1,
+    "frames": 454,
+    "visible_arrows": 84
+  },
+  {
+    "episode": 2,
+    "frames": 1011,
+    "visible_arrows": 54
+  },
+  {
+    "episode": 3,
+    "frames": 182,
+    "visible_arrows": 20
+  },
+  {
+    "episode": 4,
+    "frames": 91,
+    "visible_arrows": 15
+  },
+  {
+    "episode": 5,
+    "frames": 84,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 6,
+    "frames": 514,
+    "visible_arrows": 24
+  },
+  {
+    "episode": 7,
+    "frames": 261,
+    "visible_arrows": 22
+  },
+  {
+    "episode": 8,
+    "frames": 840,
+    "visible_arrows": 113
+  },
+  {
+    "episode": 9,
+    "frames": 144,
+    "visible_arrows": 41
+  },
+  {
+    "episode": 10,
+    "frames": 270,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 11,
+    "frames": 251,
+    "visible_arrows": 23
+  },
+  {
+    "episode": 12,
+    "frames": 124,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 13,
+    "frames": 78,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 14,
+    "frames": 164,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 15,
+    "frames": 86,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 16,
+    "frames": 89,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 17,
+    "frames": 1234,
+    "visible_arrows": 221
+  },
+  {
+    "episode": 18,
+    "frames": 1486,
+    "visible_arrows": 66
+  },
+  {
+    "episode": 19,
+    "frames": 112,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 20,
+    "frames": 788,
+    "visible_arrows": 153
+  },
+  {
+    "episode": 21,
+    "frames": 399,
+    "visible_arrows": 13
+  },
+  {
+    "episode": 22,
+    "frames": 72,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 23,
+    "frames": 118,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 24,
+    "frames": 285,
+    "visible_arrows": 9
+  },
+  {
+    "episode": 25,
+    "frames": 142,
+    "visible_arrows": 65
+  },
+  {
+    "episode": 26,
+    "frames": 230,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 27,
+    "frames": 118,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 28,
+    "frames": 93,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 29,
+    "frames": 214,
+    "visible_arrows": 23
+  },
+  {
+    "episode": 30,
+    "frames": 64,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 31,
+    "frames": 262,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 32,
+    "frames": 347,
+    "visible_arrows": 20
+  },
+  {
+    "episode": 33,
+    "frames": 272,
+    "visible_arrows": 31
+  },
+  {
+    "episode": 34,
+    "frames": 220,
+    "visible_arrows": 28
+  },
+  {
+    "episode": 35,
+    "frames": 256,
+    "visible_arrows": 16
+  },
+  {
+    "episode": 36,
+    "frames": 531,
+    "visible_arrows": 107
+  },
+  {
+    "episode": 37,
+    "frames": 43,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 38,
+    "frames": 66,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 39,
+    "frames": 90,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 40,
+    "frames": 595,
+    "visible_arrows": 89
+  },
+  {
+    "episode": 41,
+    "frames": 804,
+    "visible_arrows": 66
+  },
+  {
+    "episode": 42,
+    "frames": 403,
+    "visible_arrows": 24
+  },
+  {
+    "episode": 43,
+    "frames": 436,
+    "visible_arrows": 60
+  },
+  {
+    "episode": 44,
+    "frames": 270,
+    "visible_arrows": 58
+  },
+  {
+    "episode": 45,
+    "frames": 247,
+    "visible_arrows": 5
+  },
+  {
+    "episode": 46,
+    "frames": 305,
+    "visible_arrows": 84
+  },
+  {
+    "episode": 47,
+    "frames": 216,
+    "visible_arrows": 17
+  },
+  {
+    "episode": 48,
+    "frames": 60,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 49,
+    "frames": 98,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 50,
+    "frames": 102,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 51,
+    "frames": 525,
+    "visible_arrows": 69
+  },
+  {
+    "episode": 52,
+    "frames": 767,
+    "visible_arrows": 54
+  },
+  {
+    "episode": 53,
+    "frames": 582,
+    "visible_arrows": 21
+  },
+  {
+    "episode": 54,
+    "frames": 43,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 55,
+    "frames": 187,
+    "visible_arrows": 8
+  },
+  {
+    "episode": 56,
+    "frames": 185,
+    "visible_arrows": 28
+  },
+  {
+    "episode": 57,
+    "frames": 102,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 58,
+    "frames": 130,
+    "visible_arrows": 15
+  },
+  {
+    "episode": 59,
+    "frames": 98,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 60,
+    "frames": 810,
+    "visible_arrows": 93
+  },
+  {
+    "episode": 61,
+    "frames": 352,
+    "visible_arrows": 14
+  },
+  {
+    "episode": 62,
+    "frames": 815,
+    "visible_arrows": 152
+  },
+  {
+    "episode": 63,
+    "frames": 831,
+    "visible_arrows": 157
+  },
+  {
+    "episode": 64,
+    "frames": 214,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 65,
+    "frames": 239,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 66,
+    "frames": 118,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 67,
+    "frames": 222,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 68,
+    "frames": 247,
+    "visible_arrows": 6
+  },
+  {
+    "episode": 69,
+    "frames": 295,
+    "visible_arrows": 15
+  },
+  {
+    "episode": 70,
+    "frames": 276,
+    "visible_arrows": 3
+  },
+  {
+    "episode": 71,
+    "frames": 387,
+    "visible_arrows": 55
+  },
+  {
+    "episode": 72,
+    "frames": 162,
+    "visible_arrows": 24
+  },
+  {
+    "episode": 73,
+    "frames": 311,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 74,
+    "frames": 153,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 75,
+    "frames": 242,
+    "visible_arrows": 73
+  },
+  {
+    "episode": 76,
+    "frames": 241,
+    "visible_arrows": 26
+  },
+  {
+    "episode": 77,
+    "frames": 287,
+    "visible_arrows": 29
+  },
+  {
+    "episode": 78,
+    "frames": 175,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 79,
+    "frames": 60,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 80,
+    "frames": 148,
+    "visible_arrows": 2
+  },
+  {
+    "episode": 81,
+    "frames": 137,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 82,
+    "frames": 150,
+    "visible_arrows": 2
+  },
+  {
+    "episode": 83,
+    "frames": 142,
+    "visible_arrows": 10
+  },
+  {
+    "episode": 84,
+    "frames": 409,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 85,
+    "frames": 138,
+    "visible_arrows": 3
+  },
+  {
+    "episode": 86,
+    "frames": 204,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 87,
+    "frames": 217,
+    "visible_arrows": 23
+  },
+  {
+    "episode": 88,
+    "frames": 137,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 89,
+    "frames": 281,
+    "visible_arrows": 3
+  },
+  {
+    "episode": 90,
+    "frames": 126,
+    "visible_arrows": 20
+  },
+  {
+    "episode": 91,
+    "frames": 55,
+    "visible_arrows": 3
+  },
+  {
+    "episode": 92,
+    "frames": 45,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 93,
+    "frames": 1652,
+    "visible_arrows": 280
+  },
+  {
+    "episode": 94,
+    "frames": 640,
+    "visible_arrows": 79
+  },
+  {
+    "episode": 95,
+    "frames": 2482,
+    "visible_arrows": 389
+  },
+  {
+    "episode": 96,
+    "frames": 253,
+    "visible_arrows": 28
+  },
+  {
+    "episode": 97,
+    "frames": 153,
+    "visible_arrows": 22
+  },
+  {
+    "episode": 98,
+    "frames": 274,
+    "visible_arrows": 32
+  },
+  {
+    "episode": 99,
+    "frames": 1077,
+    "visible_arrows": 106
+  },
+  {
+    "episode": 100,
+    "frames": 205,
+    "visible_arrows": 9
+  },
+  {
+    "episode": 101,
+    "frames": 65,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 102,
+    "frames": 464,
+    "visible_arrows": 28
+  },
+  {
+    "episode": 103,
+    "frames": 46,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 104,
+    "frames": 152,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 105,
+    "frames": 156,
+    "visible_arrows": 27
+  },
+  {
+    "episode": 106,
+    "frames": 97,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 107,
+    "frames": 131,
+    "visible_arrows": 8
+  },
+  {
+    "episode": 108,
+    "frames": 136,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 109,
+    "frames": 207,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 110,
+    "frames": 278,
+    "visible_arrows": 65
+  },
+  {
+    "episode": 111,
+    "frames": 348,
+    "visible_arrows": 45
+  },
+  {
+    "episode": 112,
+    "frames": 182,
+    "visible_arrows": 31
+  },
+  {
+    "episode": 113,
+    "frames": 64,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 114,
+    "frames": 218,
+    "visible_arrows": 19
+  },
+  {
+    "episode": 115,
+    "frames": 1076,
+    "visible_arrows": 117
+  },
+  {
+    "episode": 116,
+    "frames": 1792,
+    "visible_arrows": 127
+  },
+  {
+    "episode": 117,
+    "frames": 529,
+    "visible_arrows": 70
+  },
+  {
+    "episode": 118,
+    "frames": 221,
+    "visible_arrows": 80
+  },
+  {
+    "episode": 119,
+    "frames": 42,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 120,
+    "frames": 59,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 121,
+    "frames": 481,
+    "visible_arrows": 26
+  },
+  {
+    "episode": 122,
+    "frames": 1269,
+    "visible_arrows": 116
+  },
+  {
+    "episode": 123,
+    "frames": 436,
+    "visible_arrows": 33
+  },
+  {
+    "episode": 124,
+    "frames": 234,
+    "visible_arrows": 11
+  },
+  {
+    "episode": 125,
+    "frames": 892,
+    "visible_arrows": 88
+  },
+  {
+    "episode": 126,
+    "frames": 221,
+    "visible_arrows": 27
+  },
+  {
+    "episode": 127,
+    "frames": 224,
+    "visible_arrows": 2
+  },
+  {
+    "episode": 128,
+    "frames": 187,
+    "visible_arrows": 65
+  },
+  {
+    "episode": 129,
+    "frames": 169,
+    "visible_arrows": 9
+  },
+  {
+    "episode": 130,
+    "frames": 93,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 131,
+    "frames": 2500,
+    "visible_arrows": 305
+  },
+  {
+    "episode": 132,
+    "frames": 611,
+    "visible_arrows": 77
+  },
+  {
+    "episode": 133,
+    "frames": 189,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 134,
+    "frames": 133,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 135,
+    "frames": 155,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 136,
+    "frames": 148,
+    "visible_arrows": 77
+  },
+  {
+    "episode": 137,
+    "frames": 212,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 138,
+    "frames": 89,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 139,
+    "frames": 239,
+    "visible_arrows": 15
+  },
+  {
+    "episode": 140,
+    "frames": 296,
+    "visible_arrows": 43
+  },
+  {
+    "episode": 141,
+    "frames": 294,
+    "visible_arrows": 15
+  },
+  {
+    "episode": 142,
+    "frames": 206,
+    "visible_arrows": 6
+  },
+  {
+    "episode": 143,
+    "frames": 222,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 144,
+    "frames": 148,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 145,
+    "frames": 49,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 146,
+    "frames": 81,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 147,
+    "frames": 1520,
+    "visible_arrows": 154
+  },
+  {
+    "episode": 148,
+    "frames": 180,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 149,
+    "frames": 319,
+    "visible_arrows": 22
+  },
+  {
+    "episode": 150,
+    "frames": 134,
+    "visible_arrows": 24
+  },
+  {
+    "episode": 151,
+    "frames": 229,
+    "visible_arrows": 6
+  },
+  {
+    "episode": 152,
+    "frames": 107,
+    "visible_arrows": 22
+  },
+  {
+    "episode": 153,
+    "frames": 402,
+    "visible_arrows": 68
+  },
+  {
+    "episode": 154,
+    "frames": 216,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 155,
+    "frames": 553,
+    "visible_arrows": 95
+  },
+  {
+    "episode": 156,
+    "frames": 188,
+    "visible_arrows": 13
+  },
+  {
+    "episode": 157,
+    "frames": 227,
+    "visible_arrows": 42
+  },
+  {
+    "episode": 158,
+    "frames": 255,
+    "visible_arrows": 17
+  },
+  {
+    "episode": 159,
+    "frames": 172,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 160,
+    "frames": 103,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 161,
+    "frames": 149,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 162,
+    "frames": 389,
+    "visible_arrows": 25
+  },
+  {
+    "episode": 163,
+    "frames": 389,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 164,
+    "frames": 177,
+    "visible_arrows": 27
+  },
+  {
+    "episode": 165,
+    "frames": 375,
+    "visible_arrows": 51
+  },
+  {
+    "episode": 166,
+    "frames": 254,
+    "visible_arrows": 46
+  },
+  {
+    "episode": 167,
+    "frames": 198,
+    "visible_arrows": 13
+  },
+  {
+    "episode": 168,
+    "frames": 92,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 169,
+    "frames": 40,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 170,
+    "frames": 143,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 171,
+    "frames": 221,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 172,
+    "frames": 1745,
+    "visible_arrows": 218
+  },
+  {
+    "episode": 173,
+    "frames": 248,
+    "visible_arrows": 19
+  },
+  {
+    "episode": 174,
+    "frames": 930,
+    "visible_arrows": 75
+  },
+  {
+    "episode": 175,
+    "frames": 179,
+    "visible_arrows": 5
+  },
+  {
+    "episode": 176,
+    "frames": 78,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 177,
+    "frames": 256,
+    "visible_arrows": 35
+  },
+  {
+    "episode": 178,
+    "frames": 224,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 179,
+    "frames": 48,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 180,
+    "frames": 193,
+    "visible_arrows": 3
+  },
+  {
+    "episode": 181,
+    "frames": 109,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 182,
+    "frames": 166,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 183,
+    "frames": 82,
+    "visible_arrows": 18
+  },
+  {
+    "episode": 184,
+    "frames": 127,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 185,
+    "frames": 235,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 186,
+    "frames": 609,
+    "visible_arrows": 46
+  },
+  {
+    "episode": 187,
+    "frames": 173,
+    "visible_arrows": 22
+  },
+  {
+    "episode": 188,
+    "frames": 257,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 189,
+    "frames": 87,
+    "visible_arrows": 16
+  },
+  {
+    "episode": 190,
+    "frames": 205,
+    "visible_arrows": 25
+  },
+  {
+    "episode": 191,
+    "frames": 229,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 192,
+    "frames": 207,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 193,
+    "frames": 78,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 194,
+    "frames": 82,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 195,
+    "frames": 47,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 196,
+    "frames": 159,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 197,
+    "frames": 241,
+    "visible_arrows": 29
+  },
+  {
+    "episode": 198,
+    "frames": 252,
+    "visible_arrows": 40
+  },
+  {
+    "episode": 199,
+    "frames": 263,
+    "visible_arrows": 62
+  },
+  {
+    "episode": 200,
+    "frames": 348,
+    "visible_arrows": 47
+  },
+  {
+    "episode": 201,
+    "frames": 77,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 202,
+    "frames": 221,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 203,
+    "frames": 139,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 204,
+    "frames": 88,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 205,
+    "frames": 238,
+    "visible_arrows": 71
+  },
+  {
+    "episode": 206,
+    "frames": 125,
+    "visible_arrows": 15
+  },
+  {
+    "episode": 207,
+    "frames": 130,
+    "visible_arrows": 6
+  },
+  {
+    "episode": 208,
+    "frames": 501,
+    "visible_arrows": 42
+  },
+  {
+    "episode": 209,
+    "frames": 891,
+    "visible_arrows": 45
+  },
+  {
+    "episode": 210,
+    "frames": 227,
+    "visible_arrows": 11
+  },
+  {
+    "episode": 211,
+    "frames": 81,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 212,
+    "frames": 170,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 213,
+    "frames": 255,
+    "visible_arrows": 15
+  },
+  {
+    "episode": 214,
+    "frames": 205,
+    "visible_arrows": 25
+  },
+  {
+    "episode": 215,
+    "frames": 336,
+    "visible_arrows": 62
+  },
+  {
+    "episode": 216,
+    "frames": 1145,
+    "visible_arrows": 135
+  },
+  {
+    "episode": 217,
+    "frames": 129,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 218,
+    "frames": 295,
+    "visible_arrows": 15
+  },
+  {
+    "episode": 219,
+    "frames": 256,
+    "visible_arrows": 14
+  },
+  {
+    "episode": 220,
+    "frames": 72,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 221,
+    "frames": 87,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 222,
+    "frames": 55,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 223,
+    "frames": 139,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 224,
+    "frames": 184,
+    "visible_arrows": 10
+  },
+  {
+    "episode": 225,
+    "frames": 333,
+    "visible_arrows": 8
+  },
+  {
+    "episode": 226,
+    "frames": 557,
+    "visible_arrows": 52
+  },
+  {
+    "episode": 227,
+    "frames": 69,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 228,
+    "frames": 96,
+    "visible_arrows": 3
+  },
+  {
+    "episode": 229,
+    "frames": 231,
+    "visible_arrows": 17
+  },
+  {
+    "episode": 230,
+    "frames": 126,
+    "visible_arrows": 46
+  },
+  {
+    "episode": 231,
+    "frames": 320,
+    "visible_arrows": 22
+  },
+  {
+    "episode": 232,
+    "frames": 128,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 233,
+    "frames": 220,
+    "visible_arrows": 23
+  },
+  {
+    "episode": 234,
+    "frames": 240,
+    "visible_arrows": 3
+  },
+  {
+    "episode": 235,
+    "frames": 231,
+    "visible_arrows": 18
+  },
+  {
+    "episode": 236,
+    "frames": 192,
+    "visible_arrows": 10
+  },
+  {
+    "episode": 237,
+    "frames": 560,
+    "visible_arrows": 72
+  },
+  {
+    "episode": 238,
+    "frames": 307,
+    "visible_arrows": 42
+  },
+  {
+    "episode": 239,
+    "frames": 456,
+    "visible_arrows": 11
+  },
+  {
+    "episode": 240,
+    "frames": 268,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 241,
+    "frames": 232,
+    "visible_arrows": 55
+  },
+  {
+    "episode": 242,
+    "frames": 210,
+    "visible_arrows": 15
+  },
+  {
+    "episode": 243,
+    "frames": 1348,
+    "visible_arrows": 99
+  },
+  {
+    "episode": 244,
+    "frames": 59,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 245,
+    "frames": 199,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 246,
+    "frames": 215,
+    "visible_arrows": 59
+  },
+  {
+    "episode": 247,
+    "frames": 226,
+    "visible_arrows": 40
+  },
+  {
+    "episode": 248,
+    "frames": 185,
+    "visible_arrows": 12
+  },
+  {
+    "episode": 249,
+    "frames": 190,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 250,
+    "frames": 537,
+    "visible_arrows": 4
+  },
+  {
+    "episode": 251,
+    "frames": 228,
+    "visible_arrows": 61
+  },
+  {
+    "episode": 252,
+    "frames": 222,
+    "visible_arrows": 29
+  },
+  {
+    "episode": 253,
+    "frames": 240,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 254,
+    "frames": 274,
+    "visible_arrows": 55
+  },
+  {
+    "episode": 255,
+    "frames": 109,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 256,
+    "frames": 103,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 257,
+    "frames": 221,
+    "visible_arrows": 41
+  },
+  {
+    "episode": 258,
+    "frames": 340,
+    "visible_arrows": 15
+  },
+  {
+    "episode": 259,
+    "frames": 132,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 260,
+    "frames": 42,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 261,
+    "frames": 112,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 262,
+    "frames": 346,
+    "visible_arrows": 67
+  },
+  {
+    "episode": 263,
+    "frames": 310,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 264,
+    "frames": 1507,
+    "visible_arrows": 178
+  },
+  {
+    "episode": 265,
+    "frames": 560,
+    "visible_arrows": 88
+  },
+  {
+    "episode": 266,
+    "frames": 253,
+    "visible_arrows": 15
+  },
+  {
+    "episode": 267,
+    "frames": 584,
+    "visible_arrows": 49
+  },
+  {
+    "episode": 268,
+    "frames": 69,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 269,
+    "frames": 374,
+    "visible_arrows": 12
+  },
+  {
+    "episode": 270,
+    "frames": 245,
+    "visible_arrows": 6
+  },
+  {
+    "episode": 271,
+    "frames": 127,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 272,
+    "frames": 77,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 273,
+    "frames": 55,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 274,
+    "frames": 162,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 275,
+    "frames": 131,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 276,
+    "frames": 50,
+    "visible_arrows": 16
+  },
+  {
+    "episode": 277,
+    "frames": 265,
+    "visible_arrows": 31
+  },
+  {
+    "episode": 278,
+    "frames": 323,
+    "visible_arrows": 2
+  },
+  {
+    "episode": 279,
+    "frames": 132,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 280,
+    "frames": 342,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 281,
+    "frames": 169,
+    "visible_arrows": 45
+  },
+  {
+    "episode": 282,
+    "frames": 53,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 283,
+    "frames": 185,
+    "visible_arrows": 2
+  },
+  {
+    "episode": 284,
+    "frames": 263,
+    "visible_arrows": 80
+  },
+  {
+    "episode": 285,
+    "frames": 298,
+    "visible_arrows": 67
+  },
+  {
+    "episode": 286,
+    "frames": 190,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 287,
+    "frames": 233,
+    "visible_arrows": 21
+  },
+  {
+    "episode": 288,
+    "frames": 1230,
+    "visible_arrows": 111
+  },
+  {
+    "episode": 289,
+    "frames": 260,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 290,
+    "frames": 314,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 291,
+    "frames": 278,
+    "visible_arrows": 11
+  },
+  {
+    "episode": 292,
+    "frames": 70,
+    "visible_arrows": 2
+  },
+  {
+    "episode": 293,
+    "frames": 344,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 294,
+    "frames": 114,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 295,
+    "frames": 285,
+    "visible_arrows": 11
+  },
+  {
+    "episode": 296,
+    "frames": 254,
+    "visible_arrows": 14
+  },
+  {
+    "episode": 297,
+    "frames": 136,
+    "visible_arrows": 34
+  },
+  {
+    "episode": 298,
+    "frames": 132,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 299,
+    "frames": 273,
+    "visible_arrows": 2
+  },
+  {
+    "episode": 300,
+    "frames": 119,
+    "visible_arrows": 27
+  },
+  {
+    "episode": 301,
+    "frames": 143,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 302,
+    "frames": 46,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 303,
+    "frames": 147,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 304,
+    "frames": 194,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 305,
+    "frames": 40,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 306,
+    "frames": 197,
+    "visible_arrows": 42
+  },
+  {
+    "episode": 307,
+    "frames": 291,
+    "visible_arrows": 9
+  },
+  {
+    "episode": 308,
+    "frames": 557,
+    "visible_arrows": 53
+  },
+  {
+    "episode": 309,
+    "frames": 370,
+    "visible_arrows": 23
+  },
+  {
+    "episode": 310,
+    "frames": 289,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 311,
+    "frames": 38,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 312,
+    "frames": 538,
+    "visible_arrows": 19
+  },
+  {
+    "episode": 313,
+    "frames": 1130,
+    "visible_arrows": 67
+  },
+  {
+    "episode": 314,
+    "frames": 199,
+    "visible_arrows": 7
+  },
+  {
+    "episode": 315,
+    "frames": 627,
+    "visible_arrows": 93
+  },
+  {
+    "episode": 316,
+    "frames": 201,
+    "visible_arrows": 18
+  },
+  {
+    "episode": 317,
+    "frames": 226,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 318,
+    "frames": 212,
+    "visible_arrows": 33
+  },
+  {
+    "episode": 319,
+    "frames": 189,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 320,
+    "frames": 273,
+    "visible_arrows": 95
+  },
+  {
+    "episode": 321,
+    "frames": 256,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 322,
+    "frames": 167,
+    "visible_arrows": 35
+  },
+  {
+    "episode": 323,
+    "frames": 265,
+    "visible_arrows": 30
+  },
+  {
+    "episode": 324,
+    "frames": 2500,
+    "visible_arrows": 427
+  },
+  {
+    "episode": 325,
+    "frames": 202,
+    "visible_arrows": 16
+  },
+  {
+    "episode": 326,
+    "frames": 192,
+    "visible_arrows": 26
+  },
+  {
+    "episode": 327,
+    "frames": 227,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 328,
+    "frames": 189,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 329,
+    "frames": 47,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 330,
+    "frames": 218,
+    "visible_arrows": 81
+  },
+  {
+    "episode": 331,
+    "frames": 230,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 332,
+    "frames": 2500,
+    "visible_arrows": 307
+  },
+  {
+    "episode": 333,
+    "frames": 423,
+    "visible_arrows": 28
+  },
+  {
+    "episode": 334,
+    "frames": 240,
+    "visible_arrows": 56
+  },
+  {
+    "episode": 335,
+    "frames": 249,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 336,
+    "frames": 211,
+    "visible_arrows": 38
+  },
+  {
+    "episode": 337,
+    "frames": 192,
+    "visible_arrows": 2
+  },
+  {
+    "episode": 338,
+    "frames": 104,
+    "visible_arrows": 21
+  },
+  {
+    "episode": 339,
+    "frames": 229,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 340,
+    "frames": 57,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 341,
+    "frames": 215,
+    "visible_arrows": 15
+  },
+  {
+    "episode": 342,
+    "frames": 285,
+    "visible_arrows": 26
+  },
+  {
+    "episode": 343,
+    "frames": 172,
+    "visible_arrows": 10
+  },
+  {
+    "episode": 344,
+    "frames": 220,
+    "visible_arrows": 59
+  },
+  {
+    "episode": 345,
+    "frames": 85,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 346,
+    "frames": 1104,
+    "visible_arrows": 147
+  },
+  {
+    "episode": 347,
+    "frames": 267,
+    "visible_arrows": 17
+  },
+  {
+    "episode": 348,
+    "frames": 352,
+    "visible_arrows": 22
+  },
+  {
+    "episode": 349,
+    "frames": 177,
+    "visible_arrows": 36
+  },
+  {
+    "episode": 350,
+    "frames": 230,
+    "visible_arrows": 6
+  },
+  {
+    "episode": 351,
+    "frames": 81,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 352,
+    "frames": 146,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 353,
+    "frames": 607,
+    "visible_arrows": 83
+  },
+  {
+    "episode": 354,
+    "frames": 2332,
+    "visible_arrows": 475
+  },
+  {
+    "episode": 355,
+    "frames": 140,
+    "visible_arrows": 5
+  },
+  {
+    "episode": 356,
+    "frames": 193,
+    "visible_arrows": 68
+  },
+  {
+    "episode": 357,
+    "frames": 94,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 358,
+    "frames": 59,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 359,
+    "frames": 37,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 360,
+    "frames": 66,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 361,
+    "frames": 201,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 362,
+    "frames": 118,
+    "visible_arrows": 63
+  },
+  {
+    "episode": 363,
+    "frames": 98,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 364,
+    "frames": 496,
+    "visible_arrows": 41
+  },
+  {
+    "episode": 365,
+    "frames": 223,
+    "visible_arrows": 29
+  },
+  {
+    "episode": 366,
+    "frames": 114,
+    "visible_arrows": 41
+  },
+  {
+    "episode": 367,
+    "frames": 347,
+    "visible_arrows": 91
+  },
+  {
+    "episode": 368,
+    "frames": 243,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 369,
+    "frames": 39,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 370,
+    "frames": 106,
+    "visible_arrows": 12
+  },
+  {
+    "episode": 371,
+    "frames": 294,
+    "visible_arrows": 21
+  },
+  {
+    "episode": 372,
+    "frames": 173,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 373,
+    "frames": 2500,
+    "visible_arrows": 208
+  },
+  {
+    "episode": 374,
+    "frames": 2500,
+    "visible_arrows": 367
+  },
+  {
+    "episode": 375,
+    "frames": 511,
+    "visible_arrows": 107
+  },
+  {
+    "episode": 376,
+    "frames": 1819,
+    "visible_arrows": 389
+  },
+  {
+    "episode": 377,
+    "frames": 175,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 378,
+    "frames": 265,
+    "visible_arrows": 9
+  },
+  {
+    "episode": 379,
+    "frames": 391,
+    "visible_arrows": 13
+  },
+  {
+    "episode": 380,
+    "frames": 239,
+    "visible_arrows": 4
+  },
+  {
+    "episode": 381,
+    "frames": 103,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 382,
+    "frames": 115,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 383,
+    "frames": 134,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 384,
+    "frames": 43,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 385,
+    "frames": 52,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 386,
+    "frames": 934,
+    "visible_arrows": 74
+  },
+  {
+    "episode": 387,
+    "frames": 2245,
+    "visible_arrows": 226
+  },
+  {
+    "episode": 388,
+    "frames": 301,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 389,
+    "frames": 270,
+    "visible_arrows": 28
+  },
+  {
+    "episode": 390,
+    "frames": 75,
+    "visible_arrows": 4
+  },
+  {
+    "episode": 391,
+    "frames": 62,
+    "visible_arrows": 6
+  },
+  {
+    "episode": 392,
+    "frames": 194,
+    "visible_arrows": 27
+  },
+  {
+    "episode": 393,
+    "frames": 99,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 394,
+    "frames": 150,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 395,
+    "frames": 170,
+    "visible_arrows": 0
+  },
+  {
+    "episode": 396,
+    "frames": 197,
+    "visible_arrows": 1
+  },
+  {
+    "episode": 397,
+    "frames": 297,
+    "visible_arrows": 25
+  },
+  {
+    "episode": 398,
+    "frames": 386,
+    "visible_arrows": 5
+  },
+  {
+    "episode": 399,
+    "frames": 105,
+    "visible_arrows": 15
+  }
+]

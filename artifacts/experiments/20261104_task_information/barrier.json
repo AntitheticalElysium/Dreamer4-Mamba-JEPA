@@ -1,0 +1,29 @@
+{
+  "episode": 307,
+  "time": 161,
+  "keys": 32,
+  "actions": [
+    4,
+    5,
+    4,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "barrier_opened_both_worlds": true,
+  "health_decrements": [
+    3.4375,
+    0.25
+  ],
+  "reward": [
+    -0.34375,
+    -0.02500000037252903
+  ],
+  "death": [
+    0.0,
+    0.0
+  ]
+}

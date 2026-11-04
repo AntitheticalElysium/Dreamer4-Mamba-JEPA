@@ -1,0 +1,27 @@
+{
+  "0": {
+    "queries": 984707,
+    "night": 328620,
+    "new_night": 0
+  },
+  "1": {
+    "queries": 8115,
+    "night": 4018,
+    "new_night": 122
+  },
+  "2": {
+    "queries": 7692,
+    "night": 2675,
+    "new_night": 119
+  },
+  "3": {
+    "queries": 2538,
+    "night": 995,
+    "new_night": 42
+  },
+  "4": {
+    "queries": 1924,
+    "night": 811,
+    "new_night": 120
+  }
+}

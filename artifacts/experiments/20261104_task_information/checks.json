@@ -1,0 +1,6 @@
+{
+  "current_fine_excluded_from_coarse": true,
+  "episode_padding": true,
+  "extra_gradient_connected": true,
+  "dimension": 34210
+}

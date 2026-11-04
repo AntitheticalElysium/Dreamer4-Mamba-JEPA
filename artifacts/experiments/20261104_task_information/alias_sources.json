@@ -1,0 +1,13002 @@
+[
+  {
+    "episode": 0,
+    "time": 198,
+    "cell": 61,
+    "world": [
+      12,
+      51
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 198,
+    "cell": 62,
+    "world": [
+      12,
+      52
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 200,
+    "cell": 53,
+    "world": [
+      12,
+      53
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 200,
+    "cell": 62,
+    "world": [
+      13,
+      53
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 201,
+    "cell": 53,
+    "world": [
+      12,
+      54
+    ],
+    "kind": 4,
+    "light": 0.013254975900053978,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 201,
+    "cell": 62,
+    "world": [
+      13,
+      54
+    ],
+    "kind": 4,
+    "light": 0.013254975900053978,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 202,
+    "cell": 53,
+    "world": [
+      12,
+      55
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 202,
+    "cell": 62,
+    "world": [
+      13,
+      55
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 203,
+    "cell": 62,
+    "world": [
+      14,
+      55
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 205,
+    "cell": 8,
+    "world": [
+      8,
+      56
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 205,
+    "cell": 17,
+    "world": [
+      9,
+      56
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 205,
+    "cell": 26,
+    "world": [
+      10,
+      56
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 205,
+    "cell": 35,
+    "world": [
+      11,
+      56
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 205,
+    "cell": 44,
+    "world": [
+      12,
+      56
+    ],
+    "kind": 8,
+    "light": 0.0041056289337575436,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 205,
+    "cell": 53,
+    "world": [
+      13,
+      56
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 205,
+    "cell": 62,
+    "world": [
+      14,
+      56
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 209,
+    "cell": 17,
+    "world": [
+      9,
+      57
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 209,
+    "cell": 26,
+    "world": [
+      10,
+      57
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 209,
+    "cell": 35,
+    "world": [
+      11,
+      57
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 209,
+    "cell": 44,
+    "world": [
+      12,
+      57
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 209,
+    "cell": 53,
+    "world": [
+      13,
+      57
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 209,
+    "cell": 62,
+    "world": [
+      14,
+      57
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 210,
+    "cell": 26,
+    "world": [
+      10,
+      58
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 210,
+    "cell": 35,
+    "world": [
+      11,
+      58
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 210,
+    "cell": 44,
+    "world": [
+      12,
+      58
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 210,
+    "cell": 53,
+    "world": [
+      13,
+      58
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 210,
+    "cell": 62,
+    "world": [
+      14,
+      58
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 211,
+    "cell": 17,
+    "world": [
+      9,
+      59
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 211,
+    "cell": 26,
+    "world": [
+      10,
+      59
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 211,
+    "cell": 35,
+    "world": [
+      11,
+      59
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 211,
+    "cell": 44,
+    "world": [
+      12,
+      59
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 211,
+    "cell": 53,
+    "world": [
+      13,
+      59
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 211,
+    "cell": 62,
+    "world": [
+      14,
+      59
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 215,
+    "cell": 60,
+    "world": [
+      15,
+      57
+    ],
+    "kind": 4,
+    "light": 0.00410580774769187,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 215,
+    "cell": 61,
+    "world": [
+      15,
+      58
+    ],
+    "kind": 4,
+    "light": 0.00410580774769187,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 215,
+    "cell": 62,
+    "world": [
+      15,
+      59
+    ],
+    "kind": 4,
+    "light": 0.00410580774769187,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 223,
+    "cell": 8,
+    "world": [
+      12,
+      60
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 223,
+    "cell": 17,
+    "world": [
+      13,
+      60
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 223,
+    "cell": 26,
+    "world": [
+      14,
+      60
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 0,
+    "time": 223,
+    "cell": 35,
+    "world": [
+      15,
+      60
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 0,
+    "slot": 9
+  },
+  {
+    "episode": 1,
+    "time": 190,
+    "cell": 35,
+    "world": [
+      4,
+      36
+    ],
+    "kind": 4,
+    "light": 0.06413495540618896,
+    "shard": 0,
+    "slot": 16
+  },
+  {
+    "episode": 1,
+    "time": 190,
+    "cell": 44,
+    "world": [
+      5,
+      36
+    ],
+    "kind": 4,
+    "light": 0.06413495540618896,
+    "shard": 0,
+    "slot": 16
+  },
+  {
+    "episode": 1,
+    "time": 190,
+    "cell": 62,
+    "world": [
+      7,
+      36
+    ],
+    "kind": 4,
+    "light": 0.06413495540618896,
+    "shard": 0,
+    "slot": 16
+  },
+  {
+    "episode": 1,
+    "time": 221,
+    "cell": 27,
+    "world": [
+      4,
+      16
+    ],
+    "kind": 4,
+    "light": 0.019750306382775307,
+    "shard": 0,
+    "slot": 16
+  },
+  {
+    "episode": 1,
+    "time": 227,
+    "cell": 18,
+    "world": [
+      3,
+      15
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 0,
+    "slot": 16
+  },
+  {
+    "episode": 1,
+    "time": 227,
+    "cell": 27,
+    "world": [
+      4,
+      15
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 0,
+    "slot": 16
+  },
+  {
+    "episode": 1,
+    "time": 227,
+    "cell": 36,
+    "world": [
+      5,
+      15
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 0,
+    "slot": 16
+  },
+  {
+    "episode": 1,
+    "time": 227,
+    "cell": 45,
+    "world": [
+      6,
+      15
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 0,
+    "slot": 16
+  },
+  {
+    "episode": 1,
+    "time": 231,
+    "cell": 27,
+    "world": [
+      2,
+      14
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 0,
+    "slot": 16
+  },
+  {
+    "episode": 1,
+    "time": 231,
+    "cell": 36,
+    "world": [
+      3,
+      14
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 0,
+    "slot": 16
+  },
+  {
+    "episode": 1,
+    "time": 231,
+    "cell": 54,
+    "world": [
+      5,
+      14
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 0,
+    "slot": 16
+  },
+  {
+    "episode": 2,
+    "time": 191,
+    "cell": 44,
+    "world": [
+      20,
+      48
+    ],
+    "kind": 4,
+    "light": 0.058026351034641266,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 191,
+    "cell": 53,
+    "world": [
+      21,
+      48
+    ],
+    "kind": 4,
+    "light": 0.058026351034641266,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 191,
+    "cell": 62,
+    "world": [
+      22,
+      48
+    ],
+    "kind": 8,
+    "light": 0.058026351034641266,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 210,
+    "cell": 53,
+    "world": [
+      16,
+      52
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 210,
+    "cell": 62,
+    "world": [
+      17,
+      52
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 211,
+    "cell": 35,
+    "world": [
+      14,
+      53
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 211,
+    "cell": 44,
+    "world": [
+      15,
+      53
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 211,
+    "cell": 53,
+    "world": [
+      16,
+      53
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 211,
+    "cell": 62,
+    "world": [
+      17,
+      53
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 212,
+    "cell": 26,
+    "world": [
+      13,
+      54
+    ],
+    "kind": 4,
+    "light": 0.0006578794564120471,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 212,
+    "cell": 35,
+    "world": [
+      14,
+      54
+    ],
+    "kind": 8,
+    "light": 0.0006578794564120471,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 212,
+    "cell": 44,
+    "world": [
+      15,
+      54
+    ],
+    "kind": 4,
+    "light": 0.0006578794564120471,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 212,
+    "cell": 53,
+    "world": [
+      16,
+      54
+    ],
+    "kind": 9,
+    "light": 0.0006578794564120471,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 212,
+    "cell": 62,
+    "world": [
+      17,
+      54
+    ],
+    "kind": 4,
+    "light": 0.0006578794564120471,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 213,
+    "cell": 8,
+    "world": [
+      11,
+      55
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 213,
+    "cell": 17,
+    "world": [
+      12,
+      55
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 213,
+    "cell": 26,
+    "world": [
+      13,
+      55
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 213,
+    "cell": 35,
+    "world": [
+      14,
+      55
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 213,
+    "cell": 53,
+    "world": [
+      16,
+      55
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 220,
+    "cell": 58,
+    "world": [
+      18,
+      51
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 220,
+    "cell": 59,
+    "world": [
+      18,
+      52
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 220,
+    "cell": 60,
+    "world": [
+      18,
+      53
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 225,
+    "cell": 8,
+    "world": [
+      13,
+      56
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 225,
+    "cell": 17,
+    "world": [
+      14,
+      56
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 227,
+    "cell": 8,
+    "world": [
+      13,
+      57
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 229,
+    "cell": 8,
+    "world": [
+      13,
+      58
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 229,
+    "cell": 17,
+    "world": [
+      14,
+      58
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 229,
+    "cell": 35,
+    "world": [
+      16,
+      58
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 229,
+    "cell": 44,
+    "world": [
+      17,
+      58
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 229,
+    "cell": 53,
+    "world": [
+      18,
+      58
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 2,
+    "time": 229,
+    "cell": 62,
+    "world": [
+      19,
+      58
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 0,
+    "slot": 18
+  },
+  {
+    "episode": 6,
+    "time": 193,
+    "cell": 0,
+    "world": [
+      45,
+      8
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 4,
+    "slot": 5
+  },
+  {
+    "episode": 6,
+    "time": 193,
+    "cell": 1,
+    "world": [
+      45,
+      9
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 4,
+    "slot": 5
+  },
+  {
+    "episode": 6,
+    "time": 194,
+    "cell": 0,
+    "world": [
+      44,
+      8
+    ],
+    "kind": 4,
+    "light": 0.041426222771406174,
+    "shard": 4,
+    "slot": 5
+  },
+  {
+    "episode": 6,
+    "time": 194,
+    "cell": 1,
+    "world": [
+      44,
+      9
+    ],
+    "kind": 4,
+    "light": 0.041426222771406174,
+    "shard": 4,
+    "slot": 5
+  },
+  {
+    "episode": 6,
+    "time": 195,
+    "cell": 0,
+    "world": [
+      43,
+      8
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 4,
+    "slot": 5
+  },
+  {
+    "episode": 6,
+    "time": 205,
+    "cell": 54,
+    "world": [
+      42,
+      7
+    ],
+    "kind": 9,
+    "light": 0.0041056289337575436,
+    "shard": 4,
+    "slot": 5
+  },
+  {
+    "episode": 6,
+    "time": 216,
+    "cell": 45,
+    "world": [
+      42,
+      6
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 4,
+    "slot": 5
+  },
+  {
+    "episode": 6,
+    "time": 216,
+    "cell": 54,
+    "world": [
+      43,
+      6
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 4,
+    "slot": 5
+  },
+  {
+    "episode": 6,
+    "time": 217,
+    "cell": 45,
+    "world": [
+      42,
+      5
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 4,
+    "slot": 5
+  },
+  {
+    "episode": 6,
+    "time": 217,
+    "cell": 54,
+    "world": [
+      43,
+      5
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 4,
+    "slot": 5
+  },
+  {
+    "episode": 6,
+    "time": 218,
+    "cell": 54,
+    "world": [
+      43,
+      4
+    ],
+    "kind": 8,
+    "light": 0.010484576225280762,
+    "shard": 4,
+    "slot": 5
+  },
+  {
+    "episode": 6,
+    "time": 220,
+    "cell": 55,
+    "world": [
+      44,
+      5
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 4,
+    "slot": 5
+  },
+  {
+    "episode": 6,
+    "time": 220,
+    "cell": 56,
+    "world": [
+      44,
+      6
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 4,
+    "slot": 5
+  },
+  {
+    "episode": 6,
+    "time": 225,
+    "cell": 55,
+    "world": [
+      45,
+      5
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 4,
+    "slot": 5
+  },
+  {
+    "episode": 6,
+    "time": 225,
+    "cell": 56,
+    "world": [
+      45,
+      6
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 4,
+    "slot": 5
+  },
+  {
+    "episode": 6,
+    "time": 228,
+    "cell": 36,
+    "world": [
+      44,
+      3
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 4,
+    "slot": 5
+  },
+  {
+    "episode": 8,
+    "time": 191,
+    "cell": 0,
+    "world": [
+      20,
+      19
+    ],
+    "kind": 4,
+    "light": 0.058026351034641266,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 191,
+    "cell": 1,
+    "world": [
+      20,
+      20
+    ],
+    "kind": 4,
+    "light": 0.058026351034641266,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 193,
+    "cell": 0,
+    "world": [
+      19,
+      19
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 193,
+    "cell": 1,
+    "world": [
+      19,
+      20
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 193,
+    "cell": 2,
+    "world": [
+      19,
+      21
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 193,
+    "cell": 3,
+    "world": [
+      19,
+      22
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 193,
+    "cell": 5,
+    "world": [
+      19,
+      24
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 193,
+    "cell": 6,
+    "world": [
+      19,
+      25
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 193,
+    "cell": 7,
+    "world": [
+      19,
+      26
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 193,
+    "cell": 8,
+    "world": [
+      19,
+      27
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 196,
+    "cell": 0,
+    "world": [
+      19,
+      18
+    ],
+    "kind": 4,
+    "light": 0.031838905066251755,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 196,
+    "cell": 9,
+    "world": [
+      20,
+      18
+    ],
+    "kind": 4,
+    "light": 0.031838905066251755,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 196,
+    "cell": 18,
+    "world": [
+      21,
+      18
+    ],
+    "kind": 4,
+    "light": 0.031838905066251755,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 224,
+    "cell": 54,
+    "world": [
+      33,
+      13
+    ],
+    "kind": 4,
+    "light": 0.03183908015489578,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 225,
+    "cell": 54,
+    "world": [
+      34,
+      13
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 225,
+    "cell": 55,
+    "world": [
+      34,
+      14
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 225,
+    "cell": 56,
+    "world": [
+      34,
+      15
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 226,
+    "cell": 54,
+    "world": [
+      35,
+      13
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 226,
+    "cell": 55,
+    "world": [
+      35,
+      14
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 226,
+    "cell": 56,
+    "world": [
+      35,
+      15
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 226,
+    "cell": 57,
+    "world": [
+      35,
+      16
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 226,
+    "cell": 58,
+    "world": [
+      35,
+      17
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 226,
+    "cell": 59,
+    "world": [
+      35,
+      18
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 227,
+    "cell": 27,
+    "world": [
+      32,
+      12
+    ],
+    "kind": 8,
+    "light": 0.04666764289140701,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 227,
+    "cell": 45,
+    "world": [
+      34,
+      12
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 228,
+    "cell": 18,
+    "world": [
+      31,
+      11
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 228,
+    "cell": 27,
+    "world": [
+      32,
+      11
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 230,
+    "cell": 58,
+    "world": [
+      36,
+      15
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 230,
+    "cell": 59,
+    "world": [
+      36,
+      16
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 230,
+    "cell": 60,
+    "world": [
+      36,
+      17
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 230,
+    "cell": 61,
+    "world": [
+      36,
+      18
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 230,
+    "cell": 62,
+    "world": [
+      36,
+      19
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 231,
+    "cell": 62,
+    "world": [
+      36,
+      20
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 232,
+    "cell": 58,
+    "world": [
+      37,
+      16
+    ],
+    "kind": 4,
+    "light": 0.07718759030103683,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 232,
+    "cell": 59,
+    "world": [
+      37,
+      17
+    ],
+    "kind": 4,
+    "light": 0.07718759030103683,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 232,
+    "cell": 60,
+    "world": [
+      37,
+      18
+    ],
+    "kind": 4,
+    "light": 0.07718759030103683,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 232,
+    "cell": 61,
+    "world": [
+      37,
+      19
+    ],
+    "kind": 4,
+    "light": 0.07718759030103683,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 232,
+    "cell": 62,
+    "world": [
+      37,
+      20
+    ],
+    "kind": 4,
+    "light": 0.07718759030103683,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 489,
+    "cell": 18,
+    "world": [
+      31,
+      9
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 489,
+    "cell": 27,
+    "world": [
+      32,
+      9
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 827,
+    "cell": 54,
+    "world": [
+      44,
+      31
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 827,
+    "cell": 62,
+    "world": [
+      44,
+      39
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 828,
+    "cell": 54,
+    "world": [
+      45,
+      31
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 8,
+    "time": 828,
+    "cell": 62,
+    "world": [
+      45,
+      39
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 4,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 191,
+    "cell": 60,
+    "world": [
+      42,
+      26
+    ],
+    "kind": 4,
+    "light": 0.058026351034641266,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 191,
+    "cell": 61,
+    "world": [
+      42,
+      27
+    ],
+    "kind": 9,
+    "light": 0.058026351034641266,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 191,
+    "cell": 62,
+    "world": [
+      42,
+      28
+    ],
+    "kind": 4,
+    "light": 0.058026351034641266,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 192,
+    "cell": 56,
+    "world": [
+      43,
+      22
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 193,
+    "cell": 54,
+    "world": [
+      44,
+      20
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 193,
+    "cell": 55,
+    "world": [
+      44,
+      21
+    ],
+    "kind": 8,
+    "light": 0.04666764289140701,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 193,
+    "cell": 56,
+    "world": [
+      44,
+      22
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 194,
+    "cell": 54,
+    "world": [
+      45,
+      20
+    ],
+    "kind": 4,
+    "light": 0.041426222771406174,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 194,
+    "cell": 55,
+    "world": [
+      45,
+      21
+    ],
+    "kind": 4,
+    "light": 0.041426222771406174,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 194,
+    "cell": 56,
+    "world": [
+      45,
+      22
+    ],
+    "kind": 4,
+    "light": 0.041426222771406174,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 195,
+    "cell": 35,
+    "world": [
+      42,
+      29
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 197,
+    "cell": 35,
+    "world": [
+      42,
+      30
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 197,
+    "cell": 44,
+    "world": [
+      43,
+      30
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 206,
+    "cell": 35,
+    "world": [
+      42,
+      31
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 206,
+    "cell": 44,
+    "world": [
+      43,
+      31
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 213,
+    "cell": 26,
+    "world": [
+      42,
+      32
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 213,
+    "cell": 35,
+    "world": [
+      43,
+      32
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 213,
+    "cell": 44,
+    "world": [
+      44,
+      32
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 222,
+    "cell": 8,
+    "world": [
+      44,
+      33
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 222,
+    "cell": 17,
+    "world": [
+      45,
+      33
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 226,
+    "cell": 8,
+    "world": [
+      46,
+      34
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 227,
+    "cell": 8,
+    "world": [
+      46,
+      35
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 228,
+    "cell": 7,
+    "world": [
+      45,
+      34
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 228,
+    "cell": 8,
+    "world": [
+      45,
+      35
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 229,
+    "cell": 8,
+    "world": [
+      45,
+      36
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 229,
+    "cell": 17,
+    "world": [
+      46,
+      36
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 229,
+    "cell": 35,
+    "world": [
+      48,
+      36
+    ],
+    "kind": 8,
+    "light": 0.05802669748663902,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 231,
+    "cell": 8,
+    "world": [
+      45,
+      37
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 231,
+    "cell": 17,
+    "world": [
+      46,
+      37
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 231,
+    "cell": 26,
+    "world": [
+      47,
+      37
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 231,
+    "cell": 35,
+    "world": [
+      48,
+      37
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 231,
+    "cell": 44,
+    "world": [
+      49,
+      37
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 231,
+    "cell": 53,
+    "world": [
+      50,
+      37
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 231,
+    "cell": 62,
+    "world": [
+      51,
+      37
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 10,
+    "time": 232,
+    "cell": 62,
+    "world": [
+      52,
+      37
+    ],
+    "kind": 4,
+    "light": 0.07718759030103683,
+    "shard": 5,
+    "slot": 16
+  },
+  {
+    "episode": 11,
+    "time": 231,
+    "cell": 0,
+    "world": [
+      24,
+      16
+    ],
+    "kind": 8,
+    "light": 0.0705237165093422,
+    "shard": 6,
+    "slot": 3
+  },
+  {
+    "episode": 11,
+    "time": 231,
+    "cell": 9,
+    "world": [
+      25,
+      16
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 6,
+    "slot": 3
+  },
+  {
+    "episode": 11,
+    "time": 232,
+    "cell": 0,
+    "world": [
+      24,
+      15
+    ],
+    "kind": 4,
+    "light": 0.07718759030103683,
+    "shard": 6,
+    "slot": 3
+  },
+  {
+    "episode": 11,
+    "time": 232,
+    "cell": 9,
+    "world": [
+      25,
+      15
+    ],
+    "kind": 4,
+    "light": 0.07718759030103683,
+    "shard": 6,
+    "slot": 3
+  },
+  {
+    "episode": 11,
+    "time": 232,
+    "cell": 18,
+    "world": [
+      26,
+      15
+    ],
+    "kind": 4,
+    "light": 0.07718759030103683,
+    "shard": 6,
+    "slot": 3
+  },
+  {
+    "episode": 17,
+    "time": 191,
+    "cell": 8,
+    "world": [
+      0,
+      19
+    ],
+    "kind": 4,
+    "light": 0.058026351034641266,
+    "shard": 8,
+    "slot": 1
+  },
+  {
+    "episode": 17,
+    "time": 192,
+    "cell": 8,
+    "world": [
+      0,
+      20
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 8,
+    "slot": 1
+  },
+  {
+    "episode": 17,
+    "time": 192,
+    "cell": 26,
+    "world": [
+      2,
+      20
+    ],
+    "kind": 8,
+    "light": 0.052202630788087845,
+    "shard": 8,
+    "slot": 1
+  },
+  {
+    "episode": 17,
+    "time": 192,
+    "cell": 35,
+    "world": [
+      3,
+      20
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 8,
+    "slot": 1
+  },
+  {
+    "episode": 17,
+    "time": 195,
+    "cell": 26,
+    "world": [
+      2,
+      21
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 8,
+    "slot": 1
+  },
+  {
+    "episode": 17,
+    "time": 195,
+    "cell": 35,
+    "world": [
+      3,
+      21
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 8,
+    "slot": 1
+  },
+  {
+    "episode": 17,
+    "time": 200,
+    "cell": 8,
+    "world": [
+      4,
+      22
+    ],
+    "kind": 9,
+    "light": 0.01634441688656807,
+    "shard": 8,
+    "slot": 1
+  },
+  {
+    "episode": 17,
+    "time": 201,
+    "cell": 8,
+    "world": [
+      4,
+      23
+    ],
+    "kind": 4,
+    "light": 0.013254975900053978,
+    "shard": 8,
+    "slot": 1
+  },
+  {
+    "episode": 17,
+    "time": 202,
+    "cell": 17,
+    "world": [
+      5,
+      24
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 8,
+    "slot": 1
+  },
+  {
+    "episode": 17,
+    "time": 496,
+    "cell": 0,
+    "world": [
+      8,
+      3
+    ],
+    "kind": 4,
+    "light": 0.031838905066251755,
+    "shard": 8,
+    "slot": 1
+  },
+  {
+    "episode": 17,
+    "time": 496,
+    "cell": 9,
+    "world": [
+      9,
+      3
+    ],
+    "kind": 4,
+    "light": 0.031838905066251755,
+    "shard": 8,
+    "slot": 1
+  },
+  {
+    "episode": 17,
+    "time": 498,
+    "cell": 0,
+    "world": [
+      8,
+      2
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 8,
+    "slot": 1
+  },
+  {
+    "episode": 17,
+    "time": 500,
+    "cell": 0,
+    "world": [
+      8,
+      1
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 8,
+    "slot": 1
+  },
+  {
+    "episode": 17,
+    "time": 500,
+    "cell": 9,
+    "world": [
+      9,
+      1
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 8,
+    "slot": 1
+  },
+  {
+    "episode": 17,
+    "time": 503,
+    "cell": 0,
+    "world": [
+      9,
+      0
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 8,
+    "slot": 1
+  },
+  {
+    "episode": 17,
+    "time": 503,
+    "cell": 9,
+    "world": [
+      10,
+      0
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 8,
+    "slot": 1
+  },
+  {
+    "episode": 17,
+    "time": 503,
+    "cell": 18,
+    "world": [
+      11,
+      0
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 8,
+    "slot": 1
+  },
+  {
+    "episode": 17,
+    "time": 503,
+    "cell": 27,
+    "world": [
+      12,
+      0
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 8,
+    "slot": 1
+  },
+  {
+    "episode": 18,
+    "time": 797,
+    "cell": 27,
+    "world": [
+      13,
+      10
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 797,
+    "cell": 36,
+    "world": [
+      14,
+      10
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 797,
+    "cell": 45,
+    "world": [
+      15,
+      10
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 827,
+    "cell": 45,
+    "world": [
+      16,
+      9
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 829,
+    "cell": 18,
+    "world": [
+      13,
+      8
+    ],
+    "kind": 4,
+    "light": 0.058026526123285294,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 829,
+    "cell": 27,
+    "world": [
+      14,
+      8
+    ],
+    "kind": 4,
+    "light": 0.058026526123285294,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 829,
+    "cell": 36,
+    "world": [
+      15,
+      8
+    ],
+    "kind": 4,
+    "light": 0.058026526123285294,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 829,
+    "cell": 45,
+    "world": [
+      16,
+      8
+    ],
+    "kind": 4,
+    "light": 0.058026526123285294,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1103,
+    "cell": 0,
+    "world": [
+      30,
+      7
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1106,
+    "cell": 0,
+    "world": [
+      30,
+      6
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1109,
+    "cell": 0,
+    "world": [
+      29,
+      6
+    ],
+    "kind": 8,
+    "light": 0.0001645028096390888,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1109,
+    "cell": 1,
+    "world": [
+      29,
+      7
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1109,
+    "cell": 2,
+    "world": [
+      29,
+      8
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1109,
+    "cell": 3,
+    "world": [
+      29,
+      9
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1110,
+    "cell": 0,
+    "world": [
+      28,
+      6
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1110,
+    "cell": 1,
+    "world": [
+      28,
+      7
+    ],
+    "kind": 8,
+    "light": 0.0,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1110,
+    "cell": 2,
+    "world": [
+      28,
+      8
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1110,
+    "cell": 3,
+    "world": [
+      28,
+      9
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1110,
+    "cell": 4,
+    "world": [
+      28,
+      10
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1110,
+    "cell": 5,
+    "world": [
+      28,
+      11
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1110,
+    "cell": 6,
+    "world": [
+      28,
+      12
+    ],
+    "kind": 9,
+    "light": 0.0,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1110,
+    "cell": 7,
+    "world": [
+      28,
+      13
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1110,
+    "cell": 8,
+    "world": [
+      28,
+      14
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1112,
+    "cell": 1,
+    "world": [
+      27,
+      6
+    ],
+    "kind": 4,
+    "light": 0.0006578794564120471,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1112,
+    "cell": 2,
+    "world": [
+      27,
+      7
+    ],
+    "kind": 4,
+    "light": 0.0006578794564120471,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1112,
+    "cell": 3,
+    "world": [
+      27,
+      8
+    ],
+    "kind": 4,
+    "light": 0.0006578794564120471,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1112,
+    "cell": 6,
+    "world": [
+      27,
+      11
+    ],
+    "kind": 9,
+    "light": 0.0006578794564120471,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1112,
+    "cell": 7,
+    "world": [
+      27,
+      12
+    ],
+    "kind": 4,
+    "light": 0.0006578794564120471,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1112,
+    "cell": 8,
+    "world": [
+      27,
+      13
+    ],
+    "kind": 4,
+    "light": 0.0006578794564120471,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1114,
+    "cell": 1,
+    "world": [
+      26,
+      6
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1114,
+    "cell": 2,
+    "world": [
+      26,
+      7
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1114,
+    "cell": 3,
+    "world": [
+      26,
+      8
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1114,
+    "cell": 4,
+    "world": [
+      26,
+      9
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1114,
+    "cell": 5,
+    "world": [
+      26,
+      10
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1114,
+    "cell": 8,
+    "world": [
+      26,
+      13
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1118,
+    "cell": 1,
+    "world": [
+      25,
+      6
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1118,
+    "cell": 2,
+    "world": [
+      25,
+      7
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1118,
+    "cell": 3,
+    "world": [
+      25,
+      8
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1118,
+    "cell": 4,
+    "world": [
+      25,
+      9
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1118,
+    "cell": 5,
+    "world": [
+      25,
+      10
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1118,
+    "cell": 8,
+    "world": [
+      25,
+      13
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1121,
+    "cell": 8,
+    "world": [
+      26,
+      14
+    ],
+    "kind": 4,
+    "light": 0.019750306382775307,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1121,
+    "cell": 17,
+    "world": [
+      27,
+      14
+    ],
+    "kind": 4,
+    "light": 0.019750306382775307,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1122,
+    "cell": 26,
+    "world": [
+      28,
+      15
+    ],
+    "kind": 8,
+    "light": 0.023469798266887665,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1123,
+    "cell": 26,
+    "world": [
+      28,
+      16
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1124,
+    "cell": 26,
+    "world": [
+      28,
+      17
+    ],
+    "kind": 4,
+    "light": 0.03183908015489578,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1124,
+    "cell": 35,
+    "world": [
+      29,
+      17
+    ],
+    "kind": 4,
+    "light": 0.03183908015489578,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1125,
+    "cell": 26,
+    "world": [
+      28,
+      18
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1125,
+    "cell": 35,
+    "world": [
+      29,
+      18
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1126,
+    "cell": 26,
+    "world": [
+      28,
+      19
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1126,
+    "cell": 35,
+    "world": [
+      29,
+      19
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1129,
+    "cell": 26,
+    "world": [
+      28,
+      20
+    ],
+    "kind": 4,
+    "light": 0.058026526123285294,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1129,
+    "cell": 35,
+    "world": [
+      29,
+      20
+    ],
+    "kind": 4,
+    "light": 0.058026526123285294,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1131,
+    "cell": 26,
+    "world": [
+      28,
+      21
+    ],
+    "kind": 4,
+    "light": 0.07052354514598846,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 18,
+    "time": 1131,
+    "cell": 35,
+    "world": [
+      29,
+      21
+    ],
+    "kind": 4,
+    "light": 0.07052354514598846,
+    "shard": 8,
+    "slot": 11
+  },
+  {
+    "episode": 21,
+    "time": 196,
+    "cell": 3,
+    "world": [
+      1,
+      21
+    ],
+    "kind": 4,
+    "light": 0.031838905066251755,
+    "shard": 9,
+    "slot": 19
+  },
+  {
+    "episode": 21,
+    "time": 196,
+    "cell": 4,
+    "world": [
+      1,
+      22
+    ],
+    "kind": 9,
+    "light": 0.031838905066251755,
+    "shard": 9,
+    "slot": 19
+  },
+  {
+    "episode": 21,
+    "time": 196,
+    "cell": 5,
+    "world": [
+      1,
+      23
+    ],
+    "kind": 4,
+    "light": 0.031838905066251755,
+    "shard": 9,
+    "slot": 19
+  },
+  {
+    "episode": 21,
+    "time": 200,
+    "cell": 18,
+    "world": [
+      3,
+      17
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 9,
+    "slot": 19
+  },
+  {
+    "episode": 21,
+    "time": 200,
+    "cell": 27,
+    "world": [
+      4,
+      17
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 9,
+    "slot": 19
+  },
+  {
+    "episode": 29,
+    "time": 197,
+    "cell": 8,
+    "world": [
+      26,
+      46
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 14,
+    "slot": 13
+  },
+  {
+    "episode": 29,
+    "time": 197,
+    "cell": 17,
+    "world": [
+      27,
+      46
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 14,
+    "slot": 13
+  },
+  {
+    "episode": 29,
+    "time": 197,
+    "cell": 26,
+    "world": [
+      28,
+      46
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 14,
+    "slot": 13
+  },
+  {
+    "episode": 31,
+    "time": 222,
+    "cell": 3,
+    "world": [
+      24,
+      27
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 15,
+    "slot": 18
+  },
+  {
+    "episode": 32,
+    "time": 194,
+    "cell": 18,
+    "world": [
+      19,
+      15
+    ],
+    "kind": 4,
+    "light": 0.041426222771406174,
+    "shard": 16,
+    "slot": 0
+  },
+  {
+    "episode": 32,
+    "time": 194,
+    "cell": 27,
+    "world": [
+      20,
+      15
+    ],
+    "kind": 4,
+    "light": 0.041426222771406174,
+    "shard": 16,
+    "slot": 0
+  },
+  {
+    "episode": 32,
+    "time": 194,
+    "cell": 36,
+    "world": [
+      21,
+      15
+    ],
+    "kind": 4,
+    "light": 0.041426222771406174,
+    "shard": 16,
+    "slot": 0
+  },
+  {
+    "episode": 32,
+    "time": 195,
+    "cell": 9,
+    "world": [
+      18,
+      14
+    ],
+    "kind": 8,
+    "light": 0.03648205101490021,
+    "shard": 16,
+    "slot": 0
+  },
+  {
+    "episode": 32,
+    "time": 195,
+    "cell": 18,
+    "world": [
+      19,
+      14
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 16,
+    "slot": 0
+  },
+  {
+    "episode": 32,
+    "time": 195,
+    "cell": 27,
+    "world": [
+      20,
+      14
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 16,
+    "slot": 0
+  },
+  {
+    "episode": 32,
+    "time": 195,
+    "cell": 36,
+    "world": [
+      21,
+      14
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 16,
+    "slot": 0
+  },
+  {
+    "episode": 32,
+    "time": 196,
+    "cell": 18,
+    "world": [
+      19,
+      13
+    ],
+    "kind": 8,
+    "light": 0.031838905066251755,
+    "shard": 16,
+    "slot": 0
+  },
+  {
+    "episode": 32,
+    "time": 196,
+    "cell": 27,
+    "world": [
+      20,
+      13
+    ],
+    "kind": 9,
+    "light": 0.031838905066251755,
+    "shard": 16,
+    "slot": 0
+  },
+  {
+    "episode": 32,
+    "time": 196,
+    "cell": 36,
+    "world": [
+      21,
+      13
+    ],
+    "kind": 4,
+    "light": 0.031838905066251755,
+    "shard": 16,
+    "slot": 0
+  },
+  {
+    "episode": 32,
+    "time": 199,
+    "cell": 18,
+    "world": [
+      19,
+      12
+    ],
+    "kind": 4,
+    "light": 0.01975012943148613,
+    "shard": 16,
+    "slot": 0
+  },
+  {
+    "episode": 32,
+    "time": 199,
+    "cell": 27,
+    "world": [
+      20,
+      12
+    ],
+    "kind": 8,
+    "light": 0.01975012943148613,
+    "shard": 16,
+    "slot": 0
+  },
+  {
+    "episode": 35,
+    "time": 195,
+    "cell": 8,
+    "world": [
+      24,
+      40
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 197,
+    "cell": 7,
+    "world": [
+      23,
+      39
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 197,
+    "cell": 8,
+    "world": [
+      23,
+      40
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 198,
+    "cell": 6,
+    "world": [
+      22,
+      38
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 198,
+    "cell": 7,
+    "world": [
+      22,
+      39
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 198,
+    "cell": 8,
+    "world": [
+      22,
+      40
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 199,
+    "cell": 6,
+    "world": [
+      21,
+      38
+    ],
+    "kind": 4,
+    "light": 0.01975012943148613,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 199,
+    "cell": 7,
+    "world": [
+      21,
+      39
+    ],
+    "kind": 4,
+    "light": 0.01975012943148613,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 199,
+    "cell": 8,
+    "world": [
+      21,
+      40
+    ],
+    "kind": 4,
+    "light": 0.01975012943148613,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 200,
+    "cell": 8,
+    "world": [
+      21,
+      41
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 200,
+    "cell": 17,
+    "world": [
+      22,
+      41
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 200,
+    "cell": 26,
+    "world": [
+      23,
+      41
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 200,
+    "cell": 35,
+    "world": [
+      24,
+      41
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 201,
+    "cell": 8,
+    "world": [
+      21,
+      42
+    ],
+    "kind": 4,
+    "light": 0.013254975900053978,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 201,
+    "cell": 17,
+    "world": [
+      22,
+      42
+    ],
+    "kind": 4,
+    "light": 0.013254975900053978,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 201,
+    "cell": 26,
+    "world": [
+      23,
+      42
+    ],
+    "kind": 4,
+    "light": 0.013254975900053978,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 201,
+    "cell": 35,
+    "world": [
+      24,
+      42
+    ],
+    "kind": 4,
+    "light": 0.013254975900053978,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 202,
+    "cell": 8,
+    "world": [
+      21,
+      43
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 202,
+    "cell": 17,
+    "world": [
+      22,
+      43
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 202,
+    "cell": 26,
+    "world": [
+      23,
+      43
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 202,
+    "cell": 35,
+    "world": [
+      24,
+      43
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 205,
+    "cell": 8,
+    "world": [
+      22,
+      44
+    ],
+    "kind": 8,
+    "light": 0.0041056289337575436,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 205,
+    "cell": 17,
+    "world": [
+      23,
+      44
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 205,
+    "cell": 26,
+    "world": [
+      24,
+      44
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 217,
+    "cell": 8,
+    "world": [
+      26,
+      46
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 219,
+    "cell": 8,
+    "world": [
+      26,
+      47
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 35,
+    "time": 219,
+    "cell": 26,
+    "world": [
+      28,
+      47
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 17,
+    "slot": 3
+  },
+  {
+    "episode": 36,
+    "time": 189,
+    "cell": 58,
+    "world": [
+      49,
+      21
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 192,
+    "cell": 53,
+    "world": [
+      48,
+      26
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 195,
+    "cell": 44,
+    "world": [
+      47,
+      27
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 195,
+    "cell": 53,
+    "world": [
+      48,
+      27
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 195,
+    "cell": 62,
+    "world": [
+      49,
+      27
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 199,
+    "cell": 54,
+    "world": [
+      50,
+      19
+    ],
+    "kind": 4,
+    "light": 0.01975012943148613,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 199,
+    "cell": 55,
+    "world": [
+      50,
+      20
+    ],
+    "kind": 4,
+    "light": 0.01975012943148613,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 199,
+    "cell": 61,
+    "world": [
+      50,
+      26
+    ],
+    "kind": 4,
+    "light": 0.01975012943148613,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 202,
+    "cell": 35,
+    "world": [
+      47,
+      28
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 202,
+    "cell": 44,
+    "world": [
+      48,
+      28
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 202,
+    "cell": 53,
+    "world": [
+      49,
+      28
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 205,
+    "cell": 60,
+    "world": [
+      51,
+      26
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 205,
+    "cell": 61,
+    "world": [
+      51,
+      27
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 206,
+    "cell": 26,
+    "world": [
+      47,
+      29
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 206,
+    "cell": 35,
+    "world": [
+      48,
+      29
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 209,
+    "cell": 8,
+    "world": [
+      45,
+      30
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 209,
+    "cell": 17,
+    "world": [
+      46,
+      30
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 211,
+    "cell": 8,
+    "world": [
+      45,
+      31
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 491,
+    "cell": 59,
+    "world": [
+      63,
+      36
+    ],
+    "kind": 4,
+    "light": 0.058026351034641266,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 491,
+    "cell": 60,
+    "world": [
+      63,
+      37
+    ],
+    "kind": 4,
+    "light": 0.058026351034641266,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 491,
+    "cell": 61,
+    "world": [
+      63,
+      38
+    ],
+    "kind": 4,
+    "light": 0.058026351034641266,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 491,
+    "cell": 62,
+    "world": [
+      63,
+      39
+    ],
+    "kind": 4,
+    "light": 0.058026351034641266,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 504,
+    "cell": 8,
+    "world": [
+      58,
+      40
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 504,
+    "cell": 17,
+    "world": [
+      59,
+      40
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 504,
+    "cell": 44,
+    "world": [
+      62,
+      40
+    ],
+    "kind": 8,
+    "light": 0.005908160004764795,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 36,
+    "time": 504,
+    "cell": 53,
+    "world": [
+      63,
+      40
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 17,
+    "slot": 13
+  },
+  {
+    "episode": 40,
+    "time": 216,
+    "cell": 5,
+    "world": [
+      29,
+      49
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 216,
+    "cell": 6,
+    "world": [
+      29,
+      50
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 216,
+    "cell": 7,
+    "world": [
+      29,
+      51
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 216,
+    "cell": 8,
+    "world": [
+      29,
+      52
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 217,
+    "cell": 5,
+    "world": [
+      28,
+      49
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 217,
+    "cell": 6,
+    "world": [
+      28,
+      50
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 217,
+    "cell": 7,
+    "world": [
+      28,
+      51
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 217,
+    "cell": 8,
+    "world": [
+      28,
+      52
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 223,
+    "cell": 0,
+    "world": [
+      27,
+      43
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 223,
+    "cell": 1,
+    "world": [
+      27,
+      44
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 223,
+    "cell": 2,
+    "world": [
+      27,
+      45
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 223,
+    "cell": 3,
+    "world": [
+      27,
+      46
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 223,
+    "cell": 4,
+    "world": [
+      27,
+      47
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 223,
+    "cell": 5,
+    "world": [
+      27,
+      48
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 223,
+    "cell": 6,
+    "world": [
+      27,
+      49
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 223,
+    "cell": 7,
+    "world": [
+      27,
+      50
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 223,
+    "cell": 8,
+    "world": [
+      27,
+      51
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 224,
+    "cell": 0,
+    "world": [
+      26,
+      43
+    ],
+    "kind": 4,
+    "light": 0.03183908015489578,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 224,
+    "cell": 1,
+    "world": [
+      26,
+      44
+    ],
+    "kind": 4,
+    "light": 0.03183908015489578,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 224,
+    "cell": 2,
+    "world": [
+      26,
+      45
+    ],
+    "kind": 4,
+    "light": 0.03183908015489578,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 224,
+    "cell": 3,
+    "world": [
+      26,
+      46
+    ],
+    "kind": 4,
+    "light": 0.03183908015489578,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 224,
+    "cell": 5,
+    "world": [
+      26,
+      48
+    ],
+    "kind": 4,
+    "light": 0.03183908015489578,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 224,
+    "cell": 6,
+    "world": [
+      26,
+      49
+    ],
+    "kind": 4,
+    "light": 0.03183908015489578,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 224,
+    "cell": 7,
+    "world": [
+      26,
+      50
+    ],
+    "kind": 4,
+    "light": 0.03183908015489578,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 224,
+    "cell": 8,
+    "world": [
+      26,
+      51
+    ],
+    "kind": 4,
+    "light": 0.03183908015489578,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 228,
+    "cell": 0,
+    "world": [
+      26,
+      42
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 228,
+    "cell": 9,
+    "world": [
+      27,
+      42
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 490,
+    "cell": 35,
+    "world": [
+      10,
+      60
+    ],
+    "kind": 4,
+    "light": 0.06413495540618896,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 490,
+    "cell": 44,
+    "world": [
+      11,
+      60
+    ],
+    "kind": 4,
+    "light": 0.06413495540618896,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 490,
+    "cell": 53,
+    "world": [
+      12,
+      60
+    ],
+    "kind": 9,
+    "light": 0.06413495540618896,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 491,
+    "cell": 44,
+    "world": [
+      11,
+      61
+    ],
+    "kind": 4,
+    "light": 0.058026351034641266,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 491,
+    "cell": 53,
+    "world": [
+      12,
+      61
+    ],
+    "kind": 4,
+    "light": 0.058026351034641266,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 492,
+    "cell": 17,
+    "world": [
+      8,
+      62
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 492,
+    "cell": 26,
+    "world": [
+      9,
+      62
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 492,
+    "cell": 35,
+    "world": [
+      10,
+      62
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 492,
+    "cell": 44,
+    "world": [
+      11,
+      62
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 492,
+    "cell": 53,
+    "world": [
+      12,
+      62
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 493,
+    "cell": 17,
+    "world": [
+      8,
+      63
+    ],
+    "kind": 10,
+    "light": 0.04666764289140701,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 493,
+    "cell": 26,
+    "world": [
+      9,
+      63
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 493,
+    "cell": 35,
+    "world": [
+      10,
+      63
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 493,
+    "cell": 44,
+    "world": [
+      11,
+      63
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 493,
+    "cell": 53,
+    "world": [
+      12,
+      63
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 499,
+    "cell": 54,
+    "world": [
+      14,
+      56
+    ],
+    "kind": 4,
+    "light": 0.01975012943148613,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 499,
+    "cell": 55,
+    "world": [
+      14,
+      57
+    ],
+    "kind": 4,
+    "light": 0.01975012943148613,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 523,
+    "cell": 0,
+    "world": [
+      6,
+      52
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 523,
+    "cell": 1,
+    "world": [
+      6,
+      53
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 523,
+    "cell": 2,
+    "world": [
+      6,
+      54
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 523,
+    "cell": 4,
+    "world": [
+      6,
+      56
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 523,
+    "cell": 5,
+    "world": [
+      6,
+      57
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 523,
+    "cell": 6,
+    "world": [
+      6,
+      58
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 523,
+    "cell": 7,
+    "world": [
+      6,
+      59
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 523,
+    "cell": 8,
+    "world": [
+      6,
+      60
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 524,
+    "cell": 0,
+    "world": [
+      6,
+      51
+    ],
+    "kind": 9,
+    "light": 0.03183908015489578,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 40,
+    "time": 525,
+    "cell": 0,
+    "world": [
+      6,
+      50
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 20,
+    "slot": 2
+  },
+  {
+    "episode": 41,
+    "time": 191,
+    "cell": 59,
+    "world": [
+      36,
+      18
+    ],
+    "kind": 4,
+    "light": 0.058026351034641266,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 192,
+    "cell": 58,
+    "world": [
+      37,
+      17
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 192,
+    "cell": 59,
+    "world": [
+      37,
+      18
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 193,
+    "cell": 58,
+    "world": [
+      38,
+      17
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 193,
+    "cell": 59,
+    "world": [
+      38,
+      18
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 193,
+    "cell": 60,
+    "world": [
+      38,
+      19
+    ],
+    "kind": 9,
+    "light": 0.04666764289140701,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 194,
+    "cell": 58,
+    "world": [
+      39,
+      17
+    ],
+    "kind": 4,
+    "light": 0.041426222771406174,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 194,
+    "cell": 59,
+    "world": [
+      39,
+      18
+    ],
+    "kind": 4,
+    "light": 0.041426222771406174,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 194,
+    "cell": 60,
+    "world": [
+      39,
+      19
+    ],
+    "kind": 4,
+    "light": 0.041426222771406174,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 194,
+    "cell": 61,
+    "world": [
+      39,
+      20
+    ],
+    "kind": 4,
+    "light": 0.041426222771406174,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 200,
+    "cell": 59,
+    "world": [
+      40,
+      17
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 200,
+    "cell": 60,
+    "world": [
+      40,
+      18
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 200,
+    "cell": 61,
+    "world": [
+      40,
+      19
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 200,
+    "cell": 62,
+    "world": [
+      40,
+      20
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 201,
+    "cell": 60,
+    "world": [
+      41,
+      18
+    ],
+    "kind": 8,
+    "light": 0.013254975900053978,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 201,
+    "cell": 61,
+    "world": [
+      41,
+      19
+    ],
+    "kind": 4,
+    "light": 0.013254975900053978,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 201,
+    "cell": 62,
+    "world": [
+      41,
+      20
+    ],
+    "kind": 4,
+    "light": 0.013254975900053978,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 204,
+    "cell": 53,
+    "world": [
+      40,
+      21
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 204,
+    "cell": 62,
+    "world": [
+      41,
+      21
+    ],
+    "kind": 8,
+    "light": 0.005908160004764795,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 206,
+    "cell": 53,
+    "world": [
+      40,
+      22
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 206,
+    "cell": 62,
+    "world": [
+      41,
+      22
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 210,
+    "cell": 58,
+    "world": [
+      42,
+      18
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 210,
+    "cell": 59,
+    "world": [
+      42,
+      19
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 210,
+    "cell": 60,
+    "world": [
+      42,
+      20
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 210,
+    "cell": 62,
+    "world": [
+      42,
+      22
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 212,
+    "cell": 57,
+    "world": [
+      43,
+      17
+    ],
+    "kind": 9,
+    "light": 0.0006578794564120471,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 212,
+    "cell": 58,
+    "world": [
+      43,
+      18
+    ],
+    "kind": 4,
+    "light": 0.0006578794564120471,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 212,
+    "cell": 59,
+    "world": [
+      43,
+      19
+    ],
+    "kind": 4,
+    "light": 0.0006578794564120471,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 212,
+    "cell": 60,
+    "world": [
+      43,
+      20
+    ],
+    "kind": 4,
+    "light": 0.0006578794564120471,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 212,
+    "cell": 61,
+    "world": [
+      43,
+      21
+    ],
+    "kind": 4,
+    "light": 0.0006578794564120471,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 212,
+    "cell": 62,
+    "world": [
+      43,
+      22
+    ],
+    "kind": 4,
+    "light": 0.0006578794564120471,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 214,
+    "cell": 57,
+    "world": [
+      44,
+      17
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 214,
+    "cell": 58,
+    "world": [
+      44,
+      18
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 214,
+    "cell": 59,
+    "world": [
+      44,
+      19
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 214,
+    "cell": 60,
+    "world": [
+      44,
+      20
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 214,
+    "cell": 61,
+    "world": [
+      44,
+      21
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 214,
+    "cell": 62,
+    "world": [
+      44,
+      22
+    ],
+    "kind": 9,
+    "light": 0.0026291129179298878,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 219,
+    "cell": 59,
+    "world": [
+      45,
+      18
+    ],
+    "kind": 8,
+    "light": 0.013255152851343155,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 219,
+    "cell": 60,
+    "world": [
+      45,
+      19
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 219,
+    "cell": 61,
+    "world": [
+      45,
+      20
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 219,
+    "cell": 62,
+    "world": [
+      45,
+      21
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 223,
+    "cell": 61,
+    "world": [
+      46,
+      18
+    ],
+    "kind": 8,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 223,
+    "cell": 62,
+    "world": [
+      46,
+      19
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 226,
+    "cell": 61,
+    "world": [
+      47,
+      18
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 226,
+    "cell": 62,
+    "world": [
+      47,
+      19
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 227,
+    "cell": 61,
+    "world": [
+      48,
+      18
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 227,
+    "cell": 62,
+    "world": [
+      48,
+      19
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 228,
+    "cell": 44,
+    "world": [
+      46,
+      20
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 228,
+    "cell": 53,
+    "world": [
+      47,
+      20
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 228,
+    "cell": 62,
+    "world": [
+      48,
+      20
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 229,
+    "cell": 61,
+    "world": [
+      49,
+      19
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 229,
+    "cell": 62,
+    "world": [
+      49,
+      20
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 230,
+    "cell": 35,
+    "world": [
+      46,
+      21
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 230,
+    "cell": 44,
+    "world": [
+      47,
+      21
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 230,
+    "cell": 53,
+    "world": [
+      48,
+      21
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 230,
+    "cell": 62,
+    "world": [
+      49,
+      21
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 791,
+    "cell": 4,
+    "world": [
+      50,
+      22
+    ],
+    "kind": 4,
+    "light": 0.05802617594599724,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 791,
+    "cell": 5,
+    "world": [
+      50,
+      23
+    ],
+    "kind": 4,
+    "light": 0.05802617594599724,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 795,
+    "cell": 1,
+    "world": [
+      49,
+      22
+    ],
+    "kind": 4,
+    "light": 0.03648187592625618,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 795,
+    "cell": 2,
+    "world": [
+      49,
+      23
+    ],
+    "kind": 4,
+    "light": 0.03648187592625618,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 795,
+    "cell": 3,
+    "world": [
+      49,
+      24
+    ],
+    "kind": 4,
+    "light": 0.03648187592625618,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 797,
+    "cell": 0,
+    "world": [
+      48,
+      22
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 797,
+    "cell": 1,
+    "world": [
+      48,
+      23
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 797,
+    "cell": 2,
+    "world": [
+      48,
+      24
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 41,
+    "time": 797,
+    "cell": 3,
+    "world": [
+      48,
+      25
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 20,
+    "slot": 8
+  },
+  {
+    "episode": 42,
+    "time": 205,
+    "cell": 54,
+    "world": [
+      52,
+      24
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 205,
+    "cell": 55,
+    "world": [
+      52,
+      25
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 205,
+    "cell": 56,
+    "world": [
+      52,
+      26
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 205,
+    "cell": 57,
+    "world": [
+      52,
+      27
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 205,
+    "cell": 58,
+    "world": [
+      52,
+      28
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 205,
+    "cell": 59,
+    "world": [
+      52,
+      29
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 205,
+    "cell": 60,
+    "world": [
+      52,
+      30
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 207,
+    "cell": 54,
+    "world": [
+      53,
+      24
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 207,
+    "cell": 55,
+    "world": [
+      53,
+      25
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 207,
+    "cell": 56,
+    "world": [
+      53,
+      26
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 207,
+    "cell": 57,
+    "world": [
+      53,
+      27
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 207,
+    "cell": 58,
+    "world": [
+      53,
+      28
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 207,
+    "cell": 59,
+    "world": [
+      53,
+      29
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 207,
+    "cell": 60,
+    "world": [
+      53,
+      30
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 209,
+    "cell": 54,
+    "world": [
+      54,
+      24
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 209,
+    "cell": 55,
+    "world": [
+      54,
+      25
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 209,
+    "cell": 56,
+    "world": [
+      54,
+      26
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 209,
+    "cell": 57,
+    "world": [
+      54,
+      27
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 209,
+    "cell": 58,
+    "world": [
+      54,
+      28
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 209,
+    "cell": 59,
+    "world": [
+      54,
+      29
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 211,
+    "cell": 54,
+    "world": [
+      55,
+      24
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 211,
+    "cell": 55,
+    "world": [
+      55,
+      25
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 211,
+    "cell": 56,
+    "world": [
+      55,
+      26
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 211,
+    "cell": 57,
+    "world": [
+      55,
+      27
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 211,
+    "cell": 58,
+    "world": [
+      55,
+      28
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 211,
+    "cell": 59,
+    "world": [
+      55,
+      29
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 215,
+    "cell": 45,
+    "world": [
+      54,
+      23
+    ],
+    "kind": 4,
+    "light": 0.00410580774769187,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 215,
+    "cell": 54,
+    "world": [
+      55,
+      23
+    ],
+    "kind": 4,
+    "light": 0.00410580774769187,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 217,
+    "cell": 54,
+    "world": [
+      55,
+      22
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 42,
+    "time": 227,
+    "cell": 27,
+    "world": [
+      52,
+      17
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 20,
+    "slot": 21
+  },
+  {
+    "episode": 43,
+    "time": 208,
+    "cell": 1,
+    "world": [
+      27,
+      41
+    ],
+    "kind": 4,
+    "light": 0.0006577007006853819,
+    "shard": 21,
+    "slot": 6
+  },
+  {
+    "episode": 43,
+    "time": 208,
+    "cell": 2,
+    "world": [
+      27,
+      42
+    ],
+    "kind": 4,
+    "light": 0.0006577007006853819,
+    "shard": 21,
+    "slot": 6
+  },
+  {
+    "episode": 44,
+    "time": 203,
+    "cell": 45,
+    "world": [
+      41,
+      20
+    ],
+    "kind": 8,
+    "light": 0.008034844882786274,
+    "shard": 21,
+    "slot": 7
+  },
+  {
+    "episode": 44,
+    "time": 203,
+    "cell": 54,
+    "world": [
+      42,
+      20
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 21,
+    "slot": 7
+  },
+  {
+    "episode": 44,
+    "time": 204,
+    "cell": 45,
+    "world": [
+      41,
+      19
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 21,
+    "slot": 7
+  },
+  {
+    "episode": 44,
+    "time": 204,
+    "cell": 54,
+    "world": [
+      42,
+      19
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 21,
+    "slot": 7
+  },
+  {
+    "episode": 44,
+    "time": 232,
+    "cell": 54,
+    "world": [
+      37,
+      17
+    ],
+    "kind": 4,
+    "light": 0.07718759030103683,
+    "shard": 21,
+    "slot": 7
+  },
+  {
+    "episode": 45,
+    "time": 188,
+    "cell": 0,
+    "world": [
+      37,
+      30
+    ],
+    "kind": 4,
+    "light": 0.0771874189376831,
+    "shard": 21,
+    "slot": 10
+  },
+  {
+    "episode": 45,
+    "time": 188,
+    "cell": 9,
+    "world": [
+      38,
+      30
+    ],
+    "kind": 4,
+    "light": 0.0771874189376831,
+    "shard": 21,
+    "slot": 10
+  },
+  {
+    "episode": 45,
+    "time": 188,
+    "cell": 27,
+    "world": [
+      40,
+      30
+    ],
+    "kind": 4,
+    "light": 0.0771874189376831,
+    "shard": 21,
+    "slot": 10
+  },
+  {
+    "episode": 45,
+    "time": 188,
+    "cell": 36,
+    "world": [
+      41,
+      30
+    ],
+    "kind": 4,
+    "light": 0.0771874189376831,
+    "shard": 21,
+    "slot": 10
+  },
+  {
+    "episode": 45,
+    "time": 188,
+    "cell": 45,
+    "world": [
+      42,
+      30
+    ],
+    "kind": 4,
+    "light": 0.0771874189376831,
+    "shard": 21,
+    "slot": 10
+  },
+  {
+    "episode": 45,
+    "time": 189,
+    "cell": 0,
+    "world": [
+      37,
+      29
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 21,
+    "slot": 10
+  },
+  {
+    "episode": 45,
+    "time": 189,
+    "cell": 9,
+    "world": [
+      38,
+      29
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 21,
+    "slot": 10
+  },
+  {
+    "episode": 45,
+    "time": 189,
+    "cell": 54,
+    "world": [
+      43,
+      29
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 21,
+    "slot": 10
+  },
+  {
+    "episode": 45,
+    "time": 192,
+    "cell": 54,
+    "world": [
+      44,
+      29
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 21,
+    "slot": 10
+  },
+  {
+    "episode": 45,
+    "time": 193,
+    "cell": 54,
+    "world": [
+      45,
+      29
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 21,
+    "slot": 10
+  },
+  {
+    "episode": 45,
+    "time": 194,
+    "cell": 54,
+    "world": [
+      46,
+      29
+    ],
+    "kind": 4,
+    "light": 0.041426222771406174,
+    "shard": 21,
+    "slot": 10
+  },
+  {
+    "episode": 45,
+    "time": 205,
+    "cell": 0,
+    "world": [
+      36,
+      30
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 21,
+    "slot": 10
+  },
+  {
+    "episode": 46,
+    "time": 203,
+    "cell": 26,
+    "world": [
+      39,
+      25
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 203,
+    "cell": 35,
+    "world": [
+      40,
+      25
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 203,
+    "cell": 44,
+    "world": [
+      41,
+      25
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 203,
+    "cell": 53,
+    "world": [
+      42,
+      25
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 204,
+    "cell": 35,
+    "world": [
+      40,
+      26
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 204,
+    "cell": 44,
+    "world": [
+      41,
+      26
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 204,
+    "cell": 53,
+    "world": [
+      42,
+      26
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 204,
+    "cell": 62,
+    "world": [
+      43,
+      26
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 205,
+    "cell": 44,
+    "world": [
+      41,
+      27
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 205,
+    "cell": 53,
+    "world": [
+      42,
+      27
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 205,
+    "cell": 62,
+    "world": [
+      43,
+      27
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 207,
+    "cell": 53,
+    "world": [
+      42,
+      28
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 207,
+    "cell": 62,
+    "world": [
+      43,
+      28
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 209,
+    "cell": 53,
+    "world": [
+      42,
+      29
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 209,
+    "cell": 62,
+    "world": [
+      43,
+      29
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 211,
+    "cell": 44,
+    "world": [
+      41,
+      30
+    ],
+    "kind": 9,
+    "light": 0.0001645028096390888,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 211,
+    "cell": 53,
+    "world": [
+      42,
+      30
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 211,
+    "cell": 62,
+    "world": [
+      43,
+      30
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 212,
+    "cell": 62,
+    "world": [
+      43,
+      31
+    ],
+    "kind": 4,
+    "light": 0.0006578794564120471,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 216,
+    "cell": 35,
+    "world": [
+      40,
+      32
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 216,
+    "cell": 44,
+    "world": [
+      41,
+      32
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 216,
+    "cell": 53,
+    "world": [
+      42,
+      32
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 216,
+    "cell": 62,
+    "world": [
+      43,
+      32
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 218,
+    "cell": 55,
+    "world": [
+      44,
+      25
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 218,
+    "cell": 56,
+    "world": [
+      44,
+      26
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 218,
+    "cell": 57,
+    "world": [
+      44,
+      27
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 218,
+    "cell": 58,
+    "world": [
+      44,
+      28
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 218,
+    "cell": 59,
+    "world": [
+      44,
+      29
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 218,
+    "cell": 60,
+    "world": [
+      44,
+      30
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 218,
+    "cell": 61,
+    "world": [
+      44,
+      31
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 218,
+    "cell": 62,
+    "world": [
+      44,
+      32
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 219,
+    "cell": 8,
+    "world": [
+      38,
+      33
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 219,
+    "cell": 17,
+    "world": [
+      39,
+      33
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 219,
+    "cell": 26,
+    "world": [
+      40,
+      33
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 219,
+    "cell": 35,
+    "world": [
+      41,
+      33
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 219,
+    "cell": 44,
+    "world": [
+      42,
+      33
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 219,
+    "cell": 53,
+    "world": [
+      43,
+      33
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 219,
+    "cell": 62,
+    "world": [
+      44,
+      33
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 225,
+    "cell": 54,
+    "world": [
+      45,
+      25
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 225,
+    "cell": 55,
+    "world": [
+      45,
+      26
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 225,
+    "cell": 56,
+    "world": [
+      45,
+      27
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 225,
+    "cell": 57,
+    "world": [
+      45,
+      28
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 225,
+    "cell": 58,
+    "world": [
+      45,
+      29
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 225,
+    "cell": 59,
+    "world": [
+      45,
+      30
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 225,
+    "cell": 60,
+    "world": [
+      45,
+      31
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 225,
+    "cell": 61,
+    "world": [
+      45,
+      32
+    ],
+    "kind": 9,
+    "light": 0.03648205101490021,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 225,
+    "cell": 62,
+    "world": [
+      45,
+      33
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 228,
+    "cell": 54,
+    "world": [
+      46,
+      25
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 228,
+    "cell": 55,
+    "world": [
+      46,
+      26
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 228,
+    "cell": 56,
+    "world": [
+      46,
+      27
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 228,
+    "cell": 62,
+    "world": [
+      46,
+      33
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 46,
+    "time": 231,
+    "cell": 54,
+    "world": [
+      47,
+      25
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 21,
+    "slot": 12
+  },
+  {
+    "episode": 51,
+    "time": 188,
+    "cell": 45,
+    "world": [
+      35,
+      17
+    ],
+    "kind": 4,
+    "light": 0.0771874189376831,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 188,
+    "cell": 54,
+    "world": [
+      36,
+      17
+    ],
+    "kind": 4,
+    "light": 0.0771874189376831,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 195,
+    "cell": 54,
+    "world": [
+      35,
+      16
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 220,
+    "cell": 0,
+    "world": [
+      15,
+      23
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 220,
+    "cell": 1,
+    "world": [
+      15,
+      24
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 220,
+    "cell": 2,
+    "world": [
+      15,
+      25
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 221,
+    "cell": 0,
+    "world": [
+      14,
+      23
+    ],
+    "kind": 4,
+    "light": 0.019750306382775307,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 221,
+    "cell": 1,
+    "world": [
+      14,
+      24
+    ],
+    "kind": 4,
+    "light": 0.019750306382775307,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 221,
+    "cell": 2,
+    "world": [
+      14,
+      25
+    ],
+    "kind": 4,
+    "light": 0.019750306382775307,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 221,
+    "cell": 3,
+    "world": [
+      14,
+      26
+    ],
+    "kind": 4,
+    "light": 0.019750306382775307,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 221,
+    "cell": 4,
+    "world": [
+      14,
+      27
+    ],
+    "kind": 4,
+    "light": 0.019750306382775307,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 221,
+    "cell": 5,
+    "world": [
+      14,
+      28
+    ],
+    "kind": 4,
+    "light": 0.019750306382775307,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 227,
+    "cell": 0,
+    "world": [
+      13,
+      25
+    ],
+    "kind": 8,
+    "light": 0.04666764289140701,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 227,
+    "cell": 1,
+    "world": [
+      13,
+      26
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 227,
+    "cell": 2,
+    "world": [
+      13,
+      27
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 227,
+    "cell": 3,
+    "world": [
+      13,
+      28
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 227,
+    "cell": 4,
+    "world": [
+      13,
+      29
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 227,
+    "cell": 5,
+    "world": [
+      13,
+      30
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 230,
+    "cell": 0,
+    "world": [
+      12,
+      25
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 230,
+    "cell": 1,
+    "world": [
+      12,
+      26
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 230,
+    "cell": 2,
+    "world": [
+      12,
+      27
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 230,
+    "cell": 3,
+    "world": [
+      12,
+      28
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 230,
+    "cell": 4,
+    "world": [
+      12,
+      29
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 230,
+    "cell": 5,
+    "world": [
+      12,
+      30
+    ],
+    "kind": 9,
+    "light": 0.06413529813289642,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 230,
+    "cell": 6,
+    "world": [
+      12,
+      31
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 51,
+    "time": 230,
+    "cell": 7,
+    "world": [
+      12,
+      32
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 24,
+    "slot": 4
+  },
+  {
+    "episode": 52,
+    "time": 190,
+    "cell": 26,
+    "world": [
+      15,
+      36
+    ],
+    "kind": 4,
+    "light": 0.06413495540618896,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 190,
+    "cell": 35,
+    "world": [
+      16,
+      36
+    ],
+    "kind": 4,
+    "light": 0.06413495540618896,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 190,
+    "cell": 44,
+    "world": [
+      17,
+      36
+    ],
+    "kind": 4,
+    "light": 0.06413495540618896,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 191,
+    "cell": 17,
+    "world": [
+      14,
+      37
+    ],
+    "kind": 4,
+    "light": 0.058026351034641266,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 191,
+    "cell": 26,
+    "world": [
+      15,
+      37
+    ],
+    "kind": 4,
+    "light": 0.058026351034641266,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 191,
+    "cell": 35,
+    "world": [
+      16,
+      37
+    ],
+    "kind": 4,
+    "light": 0.058026351034641266,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 192,
+    "cell": 8,
+    "world": [
+      13,
+      38
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 192,
+    "cell": 17,
+    "world": [
+      14,
+      38
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 192,
+    "cell": 26,
+    "world": [
+      15,
+      38
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 194,
+    "cell": 8,
+    "world": [
+      13,
+      39
+    ],
+    "kind": 4,
+    "light": 0.041426222771406174,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 491,
+    "cell": 27,
+    "world": [
+      18,
+      1
+    ],
+    "kind": 8,
+    "light": 0.058026351034641266,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 491,
+    "cell": 45,
+    "world": [
+      20,
+      1
+    ],
+    "kind": 4,
+    "light": 0.058026351034641266,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 491,
+    "cell": 54,
+    "world": [
+      21,
+      1
+    ],
+    "kind": 4,
+    "light": 0.058026351034641266,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 493,
+    "cell": 45,
+    "world": [
+      20,
+      0
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 493,
+    "cell": 54,
+    "world": [
+      21,
+      0
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 503,
+    "cell": 5,
+    "world": [
+      14,
+      6
+    ],
+    "kind": 9,
+    "light": 0.008034844882786274,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 503,
+    "cell": 6,
+    "world": [
+      14,
+      7
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 503,
+    "cell": 7,
+    "world": [
+      14,
+      8
+    ],
+    "kind": 8,
+    "light": 0.008034844882786274,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 503,
+    "cell": 8,
+    "world": [
+      14,
+      9
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 505,
+    "cell": 6,
+    "world": [
+      13,
+      7
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 505,
+    "cell": 7,
+    "world": [
+      13,
+      8
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 505,
+    "cell": 8,
+    "world": [
+      13,
+      9
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 507,
+    "cell": 7,
+    "world": [
+      12,
+      8
+    ],
+    "kind": 8,
+    "light": 0.0014794965973123908,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 507,
+    "cell": 8,
+    "world": [
+      12,
+      9
+    ],
+    "kind": 4,
+    "light": 0.0014794965973123908,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 508,
+    "cell": 8,
+    "world": [
+      11,
+      9
+    ],
+    "kind": 4,
+    "light": 0.0006577007006853819,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 517,
+    "cell": 35,
+    "world": [
+      10,
+      10
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 517,
+    "cell": 44,
+    "world": [
+      11,
+      10
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 517,
+    "cell": 53,
+    "world": [
+      12,
+      10
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 517,
+    "cell": 62,
+    "world": [
+      13,
+      10
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 519,
+    "cell": 26,
+    "world": [
+      9,
+      11
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 519,
+    "cell": 35,
+    "world": [
+      10,
+      11
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 519,
+    "cell": 44,
+    "world": [
+      11,
+      11
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 519,
+    "cell": 53,
+    "world": [
+      12,
+      11
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 519,
+    "cell": 62,
+    "world": [
+      13,
+      11
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 522,
+    "cell": 61,
+    "world": [
+      14,
+      10
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 522,
+    "cell": 62,
+    "world": [
+      14,
+      11
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 525,
+    "cell": 8,
+    "world": [
+      8,
+      12
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 525,
+    "cell": 17,
+    "world": [
+      9,
+      12
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 525,
+    "cell": 26,
+    "world": [
+      10,
+      12
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 525,
+    "cell": 35,
+    "world": [
+      11,
+      12
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 525,
+    "cell": 44,
+    "world": [
+      12,
+      12
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 525,
+    "cell": 53,
+    "world": [
+      13,
+      12
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 525,
+    "cell": 62,
+    "world": [
+      14,
+      12
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 531,
+    "cell": 61,
+    "world": [
+      15,
+      11
+    ],
+    "kind": 4,
+    "light": 0.07052406668663025,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 52,
+    "time": 531,
+    "cell": 62,
+    "world": [
+      15,
+      12
+    ],
+    "kind": 4,
+    "light": 0.07052406668663025,
+    "shard": 24,
+    "slot": 6
+  },
+  {
+    "episode": 53,
+    "time": 507,
+    "cell": 0,
+    "world": [
+      21,
+      2
+    ],
+    "kind": 8,
+    "light": 0.0014794965973123908,
+    "shard": 25,
+    "slot": 15
+  },
+  {
+    "episode": 53,
+    "time": 507,
+    "cell": 1,
+    "world": [
+      21,
+      3
+    ],
+    "kind": 4,
+    "light": 0.0014794965973123908,
+    "shard": 25,
+    "slot": 15
+  },
+  {
+    "episode": 53,
+    "time": 507,
+    "cell": 2,
+    "world": [
+      21,
+      4
+    ],
+    "kind": 4,
+    "light": 0.0014794965973123908,
+    "shard": 25,
+    "slot": 15
+  },
+  {
+    "episode": 53,
+    "time": 509,
+    "cell": 0,
+    "world": [
+      20,
+      2
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 25,
+    "slot": 15
+  },
+  {
+    "episode": 53,
+    "time": 509,
+    "cell": 1,
+    "world": [
+      20,
+      3
+    ],
+    "kind": 9,
+    "light": 0.0001645028096390888,
+    "shard": 25,
+    "slot": 15
+  },
+  {
+    "episode": 53,
+    "time": 509,
+    "cell": 2,
+    "world": [
+      20,
+      4
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 25,
+    "slot": 15
+  },
+  {
+    "episode": 53,
+    "time": 509,
+    "cell": 3,
+    "world": [
+      20,
+      5
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 25,
+    "slot": 15
+  },
+  {
+    "episode": 53,
+    "time": 511,
+    "cell": 0,
+    "world": [
+      19,
+      2
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 25,
+    "slot": 15
+  },
+  {
+    "episode": 53,
+    "time": 511,
+    "cell": 1,
+    "world": [
+      19,
+      3
+    ],
+    "kind": 8,
+    "light": 0.0001645028096390888,
+    "shard": 25,
+    "slot": 15
+  },
+  {
+    "episode": 53,
+    "time": 511,
+    "cell": 2,
+    "world": [
+      19,
+      4
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 25,
+    "slot": 15
+  },
+  {
+    "episode": 53,
+    "time": 517,
+    "cell": 18,
+    "world": [
+      19,
+      1
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 25,
+    "slot": 15
+  },
+  {
+    "episode": 53,
+    "time": 517,
+    "cell": 27,
+    "world": [
+      20,
+      1
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 25,
+    "slot": 15
+  },
+  {
+    "episode": 53,
+    "time": 517,
+    "cell": 36,
+    "world": [
+      21,
+      1
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 25,
+    "slot": 15
+  },
+  {
+    "episode": 53,
+    "time": 520,
+    "cell": 18,
+    "world": [
+      19,
+      0
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 25,
+    "slot": 15
+  },
+  {
+    "episode": 53,
+    "time": 520,
+    "cell": 27,
+    "world": [
+      20,
+      0
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 25,
+    "slot": 15
+  },
+  {
+    "episode": 53,
+    "time": 520,
+    "cell": 36,
+    "world": [
+      21,
+      0
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 25,
+    "slot": 15
+  },
+  {
+    "episode": 60,
+    "time": 188,
+    "cell": 0,
+    "world": [
+      9,
+      16
+    ],
+    "kind": 4,
+    "light": 0.0771874189376831,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 190,
+    "cell": 0,
+    "world": [
+      9,
+      15
+    ],
+    "kind": 4,
+    "light": 0.06413495540618896,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 202,
+    "cell": 8,
+    "world": [
+      11,
+      29
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 202,
+    "cell": 17,
+    "world": [
+      12,
+      29
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 202,
+    "cell": 26,
+    "world": [
+      13,
+      29
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 202,
+    "cell": 44,
+    "world": [
+      15,
+      29
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 211,
+    "cell": 0,
+    "world": [
+      7,
+      18
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 211,
+    "cell": 1,
+    "world": [
+      7,
+      19
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 211,
+    "cell": 2,
+    "world": [
+      7,
+      20
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 211,
+    "cell": 3,
+    "world": [
+      7,
+      21
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 214,
+    "cell": 0,
+    "world": [
+      6,
+      18
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 214,
+    "cell": 1,
+    "world": [
+      6,
+      19
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 222,
+    "cell": 9,
+    "world": [
+      4,
+      17
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 222,
+    "cell": 27,
+    "world": [
+      6,
+      17
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 222,
+    "cell": 36,
+    "world": [
+      7,
+      17
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 223,
+    "cell": 0,
+    "world": [
+      3,
+      16
+    ],
+    "kind": 9,
+    "light": 0.027500389143824577,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 223,
+    "cell": 9,
+    "world": [
+      4,
+      16
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 223,
+    "cell": 18,
+    "world": [
+      5,
+      16
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 223,
+    "cell": 27,
+    "world": [
+      6,
+      16
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 223,
+    "cell": 36,
+    "world": [
+      7,
+      16
+    ],
+    "kind": 8,
+    "light": 0.027500389143824577,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 223,
+    "cell": 45,
+    "world": [
+      8,
+      16
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 226,
+    "cell": 9,
+    "world": [
+      3,
+      15
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 226,
+    "cell": 18,
+    "world": [
+      4,
+      15
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 226,
+    "cell": 27,
+    "world": [
+      5,
+      15
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 226,
+    "cell": 36,
+    "world": [
+      6,
+      15
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 226,
+    "cell": 45,
+    "world": [
+      7,
+      15
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 226,
+    "cell": 54,
+    "world": [
+      8,
+      15
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 227,
+    "cell": 0,
+    "world": [
+      2,
+      14
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 227,
+    "cell": 9,
+    "world": [
+      3,
+      14
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 227,
+    "cell": 18,
+    "world": [
+      4,
+      14
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 227,
+    "cell": 27,
+    "world": [
+      5,
+      14
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 227,
+    "cell": 36,
+    "world": [
+      6,
+      14
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 227,
+    "cell": 45,
+    "world": [
+      7,
+      14
+    ],
+    "kind": 8,
+    "light": 0.04666764289140701,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 227,
+    "cell": 54,
+    "world": [
+      8,
+      14
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 229,
+    "cell": 0,
+    "world": [
+      2,
+      13
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 229,
+    "cell": 9,
+    "world": [
+      3,
+      13
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 229,
+    "cell": 18,
+    "world": [
+      4,
+      13
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 229,
+    "cell": 27,
+    "world": [
+      5,
+      13
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 229,
+    "cell": 36,
+    "world": [
+      6,
+      13
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 229,
+    "cell": 45,
+    "world": [
+      7,
+      13
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 231,
+    "cell": 0,
+    "world": [
+      2,
+      12
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 231,
+    "cell": 9,
+    "world": [
+      3,
+      12
+    ],
+    "kind": 8,
+    "light": 0.0705237165093422,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 231,
+    "cell": 18,
+    "world": [
+      4,
+      12
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 231,
+    "cell": 27,
+    "world": [
+      5,
+      12
+    ],
+    "kind": 8,
+    "light": 0.0705237165093422,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 231,
+    "cell": 36,
+    "world": [
+      6,
+      12
+    ],
+    "kind": 8,
+    "light": 0.0705237165093422,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 231,
+    "cell": 45,
+    "world": [
+      7,
+      12
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 524,
+    "cell": 60,
+    "world": [
+      16,
+      18
+    ],
+    "kind": 4,
+    "light": 0.03183908015489578,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 60,
+    "time": 532,
+    "cell": 61,
+    "world": [
+      17,
+      18
+    ],
+    "kind": 4,
+    "light": 0.0771879330277443,
+    "shard": 28,
+    "slot": 13
+  },
+  {
+    "episode": 61,
+    "time": 218,
+    "cell": 0,
+    "world": [
+      26,
+      23
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 28,
+    "slot": 19
+  },
+  {
+    "episode": 61,
+    "time": 218,
+    "cell": 1,
+    "world": [
+      26,
+      24
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 28,
+    "slot": 19
+  },
+  {
+    "episode": 61,
+    "time": 220,
+    "cell": 0,
+    "world": [
+      25,
+      23
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 28,
+    "slot": 19
+  },
+  {
+    "episode": 61,
+    "time": 220,
+    "cell": 1,
+    "world": [
+      25,
+      24
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 28,
+    "slot": 19
+  },
+  {
+    "episode": 61,
+    "time": 220,
+    "cell": 2,
+    "world": [
+      25,
+      25
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 28,
+    "slot": 19
+  },
+  {
+    "episode": 61,
+    "time": 220,
+    "cell": 3,
+    "world": [
+      25,
+      26
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 28,
+    "slot": 19
+  },
+  {
+    "episode": 61,
+    "time": 220,
+    "cell": 4,
+    "world": [
+      25,
+      27
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 28,
+    "slot": 19
+  },
+  {
+    "episode": 61,
+    "time": 222,
+    "cell": 0,
+    "world": [
+      24,
+      23
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 28,
+    "slot": 19
+  },
+  {
+    "episode": 61,
+    "time": 222,
+    "cell": 1,
+    "world": [
+      24,
+      24
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 28,
+    "slot": 19
+  },
+  {
+    "episode": 61,
+    "time": 222,
+    "cell": 2,
+    "world": [
+      24,
+      25
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 28,
+    "slot": 19
+  },
+  {
+    "episode": 61,
+    "time": 222,
+    "cell": 3,
+    "world": [
+      24,
+      26
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 28,
+    "slot": 19
+  },
+  {
+    "episode": 61,
+    "time": 222,
+    "cell": 4,
+    "world": [
+      24,
+      27
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 28,
+    "slot": 19
+  },
+  {
+    "episode": 62,
+    "time": 189,
+    "cell": 59,
+    "world": [
+      53,
+      14
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 28,
+    "slot": 21
+  },
+  {
+    "episode": 62,
+    "time": 214,
+    "cell": 26,
+    "world": [
+      54,
+      25
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 28,
+    "slot": 21
+  },
+  {
+    "episode": 62,
+    "time": 215,
+    "cell": 26,
+    "world": [
+      54,
+      26
+    ],
+    "kind": 4,
+    "light": 0.00410580774769187,
+    "shard": 28,
+    "slot": 21
+  },
+  {
+    "episode": 62,
+    "time": 216,
+    "cell": 8,
+    "world": [
+      52,
+      27
+    ],
+    "kind": 8,
+    "light": 0.005908160004764795,
+    "shard": 28,
+    "slot": 21
+  },
+  {
+    "episode": 62,
+    "time": 216,
+    "cell": 17,
+    "world": [
+      53,
+      27
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 28,
+    "slot": 21
+  },
+  {
+    "episode": 62,
+    "time": 216,
+    "cell": 26,
+    "world": [
+      54,
+      27
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 28,
+    "slot": 21
+  },
+  {
+    "episode": 62,
+    "time": 217,
+    "cell": 8,
+    "world": [
+      52,
+      28
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 28,
+    "slot": 21
+  },
+  {
+    "episode": 62,
+    "time": 217,
+    "cell": 17,
+    "world": [
+      53,
+      28
+    ],
+    "kind": 9,
+    "light": 0.0080350236967206,
+    "shard": 28,
+    "slot": 21
+  },
+  {
+    "episode": 62,
+    "time": 217,
+    "cell": 26,
+    "world": [
+      54,
+      28
+    ],
+    "kind": 8,
+    "light": 0.0080350236967206,
+    "shard": 28,
+    "slot": 21
+  },
+  {
+    "episode": 62,
+    "time": 218,
+    "cell": 8,
+    "world": [
+      52,
+      29
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 28,
+    "slot": 21
+  },
+  {
+    "episode": 62,
+    "time": 218,
+    "cell": 17,
+    "world": [
+      53,
+      29
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 28,
+    "slot": 21
+  },
+  {
+    "episode": 62,
+    "time": 218,
+    "cell": 26,
+    "world": [
+      54,
+      29
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 28,
+    "slot": 21
+  },
+  {
+    "episode": 62,
+    "time": 220,
+    "cell": 8,
+    "world": [
+      52,
+      30
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 28,
+    "slot": 21
+  },
+  {
+    "episode": 62,
+    "time": 220,
+    "cell": 17,
+    "world": [
+      53,
+      30
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 28,
+    "slot": 21
+  },
+  {
+    "episode": 63,
+    "time": 194,
+    "cell": 8,
+    "world": [
+      47,
+      36
+    ],
+    "kind": 4,
+    "light": 0.041426222771406174,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 194,
+    "cell": 17,
+    "world": [
+      48,
+      36
+    ],
+    "kind": 4,
+    "light": 0.041426222771406174,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 197,
+    "cell": 8,
+    "world": [
+      47,
+      37
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 197,
+    "cell": 17,
+    "world": [
+      48,
+      37
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 197,
+    "cell": 26,
+    "world": [
+      49,
+      37
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 206,
+    "cell": 7,
+    "world": [
+      46,
+      36
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 206,
+    "cell": 8,
+    "world": [
+      46,
+      37
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 207,
+    "cell": 7,
+    "world": [
+      45,
+      36
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 207,
+    "cell": 8,
+    "world": [
+      45,
+      37
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 219,
+    "cell": 8,
+    "world": [
+      48,
+      38
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 219,
+    "cell": 17,
+    "world": [
+      49,
+      38
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 219,
+    "cell": 26,
+    "world": [
+      50,
+      38
+    ],
+    "kind": 4,
+    "light": 0.013255152851343155,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 221,
+    "cell": 17,
+    "world": [
+      49,
+      39
+    ],
+    "kind": 4,
+    "light": 0.019750306382775307,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 221,
+    "cell": 26,
+    "world": [
+      50,
+      39
+    ],
+    "kind": 4,
+    "light": 0.019750306382775307,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 221,
+    "cell": 35,
+    "world": [
+      51,
+      39
+    ],
+    "kind": 4,
+    "light": 0.019750306382775307,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 221,
+    "cell": 44,
+    "world": [
+      52,
+      39
+    ],
+    "kind": 4,
+    "light": 0.019750306382775307,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 231,
+    "cell": 7,
+    "world": [
+      44,
+      36
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 231,
+    "cell": 8,
+    "world": [
+      44,
+      37
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 492,
+    "cell": 61,
+    "world": [
+      59,
+      29
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 492,
+    "cell": 62,
+    "world": [
+      59,
+      30
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 522,
+    "cell": 62,
+    "world": [
+      62,
+      29
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 63,
+    "time": 821,
+    "cell": 6,
+    "world": [
+      40,
+      26
+    ],
+    "kind": 4,
+    "light": 0.019750306382775307,
+    "shard": 29,
+    "slot": 5
+  },
+  {
+    "episode": 64,
+    "time": 204,
+    "cell": 36,
+    "world": [
+      40,
+      28
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 29,
+    "slot": 14
+  },
+  {
+    "episode": 64,
+    "time": 204,
+    "cell": 45,
+    "world": [
+      41,
+      28
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 29,
+    "slot": 14
+  },
+  {
+    "episode": 65,
+    "time": 198,
+    "cell": 8,
+    "world": [
+      7,
+      10
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 29,
+    "slot": 15
+  },
+  {
+    "episode": 65,
+    "time": 202,
+    "cell": 8,
+    "world": [
+      6,
+      10
+    ],
+    "kind": 8,
+    "light": 0.010484576225280762,
+    "shard": 29,
+    "slot": 15
+  },
+  {
+    "episode": 65,
+    "time": 203,
+    "cell": 8,
+    "world": [
+      5,
+      10
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 29,
+    "slot": 15
+  },
+  {
+    "episode": 65,
+    "time": 204,
+    "cell": 8,
+    "world": [
+      5,
+      11
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 29,
+    "slot": 15
+  },
+  {
+    "episode": 65,
+    "time": 204,
+    "cell": 17,
+    "world": [
+      6,
+      11
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 29,
+    "slot": 15
+  },
+  {
+    "episode": 65,
+    "time": 204,
+    "cell": 26,
+    "world": [
+      7,
+      11
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 29,
+    "slot": 15
+  },
+  {
+    "episode": 65,
+    "time": 204,
+    "cell": 35,
+    "world": [
+      8,
+      11
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 29,
+    "slot": 15
+  },
+  {
+    "episode": 65,
+    "time": 204,
+    "cell": 44,
+    "world": [
+      9,
+      11
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 29,
+    "slot": 15
+  },
+  {
+    "episode": 65,
+    "time": 205,
+    "cell": 8,
+    "world": [
+      5,
+      12
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 29,
+    "slot": 15
+  },
+  {
+    "episode": 65,
+    "time": 205,
+    "cell": 17,
+    "world": [
+      6,
+      12
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 29,
+    "slot": 15
+  },
+  {
+    "episode": 65,
+    "time": 205,
+    "cell": 26,
+    "world": [
+      7,
+      12
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 29,
+    "slot": 15
+  },
+  {
+    "episode": 65,
+    "time": 205,
+    "cell": 35,
+    "world": [
+      8,
+      12
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 29,
+    "slot": 15
+  },
+  {
+    "episode": 65,
+    "time": 205,
+    "cell": 44,
+    "world": [
+      9,
+      12
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 29,
+    "slot": 15
+  },
+  {
+    "episode": 65,
+    "time": 205,
+    "cell": 53,
+    "world": [
+      10,
+      12
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 29,
+    "slot": 15
+  },
+  {
+    "episode": 65,
+    "time": 207,
+    "cell": 44,
+    "world": [
+      9,
+      13
+    ],
+    "kind": 8,
+    "light": 0.0014796752948313951,
+    "shard": 29,
+    "slot": 15
+  },
+  {
+    "episode": 65,
+    "time": 207,
+    "cell": 53,
+    "world": [
+      10,
+      13
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 29,
+    "slot": 15
+  },
+  {
+    "episode": 65,
+    "time": 207,
+    "cell": 62,
+    "world": [
+      11,
+      13
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 29,
+    "slot": 15
+  },
+  {
+    "episode": 70,
+    "time": 188,
+    "cell": 62,
+    "world": [
+      45,
+      43
+    ],
+    "kind": 4,
+    "light": 0.0771874189376831,
+    "shard": 32,
+    "slot": 1
+  },
+  {
+    "episode": 73,
+    "time": 203,
+    "cell": 35,
+    "world": [
+      42,
+      40
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 32,
+    "slot": 15
+  },
+  {
+    "episode": 73,
+    "time": 203,
+    "cell": 44,
+    "world": [
+      43,
+      40
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 32,
+    "slot": 15
+  },
+  {
+    "episode": 73,
+    "time": 203,
+    "cell": 53,
+    "world": [
+      44,
+      40
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 32,
+    "slot": 15
+  },
+  {
+    "episode": 73,
+    "time": 206,
+    "cell": 35,
+    "world": [
+      42,
+      41
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 32,
+    "slot": 15
+  },
+  {
+    "episode": 73,
+    "time": 206,
+    "cell": 44,
+    "world": [
+      43,
+      41
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 32,
+    "slot": 15
+  },
+  {
+    "episode": 73,
+    "time": 206,
+    "cell": 53,
+    "world": [
+      44,
+      41
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 32,
+    "slot": 15
+  },
+  {
+    "episode": 73,
+    "time": 206,
+    "cell": 62,
+    "world": [
+      45,
+      41
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 32,
+    "slot": 15
+  },
+  {
+    "episode": 73,
+    "time": 222,
+    "cell": 60,
+    "world": [
+      48,
+      36
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 32,
+    "slot": 15
+  },
+  {
+    "episode": 73,
+    "time": 223,
+    "cell": 60,
+    "world": [
+      49,
+      36
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 32,
+    "slot": 15
+  },
+  {
+    "episode": 73,
+    "time": 224,
+    "cell": 60,
+    "world": [
+      50,
+      36
+    ],
+    "kind": 4,
+    "light": 0.03183908015489578,
+    "shard": 32,
+    "slot": 15
+  },
+  {
+    "episode": 75,
+    "time": 190,
+    "cell": 62,
+    "world": [
+      40,
+      47
+    ],
+    "kind": 4,
+    "light": 0.06413495540618896,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 192,
+    "cell": 62,
+    "world": [
+      41,
+      47
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 195,
+    "cell": 61,
+    "world": [
+      42,
+      46
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 195,
+    "cell": 62,
+    "world": [
+      42,
+      47
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 196,
+    "cell": 61,
+    "world": [
+      43,
+      46
+    ],
+    "kind": 4,
+    "light": 0.031838905066251755,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 197,
+    "cell": 60,
+    "world": [
+      44,
+      45
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 197,
+    "cell": 61,
+    "world": [
+      44,
+      46
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 197,
+    "cell": 62,
+    "world": [
+      44,
+      47
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 200,
+    "cell": 60,
+    "world": [
+      45,
+      45
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 200,
+    "cell": 61,
+    "world": [
+      45,
+      46
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 200,
+    "cell": 62,
+    "world": [
+      45,
+      47
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 214,
+    "cell": 59,
+    "world": [
+      46,
+      44
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 214,
+    "cell": 60,
+    "world": [
+      46,
+      45
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 214,
+    "cell": 61,
+    "world": [
+      46,
+      46
+    ],
+    "kind": 9,
+    "light": 0.0026291129179298878,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 217,
+    "cell": 61,
+    "world": [
+      47,
+      44
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 217,
+    "cell": 62,
+    "world": [
+      47,
+      45
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 218,
+    "cell": 61,
+    "world": [
+      48,
+      44
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 218,
+    "cell": 62,
+    "world": [
+      48,
+      45
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 220,
+    "cell": 61,
+    "world": [
+      49,
+      44
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 221,
+    "cell": 61,
+    "world": [
+      50,
+      44
+    ],
+    "kind": 4,
+    "light": 0.019750306382775307,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 230,
+    "cell": 59,
+    "world": [
+      52,
+      40
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 230,
+    "cell": 60,
+    "world": [
+      52,
+      41
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 230,
+    "cell": 61,
+    "world": [
+      52,
+      42
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 230,
+    "cell": 62,
+    "world": [
+      52,
+      43
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 231,
+    "cell": 54,
+    "world": [
+      52,
+      34
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 232,
+    "cell": 45,
+    "world": [
+      51,
+      33
+    ],
+    "kind": 4,
+    "light": 0.07718759030103683,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 75,
+    "time": 232,
+    "cell": 54,
+    "world": [
+      52,
+      33
+    ],
+    "kind": 4,
+    "light": 0.07718759030103683,
+    "shard": 33,
+    "slot": 21
+  },
+  {
+    "episode": 77,
+    "time": 197,
+    "cell": 54,
+    "world": [
+      40,
+      19
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 34,
+    "slot": 10
+  },
+  {
+    "episode": 84,
+    "time": 196,
+    "cell": 0,
+    "world": [
+      14,
+      28
+    ],
+    "kind": 4,
+    "light": 0.031838905066251755,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 196,
+    "cell": 1,
+    "world": [
+      14,
+      29
+    ],
+    "kind": 4,
+    "light": 0.031838905066251755,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 196,
+    "cell": 2,
+    "world": [
+      14,
+      30
+    ],
+    "kind": 4,
+    "light": 0.031838905066251755,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 197,
+    "cell": 18,
+    "world": [
+      16,
+      27
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 197,
+    "cell": 27,
+    "world": [
+      17,
+      27
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 197,
+    "cell": 36,
+    "world": [
+      18,
+      27
+    ],
+    "kind": 4,
+    "light": 0.027500389143824577,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 201,
+    "cell": 2,
+    "world": [
+      13,
+      29
+    ],
+    "kind": 4,
+    "light": 0.013254975900053978,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 201,
+    "cell": 3,
+    "world": [
+      13,
+      30
+    ],
+    "kind": 4,
+    "light": 0.013254975900053978,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 202,
+    "cell": 0,
+    "world": [
+      12,
+      27
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 202,
+    "cell": 1,
+    "world": [
+      12,
+      28
+    ],
+    "kind": 8,
+    "light": 0.010484576225280762,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 202,
+    "cell": 2,
+    "world": [
+      12,
+      29
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 202,
+    "cell": 3,
+    "world": [
+      12,
+      30
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 202,
+    "cell": 4,
+    "world": [
+      12,
+      31
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 204,
+    "cell": 0,
+    "world": [
+      11,
+      27
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 204,
+    "cell": 1,
+    "world": [
+      11,
+      28
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 204,
+    "cell": 2,
+    "world": [
+      11,
+      29
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 204,
+    "cell": 3,
+    "world": [
+      11,
+      30
+    ],
+    "kind": 9,
+    "light": 0.005908160004764795,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 204,
+    "cell": 4,
+    "world": [
+      11,
+      31
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 204,
+    "cell": 5,
+    "world": [
+      11,
+      32
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 210,
+    "cell": 0,
+    "world": [
+      10,
+      27
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 210,
+    "cell": 1,
+    "world": [
+      10,
+      28
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 210,
+    "cell": 2,
+    "world": [
+      10,
+      29
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 210,
+    "cell": 3,
+    "world": [
+      10,
+      30
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 210,
+    "cell": 4,
+    "world": [
+      10,
+      31
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 210,
+    "cell": 5,
+    "world": [
+      10,
+      32
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 210,
+    "cell": 6,
+    "world": [
+      10,
+      33
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 213,
+    "cell": 0,
+    "world": [
+      9,
+      28
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 213,
+    "cell": 1,
+    "world": [
+      9,
+      29
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 213,
+    "cell": 2,
+    "world": [
+      9,
+      30
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 213,
+    "cell": 3,
+    "world": [
+      9,
+      31
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 213,
+    "cell": 4,
+    "world": [
+      9,
+      32
+    ],
+    "kind": 9,
+    "light": 0.0014796752948313951,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 213,
+    "cell": 5,
+    "world": [
+      9,
+      33
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 213,
+    "cell": 6,
+    "world": [
+      9,
+      34
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 213,
+    "cell": 7,
+    "world": [
+      9,
+      35
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 218,
+    "cell": 0,
+    "world": [
+      8,
+      28
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 218,
+    "cell": 1,
+    "world": [
+      8,
+      29
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 218,
+    "cell": 2,
+    "world": [
+      8,
+      30
+    ],
+    "kind": 8,
+    "light": 0.010484576225280762,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 218,
+    "cell": 3,
+    "world": [
+      8,
+      31
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 218,
+    "cell": 4,
+    "world": [
+      8,
+      32
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 218,
+    "cell": 5,
+    "world": [
+      8,
+      33
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 218,
+    "cell": 6,
+    "world": [
+      8,
+      34
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 218,
+    "cell": 7,
+    "world": [
+      8,
+      35
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 84,
+    "time": 218,
+    "cell": 8,
+    "world": [
+      8,
+      36
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 37,
+    "slot": 20
+  },
+  {
+    "episode": 87,
+    "time": 196,
+    "cell": 62,
+    "world": [
+      44,
+      34
+    ],
+    "kind": 4,
+    "light": 0.031838905066251755,
+    "shard": 38,
+    "slot": 9
+  },
+  {
+    "episode": 87,
+    "time": 205,
+    "cell": 62,
+    "world": [
+      45,
+      34
+    ],
+    "kind": 4,
+    "light": 0.0041056289337575436,
+    "shard": 38,
+    "slot": 9
+  },
+  {
+    "episode": 87,
+    "time": 207,
+    "cell": 26,
+    "world": [
+      42,
+      35
+    ],
+    "kind": 8,
+    "light": 0.0014796752948313951,
+    "shard": 38,
+    "slot": 9
+  },
+  {
+    "episode": 87,
+    "time": 207,
+    "cell": 35,
+    "world": [
+      43,
+      35
+    ],
+    "kind": 8,
+    "light": 0.0014796752948313951,
+    "shard": 38,
+    "slot": 9
+  },
+  {
+    "episode": 87,
+    "time": 207,
+    "cell": 44,
+    "world": [
+      44,
+      35
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 38,
+    "slot": 9
+  },
+  {
+    "episode": 87,
+    "time": 207,
+    "cell": 53,
+    "world": [
+      45,
+      35
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 38,
+    "slot": 9
+  },
+  {
+    "episode": 87,
+    "time": 207,
+    "cell": 62,
+    "world": [
+      46,
+      35
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 38,
+    "slot": 9
+  },
+  {
+    "episode": 87,
+    "time": 209,
+    "cell": 62,
+    "world": [
+      47,
+      35
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 38,
+    "slot": 9
+  },
+  {
+    "episode": 93,
+    "time": 189,
+    "cell": 57,
+    "world": [
+      48,
+      26
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 189,
+    "cell": 58,
+    "world": [
+      48,
+      27
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 194,
+    "cell": 59,
+    "world": [
+      49,
+      26
+    ],
+    "kind": 4,
+    "light": 0.041426222771406174,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 224,
+    "cell": 62,
+    "world": [
+      50,
+      25
+    ],
+    "kind": 4,
+    "light": 0.03183908015489578,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 227,
+    "cell": 54,
+    "world": [
+      51,
+      16
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 227,
+    "cell": 62,
+    "world": [
+      51,
+      24
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 229,
+    "cell": 54,
+    "world": [
+      51,
+      15
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 230,
+    "cell": 54,
+    "world": [
+      52,
+      15
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 230,
+    "cell": 55,
+    "world": [
+      52,
+      16
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 230,
+    "cell": 56,
+    "world": [
+      52,
+      17
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 230,
+    "cell": 57,
+    "world": [
+      52,
+      18
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 230,
+    "cell": 58,
+    "world": [
+      52,
+      19
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 230,
+    "cell": 59,
+    "world": [
+      52,
+      20
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 230,
+    "cell": 60,
+    "world": [
+      52,
+      21
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 230,
+    "cell": 61,
+    "world": [
+      52,
+      22
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 232,
+    "cell": 45,
+    "world": [
+      51,
+      14
+    ],
+    "kind": 4,
+    "light": 0.07718759030103683,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 232,
+    "cell": 54,
+    "world": [
+      52,
+      14
+    ],
+    "kind": 4,
+    "light": 0.07718759030103683,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 1389,
+    "cell": 2,
+    "world": [
+      34,
+      9
+    ],
+    "kind": 4,
+    "light": 0.07052337378263474,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 1389,
+    "cell": 3,
+    "world": [
+      34,
+      10
+    ],
+    "kind": 4,
+    "light": 0.07052337378263474,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 1389,
+    "cell": 4,
+    "world": [
+      34,
+      11
+    ],
+    "kind": 4,
+    "light": 0.07052337378263474,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 1389,
+    "cell": 5,
+    "world": [
+      34,
+      12
+    ],
+    "kind": 4,
+    "light": 0.07052337378263474,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 1391,
+    "cell": 4,
+    "world": [
+      33,
+      11
+    ],
+    "kind": 4,
+    "light": 0.05802617594599724,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 93,
+    "time": 1391,
+    "cell": 5,
+    "world": [
+      33,
+      12
+    ],
+    "kind": 4,
+    "light": 0.05802617594599724,
+    "shard": 40,
+    "slot": 10
+  },
+  {
+    "episode": 94,
+    "time": 225,
+    "cell": 54,
+    "world": [
+      36,
+      25
+    ],
+    "kind": 4,
+    "light": 0.03648205101490021,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 226,
+    "cell": 54,
+    "world": [
+      37,
+      25
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 227,
+    "cell": 45,
+    "world": [
+      36,
+      24
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 227,
+    "cell": 54,
+    "world": [
+      37,
+      24
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 228,
+    "cell": 45,
+    "world": [
+      36,
+      23
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 228,
+    "cell": 54,
+    "world": [
+      37,
+      23
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 229,
+    "cell": 54,
+    "world": [
+      37,
+      22
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 230,
+    "cell": 54,
+    "world": [
+      37,
+      21
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 231,
+    "cell": 45,
+    "world": [
+      36,
+      20
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 231,
+    "cell": 54,
+    "world": [
+      37,
+      20
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 517,
+    "cell": 0,
+    "world": [
+      12,
+      36
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 520,
+    "cell": 0,
+    "world": [
+      12,
+      35
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 521,
+    "cell": 0,
+    "world": [
+      12,
+      34
+    ],
+    "kind": 4,
+    "light": 0.019750306382775307,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 521,
+    "cell": 9,
+    "world": [
+      13,
+      34
+    ],
+    "kind": 4,
+    "light": 0.019750306382775307,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 522,
+    "cell": 0,
+    "world": [
+      12,
+      33
+    ],
+    "kind": 4,
+    "light": 0.023469798266887665,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 522,
+    "cell": 9,
+    "world": [
+      13,
+      33
+    ],
+    "kind": 9,
+    "light": 0.023469798266887665,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 526,
+    "cell": 0,
+    "world": [
+      11,
+      33
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 526,
+    "cell": 1,
+    "world": [
+      11,
+      34
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 526,
+    "cell": 2,
+    "world": [
+      11,
+      35
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 526,
+    "cell": 3,
+    "world": [
+      11,
+      36
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 526,
+    "cell": 4,
+    "world": [
+      11,
+      37
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 527,
+    "cell": 0,
+    "world": [
+      10,
+      33
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 527,
+    "cell": 4,
+    "world": [
+      10,
+      37
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 527,
+    "cell": 5,
+    "world": [
+      10,
+      38
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 529,
+    "cell": 0,
+    "world": [
+      10,
+      32
+    ],
+    "kind": 4,
+    "light": 0.058026526123285294,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 529,
+    "cell": 9,
+    "world": [
+      11,
+      32
+    ],
+    "kind": 4,
+    "light": 0.058026526123285294,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 529,
+    "cell": 18,
+    "world": [
+      12,
+      32
+    ],
+    "kind": 4,
+    "light": 0.058026526123285294,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 94,
+    "time": 529,
+    "cell": 27,
+    "world": [
+      13,
+      32
+    ],
+    "kind": 4,
+    "light": 0.058026526123285294,
+    "shard": 40,
+    "slot": 14
+  },
+  {
+    "episode": 95,
+    "time": 188,
+    "cell": 1,
+    "world": [
+      35,
+      23
+    ],
+    "kind": 4,
+    "light": 0.0771874189376831,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 188,
+    "cell": 2,
+    "world": [
+      35,
+      24
+    ],
+    "kind": 4,
+    "light": 0.0771874189376831,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 190,
+    "cell": 1,
+    "world": [
+      34,
+      22
+    ],
+    "kind": 4,
+    "light": 0.06413495540618896,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 190,
+    "cell": 2,
+    "world": [
+      34,
+      23
+    ],
+    "kind": 4,
+    "light": 0.06413495540618896,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 190,
+    "cell": 3,
+    "world": [
+      34,
+      24
+    ],
+    "kind": 4,
+    "light": 0.06413495540618896,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 192,
+    "cell": 2,
+    "world": [
+      33,
+      23
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 192,
+    "cell": 3,
+    "world": [
+      33,
+      24
+    ],
+    "kind": 4,
+    "light": 0.052202630788087845,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 194,
+    "cell": 1,
+    "world": [
+      32,
+      22
+    ],
+    "kind": 4,
+    "light": 0.041426222771406174,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 194,
+    "cell": 2,
+    "world": [
+      32,
+      23
+    ],
+    "kind": 4,
+    "light": 0.041426222771406174,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 202,
+    "cell": 18,
+    "world": [
+      29,
+      20
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 202,
+    "cell": 27,
+    "world": [
+      30,
+      20
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 202,
+    "cell": 36,
+    "world": [
+      31,
+      20
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 212,
+    "cell": 36,
+    "world": [
+      28,
+      19
+    ],
+    "kind": 4,
+    "light": 0.0006578794564120471,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 212,
+    "cell": 45,
+    "world": [
+      29,
+      19
+    ],
+    "kind": 4,
+    "light": 0.0006578794564120471,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 212,
+    "cell": 54,
+    "world": [
+      30,
+      19
+    ],
+    "kind": 4,
+    "light": 0.0006578794564120471,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 213,
+    "cell": 36,
+    "world": [
+      28,
+      18
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 213,
+    "cell": 45,
+    "world": [
+      29,
+      18
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 214,
+    "cell": 27,
+    "world": [
+      27,
+      17
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 214,
+    "cell": 36,
+    "world": [
+      28,
+      17
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 214,
+    "cell": 45,
+    "world": [
+      29,
+      17
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 215,
+    "cell": 27,
+    "world": [
+      27,
+      16
+    ],
+    "kind": 4,
+    "light": 0.00410580774769187,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 215,
+    "cell": 36,
+    "world": [
+      28,
+      16
+    ],
+    "kind": 4,
+    "light": 0.00410580774769187,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 217,
+    "cell": 2,
+    "world": [
+      22,
+      18
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 232,
+    "cell": 27,
+    "world": [
+      21,
+      18
+    ],
+    "kind": 4,
+    "light": 0.07718759030103683,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 501,
+    "cell": 60,
+    "world": [
+      13,
+      6
+    ],
+    "kind": 4,
+    "light": 0.013254975900053978,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 501,
+    "cell": 61,
+    "world": [
+      13,
+      7
+    ],
+    "kind": 4,
+    "light": 0.013254975900053978,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 501,
+    "cell": 62,
+    "world": [
+      13,
+      8
+    ],
+    "kind": 4,
+    "light": 0.013254975900053978,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 502,
+    "cell": 58,
+    "world": [
+      14,
+      4
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 502,
+    "cell": 60,
+    "world": [
+      14,
+      6
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 502,
+    "cell": 61,
+    "world": [
+      14,
+      7
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 502,
+    "cell": 62,
+    "world": [
+      14,
+      8
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 503,
+    "cell": 58,
+    "world": [
+      15,
+      4
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 503,
+    "cell": 59,
+    "world": [
+      15,
+      5
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 503,
+    "cell": 60,
+    "world": [
+      15,
+      6
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 503,
+    "cell": 61,
+    "world": [
+      15,
+      7
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 503,
+    "cell": 62,
+    "world": [
+      15,
+      8
+    ],
+    "kind": 4,
+    "light": 0.008034844882786274,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 507,
+    "cell": 59,
+    "world": [
+      16,
+      4
+    ],
+    "kind": 4,
+    "light": 0.0014794965973123908,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 507,
+    "cell": 60,
+    "world": [
+      16,
+      5
+    ],
+    "kind": 4,
+    "light": 0.0014794965973123908,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 507,
+    "cell": 61,
+    "world": [
+      16,
+      6
+    ],
+    "kind": 4,
+    "light": 0.0014794965973123908,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 507,
+    "cell": 62,
+    "world": [
+      16,
+      7
+    ],
+    "kind": 4,
+    "light": 0.0014794965973123908,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 508,
+    "cell": 58,
+    "world": [
+      17,
+      3
+    ],
+    "kind": 4,
+    "light": 0.0006577007006853819,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 508,
+    "cell": 59,
+    "world": [
+      17,
+      4
+    ],
+    "kind": 4,
+    "light": 0.0006577007006853819,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 508,
+    "cell": 60,
+    "world": [
+      17,
+      5
+    ],
+    "kind": 4,
+    "light": 0.0006577007006853819,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 510,
+    "cell": 58,
+    "world": [
+      18,
+      3
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 510,
+    "cell": 59,
+    "world": [
+      18,
+      4
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 511,
+    "cell": 58,
+    "world": [
+      19,
+      3
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 511,
+    "cell": 59,
+    "world": [
+      19,
+      4
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 513,
+    "cell": 58,
+    "world": [
+      20,
+      3
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 513,
+    "cell": 59,
+    "world": [
+      20,
+      4
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 515,
+    "cell": 57,
+    "world": [
+      21,
+      2
+    ],
+    "kind": 4,
+    "light": 0.00410580774769187,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 515,
+    "cell": 58,
+    "world": [
+      21,
+      3
+    ],
+    "kind": 8,
+    "light": 0.00410580774769187,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 515,
+    "cell": 59,
+    "world": [
+      21,
+      4
+    ],
+    "kind": 4,
+    "light": 0.00410580774769187,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 517,
+    "cell": 57,
+    "world": [
+      22,
+      2
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 517,
+    "cell": 58,
+    "world": [
+      22,
+      3
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 517,
+    "cell": 59,
+    "world": [
+      22,
+      4
+    ],
+    "kind": 4,
+    "light": 0.0080350236967206,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 524,
+    "cell": 58,
+    "world": [
+      23,
+      3
+    ],
+    "kind": 4,
+    "light": 0.03183908015489578,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 524,
+    "cell": 59,
+    "world": [
+      23,
+      4
+    ],
+    "kind": 4,
+    "light": 0.03183908015489578,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 526,
+    "cell": 58,
+    "world": [
+      24,
+      3
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 526,
+    "cell": 59,
+    "world": [
+      24,
+      4
+    ],
+    "kind": 4,
+    "light": 0.0414263978600502,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 528,
+    "cell": 58,
+    "world": [
+      25,
+      3
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 528,
+    "cell": 59,
+    "world": [
+      25,
+      4
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 532,
+    "cell": 58,
+    "world": [
+      26,
+      3
+    ],
+    "kind": 4,
+    "light": 0.0771879330277443,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 532,
+    "cell": 59,
+    "world": [
+      26,
+      4
+    ],
+    "kind": 4,
+    "light": 0.0771879330277443,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 532,
+    "cell": 60,
+    "world": [
+      26,
+      5
+    ],
+    "kind": 4,
+    "light": 0.0771879330277443,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 1422,
+    "cell": 4,
+    "world": [
+      29,
+      49
+    ],
+    "kind": 4,
+    "light": 0.02347015216946602,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 1422,
+    "cell": 5,
+    "world": [
+      29,
+      50
+    ],
+    "kind": 4,
+    "light": 0.02347015216946602,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 1422,
+    "cell": 6,
+    "world": [
+      29,
+      51
+    ],
+    "kind": 4,
+    "light": 0.02347015216946602,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 1422,
+    "cell": 7,
+    "world": [
+      29,
+      52
+    ],
+    "kind": 4,
+    "light": 0.02347015216946602,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 1428,
+    "cell": 0,
+    "world": [
+      28,
+      48
+    ],
+    "kind": 4,
+    "light": 0.0522029772400856,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 1428,
+    "cell": 1,
+    "world": [
+      28,
+      49
+    ],
+    "kind": 4,
+    "light": 0.0522029772400856,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 1428,
+    "cell": 2,
+    "world": [
+      28,
+      50
+    ],
+    "kind": 4,
+    "light": 0.0522029772400856,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 1428,
+    "cell": 3,
+    "world": [
+      28,
+      51
+    ],
+    "kind": 8,
+    "light": 0.0522029772400856,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 1428,
+    "cell": 4,
+    "world": [
+      28,
+      52
+    ],
+    "kind": 4,
+    "light": 0.0522029772400856,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 1432,
+    "cell": 1,
+    "world": [
+      27,
+      50
+    ],
+    "kind": 4,
+    "light": 0.0771879330277443,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 1432,
+    "cell": 2,
+    "world": [
+      27,
+      51
+    ],
+    "kind": 4,
+    "light": 0.0771879330277443,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 1432,
+    "cell": 3,
+    "world": [
+      27,
+      52
+    ],
+    "kind": 4,
+    "light": 0.0771879330277443,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 1432,
+    "cell": 5,
+    "world": [
+      27,
+      54
+    ],
+    "kind": 4,
+    "light": 0.0771879330277443,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 95,
+    "time": 1432,
+    "cell": 6,
+    "world": [
+      27,
+      55
+    ],
+    "kind": 4,
+    "light": 0.0771879330277443,
+    "shard": 40,
+    "slot": 23
+  },
+  {
+    "episode": 96,
+    "time": 201,
+    "cell": 3,
+    "world": [
+      25,
+      27
+    ],
+    "kind": 9,
+    "light": 0.013254975900053978,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 209,
+    "cell": 26,
+    "world": [
+      28,
+      37
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 210,
+    "cell": 26,
+    "world": [
+      28,
+      38
+    ],
+    "kind": 4,
+    "light": 0.0,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 210,
+    "cell": 35,
+    "world": [
+      29,
+      38
+    ],
+    "kind": 8,
+    "light": 0.0,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 211,
+    "cell": 17,
+    "world": [
+      27,
+      39
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 211,
+    "cell": 26,
+    "world": [
+      28,
+      39
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 211,
+    "cell": 35,
+    "world": [
+      29,
+      39
+    ],
+    "kind": 4,
+    "light": 0.0001645028096390888,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 213,
+    "cell": 0,
+    "world": [
+      24,
+      31
+    ],
+    "kind": 4,
+    "light": 0.0014796752948313951,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 214,
+    "cell": 0,
+    "world": [
+      23,
+      31
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 214,
+    "cell": 1,
+    "world": [
+      23,
+      32
+    ],
+    "kind": 4,
+    "light": 0.0026291129179298878,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 216,
+    "cell": 0,
+    "world": [
+      22,
+      31
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 216,
+    "cell": 1,
+    "world": [
+      22,
+      32
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 216,
+    "cell": 2,
+    "world": [
+      22,
+      33
+    ],
+    "kind": 4,
+    "light": 0.005908160004764795,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 218,
+    "cell": 1,
+    "world": [
+      21,
+      32
+    ],
+    "kind": 4,
+    "light": 0.010484576225280762,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 220,
+    "cell": 53,
+    "world": [
+      26,
+      40
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 220,
+    "cell": 62,
+    "world": [
+      27,
+      40
+    ],
+    "kind": 4,
+    "light": 0.01634441688656807,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 227,
+    "cell": 2,
+    "world": [
+      20,
+      33
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 227,
+    "cell": 3,
+    "world": [
+      20,
+      34
+    ],
+    "kind": 4,
+    "light": 0.04666764289140701,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 228,
+    "cell": 27,
+    "world": [
+      23,
+      30
+    ],
+    "kind": 8,
+    "light": 0.05220245569944382,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 228,
+    "cell": 36,
+    "world": [
+      24,
+      30
+    ],
+    "kind": 4,
+    "light": 0.05220245569944382,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 229,
+    "cell": 4,
+    "world": [
+      19,
+      34
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 229,
+    "cell": 5,
+    "world": [
+      19,
+      35
+    ],
+    "kind": 4,
+    "light": 0.05802669748663902,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 230,
+    "cell": 4,
+    "world": [
+      18,
+      34
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 230,
+    "cell": 5,
+    "world": [
+      18,
+      35
+    ],
+    "kind": 4,
+    "light": 0.06413529813289642,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 231,
+    "cell": 45,
+    "world": [
+      23,
+      29
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 96,
+    "time": 231,
+    "cell": 54,
+    "world": [
+      24,
+      29
+    ],
+    "kind": 4,
+    "light": 0.0705237165093422,
+    "shard": 41,
+    "slot": 8
+  },
+  {
+    "episode": 102,
+    "time": 188,
+    "cell": 4,
+    "world": [
+      29,
+      42
+    ],
+    "kind": 4,
+    "light": 0.0771874189376831,
+    "shard": 42,
+    "slot": 17
+  },
+  {
+    "episode": 102,
+    "time": 188,
+    "cell": 5,
+    "world": [
+      29,
+      43
+    ],
+    "kind": 4,
+    "light": 0.0771874189376831,
+    "shard": 42,
+    "slot": 17
+  },
+  {
+    "episode": 102,
+    "time": 188,
+    "cell": 6,
+    "world": [
+      29,
+      44
+    ],
+    "kind": 8,
+    "light": 0.0771874189376831,
+    "shard": 42,
+    "slot": 17
+  },
+  {
+    "episode": 102,
+    "time": 188,
+    "cell": 7,
+    "world": [
+      29,
+      45
+    ],
+    "kind": 4,
+    "light": 0.0771874189376831,
+    "shard": 42,
+    "slot": 17
+  }
+]

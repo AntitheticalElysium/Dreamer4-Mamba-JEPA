@@ -1,0 +1,170 @@
+{
+  "flat_0_coarse_tsp": {
+    "curve": [
+      {
+        "step": 1,
+        "loss": 3.000798225402832,
+        "gradient_norm": 1.9988759756088257
+      },
+      {
+        "step": 301,
+        "loss": 0.8991560935974121,
+        "gradient_norm": 19.963499069213867
+      },
+      {
+        "step": 601,
+        "loss": 0.12262595444917679,
+        "gradient_norm": 1.3863561153411865
+      },
+      {
+        "step": 901,
+        "loss": 0.225266233086586,
+        "gradient_norm": 4.8849945068359375
+      },
+      {
+        "step": 1200,
+        "loss": 0.07865509390830994,
+        "gradient_norm": 1.5858491659164429
+      }
+    ],
+    "seconds": 12.91091275215149,
+    "new_calibration_nll": {
+      "kind": 0.03936988487839699,
+      "heading": 1.061366081237793
+    },
+    "old_calibration_nll": {
+      "kind": 0.036558184772729874,
+      "heading": 1.0934303998947144
+    },
+    "chosen_by_task": {
+      "kind": "flat_0_coarse",
+      "heading": "flat_0_coarse_tsp"
+    }
+  },
+  "flat_1_coarse_tsp": {
+    "curve": [
+      {
+        "step": 1,
+        "loss": 2.992872953414917,
+        "gradient_norm": 1.7608036994934082
+      },
+      {
+        "step": 301,
+        "loss": 0.6015934944152832,
+        "gradient_norm": 6.845432758331299
+      },
+      {
+        "step": 601,
+        "loss": 0.2527869939804077,
+        "gradient_norm": 5.527715682983398
+      },
+      {
+        "step": 901,
+        "loss": 0.14317898452281952,
+        "gradient_norm": 3.0092055797576904
+      },
+      {
+        "step": 1200,
+        "loss": 0.139733225107193,
+        "gradient_norm": 4.306424617767334
+      }
+    ],
+    "seconds": 12.716383934020996,
+    "new_calibration_nll": {
+      "kind": 0.03357440233230591,
+      "heading": 1.0087820291519165
+    },
+    "old_calibration_nll": {
+      "kind": 0.03404703736305237,
+      "heading": 1.0124536752700806
+    },
+    "chosen_by_task": {
+      "kind": "flat_1_coarse_tsp",
+      "heading": "flat_1_coarse_tsp"
+    }
+  },
+  "split_0_coarse_tsp": {
+    "curve": [
+      {
+        "step": 1,
+        "loss": 2.988467216491699,
+        "gradient_norm": 0.5446078181266785
+      },
+      {
+        "step": 301,
+        "loss": 0.08697275817394257,
+        "gradient_norm": 1.198568344116211
+      },
+      {
+        "step": 601,
+        "loss": 0.02376990206539631,
+        "gradient_norm": 0.4906919300556183
+      },
+      {
+        "step": 901,
+        "loss": 0.0431554839015007,
+        "gradient_norm": 1.2116894721984863
+      },
+      {
+        "step": 1200,
+        "loss": 0.027371518313884735,
+        "gradient_norm": 0.5045458674430847
+      }
+    ],
+    "seconds": 11.81018352508545,
+    "new_calibration_nll": {
+      "kind": 0.012453150004148483,
+      "heading": 0.8972890377044678
+    },
+    "old_calibration_nll": {
+      "kind": 0.012537315487861633,
+      "heading": 0.9146451950073242
+    },
+    "chosen_by_task": {
+      "kind": "split_0_coarse_tsp",
+      "heading": "split_0_coarse_tsp"
+    }
+  },
+  "split_1_coarse_tsp": {
+    "curve": [
+      {
+        "step": 1,
+        "loss": 3.0031142234802246,
+        "gradient_norm": 0.45423412322998047
+      },
+      {
+        "step": 301,
+        "loss": 0.08173636347055435,
+        "gradient_norm": 0.8818915486335754
+      },
+      {
+        "step": 601,
+        "loss": 0.046401072293519974,
+        "gradient_norm": 0.8139590620994568
+      },
+      {
+        "step": 901,
+        "loss": 0.031209584325551987,
+        "gradient_norm": 0.8792212605476379
+      },
+      {
+        "step": 1200,
+        "loss": 0.006872864440083504,
+        "gradient_norm": 0.18445739150047302
+      }
+    ],
+    "seconds": 11.8308265209198,
+    "new_calibration_nll": {
+      "kind": 0.012022776529192924,
+      "heading": 0.8615626692771912
+    },
+    "old_calibration_nll": {
+      "kind": 0.0120702488347888,
+      "heading": 0.8743668794631958
+    },
+    "chosen_by_task": {
+      "kind": "split_1_coarse_tsp",
+      "heading": "split_1_coarse_tsp"
+    }
+  }
+}

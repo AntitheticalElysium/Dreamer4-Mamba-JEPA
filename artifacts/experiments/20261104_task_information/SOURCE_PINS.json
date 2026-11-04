@@ -1,0 +1,16 @@
+{
+  "checkpoint_sha256": "34bda77fe5ec5226c4f003301c972d918e2d4a4a554a5a6f279fcabbe922b045",
+  "files": {
+    "artifacts/experiments/20261104_task_information/tsp.py": "0d5df3363bdc2d7df8d4af3b6a3f28b8d9290b8c2982b5508ca42bedfee6c900",
+    "artifacts/experiments/20261104_task_information/prepare.py": "6ea84149386a01725552fda3252b6c97b6dd374e49d74ff7064bd847d2466830",
+    "artifacts/experiments/20261104_task_information/fit.py": "19b85644d174fcb5c898a493edaaa8813ee7fa54e87f5837e8cbfddb3f3cd3d3",
+    "artifacts/experiments/20261104_task_information/PLAN.md": "2a4f844296be48cd207f5e7d5c5ed8f0ae1f291538179c90364bf5717a69bcd2",
+    "saccade/model.py": "5b63fb341fd5d9d983c2de7ccebcbc04a2e33182c13cc35a12e65c84954c76d3",
+    "artifacts/experiments/20261104_fine_causal_design/test_native.py": "b4b45c731a11f31cf579f63a3c8a53bb91dc6dc10c14d1f675d263865942b54f",
+    "artifacts/experiments/20261104_task_information/train_raw.pt": "42faff9d44f6435d2e9743a8a3c241027e32f9fcc2f8dde61c167d8764350f12",
+    "artifacts/experiments/20261104_task_information/train_tsp.pt": "cc4714c5ef94c2138d95fe328988dca88a39887455c8472779474dd441d296a8",
+    "artifacts/experiments/20261104_task_information/dev_raw.pt": "4fa9e198a77cd056955f56423b59796d036ec88ea654689c7a9398aa157e9b21",
+    "artifacts/experiments/20261104_task_information/dev_tsp.pt": "e1c57e3a8ec3dfe1093f3781574a5d5ec5e88d71400e37b5a27520c610e8fc56"
+  },
+  "declaration": "Before full fitting outputs. Smoke used only for contracts and runtime. No native world training."
+}
