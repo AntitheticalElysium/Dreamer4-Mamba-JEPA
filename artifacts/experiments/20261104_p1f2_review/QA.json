@@ -1,0 +1,7 @@
+{
+  "original_trace_entity_rates_exact": true,
+  "counter_population_original_estimator_parity_exact": true,
+  "handover_independent_aggregate_parity": true,
+  "all_ten_contexts_fixed_and_cohorts_episode_disjoint": true,
+  "numeric_note": "Exact checks concern preserved arrays and estimators; conclusions retain one training seed and instrument limitations."
+}

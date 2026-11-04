@@ -1,0 +1,18 @@
+{
+  "saved": {
+    "C": 0.0,
+    "S": 0.0,
+    "prob": 0.0,
+    "mse": 0.0,
+    "prediction": 0.0,
+    "noop": 0.0
+  },
+  "confirmation": {
+    "C": 0.0,
+    "S": 0.0,
+    "prob": 0.0,
+    "mse": 0.0,
+    "prediction": 0.0,
+    "noop": 0.0
+  }
+}

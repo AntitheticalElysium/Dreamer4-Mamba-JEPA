@@ -1,0 +1,142 @@
+{
+  "audited_at": "2026-11-04T16:11:43.352818+11:00",
+  "source_pins_checked": 95,
+  "source_mismatches": [],
+  "checkpoint_sha256": "e0f6a24ec51d2bf021ca88ba8080f804595800dc9295aecf0e37c7da7d7e1234",
+  "control_sha256": "34bda77fe5ec5226c4f003301c972d918e2d4a4a554a5a6f279fcabbe922b045",
+  "cfg_equal": true,
+  "world_seed": 1,
+  "world_parameter_shapes_equal": true,
+  "world_frames": 25600000,
+  "head_updates": 25000,
+  "trace_rows": 25600000,
+  "trace_bytes": 409600000,
+  "monitor_selection": {
+    "checkpoint": 10,
+    "monitor_loss": 0.03022446110844612,
+    "three_increases_triggered": false,
+    "rule": "final unless any three successive strict increases; then global minimum, earliest tie",
+    "monitor_history": [
+      {
+        "checkpoint": 1,
+        "frames": 2560000,
+        "loss": 0.10235856473445892
+      },
+      {
+        "checkpoint": 2,
+        "frames": 5120000,
+        "loss": 0.06689683347940445
+      },
+      {
+        "checkpoint": 3,
+        "frames": 7680000,
+        "loss": 0.046585530042648315
+      },
+      {
+        "checkpoint": 4,
+        "frames": 10240000,
+        "loss": 0.040001511573791504
+      },
+      {
+        "checkpoint": 5,
+        "frames": 12800000,
+        "loss": 0.04007089510560036
+      },
+      {
+        "checkpoint": 6,
+        "frames": 15360000,
+        "loss": 0.03334730863571167
+      },
+      {
+        "checkpoint": 7,
+        "frames": 17920000,
+        "loss": 0.03150859847664833
+      },
+      {
+        "checkpoint": 8,
+        "frames": 20480000,
+        "loss": 0.031234242022037506
+      },
+      {
+        "checkpoint": 9,
+        "frames": 23040000,
+        "loss": 0.03049798496067524
+      },
+      {
+        "checkpoint": 10,
+        "frames": 25600000,
+        "loss": 0.03022446110844612
+      }
+    ],
+    "checkpoint_path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261103_p1f2/run/ckpt_10.pt",
+    "checkpoint_sha256": "e0f6a24ec51d2bf021ca88ba8080f804595800dc9295aecf0e37c7da7d7e1234",
+    "selected_at": "2026-11-03T23:11:20.374775+00:00"
+  },
+  "started_at": "2026-11-03T11:38:28.710637+00:00",
+  "training_completed_at": "2026-11-03T23:11:20.376134+00:00",
+  "evaluation_completed_at": "2026-11-04T02:07:37.519114+00:00",
+  "fixed_gaze_reference": {
+    "random": {
+      "reference_reproduces_exactly": true,
+      "histories_by_class": {
+        "random": 6000,
+        "sapling_context": 2000,
+        "risky": 3805,
+        "adjacent": 3000,
+        "ach_COLLECT_WOOD": 300,
+        "ach_PLACE_TABLE": 300,
+        "ach_EAT_COW": 300,
+        "ach_COLLECT_SAPLING": 300,
+        "ach_COLLECT_DRINK": 300,
+        "ach_MAKE_WOOD_PICKAXE": 300,
+        "ach_MAKE_WOOD_SWORD": 300,
+        "ach_PLACE_PLANT": 300,
+        "ach_DEFEAT_ZOMBIE": 300,
+        "ach_COLLECT_STONE": 300,
+        "ach_PLACE_STONE": 300,
+        "ach_EAT_PLANT": 25,
+        "ach_DEFEAT_SKELETON": 300,
+        "ach_MAKE_STONE_PICKAXE": 300,
+        "ach_MAKE_STONE_SWORD": 300,
+        "ach_WAKE_UP": 300,
+        "ach_PLACE_FURNACE": 300,
+        "ach_COLLECT_COAL": 300,
+        "ach_COLLECT_IRON": 287,
+        "ach_COLLECT_DIAMOND": 12,
+        "ach_MAKE_IRON_PICKAXE": 124,
+        "ach_MAKE_IRON_SWORD": 123
+      }
+    },
+    "guided": {
+      "reference_reproduces_exactly": true,
+      "histories_by_class": {
+        "random": 6000,
+        "sapling_context": 2000,
+        "risky": 3805,
+        "adjacent": 3000,
+        "ach_COLLECT_WOOD": 300,
+        "ach_PLACE_TABLE": 300,
+        "ach_EAT_COW": 300,
+        "ach_COLLECT_SAPLING": 300,
+        "ach_COLLECT_DRINK": 300,
+        "ach_MAKE_WOOD_PICKAXE": 300,
+        "ach_MAKE_WOOD_SWORD": 300,
+        "ach_PLACE_PLANT": 300,
+        "ach_DEFEAT_ZOMBIE": 300,
+        "ach_COLLECT_STONE": 300,
+        "ach_PLACE_STONE": 300,
+        "ach_EAT_PLANT": 25,
+        "ach_DEFEAT_SKELETON": 300,
+        "ach_MAKE_STONE_PICKAXE": 300,
+        "ach_MAKE_STONE_SWORD": 300,
+        "ach_WAKE_UP": 300,
+        "ach_PLACE_FURNACE": 300,
+        "ach_COLLECT_COAL": 300,
+        "ach_COLLECT_IRON": 287,
+        "ach_COLLECT_DIAMOND": 12,
+        "ach_MAKE_IRON_PICKAXE": 124,
+        "ach_MAKE_IRON_SWORD": 123
+      }
+    }
+  }
+}
