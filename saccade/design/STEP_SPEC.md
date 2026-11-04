@@ -1,7 +1,28 @@
 # Step specification v1.3 (2026-10-27) — one real step, one imagined step
 
 Supersedes v0 (world sampling + chance codes) and LEARNING_SKETCH.md. Consolidates PERCEPTION v4, RECORDS v3, GENERATOR
-v3, LOSSES v1. Working numbers are placeholders. Nothing here is implemented.
+v3, LOSSES v1. Sections 1-6 retain the larger design; §7 defines the implemented minimal M0. The store and object
+records are not implemented in M0. P1 is implemented; P2/P3 remain contracts, not completed trainers.
+
+## Current experiment status (2026-11-02)
+
+P1-F1.5 completed 25.6M frames. It uses uniform fixation, faithful TSP/fovea reconstruction and decision 1's
+factorized denoiser (GENERATOR v3 amendment; TEACHING 10a): physical periphery/lighting cannot read the current or
+past glimpse stream directly; past fine evidence reaches physical prediction through the belief. Sampling is
+physical first, then the conditional glimpse, with one context commit per completed frame. Shared parameters
+still receive both physical and glimpse losses. This changes routing, not the number of G1 target coordinates.
+
+Physical current-query invariance does not imply query-invariant outcome marginals. New diagnostics and remaining
+P2 issues are in [P2_READINESS.md](P2_READINESS.md). Decision 2's same-frame chooser is proposed in TEACHING 14-15;
+its input versions, controller weights/state and collection contract must be settled before implementing that
+timeline amendment. No P2 objective change is silently implied by the readiness review.
+
+2026-11-03: the approved F1.6 local-fusion arm and matched evaluation have finished.
+The [result review](../../artifacts/experiments/20261103_p1f16_review/RESULTS.md)
+finds selective consequence/reconstruction gains, worse risky damage/death, and
+no demonstrated useful-look repair on the original or source-local native tests.
+It does not change this step contract or select the next architecture. No P2/S2
+or actor pass is implied.
 
 ## 1. Persistent state: the belief B_t (the only state; the actor reads it)
 - self-location: position + heading in the world frame, with uncertainty;
