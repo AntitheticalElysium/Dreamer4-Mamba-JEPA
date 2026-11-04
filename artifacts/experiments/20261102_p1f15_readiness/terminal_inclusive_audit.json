@@ -1,0 +1,211 @@
+{
+ "random_steps_checked": 705646,
+ "random_action_matches": 705646,
+ "exogenous_flag_steps_checked": 2432119,
+ "admission": "precommitted full 2500-step flags, starts before recorded end; actual death absorbing, no truncation padding",
+ "advanced_definition": "at least five unlocked achievements at START, descriptive only",
+ "horizons": {
+  "2": {
+   "windows": 405433,
+   "added_early_terminal_windows": 2876,
+   "terminal_step_counts": [
+    2876,
+    2845
+   ],
+   "unique_events": {
+    "COLLECT_WOOD": 1034,
+    "COLLECT_DRINK": 311,
+    "PLACE_TABLE": 734,
+    "WAKE_UP": 2726,
+    "DEFEAT_ZOMBIE": 62,
+    "COLLECT_COAL": 40,
+    "COLLECT_IRON": 12
+   },
+   "event_exposures": [
+    1987,
+    561,
+    1092,
+    4776,
+    83,
+    50,
+    12
+   ],
+   "starts_at_5plus_achievements": 101148,
+   "advanced_unique_events": {
+    "COLLECT_WOOD": 0,
+    "COLLECT_DRINK": 59,
+    "PLACE_TABLE": 18,
+    "WAKE_UP": 478,
+    "DEFEAT_ZOMBIE": 50,
+    "COLLECT_COAL": 38,
+    "COLLECT_IRON": 12
+   },
+   "expected_event_exposures_in_24000_windows": {
+    "COLLECT_WOOD": 117.62239383572626,
+    "COLLECT_DRINK": 33.20893957817938,
+    "PLACE_TABLE": 64.64200003453098,
+    "WAKE_UP": 282.71995619498165,
+    "DEFEAT_ZOMBIE": 4.913265570390175,
+    "COLLECT_COAL": 2.9597985363796235,
+    "COLLECT_IRON": 0.7103516487311097
+   }
+  },
+  "4": {
+   "windows": 296757,
+   "added_early_terminal_windows": 6310,
+   "terminal_step_counts": [
+    2101,
+    2110,
+    2099,
+    2096
+   ],
+   "unique_events": {
+    "COLLECT_WOOD": 977,
+    "COLLECT_DRINK": 256,
+    "PLACE_TABLE": 389,
+    "WAKE_UP": 2120,
+    "DEFEAT_ZOMBIE": 19,
+    "COLLECT_COAL": 10,
+    "COLLECT_IRON": 0
+   },
+   "event_exposures": [
+    3718,
+    979,
+    1080,
+    7757,
+    28,
+    20,
+    0
+   ],
+   "starts_at_5plus_achievements": 21616,
+   "advanced_unique_events": {
+    "COLLECT_WOOD": 0,
+    "COLLECT_DRINK": 15,
+    "PLACE_TABLE": 9,
+    "WAKE_UP": 145,
+    "DEFEAT_ZOMBIE": 18,
+    "COLLECT_COAL": 10,
+    "COLLECT_IRON": 0
+   },
+   "expected_event_exposures_in_24000_windows": {
+    "COLLECT_WOOD": 300.69046391492026,
+    "COLLECT_DRINK": 79.17589138588139,
+    "PLACE_TABLE": 87.34419070148303,
+    "WAKE_UP": 627.341562288337,
+    "DEFEAT_ZOMBIE": 2.2644790181865972,
+    "COLLECT_COAL": 1.6174850129904264,
+    "COLLECT_IRON": 0.0
+   }
+  },
+  "8": {
+   "windows": 274077,
+   "added_early_terminal_windows": 13478,
+   "terminal_step_counts": [
+    1924,
+    1926,
+    1924,
+    1921,
+    1921,
+    1929,
+    1933,
+    1926
+   ],
+   "unique_events": {
+    "COLLECT_WOOD": 933,
+    "COLLECT_DRINK": 240,
+    "PLACE_TABLE": 208,
+    "WAKE_UP": 1855,
+    "DEFEAT_ZOMBIE": 1,
+    "COLLECT_COAL": 3,
+    "COLLECT_IRON": 0
+   },
+   "event_exposures": [
+    7076,
+    1915,
+    1554,
+    14695,
+    1,
+    15,
+    0
+   ],
+   "starts_at_5plus_achievements": 6751,
+   "advanced_unique_events": {
+    "COLLECT_WOOD": 0,
+    "COLLECT_DRINK": 2,
+    "PLACE_TABLE": 0,
+    "WAKE_UP": 10,
+    "DEFEAT_ZOMBIE": 1,
+    "COLLECT_COAL": 3,
+    "COLLECT_IRON": 0
+   },
+   "expected_event_exposures_in_24000_windows": {
+    "COLLECT_WOOD": 619.6214932300047,
+    "COLLECT_DRINK": 167.69010168675226,
+    "PLACE_TABLE": 136.07854726956293,
+    "WAKE_UP": 1286.7916680348953,
+    "DEFEAT_ZOMBIE": 0.08756663273459649,
+    "COLLECT_COAL": 1.3134994910189473,
+    "COLLECT_IRON": 0.0
+   }
+  },
+  "16": {
+   "windows": 272809,
+   "added_early_terminal_windows": 28713,
+   "terminal_step_counts": [
+    1914,
+    1914,
+    1914,
+    1914,
+    1914,
+    1914,
+    1915,
+    1914,
+    1914,
+    1914,
+    1914,
+    1914,
+    1914,
+    1915,
+    1915,
+    1915
+   ],
+   "unique_events": {
+    "COLLECT_WOOD": 928,
+    "COLLECT_DRINK": 239,
+    "PLACE_TABLE": 191,
+    "WAKE_UP": 1833,
+    "DEFEAT_ZOMBIE": 0,
+    "COLLECT_COAL": 1,
+    "COLLECT_IRON": 0
+   },
+   "event_exposures": [
+    13214,
+    3820,
+    3055,
+    29304,
+    0,
+    5,
+    0
+   ],
+   "starts_at_5plus_achievements": 5961,
+   "advanced_unique_events": {
+    "COLLECT_WOOD": 0,
+    "COLLECT_DRINK": 1,
+    "PLACE_TABLE": 0,
+    "WAKE_UP": 2,
+    "DEFEAT_ZOMBIE": 0,
+    "COLLECT_COAL": 1,
+    "COLLECT_IRON": 0
+   },
+   "expected_event_exposures_in_24000_windows": {
+    "COLLECT_WOOD": 1162.483642401827,
+    "COLLECT_DRINK": 336.0592942314953,
+    "PLACE_TABLE": 268.75946174796286,
+    "WAKE_UP": 2577.9794654868424,
+    "DEFEAT_ZOMBIE": 0.0,
+    "COLLECT_COAL": 0.43986818616687867,
+    "COLLECT_IRON": 0.0
+   }
+  }
+ }
+}

@@ -1,0 +1,2292 @@
+{
+ "script_sha256": "63b2085e5b6a87fbd05bc74766112cbc768086097162f7add6e4aa8d247e72d3",
+ "plan_sha256": "503f8f56a14c500f0121636b0a6e52963dd036521c3bd8fc9afb85b40695ccb9",
+ "algorithms": {
+  "e3c1": {
+   "random": {
+    "real_geometry_p_inverse_mean_abs": {
+     "est": 4.884470949662045e-05,
+     "se": 1.2243750028743909e-06,
+     "n_cond": 256
+    },
+    "real_geometry_p_inverse_second_moment_error": {
+     "est": 0.0921240166426287,
+     "se": 0.002802156496373002,
+     "n_cond": 256
+    },
+    "real_geometry_p_inverse_rms": {
+     "est": 0.9517863348592073,
+     "se": 0.001509548369198837,
+     "n_cond": 256
+    },
+    "real_geometry_p_token_rms": {
+     "est": 0.8839536791201681,
+     "se": 0.000987430322592133,
+     "n_cond": 256
+    },
+    "real_geometry_p_off_constraint_fraction": {
+     "est": 0.5032793275022414,
+     "se": 0.01445561852614538,
+     "n_cond": 256
+    },
+    "real_geometry_g_inverse_mean_abs": {
+     "est": 0.00012774139129589912,
+     "se": 2.064937861721658e-06,
+     "n_cond": 256
+    },
+    "real_geometry_g_inverse_second_moment_error": {
+     "est": 0.003317239670195704,
+     "se": 5.210885978311271e-05,
+     "n_cond": 256
+    },
+    "real_geometry_g_inverse_rms": {
+     "est": 0.9983700839802623,
+     "se": 2.8972739137814962e-05,
+     "n_cond": 256
+    },
+    "real_geometry_g_token_rms": {
+     "est": 0.5356897006276995,
+     "se": 0.0012346899955951913,
+     "n_cond": 256
+    },
+    "real_geometry_g_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 256
+    },
+    "real_geometry_v_inverse_mean_abs": {
+     "est": 7.004942744970322e-05,
+     "se": 3.357101474289215e-06,
+     "n_cond": 256
+    },
+    "real_geometry_v_inverse_second_moment_error": {
+     "est": 0.001709397416561842,
+     "se": 1.7762483118050994e-05,
+     "n_cond": 256
+    },
+    "real_geometry_v_inverse_rms": {
+     "est": 0.9991449266672134,
+     "se": 8.888535310562559e-06,
+     "n_cond": 256
+    },
+    "real_geometry_v_token_rms": {
+     "est": 0.9278883866500109,
+     "se": 0.0005055279360423957,
+     "n_cond": 256
+    },
+    "real_geometry_v_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 256
+    },
+    "gen_geometry_p_inverse_mean_abs": {
+     "est": 0.00204772591132496,
+     "se": 4.223311962690489e-05,
+     "n_cond": 256
+    },
+    "gen_geometry_p_inverse_second_moment_error": {
+     "est": 0.10814668857346987,
+     "se": 0.0033480139402849167,
+     "n_cond": 256
+    },
+    "gen_geometry_p_inverse_rms": {
+     "est": 0.9427448722999543,
+     "se": 0.0018305517663330067,
+     "n_cond": 256
+    },
+    "gen_geometry_p_token_rms": {
+     "est": 0.8757727677002549,
+     "se": 0.001203565852837645,
+     "n_cond": 256
+    },
+    "gen_geometry_p_off_constraint_fraction": {
+     "est": 0.5324556370032951,
+     "se": 0.015219312056817699,
+     "n_cond": 256
+    },
+    "gen_geometry_g_inverse_mean_abs": {
+     "est": 0.0034159588244619954,
+     "se": 5.807377054208902e-05,
+     "n_cond": 256
+    },
+    "gen_geometry_g_inverse_second_moment_error": {
+     "est": 0.04822002573200734,
+     "se": 0.0008339531140248107,
+     "n_cond": 256
+    },
+    "gen_geometry_g_inverse_rms": {
+     "est": 0.9984174550045282,
+     "se": 0.0005984262882727998,
+     "n_cond": 256
+    },
+    "gen_geometry_g_token_rms": {
+     "est": 0.5337710264138877,
+     "se": 0.001201845347204491,
+     "n_cond": 256
+    },
+    "gen_geometry_g_off_constraint_fraction": {
+     "est": 0.3781467122316826,
+     "se": 0.008585097603132797,
+     "n_cond": 256
+    },
+    "gen_geometry_v_inverse_mean_abs": {
+     "est": 0.0031365207469207235,
+     "se": 9.4648477061282e-05,
+     "n_cond": 256
+    },
+    "gen_geometry_v_inverse_second_moment_error": {
+     "est": 0.011157716158777475,
+     "se": 0.0003671819091734723,
+     "n_cond": 256
+    },
+    "gen_geometry_v_inverse_rms": {
+     "est": 1.0016617516521364,
+     "se": 0.00030276350414959485,
+     "n_cond": 256
+    },
+    "gen_geometry_v_token_rms": {
+     "est": 0.930332446238026,
+     "se": 0.0005121476519083151,
+     "n_cond": 256
+    },
+    "gen_geometry_v_off_constraint_fraction": {
+     "est": 0.0185546875,
+     "se": 0.005012496332638139,
+     "n_cond": 256
+    }
+   },
+   "risky": {
+    "real_geometry_p_inverse_mean_abs": {
+     "est": 4.969414938926775e-05,
+     "se": 1.0711902428822017e-06,
+     "n_cond": 256
+    },
+    "real_geometry_p_inverse_second_moment_error": {
+     "est": 0.08521760358416941,
+     "se": 0.004549487510448264,
+     "n_cond": 256
+    },
+    "real_geometry_p_inverse_rms": {
+     "est": 0.9555462771095335,
+     "se": 0.002425333074029534,
+     "n_cond": 256
+    },
+    "real_geometry_p_token_rms": {
+     "est": 0.8863977459259331,
+     "se": 0.0014937547669564917,
+     "n_cond": 256
+    },
+    "real_geometry_p_off_constraint_fraction": {
+     "est": 0.4789737719693221,
+     "se": 0.026717883940492623,
+     "n_cond": 256
+    },
+    "real_geometry_g_inverse_mean_abs": {
+     "est": 0.0001316777643438627,
+     "se": 1.6697092532360682e-06,
+     "n_cond": 256
+    },
+    "real_geometry_g_inverse_second_moment_error": {
+     "est": 0.0031608019830855483,
+     "se": 5.3233419380621203e-05,
+     "n_cond": 256
+    },
+    "real_geometry_g_inverse_rms": {
+     "est": 0.9984518862329423,
+     "se": 2.873817381215102e-05,
+     "n_cond": 256
+    },
+    "real_geometry_g_token_rms": {
+     "est": 0.5300692338496447,
+     "se": 0.0011807012562939853,
+     "n_cond": 256
+    },
+    "real_geometry_g_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 256
+    },
+    "real_geometry_v_inverse_mean_abs": {
+     "est": 6.839059642516077e-05,
+     "se": 3.240519185874816e-06,
+     "n_cond": 256
+    },
+    "real_geometry_v_inverse_second_moment_error": {
+     "est": 0.0016808698419481516,
+     "se": 2.2430843014420102e-05,
+     "n_cond": 256
+    },
+    "real_geometry_v_inverse_rms": {
+     "est": 0.9991592012811452,
+     "se": 1.1225045997967835e-05,
+     "n_cond": 256
+    },
+    "real_geometry_v_token_rms": {
+     "est": 0.9260966947767884,
+     "se": 0.0005548107936472201,
+     "n_cond": 256
+    },
+    "real_geometry_v_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 256
+    },
+    "gen_geometry_p_inverse_mean_abs": {
+     "est": 0.0020189888891763985,
+     "se": 3.8166737274149074e-05,
+     "n_cond": 256
+    },
+    "gen_geometry_p_inverse_second_moment_error": {
+     "est": 0.10842450476775412,
+     "se": 0.006732028532691557,
+     "n_cond": 256
+    },
+    "gen_geometry_p_inverse_rms": {
+     "est": 0.9426102617289871,
+     "se": 0.003666201866195585,
+     "n_cond": 256
+    },
+    "gen_geometry_p_token_rms": {
+     "est": 0.8758471589535475,
+     "se": 0.002404271936518233,
+     "n_cond": 256
+    },
+    "gen_geometry_p_off_constraint_fraction": {
+     "est": 0.5216652243980207,
+     "se": 0.025241893100938217,
+     "n_cond": 256
+    },
+    "gen_geometry_g_inverse_mean_abs": {
+     "est": 0.0033469299269199837,
+     "se": 5.549241541790948e-05,
+     "n_cond": 256
+    },
+    "gen_geometry_g_inverse_second_moment_error": {
+     "est": 0.04635081602464197,
+     "se": 0.0008576142174258936,
+     "n_cond": 256
+    },
+    "gen_geometry_g_inverse_rms": {
+     "est": 0.998771115206182,
+     "se": 0.000779341431361043,
+     "n_cond": 256
+    },
+    "gen_geometry_g_token_rms": {
+     "est": 0.5278099786955863,
+     "se": 0.0011390267077800566,
+     "n_cond": 256
+    },
+    "gen_geometry_g_off_constraint_fraction": {
+     "est": 0.36957466340390965,
+     "se": 0.00904569361146891,
+     "n_cond": 256
+    },
+    "gen_geometry_v_inverse_mean_abs": {
+     "est": 0.0034887244401033968,
+     "se": 0.00010617241922892454,
+     "n_cond": 256
+    },
+    "gen_geometry_v_inverse_second_moment_error": {
+     "est": 0.011315265961457044,
+     "se": 0.00038963931794944634,
+     "n_cond": 256
+    },
+    "gen_geometry_v_inverse_rms": {
+     "est": 1.0027328240685165,
+     "se": 0.00037300895889733895,
+     "n_cond": 256
+    },
+    "gen_geometry_v_token_rms": {
+     "est": 0.9289176482707262,
+     "se": 0.0006864209541508263,
+     "n_cond": 256
+    },
+    "gen_geometry_v_off_constraint_fraction": {
+     "est": 0.03125,
+     "se": 0.00491259755501933,
+     "n_cond": 256
+    }
+   },
+   "ach_WAKE_UP": {
+    "real_geometry_p_inverse_mean_abs": {
+     "est": 5.751144404173977e-05,
+     "se": 1.5667654309700858e-06,
+     "n_cond": 196
+    },
+    "real_geometry_p_inverse_second_moment_error": {
+     "est": 0.05052344072420074,
+     "se": 0.0017683008751814867,
+     "n_cond": 196
+    },
+    "real_geometry_p_inverse_rms": {
+     "est": 0.9739468252780487,
+     "se": 0.0009355658448643356,
+     "n_cond": 196
+    },
+    "real_geometry_p_token_rms": {
+     "est": 0.8925126988668831,
+     "se": 0.00047091359555185853,
+     "n_cond": 196
+    },
+    "real_geometry_p_off_constraint_fraction": {
+     "est": 0.2640463617079112,
+     "se": 0.011076110399407129,
+     "n_cond": 196
+    },
+    "real_geometry_g_inverse_mean_abs": {
+     "est": 0.0001328908701721883,
+     "se": 2.015743630192214e-06,
+     "n_cond": 196
+    },
+    "real_geometry_g_inverse_second_moment_error": {
+     "est": 0.002933767737050978,
+     "se": 4.809979884214328e-05,
+     "n_cond": 196
+    },
+    "real_geometry_g_inverse_rms": {
+     "est": 0.9985974896319059,
+     "se": 2.654108384515271e-05,
+     "n_cond": 196
+    },
+    "real_geometry_g_token_rms": {
+     "est": 0.5355026861842798,
+     "se": 0.0011050616037225336,
+     "n_cond": 196
+    },
+    "real_geometry_g_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 196
+    },
+    "real_geometry_v_inverse_mean_abs": {
+     "est": 6.859190762042999e-05,
+     "se": 3.4946453099628197e-06,
+     "n_cond": 196
+    },
+    "real_geometry_v_inverse_second_moment_error": {
+     "est": 0.0017946569287047094,
+     "se": 1.770421989983329e-05,
+     "n_cond": 196
+    },
+    "real_geometry_v_inverse_rms": {
+     "est": 0.9991022622098729,
+     "se": 8.860111596364934e-06,
+     "n_cond": 196
+    },
+    "real_geometry_v_token_rms": {
+     "est": 0.9303697618294735,
+     "se": 0.00019699983422775185,
+     "n_cond": 196
+    },
+    "real_geometry_v_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 196
+    },
+    "gen_geometry_p_inverse_mean_abs": {
+     "est": 0.002410982181294346,
+     "se": 4.9002686186418554e-05,
+     "n_cond": 196
+    },
+    "gen_geometry_p_inverse_second_moment_error": {
+     "est": 0.1513491086281684,
+     "se": 0.0029100719137912954,
+     "n_cond": 196
+    },
+    "gen_geometry_p_inverse_rms": {
+     "est": 0.918610795115938,
+     "se": 0.0016273688805055247,
+     "n_cond": 196
+    },
+    "gen_geometry_p_token_rms": {
+     "est": 0.8548015769647093,
+     "se": 0.0010197781223693471,
+     "n_cond": 196
+    },
+    "gen_geometry_p_off_constraint_fraction": {
+     "est": 0.6507464102944549,
+     "se": 0.008303002372610516,
+     "n_cond": 196
+    },
+    "gen_geometry_g_inverse_mean_abs": {
+     "est": 0.003443558207399459,
+     "se": 5.50165752842992e-05,
+     "n_cond": 196
+    },
+    "gen_geometry_g_inverse_second_moment_error": {
+     "est": 0.049480168614536524,
+     "se": 0.0008000847053960938,
+     "n_cond": 196
+    },
+    "gen_geometry_g_inverse_rms": {
+     "est": 0.9935919496477866,
+     "se": 0.0007849611853804314,
+     "n_cond": 196
+    },
+    "gen_geometry_g_token_rms": {
+     "est": 0.5288249391074084,
+     "se": 0.001030861769834728,
+     "n_cond": 196
+    },
+    "gen_geometry_g_off_constraint_fraction": {
+     "est": 0.39880953565696065,
+     "se": 0.007408819650612195,
+     "n_cond": 196
+    },
+    "gen_geometry_v_inverse_mean_abs": {
+     "est": 0.0036795566295634726,
+     "se": 0.00010168273344348541,
+     "n_cond": 196
+    },
+    "gen_geometry_v_inverse_second_moment_error": {
+     "est": 0.01603117676413789,
+     "se": 0.0005262418251475742,
+     "n_cond": 196
+    },
+    "gen_geometry_v_inverse_rms": {
+     "est": 0.9957929746228822,
+     "se": 0.0003864909284536131,
+     "n_cond": 196
+    },
+    "gen_geometry_v_token_rms": {
+     "est": 0.9225713966452346,
+     "se": 0.000292040641238758,
+     "n_cond": 196
+    },
+    "gen_geometry_v_off_constraint_fraction": {
+     "est": 0.06760204081632654,
+     "se": 0.008612232713352198,
+     "n_cond": 196
+    }
+   },
+   "ach_COLLECT_COAL": {
+    "real_geometry_p_inverse_mean_abs": {
+     "est": 5.0669139987226894e-05,
+     "se": 1.7677748843879822e-06,
+     "n_cond": 82
+    },
+    "real_geometry_p_inverse_second_moment_error": {
+     "est": 0.09357538006109435,
+     "se": 0.0039058773713679207,
+     "n_cond": 82
+    },
+    "real_geometry_p_inverse_rms": {
+     "est": 0.9510904608703241,
+     "se": 0.0020942299144917965,
+     "n_cond": 82
+    },
+    "real_geometry_p_token_rms": {
+     "est": 0.8832292716677596,
+     "se": 0.0011864036067630807,
+     "n_cond": 82
+    },
+    "real_geometry_p_off_constraint_fraction": {
+     "est": 0.5043661596208084,
+     "se": 0.019391189537505005,
+     "n_cond": 82
+    },
+    "real_geometry_g_inverse_mean_abs": {
+     "est": 0.00012953862296410256,
+     "se": 3.109093245514545e-06,
+     "n_cond": 82
+    },
+    "real_geometry_g_inverse_second_moment_error": {
+     "est": 0.0032163332102865707,
+     "se": 6.82528005959878e-05,
+     "n_cond": 82
+    },
+    "real_geometry_g_inverse_rms": {
+     "est": 0.9984208977803951,
+     "se": 3.762767436772008e-05,
+     "n_cond": 82
+    },
+    "real_geometry_g_token_rms": {
+     "est": 0.5378685557260746,
+     "se": 0.0020765109132982284,
+     "n_cond": 82
+    },
+    "real_geometry_g_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 82
+    },
+    "real_geometry_v_inverse_mean_abs": {
+     "est": 7.494193751637528e-05,
+     "se": 6.258721177391897e-06,
+     "n_cond": 82
+    },
+    "real_geometry_v_inverse_second_moment_error": {
+     "est": 0.0017857253551483154,
+     "se": 2.532122213983847e-05,
+     "n_cond": 82
+    },
+    "real_geometry_v_inverse_rms": {
+     "est": 0.9991067328104158,
+     "se": 1.2671871147764407e-05,
+     "n_cond": 82
+    },
+    "real_geometry_v_token_rms": {
+     "est": 0.9306155239663473,
+     "se": 0.0004918096751960518,
+     "n_cond": 82
+    },
+    "real_geometry_v_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 82
+    },
+    "gen_geometry_p_inverse_mean_abs": {
+     "est": 0.001787053781743275,
+     "se": 3.3423834281335274e-05,
+     "n_cond": 82
+    },
+    "gen_geometry_p_inverse_second_moment_error": {
+     "est": 0.10602292082295185,
+     "se": 0.00505302517591611,
+     "n_cond": 82
+    },
+    "gen_geometry_p_inverse_rms": {
+     "est": 0.9441622197628021,
+     "se": 0.0027577553094588285,
+     "n_cond": 82
+    },
+    "gen_geometry_p_token_rms": {
+     "est": 0.8777610136241447,
+     "se": 0.0017448766069186733,
+     "n_cond": 82
+    },
+    "gen_geometry_p_off_constraint_fraction": {
+     "est": 0.541440833269096,
+     "se": 0.018492833116090047,
+     "n_cond": 82
+    },
+    "gen_geometry_g_inverse_mean_abs": {
+     "est": 0.003681914270401183,
+     "se": 0.0001644697549005386,
+     "n_cond": 82
+    },
+    "gen_geometry_g_inverse_second_moment_error": {
+     "est": 0.05101656736578883,
+     "se": 0.002118341645361748,
+     "n_cond": 82
+    },
+    "gen_geometry_g_inverse_rms": {
+     "est": 1.0023977407595006,
+     "se": 0.0011438151595076767,
+     "n_cond": 82
+    },
+    "gen_geometry_g_token_rms": {
+     "est": 0.535742420248869,
+     "se": 0.0019851989216935293,
+     "n_cond": 82
+    },
+    "gen_geometry_g_off_constraint_fraction": {
+     "est": 0.38414635273014625,
+     "se": 0.013616103308368205,
+     "n_cond": 82
+    },
+    "gen_geometry_v_inverse_mean_abs": {
+     "est": 0.0028057339396782037,
+     "se": 0.00013594159771523456,
+     "n_cond": 82
+    },
+    "gen_geometry_v_inverse_second_moment_error": {
+     "est": 0.009486629468638723,
+     "se": 0.00044549516735268045,
+     "n_cond": 82
+    },
+    "gen_geometry_v_inverse_rms": {
+     "est": 1.0027761313973405,
+     "se": 0.00037942377232916876,
+     "n_cond": 82
+    },
+    "gen_geometry_v_token_rms": {
+     "est": 0.933330064866601,
+     "se": 0.000655843394242242,
+     "n_cond": 82
+    },
+    "gen_geometry_v_off_constraint_fraction": {
+     "est": 0.018292682926829267,
+     "se": 0.007317771816239617,
+     "n_cond": 82
+    }
+   },
+   "ach_COLLECT_IRON": {
+    "real_geometry_p_inverse_mean_abs": {
+     "est": 4.361784248041139e-05,
+     "se": 1.476078446327737e-06,
+     "n_cond": 70
+    },
+    "real_geometry_p_inverse_second_moment_error": {
+     "est": 0.1099132392023291,
+     "se": 0.004030779598971383,
+     "n_cond": 70
+    },
+    "real_geometry_p_inverse_rms": {
+     "est": 0.9423496041979108,
+     "se": 0.0021664565132798927,
+     "n_cond": 70
+    },
+    "real_geometry_p_token_rms": {
+     "est": 0.8787428387573787,
+     "se": 0.00132234184731056,
+     "n_cond": 70
+    },
+    "real_geometry_p_off_constraint_fraction": {
+     "est": 0.590652563742229,
+     "se": 0.019758409104981185,
+     "n_cond": 70
+    },
+    "real_geometry_g_inverse_mean_abs": {
+     "est": 0.0001216585738023111,
+     "se": 3.5908055856803185e-06,
+     "n_cond": 70
+    },
+    "real_geometry_g_inverse_second_moment_error": {
+     "est": 0.003175922847419445,
+     "se": 8.619324102180166e-05,
+     "n_cond": 70
+    },
+    "real_geometry_g_inverse_rms": {
+     "est": 0.9984338785920824,
+     "se": 4.6463065485400365e-05,
+     "n_cond": 70
+    },
+    "real_geometry_g_token_rms": {
+     "est": 0.5326794590268816,
+     "se": 0.0022593289325696596,
+     "n_cond": 70
+    },
+    "real_geometry_g_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 70
+    },
+    "real_geometry_v_inverse_mean_abs": {
+     "est": 6.173029541969299e-05,
+     "se": 5.101428114908063e-06,
+     "n_cond": 70
+    },
+    "real_geometry_v_inverse_second_moment_error": {
+     "est": 0.0017043641635349819,
+     "se": 2.9530997647045227e-05,
+     "n_cond": 70
+    },
+    "real_geometry_v_inverse_rms": {
+     "est": 0.9991474492209298,
+     "se": 1.4778329595643446e-05,
+     "n_cond": 70
+    },
+    "real_geometry_v_token_rms": {
+     "est": 0.9295013555458613,
+     "se": 0.0005140379086072393,
+     "n_cond": 70
+    },
+    "real_geometry_v_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 70
+    },
+    "gen_geometry_p_inverse_mean_abs": {
+     "est": 0.0018847579818351992,
+     "se": 3.232946125886186e-05,
+     "n_cond": 70
+    },
+    "gen_geometry_p_inverse_second_moment_error": {
+     "est": 0.12470994086137839,
+     "se": 0.005421626794818088,
+     "n_cond": 70
+    },
+    "gen_geometry_p_inverse_rms": {
+     "est": 0.9340624971049173,
+     "se": 0.0029646689854689067,
+     "n_cond": 70
+    },
+    "gen_geometry_p_token_rms": {
+     "est": 0.8720050598893847,
+     "se": 0.0019756373253020003,
+     "n_cond": 70
+    },
+    "gen_geometry_p_off_constraint_fraction": {
+     "est": 0.6192680784634181,
+     "se": 0.018391641781988526,
+     "n_cond": 70
+    },
+    "gen_geometry_g_inverse_mean_abs": {
+     "est": 0.003319710095612598,
+     "se": 0.00012765935297447925,
+     "n_cond": 70
+    },
+    "gen_geometry_g_inverse_second_moment_error": {
+     "est": 0.04662784114480019,
+     "se": 0.0018081678104977462,
+     "n_cond": 70
+    },
+    "gen_geometry_g_inverse_rms": {
+     "est": 1.0037988952228,
+     "se": 0.0010596130169252176,
+     "n_cond": 70
+    },
+    "gen_geometry_g_token_rms": {
+     "est": 0.5312186019761221,
+     "se": 0.0020988522982329032,
+     "n_cond": 70
+    },
+    "gen_geometry_g_off_constraint_fraction": {
+     "est": 0.3543650898550238,
+     "se": 0.013922580802112703,
+     "n_cond": 70
+    },
+    "gen_geometry_v_inverse_mean_abs": {
+     "est": 0.0025867072333182607,
+     "se": 0.00014650406838778406,
+     "n_cond": 70
+    },
+    "gen_geometry_v_inverse_second_moment_error": {
+     "est": 0.00912763944693974,
+     "se": 0.0004598002199016339,
+     "n_cond": 70
+    },
+    "gen_geometry_v_inverse_rms": {
+     "est": 1.0018722236156463,
+     "se": 0.00039405721809549204,
+     "n_cond": 70
+    },
+    "gen_geometry_v_token_rms": {
+     "est": 0.9314318290778569,
+     "se": 0.000660600554812374,
+     "n_cond": 70
+    },
+    "gen_geometry_v_off_constraint_fraction": {
+     "est": 0.0035714285714285713,
+     "se": 0.0033764169361218724,
+     "n_cond": 70
+    }
+   }
+  },
+  "e8c0": {
+   "random": {
+    "real_geometry_p_inverse_mean_abs": {
+     "est": 4.884470949662045e-05,
+     "se": 1.2243750028743909e-06,
+     "n_cond": 256
+    },
+    "real_geometry_p_inverse_second_moment_error": {
+     "est": 0.0921240166426287,
+     "se": 0.002802156496373002,
+     "n_cond": 256
+    },
+    "real_geometry_p_inverse_rms": {
+     "est": 0.9517863348592073,
+     "se": 0.001509548369198837,
+     "n_cond": 256
+    },
+    "real_geometry_p_token_rms": {
+     "est": 0.8839536791201681,
+     "se": 0.000987430322592133,
+     "n_cond": 256
+    },
+    "real_geometry_p_off_constraint_fraction": {
+     "est": 0.5032793275022414,
+     "se": 0.01445561852614538,
+     "n_cond": 256
+    },
+    "real_geometry_g_inverse_mean_abs": {
+     "est": 0.00012774139129589912,
+     "se": 2.064937861721658e-06,
+     "n_cond": 256
+    },
+    "real_geometry_g_inverse_second_moment_error": {
+     "est": 0.003317239670195704,
+     "se": 5.210885978311271e-05,
+     "n_cond": 256
+    },
+    "real_geometry_g_inverse_rms": {
+     "est": 0.9983700839802623,
+     "se": 2.8972739137814962e-05,
+     "n_cond": 256
+    },
+    "real_geometry_g_token_rms": {
+     "est": 0.5356897006276995,
+     "se": 0.0012346899955951913,
+     "n_cond": 256
+    },
+    "real_geometry_g_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 256
+    },
+    "real_geometry_v_inverse_mean_abs": {
+     "est": 7.004942744970322e-05,
+     "se": 3.357101474289215e-06,
+     "n_cond": 256
+    },
+    "real_geometry_v_inverse_second_moment_error": {
+     "est": 0.001709397416561842,
+     "se": 1.7762483118050994e-05,
+     "n_cond": 256
+    },
+    "real_geometry_v_inverse_rms": {
+     "est": 0.9991449266672134,
+     "se": 8.888535310562559e-06,
+     "n_cond": 256
+    },
+    "real_geometry_v_token_rms": {
+     "est": 0.9278883866500109,
+     "se": 0.0005055279360423957,
+     "n_cond": 256
+    },
+    "real_geometry_v_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 256
+    },
+    "gen_geometry_p_inverse_mean_abs": {
+     "est": 0.001079621755707194,
+     "se": 1.2545116007221966e-05,
+     "n_cond": 256
+    },
+    "gen_geometry_p_inverse_second_moment_error": {
+     "est": 0.10373906083987094,
+     "se": 0.0025368814326148076,
+     "n_cond": 256
+    },
+    "gen_geometry_p_inverse_rms": {
+     "est": 0.9456238811835647,
+     "se": 0.0013719269110013576,
+     "n_cond": 256
+    },
+    "gen_geometry_p_token_rms": {
+     "est": 0.8780255736783147,
+     "se": 0.0007372795748734262,
+     "n_cond": 256
+    },
+    "gen_geometry_p_off_constraint_fraction": {
+     "est": 0.5641758342389949,
+     "se": 0.016913577989976246,
+     "n_cond": 256
+    },
+    "gen_geometry_g_inverse_mean_abs": {
+     "est": 0.002468528015924676,
+     "se": 5.153152263312077e-05,
+     "n_cond": 256
+    },
+    "gen_geometry_g_inverse_second_moment_error": {
+     "est": 0.03821286380843958,
+     "se": 0.0007954312979014726,
+     "n_cond": 256
+    },
+    "gen_geometry_g_inverse_rms": {
+     "est": 0.9858918010722846,
+     "se": 0.0004842234295977082,
+     "n_cond": 256
+    },
+    "gen_geometry_g_token_rms": {
+     "est": 0.5335965154226869,
+     "se": 0.0012180615676936817,
+     "n_cond": 256
+    },
+    "gen_geometry_g_off_constraint_fraction": {
+     "est": 0.28125000721774995,
+     "se": 0.01031094726900692,
+     "n_cond": 256
+    },
+    "gen_geometry_v_inverse_mean_abs": {
+     "est": 0.0024759619918768294,
+     "se": 6.704549927038463e-05,
+     "n_cond": 256
+    },
+    "gen_geometry_v_inverse_second_moment_error": {
+     "est": 0.008498635899741203,
+     "se": 0.0001994216419267848,
+     "n_cond": 256
+    },
+    "gen_geometry_v_inverse_rms": {
+     "est": 0.9968398117925972,
+     "se": 0.00014349236601269005,
+     "n_cond": 256
+    },
+    "gen_geometry_v_token_rms": {
+     "est": 0.9271309284958988,
+     "se": 0.0005190352650710476,
+     "n_cond": 256
+    },
+    "gen_geometry_v_off_constraint_fraction": {
+     "est": 0.00390625,
+     "se": 0.001845448356788012,
+     "n_cond": 256
+    }
+   },
+   "risky": {
+    "real_geometry_p_inverse_mean_abs": {
+     "est": 4.969414938926775e-05,
+     "se": 1.0711902428822017e-06,
+     "n_cond": 256
+    },
+    "real_geometry_p_inverse_second_moment_error": {
+     "est": 0.08521760358416941,
+     "se": 0.004549487510448264,
+     "n_cond": 256
+    },
+    "real_geometry_p_inverse_rms": {
+     "est": 0.9555462771095335,
+     "se": 0.002425333074029534,
+     "n_cond": 256
+    },
+    "real_geometry_p_token_rms": {
+     "est": 0.8863977459259331,
+     "se": 0.0014937547669564917,
+     "n_cond": 256
+    },
+    "real_geometry_p_off_constraint_fraction": {
+     "est": 0.4789737719693221,
+     "se": 0.026717883940492623,
+     "n_cond": 256
+    },
+    "real_geometry_g_inverse_mean_abs": {
+     "est": 0.0001316777643438627,
+     "se": 1.6697092532360682e-06,
+     "n_cond": 256
+    },
+    "real_geometry_g_inverse_second_moment_error": {
+     "est": 0.0031608019830855483,
+     "se": 5.3233419380621203e-05,
+     "n_cond": 256
+    },
+    "real_geometry_g_inverse_rms": {
+     "est": 0.9984518862329423,
+     "se": 2.873817381215102e-05,
+     "n_cond": 256
+    },
+    "real_geometry_g_token_rms": {
+     "est": 0.5300692338496447,
+     "se": 0.0011807012562939853,
+     "n_cond": 256
+    },
+    "real_geometry_g_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 256
+    },
+    "real_geometry_v_inverse_mean_abs": {
+     "est": 6.839059642516077e-05,
+     "se": 3.240519185874816e-06,
+     "n_cond": 256
+    },
+    "real_geometry_v_inverse_second_moment_error": {
+     "est": 0.0016808698419481516,
+     "se": 2.2430843014420102e-05,
+     "n_cond": 256
+    },
+    "real_geometry_v_inverse_rms": {
+     "est": 0.9991592012811452,
+     "se": 1.1225045997967835e-05,
+     "n_cond": 256
+    },
+    "real_geometry_v_token_rms": {
+     "est": 0.9260966947767884,
+     "se": 0.0005548107936472201,
+     "n_cond": 256
+    },
+    "real_geometry_v_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 256
+    },
+    "gen_geometry_p_inverse_mean_abs": {
+     "est": 0.0011602599774960254,
+     "se": 3.204523440798949e-05,
+     "n_cond": 256
+    },
+    "gen_geometry_p_inverse_second_moment_error": {
+     "est": 0.10701085765322205,
+     "se": 0.0054907203238780365,
+     "n_cond": 256
+    },
+    "gen_geometry_p_inverse_rms": {
+     "est": 0.943813418969512,
+     "se": 0.0029763054585796654,
+     "n_cond": 256
+    },
+    "gen_geometry_p_token_rms": {
+     "est": 0.8768718249630183,
+     "se": 0.001906540572335594,
+     "n_cond": 256
+    },
+    "gen_geometry_p_off_constraint_fraction": {
+     "est": 0.5645857527852058,
+     "se": 0.02478404989260133,
+     "n_cond": 256
+    },
+    "gen_geometry_g_inverse_mean_abs": {
+     "est": 0.0023895274557617086,
+     "se": 4.4597606390772366e-05,
+     "n_cond": 256
+    },
+    "gen_geometry_g_inverse_second_moment_error": {
+     "est": 0.03815649851458147,
+     "se": 0.0007652237341733105,
+     "n_cond": 256
+    },
+    "gen_geometry_g_inverse_rms": {
+     "est": 0.9856740604154766,
+     "se": 0.00040886805895781194,
+     "n_cond": 256
+    },
+    "gen_geometry_g_token_rms": {
+     "est": 0.5275025104638189,
+     "se": 0.0011296478597537637,
+     "n_cond": 256
+    },
+    "gen_geometry_g_off_constraint_fraction": {
+     "est": 0.2866753544367384,
+     "se": 0.011091311797100822,
+     "n_cond": 256
+    },
+    "gen_geometry_v_inverse_mean_abs": {
+     "est": 0.002463128505041823,
+     "se": 7.891923162124576e-05,
+     "n_cond": 256
+    },
+    "gen_geometry_v_inverse_second_moment_error": {
+     "est": 0.00895374600077048,
+     "se": 0.0003922932879542823,
+     "n_cond": 256
+    },
+    "gen_geometry_v_inverse_rms": {
+     "est": 0.9963847966864705,
+     "se": 0.00025048585922006803,
+     "n_cond": 256
+    },
+    "gen_geometry_v_token_rms": {
+     "est": 0.9242200285661966,
+     "se": 0.0006095333669060264,
+     "n_cond": 256
+    },
+    "gen_geometry_v_off_constraint_fraction": {
+     "est": 0.01171875,
+     "se": 0.003852010883787884,
+     "n_cond": 256
+    }
+   },
+   "ach_WAKE_UP": {
+    "real_geometry_p_inverse_mean_abs": {
+     "est": 5.751144404173977e-05,
+     "se": 1.5667654309700858e-06,
+     "n_cond": 196
+    },
+    "real_geometry_p_inverse_second_moment_error": {
+     "est": 0.05052344072420074,
+     "se": 0.0017683008751814867,
+     "n_cond": 196
+    },
+    "real_geometry_p_inverse_rms": {
+     "est": 0.9739468252780487,
+     "se": 0.0009355658448643356,
+     "n_cond": 196
+    },
+    "real_geometry_p_token_rms": {
+     "est": 0.8925126988668831,
+     "se": 0.00047091359555185853,
+     "n_cond": 196
+    },
+    "real_geometry_p_off_constraint_fraction": {
+     "est": 0.2640463617079112,
+     "se": 0.011076110399407129,
+     "n_cond": 196
+    },
+    "real_geometry_g_inverse_mean_abs": {
+     "est": 0.0001328908701721883,
+     "se": 2.015743630192214e-06,
+     "n_cond": 196
+    },
+    "real_geometry_g_inverse_second_moment_error": {
+     "est": 0.002933767737050978,
+     "se": 4.809979884214328e-05,
+     "n_cond": 196
+    },
+    "real_geometry_g_inverse_rms": {
+     "est": 0.9985974896319059,
+     "se": 2.654108384515271e-05,
+     "n_cond": 196
+    },
+    "real_geometry_g_token_rms": {
+     "est": 0.5355026861842798,
+     "se": 0.0011050616037225336,
+     "n_cond": 196
+    },
+    "real_geometry_g_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 196
+    },
+    "real_geometry_v_inverse_mean_abs": {
+     "est": 6.859190762042999e-05,
+     "se": 3.4946453099628197e-06,
+     "n_cond": 196
+    },
+    "real_geometry_v_inverse_second_moment_error": {
+     "est": 0.0017946569287047094,
+     "se": 1.770421989983329e-05,
+     "n_cond": 196
+    },
+    "real_geometry_v_inverse_rms": {
+     "est": 0.9991022622098729,
+     "se": 8.860111596364934e-06,
+     "n_cond": 196
+    },
+    "real_geometry_v_token_rms": {
+     "est": 0.9303697618294735,
+     "se": 0.00019699983422775185,
+     "n_cond": 196
+    },
+    "real_geometry_v_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 196
+    },
+    "gen_geometry_p_inverse_mean_abs": {
+     "est": 0.0010838969093889986,
+     "se": 1.189701324153274e-05,
+     "n_cond": 196
+    },
+    "gen_geometry_p_inverse_second_moment_error": {
+     "est": 0.1259698970053269,
+     "se": 0.0026031686381976114,
+     "n_cond": 196
+    },
+    "gen_geometry_p_inverse_rms": {
+     "est": 0.9332198306005828,
+     "se": 0.001435483541518736,
+     "n_cond": 196
+    },
+    "gen_geometry_p_token_rms": {
+     "est": 0.8661092133546362,
+     "se": 0.0008719675962950664,
+     "n_cond": 196
+    },
+    "gen_geometry_p_off_constraint_fraction": {
+     "est": 0.6441798999297376,
+     "se": 0.008680108068984435,
+     "n_cond": 196
+    },
+    "gen_geometry_g_inverse_mean_abs": {
+     "est": 0.002310065556156012,
+     "se": 4.9824070839586885e-05,
+     "n_cond": 196
+    },
+    "gen_geometry_g_inverse_second_moment_error": {
+     "est": 0.04060299676481863,
+     "se": 0.0007155278850896807,
+     "n_cond": 196
+    },
+    "gen_geometry_g_inverse_rms": {
+     "est": 0.9831471473586803,
+     "se": 0.0004322835544810854,
+     "n_cond": 196
+    },
+    "gen_geometry_g_token_rms": {
+     "est": 0.5291191740911834,
+     "se": 0.0010288343477667745,
+     "n_cond": 196
+    },
+    "gen_geometry_g_off_constraint_fraction": {
+     "est": 0.3171768800868672,
+     "se": 0.010576557049832644,
+     "n_cond": 196
+    },
+    "gen_geometry_v_inverse_mean_abs": {
+     "est": 0.002634509019933793,
+     "se": 8.189158243496126e-05,
+     "n_cond": 196
+    },
+    "gen_geometry_v_inverse_second_moment_error": {
+     "est": 0.01072758899963632,
+     "se": 0.00033501902292809143,
+     "n_cond": 196
+    },
+    "gen_geometry_v_inverse_rms": {
+     "est": 0.9956564784658198,
+     "se": 0.00024004921060014482,
+     "n_cond": 196
+    },
+    "gen_geometry_v_token_rms": {
+     "est": 0.923930395014432,
+     "se": 0.0002498010560382403,
+     "n_cond": 196
+    },
+    "gen_geometry_v_off_constraint_fraction": {
+     "est": 0.003826530612244898,
+     "se": 0.002212339264874879,
+     "n_cond": 196
+    }
+   },
+   "ach_COLLECT_COAL": {
+    "real_geometry_p_inverse_mean_abs": {
+     "est": 5.0669139987226894e-05,
+     "se": 1.7677748843879822e-06,
+     "n_cond": 82
+    },
+    "real_geometry_p_inverse_second_moment_error": {
+     "est": 0.09357538006109435,
+     "se": 0.0039058773713679207,
+     "n_cond": 82
+    },
+    "real_geometry_p_inverse_rms": {
+     "est": 0.9510904608703241,
+     "se": 0.0020942299144917965,
+     "n_cond": 82
+    },
+    "real_geometry_p_token_rms": {
+     "est": 0.8832292716677596,
+     "se": 0.0011864036067630807,
+     "n_cond": 82
+    },
+    "real_geometry_p_off_constraint_fraction": {
+     "est": 0.5043661596208084,
+     "se": 0.019391189537505005,
+     "n_cond": 82
+    },
+    "real_geometry_g_inverse_mean_abs": {
+     "est": 0.00012953862296410256,
+     "se": 3.109093245514545e-06,
+     "n_cond": 82
+    },
+    "real_geometry_g_inverse_second_moment_error": {
+     "est": 0.0032163332102865707,
+     "se": 6.82528005959878e-05,
+     "n_cond": 82
+    },
+    "real_geometry_g_inverse_rms": {
+     "est": 0.9984208977803951,
+     "se": 3.762767436772008e-05,
+     "n_cond": 82
+    },
+    "real_geometry_g_token_rms": {
+     "est": 0.5378685557260746,
+     "se": 0.0020765109132982284,
+     "n_cond": 82
+    },
+    "real_geometry_g_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 82
+    },
+    "real_geometry_v_inverse_mean_abs": {
+     "est": 7.494193751637528e-05,
+     "se": 6.258721177391897e-06,
+     "n_cond": 82
+    },
+    "real_geometry_v_inverse_second_moment_error": {
+     "est": 0.0017857253551483154,
+     "se": 2.532122213983847e-05,
+     "n_cond": 82
+    },
+    "real_geometry_v_inverse_rms": {
+     "est": 0.9991067328104158,
+     "se": 1.2671871147764407e-05,
+     "n_cond": 82
+    },
+    "real_geometry_v_token_rms": {
+     "est": 0.9306155239663473,
+     "se": 0.0004918096751960518,
+     "n_cond": 82
+    },
+    "real_geometry_v_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 82
+    },
+    "gen_geometry_p_inverse_mean_abs": {
+     "est": 0.0010368320757307384,
+     "se": 3.0155529838887264e-05,
+     "n_cond": 82
+    },
+    "gen_geometry_p_inverse_second_moment_error": {
+     "est": 0.11009386354466764,
+     "se": 0.004417664417232537,
+     "n_cond": 82
+    },
+    "gen_geometry_p_inverse_rms": {
+     "est": 0.9422027788511137,
+     "se": 0.002406694749070923,
+     "n_cond": 82
+    },
+    "gen_geometry_p_token_rms": {
+     "est": 0.8762417944466195,
+     "se": 0.0014914729588718387,
+     "n_cond": 82
+    },
+    "gen_geometry_p_off_constraint_fraction": {
+     "est": 0.5576257167792902,
+     "se": 0.019443511558648808,
+     "n_cond": 82
+    },
+    "gen_geometry_g_inverse_mean_abs": {
+     "est": 0.0025116131192345808,
+     "se": 9.045305572442462e-05,
+     "n_cond": 82
+    },
+    "gen_geometry_g_inverse_second_moment_error": {
+     "est": 0.03669438499775601,
+     "se": 0.0011604480546754446,
+     "n_cond": 82
+    },
+    "gen_geometry_g_inverse_rms": {
+     "est": 0.9879975871341985,
+     "se": 0.0006518567366660626,
+     "n_cond": 82
+    },
+    "gen_geometry_g_token_rms": {
+     "est": 0.5352343444417162,
+     "se": 0.0019828581973601964,
+     "n_cond": 82
+    },
+    "gen_geometry_g_off_constraint_fraction": {
+     "est": 0.2628726362727764,
+     "se": 0.01459092636405114,
+     "n_cond": 82
+    },
+    "gen_geometry_v_inverse_mean_abs": {
+     "est": 0.0023519497410189813,
+     "se": 0.00012192217431669156,
+     "n_cond": 82
+    },
+    "gen_geometry_v_inverse_second_moment_error": {
+     "est": 0.008474696518444434,
+     "se": 0.0004664147052196537,
+     "n_cond": 82
+    },
+    "gen_geometry_v_inverse_rms": {
+     "est": 0.9966362707498597,
+     "se": 0.0003041150666205068,
+     "n_cond": 82
+    },
+    "gen_geometry_v_token_rms": {
+     "est": 0.9285379175732775,
+     "se": 0.00047029562329189,
+     "n_cond": 82
+    },
+    "gen_geometry_v_off_constraint_fraction": {
+     "est": 0.009146341463414634,
+     "se": 0.0059399602357774655,
+     "n_cond": 82
+    }
+   },
+   "ach_COLLECT_IRON": {
+    "real_geometry_p_inverse_mean_abs": {
+     "est": 4.361784248041139e-05,
+     "se": 1.476078446327737e-06,
+     "n_cond": 70
+    },
+    "real_geometry_p_inverse_second_moment_error": {
+     "est": 0.1099132392023291,
+     "se": 0.004030779598971383,
+     "n_cond": 70
+    },
+    "real_geometry_p_inverse_rms": {
+     "est": 0.9423496041979108,
+     "se": 0.0021664565132798927,
+     "n_cond": 70
+    },
+    "real_geometry_p_token_rms": {
+     "est": 0.8787428387573787,
+     "se": 0.00132234184731056,
+     "n_cond": 70
+    },
+    "real_geometry_p_off_constraint_fraction": {
+     "est": 0.590652563742229,
+     "se": 0.019758409104981185,
+     "n_cond": 70
+    },
+    "real_geometry_g_inverse_mean_abs": {
+     "est": 0.0001216585738023111,
+     "se": 3.5908055856803185e-06,
+     "n_cond": 70
+    },
+    "real_geometry_g_inverse_second_moment_error": {
+     "est": 0.003175922847419445,
+     "se": 8.619324102180166e-05,
+     "n_cond": 70
+    },
+    "real_geometry_g_inverse_rms": {
+     "est": 0.9984338785920824,
+     "se": 4.6463065485400365e-05,
+     "n_cond": 70
+    },
+    "real_geometry_g_token_rms": {
+     "est": 0.5326794590268816,
+     "se": 0.0022593289325696596,
+     "n_cond": 70
+    },
+    "real_geometry_g_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 70
+    },
+    "real_geometry_v_inverse_mean_abs": {
+     "est": 6.173029541969299e-05,
+     "se": 5.101428114908063e-06,
+     "n_cond": 70
+    },
+    "real_geometry_v_inverse_second_moment_error": {
+     "est": 0.0017043641635349819,
+     "se": 2.9530997647045227e-05,
+     "n_cond": 70
+    },
+    "real_geometry_v_inverse_rms": {
+     "est": 0.9991474492209298,
+     "se": 1.4778329595643446e-05,
+     "n_cond": 70
+    },
+    "real_geometry_v_token_rms": {
+     "est": 0.9295013555458613,
+     "se": 0.0005140379086072393,
+     "n_cond": 70
+    },
+    "real_geometry_v_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 70
+    },
+    "gen_geometry_p_inverse_mean_abs": {
+     "est": 0.001092120131111837,
+     "se": 3.198458950218057e-05,
+     "n_cond": 70
+    },
+    "gen_geometry_p_inverse_second_moment_error": {
+     "est": 0.12721865794488363,
+     "se": 0.004773092975037706,
+     "n_cond": 70
+    },
+    "gen_geometry_p_inverse_rms": {
+     "est": 0.9329290594373431,
+     "se": 0.0026052496840682465,
+     "n_cond": 70
+    },
+    "gen_geometry_p_token_rms": {
+     "est": 0.8709962316921779,
+     "se": 0.0017111070871588415,
+     "n_cond": 70
+    },
+    "gen_geometry_p_off_constraint_fraction": {
+     "est": 0.6264109373092651,
+     "se": 0.01938519958470565,
+     "n_cond": 70
+    },
+    "gen_geometry_g_inverse_mean_abs": {
+     "est": 0.0024043386303154485,
+     "se": 9.94738151380014e-05,
+     "n_cond": 70
+    },
+    "gen_geometry_g_inverse_second_moment_error": {
+     "est": 0.03536024482122489,
+     "se": 0.0012582760686022149,
+     "n_cond": 70
+    },
+    "gen_geometry_g_inverse_rms": {
+     "est": 0.9889658561774662,
+     "se": 0.0006446446497961484,
+     "n_cond": 70
+    },
+    "gen_geometry_g_token_rms": {
+     "est": 0.5306254787104471,
+     "se": 0.0021429362214218247,
+     "n_cond": 70
+    },
+    "gen_geometry_g_off_constraint_fraction": {
+     "est": 0.24484127743967943,
+     "se": 0.01645017229356764,
+     "n_cond": 70
+    },
+    "gen_geometry_v_inverse_mean_abs": {
+     "est": 0.0021698202937841414,
+     "se": 0.00010385146466168931,
+     "n_cond": 70
+    },
+    "gen_geometry_v_inverse_second_moment_error": {
+     "est": 0.007332273253372737,
+     "se": 0.0004245810295691078,
+     "n_cond": 70
+    },
+    "gen_geometry_v_inverse_rms": {
+     "est": 0.9970908156463079,
+     "se": 0.0002833797123099352,
+     "n_cond": 70
+    },
+    "gen_geometry_v_token_rms": {
+     "est": 0.9277522870472499,
+     "se": 0.0005108981871669571,
+     "n_cond": 70
+    },
+    "gen_geometry_v_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 70
+    }
+   }
+  },
+  "e32c1": {
+   "random": {
+    "real_geometry_p_inverse_mean_abs": {
+     "est": 4.884470949662045e-05,
+     "se": 1.2243750028743909e-06,
+     "n_cond": 256
+    },
+    "real_geometry_p_inverse_second_moment_error": {
+     "est": 0.0921240166426287,
+     "se": 0.002802156496373002,
+     "n_cond": 256
+    },
+    "real_geometry_p_inverse_rms": {
+     "est": 0.9517863348592073,
+     "se": 0.001509548369198837,
+     "n_cond": 256
+    },
+    "real_geometry_p_token_rms": {
+     "est": 0.8839536791201681,
+     "se": 0.000987430322592133,
+     "n_cond": 256
+    },
+    "real_geometry_p_off_constraint_fraction": {
+     "est": 0.5032793275022414,
+     "se": 0.01445561852614538,
+     "n_cond": 256
+    },
+    "real_geometry_g_inverse_mean_abs": {
+     "est": 0.00012774139129589912,
+     "se": 2.064937861721658e-06,
+     "n_cond": 256
+    },
+    "real_geometry_g_inverse_second_moment_error": {
+     "est": 0.003317239670195704,
+     "se": 5.210885978311271e-05,
+     "n_cond": 256
+    },
+    "real_geometry_g_inverse_rms": {
+     "est": 0.9983700839802623,
+     "se": 2.8972739137814962e-05,
+     "n_cond": 256
+    },
+    "real_geometry_g_token_rms": {
+     "est": 0.5356897006276995,
+     "se": 0.0012346899955951913,
+     "n_cond": 256
+    },
+    "real_geometry_g_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 256
+    },
+    "real_geometry_v_inverse_mean_abs": {
+     "est": 7.004942744970322e-05,
+     "se": 3.357101474289215e-06,
+     "n_cond": 256
+    },
+    "real_geometry_v_inverse_second_moment_error": {
+     "est": 0.001709397416561842,
+     "se": 1.7762483118050994e-05,
+     "n_cond": 256
+    },
+    "real_geometry_v_inverse_rms": {
+     "est": 0.9991449266672134,
+     "se": 8.888535310562559e-06,
+     "n_cond": 256
+    },
+    "real_geometry_v_token_rms": {
+     "est": 0.9278883866500109,
+     "se": 0.0005055279360423957,
+     "n_cond": 256
+    },
+    "real_geometry_v_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 256
+    },
+    "gen_geometry_p_inverse_mean_abs": {
+     "est": 0.0013109834414990473,
+     "se": 1.8052376992193203e-05,
+     "n_cond": 256
+    },
+    "gen_geometry_p_inverse_second_moment_error": {
+     "est": 0.09402139154553879,
+     "se": 0.002333539056520164,
+     "n_cond": 256
+    },
+    "gen_geometry_p_inverse_rms": {
+     "est": 0.9508545796852559,
+     "se": 0.0012506710411789507,
+     "n_cond": 256
+    },
+    "gen_geometry_p_token_rms": {
+     "est": 0.882227880647406,
+     "se": 0.0007255265803170957,
+     "n_cond": 256
+    },
+    "gen_geometry_p_off_constraint_fraction": {
+     "est": 0.5101634894090239,
+     "se": 0.015945259448346825,
+     "n_cond": 256
+    },
+    "gen_geometry_g_inverse_mean_abs": {
+     "est": 0.0031486142593166733,
+     "se": 5.986988930114837e-05,
+     "n_cond": 256
+    },
+    "gen_geometry_g_inverse_second_moment_error": {
+     "est": 0.040729599888436496,
+     "se": 0.000759165549585027,
+     "n_cond": 256
+    },
+    "gen_geometry_g_inverse_rms": {
+     "est": 0.9918009568937123,
+     "se": 0.00040684017275264146,
+     "n_cond": 256
+    },
+    "gen_geometry_g_token_rms": {
+     "est": 0.5343153793364763,
+     "se": 0.0011912008080299894,
+     "n_cond": 256
+    },
+    "gen_geometry_g_off_constraint_fraction": {
+     "est": 0.3082682387175737,
+     "se": 0.009317012105064172,
+     "n_cond": 256
+    },
+    "gen_geometry_v_inverse_mean_abs": {
+     "est": 0.0031768696280778386,
+     "se": 9.102113655788743e-05,
+     "n_cond": 256
+    },
+    "gen_geometry_v_inverse_second_moment_error": {
+     "est": 0.008632406883407384,
+     "se": 0.00030510871887359954,
+     "n_cond": 256
+    },
+    "gen_geometry_v_inverse_rms": {
+     "est": 0.9976774076931179,
+     "se": 0.00017958610989598632,
+     "n_cond": 256
+    },
+    "gen_geometry_v_token_rms": {
+     "est": 0.9277483769692481,
+     "se": 0.00047622961850080076,
+     "n_cond": 256
+    },
+    "gen_geometry_v_off_constraint_fraction": {
+     "est": 0.015625,
+     "se": 0.004333882596296643,
+     "n_cond": 256
+    }
+   },
+   "risky": {
+    "real_geometry_p_inverse_mean_abs": {
+     "est": 4.969414938926775e-05,
+     "se": 1.0711902428822017e-06,
+     "n_cond": 256
+    },
+    "real_geometry_p_inverse_second_moment_error": {
+     "est": 0.08521760358416941,
+     "se": 0.004549487510448264,
+     "n_cond": 256
+    },
+    "real_geometry_p_inverse_rms": {
+     "est": 0.9555462771095335,
+     "se": 0.002425333074029534,
+     "n_cond": 256
+    },
+    "real_geometry_p_token_rms": {
+     "est": 0.8863977459259331,
+     "se": 0.0014937547669564917,
+     "n_cond": 256
+    },
+    "real_geometry_p_off_constraint_fraction": {
+     "est": 0.4789737719693221,
+     "se": 0.026717883940492623,
+     "n_cond": 256
+    },
+    "real_geometry_g_inverse_mean_abs": {
+     "est": 0.0001316777643438627,
+     "se": 1.6697092532360682e-06,
+     "n_cond": 256
+    },
+    "real_geometry_g_inverse_second_moment_error": {
+     "est": 0.0031608019830855483,
+     "se": 5.3233419380621203e-05,
+     "n_cond": 256
+    },
+    "real_geometry_g_inverse_rms": {
+     "est": 0.9984518862329423,
+     "se": 2.873817381215102e-05,
+     "n_cond": 256
+    },
+    "real_geometry_g_token_rms": {
+     "est": 0.5300692338496447,
+     "se": 0.0011807012562939853,
+     "n_cond": 256
+    },
+    "real_geometry_g_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 256
+    },
+    "real_geometry_v_inverse_mean_abs": {
+     "est": 6.839059642516077e-05,
+     "se": 3.240519185874816e-06,
+     "n_cond": 256
+    },
+    "real_geometry_v_inverse_second_moment_error": {
+     "est": 0.0016808698419481516,
+     "se": 2.2430843014420102e-05,
+     "n_cond": 256
+    },
+    "real_geometry_v_inverse_rms": {
+     "est": 0.9991592012811452,
+     "se": 1.1225045997967835e-05,
+     "n_cond": 256
+    },
+    "real_geometry_v_token_rms": {
+     "est": 0.9260966947767884,
+     "se": 0.0005548107936472201,
+     "n_cond": 256
+    },
+    "real_geometry_v_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 256
+    },
+    "gen_geometry_p_inverse_mean_abs": {
+     "est": 0.001429211921276874,
+     "se": 4.3208595911273306e-05,
+     "n_cond": 256
+    },
+    "gen_geometry_p_inverse_second_moment_error": {
+     "est": 0.09279099155537551,
+     "se": 0.004923051689940707,
+     "n_cond": 256
+    },
+    "gen_geometry_p_inverse_rms": {
+     "est": 0.9515386263374239,
+     "se": 0.002639471597873683,
+     "n_cond": 256
+    },
+    "gen_geometry_p_token_rms": {
+     "est": 0.8828018631320447,
+     "se": 0.0016177089453592339,
+     "n_cond": 256
+    },
+    "gen_geometry_p_off_constraint_fraction": {
+     "est": 0.5019049070688197,
+     "se": 0.027010673230236266,
+     "n_cond": 256
+    },
+    "gen_geometry_g_inverse_mean_abs": {
+     "est": 0.003040298103769601,
+     "se": 5.949996886480708e-05,
+     "n_cond": 256
+    },
+    "gen_geometry_g_inverse_second_moment_error": {
+     "est": 0.040032932702160906,
+     "se": 0.0008543381108377806,
+     "n_cond": 256
+    },
+    "gen_geometry_g_inverse_rms": {
+     "est": 0.9912113901227713,
+     "se": 0.000412211767373548,
+     "n_cond": 256
+    },
+    "gen_geometry_g_token_rms": {
+     "est": 0.5284175565466285,
+     "se": 0.0011425412855675474,
+     "n_cond": 256
+    },
+    "gen_geometry_g_off_constraint_fraction": {
+     "est": 0.30674914089468075,
+     "se": 0.010310722643397666,
+     "n_cond": 256
+    },
+    "gen_geometry_v_inverse_mean_abs": {
+     "est": 0.003041111725906376,
+     "se": 9.07434524595803e-05,
+     "n_cond": 256
+    },
+    "gen_geometry_v_inverse_second_moment_error": {
+     "est": 0.0097010558238253,
+     "se": 0.000312104998383628,
+     "n_cond": 256
+    },
+    "gen_geometry_v_inverse_rms": {
+     "est": 0.996745552169159,
+     "se": 0.00020917267224694188,
+     "n_cond": 256
+    },
+    "gen_geometry_v_token_rms": {
+     "est": 0.9245671688113362,
+     "se": 0.0005864698659058996,
+     "n_cond": 256
+    },
+    "gen_geometry_v_off_constraint_fraction": {
+     "est": 0.0166015625,
+     "se": 0.004677234212481087,
+     "n_cond": 256
+    }
+   },
+   "ach_WAKE_UP": {
+    "real_geometry_p_inverse_mean_abs": {
+     "est": 5.751144404173977e-05,
+     "se": 1.5667654309700858e-06,
+     "n_cond": 196
+    },
+    "real_geometry_p_inverse_second_moment_error": {
+     "est": 0.05052344072420074,
+     "se": 0.0017683008751814867,
+     "n_cond": 196
+    },
+    "real_geometry_p_inverse_rms": {
+     "est": 0.9739468252780487,
+     "se": 0.0009355658448643356,
+     "n_cond": 196
+    },
+    "real_geometry_p_token_rms": {
+     "est": 0.8925126988668831,
+     "se": 0.00047091359555185853,
+     "n_cond": 196
+    },
+    "real_geometry_p_off_constraint_fraction": {
+     "est": 0.2640463617079112,
+     "se": 0.011076110399407129,
+     "n_cond": 196
+    },
+    "real_geometry_g_inverse_mean_abs": {
+     "est": 0.0001328908701721883,
+     "se": 2.015743630192214e-06,
+     "n_cond": 196
+    },
+    "real_geometry_g_inverse_second_moment_error": {
+     "est": 0.002933767737050978,
+     "se": 4.809979884214328e-05,
+     "n_cond": 196
+    },
+    "real_geometry_g_inverse_rms": {
+     "est": 0.9985974896319059,
+     "se": 2.654108384515271e-05,
+     "n_cond": 196
+    },
+    "real_geometry_g_token_rms": {
+     "est": 0.5355026861842798,
+     "se": 0.0011050616037225336,
+     "n_cond": 196
+    },
+    "real_geometry_g_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 196
+    },
+    "real_geometry_v_inverse_mean_abs": {
+     "est": 6.859190762042999e-05,
+     "se": 3.4946453099628197e-06,
+     "n_cond": 196
+    },
+    "real_geometry_v_inverse_second_moment_error": {
+     "est": 0.0017946569287047094,
+     "se": 1.770421989983329e-05,
+     "n_cond": 196
+    },
+    "real_geometry_v_inverse_rms": {
+     "est": 0.9991022622098729,
+     "se": 8.860111596364934e-06,
+     "n_cond": 196
+    },
+    "real_geometry_v_token_rms": {
+     "est": 0.9303697618294735,
+     "se": 0.00019699983422775185,
+     "n_cond": 196
+    },
+    "real_geometry_v_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 196
+    },
+    "gen_geometry_p_inverse_mean_abs": {
+     "est": 0.0012291101037942786,
+     "se": 9.94404634601809e-06,
+     "n_cond": 196
+    },
+    "gen_geometry_p_inverse_second_moment_error": {
+     "est": 0.11126795068991427,
+     "se": 0.0025713290611929273,
+     "n_cond": 196
+    },
+    "gen_geometry_p_inverse_rms": {
+     "est": 0.9411658337529825,
+     "se": 0.0014026970169748747,
+     "n_cond": 196
+    },
+    "gen_geometry_p_token_rms": {
+     "est": 0.8722452068207215,
+     "se": 0.0008130414347521049,
+     "n_cond": 196
+    },
+    "gen_geometry_p_off_constraint_fraction": {
+     "est": 0.4730410740463709,
+     "se": 0.011551085032072772,
+     "n_cond": 196
+    },
+    "gen_geometry_g_inverse_mean_abs": {
+     "est": 0.0028436280708588964,
+     "se": 5.2646017829732635e-05,
+     "n_cond": 196
+    },
+    "gen_geometry_g_inverse_second_moment_error": {
+     "est": 0.04019192996795992,
+     "se": 0.0007140376775701184,
+     "n_cond": 196
+    },
+    "gen_geometry_g_inverse_rms": {
+     "est": 0.9882329735828905,
+     "se": 0.0004961040276522991,
+     "n_cond": 196
+    },
+    "gen_geometry_g_token_rms": {
+     "est": 0.5305099155829878,
+     "se": 0.0010222752187587128,
+     "n_cond": 196
+    },
+    "gen_geometry_g_off_constraint_fraction": {
+     "est": 0.3059807344415814,
+     "se": 0.00875505251993822,
+     "n_cond": 196
+    },
+    "gen_geometry_v_inverse_mean_abs": {
+     "est": 0.00307563716089543,
+     "se": 9.118412593042456e-05,
+     "n_cond": 196
+    },
+    "gen_geometry_v_inverse_second_moment_error": {
+     "est": 0.010084039930786406,
+     "se": 0.0003631593201917698,
+     "n_cond": 196
+    },
+    "gen_geometry_v_inverse_rms": {
+     "est": 0.9963288729896351,
+     "se": 0.00022913944156312794,
+     "n_cond": 196
+    },
+    "gen_geometry_v_token_rms": {
+     "est": 0.9245497833709327,
+     "se": 0.000250814834153287,
+     "n_cond": 196
+    },
+    "gen_geometry_v_off_constraint_fraction": {
+     "est": 0.011479591836734694,
+     "se": 0.0033366174287420324,
+     "n_cond": 196
+    }
+   },
+   "ach_COLLECT_COAL": {
+    "real_geometry_p_inverse_mean_abs": {
+     "est": 5.0669139987226894e-05,
+     "se": 1.7677748843879822e-06,
+     "n_cond": 82
+    },
+    "real_geometry_p_inverse_second_moment_error": {
+     "est": 0.09357538006109435,
+     "se": 0.0039058773713679207,
+     "n_cond": 82
+    },
+    "real_geometry_p_inverse_rms": {
+     "est": 0.9510904608703241,
+     "se": 0.0020942299144917965,
+     "n_cond": 82
+    },
+    "real_geometry_p_token_rms": {
+     "est": 0.8832292716677596,
+     "se": 0.0011864036067630807,
+     "n_cond": 82
+    },
+    "real_geometry_p_off_constraint_fraction": {
+     "est": 0.5043661596208084,
+     "se": 0.019391189537505005,
+     "n_cond": 82
+    },
+    "real_geometry_g_inverse_mean_abs": {
+     "est": 0.00012953862296410256,
+     "se": 3.109093245514545e-06,
+     "n_cond": 82
+    },
+    "real_geometry_g_inverse_second_moment_error": {
+     "est": 0.0032163332102865707,
+     "se": 6.82528005959878e-05,
+     "n_cond": 82
+    },
+    "real_geometry_g_inverse_rms": {
+     "est": 0.9984208977803951,
+     "se": 3.762767436772008e-05,
+     "n_cond": 82
+    },
+    "real_geometry_g_token_rms": {
+     "est": 0.5378685557260746,
+     "se": 0.0020765109132982284,
+     "n_cond": 82
+    },
+    "real_geometry_g_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 82
+    },
+    "real_geometry_v_inverse_mean_abs": {
+     "est": 7.494193751637528e-05,
+     "se": 6.258721177391897e-06,
+     "n_cond": 82
+    },
+    "real_geometry_v_inverse_second_moment_error": {
+     "est": 0.0017857253551483154,
+     "se": 2.532122213983847e-05,
+     "n_cond": 82
+    },
+    "real_geometry_v_inverse_rms": {
+     "est": 0.9991067328104158,
+     "se": 1.2671871147764407e-05,
+     "n_cond": 82
+    },
+    "real_geometry_v_token_rms": {
+     "est": 0.9306155239663473,
+     "se": 0.0004918096751960518,
+     "n_cond": 82
+    },
+    "real_geometry_v_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 82
+    },
+    "gen_geometry_p_inverse_mean_abs": {
+     "est": 0.001307724637870972,
+     "se": 3.470295339735766e-05,
+     "n_cond": 82
+    },
+    "gen_geometry_p_inverse_second_moment_error": {
+     "est": 0.10070664362936485,
+     "se": 0.00407373748397912,
+     "n_cond": 82
+    },
+    "gen_geometry_p_inverse_rms": {
+     "est": 0.9472698394845172,
+     "se": 0.0022022647214630956,
+     "n_cond": 82
+    },
+    "gen_geometry_p_token_rms": {
+     "est": 0.8802739890610299,
+     "se": 0.0013035617715777797,
+     "n_cond": 82
+    },
+    "gen_geometry_p_off_constraint_fraction": {
+     "est": 0.5215296654439554,
+     "se": 0.019449714267948608,
+     "n_cond": 82
+    },
+    "gen_geometry_g_inverse_mean_abs": {
+     "est": 0.0032846888657886444,
+     "se": 0.00012826304003590844,
+     "n_cond": 82
+    },
+    "gen_geometry_g_inverse_second_moment_error": {
+     "est": 0.04052904543535012,
+     "se": 0.0015583826709732456,
+     "n_cond": 82
+    },
+    "gen_geometry_g_inverse_rms": {
+     "est": 0.996212247668243,
+     "se": 0.0006887672843128142,
+     "n_cond": 82
+    },
+    "gen_geometry_g_token_rms": {
+     "est": 0.5363648519283388,
+     "se": 0.0020144268721198747,
+     "n_cond": 82
+    },
+    "gen_geometry_g_off_constraint_fraction": {
+     "est": 0.2977642346536968,
+     "se": 0.016456888176047294,
+     "n_cond": 82
+    },
+    "gen_geometry_v_inverse_mean_abs": {
+     "est": 0.002948525202710454,
+     "se": 0.00012516578593496972,
+     "n_cond": 82
+    },
+    "gen_geometry_v_inverse_second_moment_error": {
+     "est": 0.0083525538807962,
+     "se": 0.0004325151037462107,
+     "n_cond": 82
+    },
+    "gen_geometry_v_inverse_rms": {
+     "est": 0.9971803804723228,
+     "se": 0.00028946276691044567,
+     "n_cond": 82
+    },
+    "gen_geometry_v_token_rms": {
+     "est": 0.9289510075638934,
+     "se": 0.0004726872342999183,
+     "n_cond": 82
+    },
+    "gen_geometry_v_off_constraint_fraction": {
+     "est": 0.009146341463414634,
+     "se": 0.004929959122672267,
+     "n_cond": 82
+    }
+   },
+   "ach_COLLECT_IRON": {
+    "real_geometry_p_inverse_mean_abs": {
+     "est": 4.361784248041139e-05,
+     "se": 1.476078446327737e-06,
+     "n_cond": 70
+    },
+    "real_geometry_p_inverse_second_moment_error": {
+     "est": 0.1099132392023291,
+     "se": 0.004030779598971383,
+     "n_cond": 70
+    },
+    "real_geometry_p_inverse_rms": {
+     "est": 0.9423496041979108,
+     "se": 0.0021664565132798927,
+     "n_cond": 70
+    },
+    "real_geometry_p_token_rms": {
+     "est": 0.8787428387573787,
+     "se": 0.00132234184731056,
+     "n_cond": 70
+    },
+    "real_geometry_p_off_constraint_fraction": {
+     "est": 0.590652563742229,
+     "se": 0.019758409104981185,
+     "n_cond": 70
+    },
+    "real_geometry_g_inverse_mean_abs": {
+     "est": 0.0001216585738023111,
+     "se": 3.5908055856803185e-06,
+     "n_cond": 70
+    },
+    "real_geometry_g_inverse_second_moment_error": {
+     "est": 0.003175922847419445,
+     "se": 8.619324102180166e-05,
+     "n_cond": 70
+    },
+    "real_geometry_g_inverse_rms": {
+     "est": 0.9984338785920824,
+     "se": 4.6463065485400365e-05,
+     "n_cond": 70
+    },
+    "real_geometry_g_token_rms": {
+     "est": 0.5326794590268816,
+     "se": 0.0022593289325696596,
+     "n_cond": 70
+    },
+    "real_geometry_g_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 70
+    },
+    "real_geometry_v_inverse_mean_abs": {
+     "est": 6.173029541969299e-05,
+     "se": 5.101428114908063e-06,
+     "n_cond": 70
+    },
+    "real_geometry_v_inverse_second_moment_error": {
+     "est": 0.0017043641635349819,
+     "se": 2.9530997647045227e-05,
+     "n_cond": 70
+    },
+    "real_geometry_v_inverse_rms": {
+     "est": 0.9991474492209298,
+     "se": 1.4778329595643446e-05,
+     "n_cond": 70
+    },
+    "real_geometry_v_token_rms": {
+     "est": 0.9295013555458613,
+     "se": 0.0005140379086072393,
+     "n_cond": 70
+    },
+    "real_geometry_v_off_constraint_fraction": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 70
+    },
+    "gen_geometry_p_inverse_mean_abs": {
+     "est": 0.0014005860230619355,
+     "se": 3.8473481547060334e-05,
+     "n_cond": 70
+    },
+    "gen_geometry_p_inverse_second_moment_error": {
+     "est": 0.11758543284876007,
+     "se": 0.004353855117960968,
+     "n_cond": 70
+    },
+    "gen_geometry_p_inverse_rms": {
+     "est": 0.9381847492286137,
+     "se": 0.0023573214663389222,
+     "n_cond": 70
+    },
+    "gen_geometry_p_token_rms": {
+     "est": 0.8751960098743439,
+     "se": 0.0014844069513734882,
+     "n_cond": 70
+    },
+    "gen_geometry_p_off_constraint_fraction": {
+     "est": 0.6028659688574928,
+     "se": 0.019272497437317238,
+     "n_cond": 70
+    },
+    "gen_geometry_g_inverse_mean_abs": {
+     "est": 0.0031640338229148514,
+     "se": 0.00011742424639847783,
+     "n_cond": 70
+    },
+    "gen_geometry_g_inverse_second_moment_error": {
+     "est": 0.03790900584842478,
+     "se": 0.0012416775615543504,
+     "n_cond": 70
+    },
+    "gen_geometry_g_inverse_rms": {
+     "est": 0.9968581012317113,
+     "se": 0.0007877419989050825,
+     "n_cond": 70
+    },
+    "gen_geometry_g_token_rms": {
+     "est": 0.5318365284374782,
+     "se": 0.0021671216016235276,
+     "n_cond": 70
+    },
+    "gen_geometry_g_off_constraint_fraction": {
+     "est": 0.2777777849297438,
+     "se": 0.015311016060542311,
+     "n_cond": 70
+    },
+    "gen_geometry_v_inverse_mean_abs": {
+     "est": 0.0028233897739223072,
+     "se": 0.00013685600150847187,
+     "n_cond": 70
+    },
+    "gen_geometry_v_inverse_second_moment_error": {
+     "est": 0.007607412125383105,
+     "se": 0.0003881380309995729,
+     "n_cond": 70
+    },
+    "gen_geometry_v_inverse_rms": {
+     "est": 0.9976125035967146,
+     "se": 0.0003299289247922063,
+     "n_cond": 70
+    },
+    "gen_geometry_v_token_rms": {
+     "est": 0.9281798183918,
+     "se": 0.0005366762877467734,
+     "n_cond": 70
+    },
+    "gen_geometry_v_off_constraint_fraction": {
+     "est": 0.007142857142857143,
+     "se": 0.004871793817476269,
+     "n_cond": 70
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,836 @@
+{
+ "reliability": {
+  "1": {
+   "all": {
+    "contingency": {
+     "rank_correlation": {
+      "mean": 0.7331781442432354,
+      "p10": 0.5031632632017136,
+      "p90": 0.921571445465088,
+      "n": 48
+     },
+     "argmax_agreement": 0.16666666666666666,
+     "flat_fraction": 0.0
+    },
+    "surprise": {
+     "rank_correlation": {
+      "mean": 0.8558886014701178,
+      "p10": 0.6674183785915375,
+      "p90": 0.9764387607574463,
+      "n": 48
+     },
+     "argmax_agreement": 0.375,
+     "flat_fraction": 0.0
+    },
+    "mixture_probability": {
+     "rank_correlation": {
+      "mean": 0.8279825714416802,
+      "p10": 0.6021530568599701,
+      "p90": 0.964346957206726,
+      "n": 48
+     },
+     "argmax_agreement": 0.2916666666666667,
+     "flat_fraction": 0.0
+    },
+    "mixture_tv_between_draws": {
+     "mean": 0.13088853657245636,
+     "p10": 0.04744459688663483,
+     "p90": 0.25265005230903625,
+     "n": 48
+    },
+    "expected_hud_share": 0.29168763756752014,
+    "max_probability": {
+     "mean": 0.08566778153181076,
+     "p10": 0.03504613786935806,
+     "p90": 0.16011738777160645,
+     "n": 96
+    }
+   },
+   "heldout": {
+    "contingency": {
+     "rank_correlation": {
+      "mean": 0.7071173484437168,
+      "p10": 0.46928571164608,
+      "p90": 0.9363775551319122,
+      "n": 16
+     },
+     "argmax_agreement": 0.125,
+     "flat_fraction": 0.0
+    },
+    "surprise": {
+     "rank_correlation": {
+      "mean": 0.8617027997970581,
+      "p10": 0.66025510430336,
+      "p90": 0.9721938967704773,
+      "n": 16
+     },
+     "argmax_agreement": 0.25,
+     "flat_fraction": 0.0
+    },
+    "mixture_probability": {
+     "rank_correlation": {
+      "mean": 0.8323022983968258,
+      "p10": 0.6406122446060181,
+      "p90": 0.9641326665878296,
+      "n": 16
+     },
+     "argmax_agreement": 0.375,
+     "flat_fraction": 0.0
+    },
+    "mixture_tv_between_draws": {
+     "mean": 0.1079389676451683,
+     "p10": 0.050623517483472824,
+     "p90": 0.17133605480194092,
+     "n": 16
+    },
+    "expected_hud_share": 0.3065161108970642,
+    "max_probability": {
+     "mean": 0.07779566943645477,
+     "p10": 0.040700219571590424,
+     "p90": 0.12848101556301117,
+     "n": 32
+    }
+   }
+  },
+  "5": {
+   "all": {
+    "contingency": {
+     "rank_correlation": {
+      "mean": 0.8214051905088127,
+      "p10": 0.6314897894859314,
+      "p90": 0.9947346925735474,
+      "n": 48
+     },
+     "argmax_agreement": 0.6041666666666666,
+     "flat_fraction": 0.0
+    },
+    "surprise": {
+     "rank_correlation": {
+      "mean": 0.9019026334087054,
+      "p10": 0.8444081604480743,
+      "p90": 0.9824387729167938,
+      "n": 48
+     },
+     "argmax_agreement": 0.4583333333333333,
+     "flat_fraction": 0.0
+    },
+    "mixture_probability": {
+     "rank_correlation": {
+      "mean": 0.8610034010683497,
+      "p10": 0.6920000076293945,
+      "p90": 0.9884285867214203,
+      "n": 48
+     },
+     "argmax_agreement": 0.5416666666666666,
+     "flat_fraction": 0.0
+    },
+    "mixture_tv_between_draws": {
+     "mean": 0.16879574954509735,
+     "p10": 0.03353012353181839,
+     "p90": 0.3818209767341614,
+     "n": 48
+    },
+    "expected_hud_share": 0.2868335545063019,
+    "max_probability": {
+     "mean": 0.1220097541809082,
+     "p10": 0.03779374063014984,
+     "p90": 0.23399950563907623,
+     "n": 96
+    }
+   },
+   "heldout": {
+    "contingency": {
+     "rank_correlation": {
+      "mean": 0.8959311246871948,
+      "p10": 0.6754592061042786,
+      "p90": 0.9930612444877625,
+      "n": 16
+     },
+     "argmax_agreement": 0.6875,
+     "flat_fraction": 0.0
+    },
+    "surprise": {
+     "rank_correlation": {
+      "mean": 0.9634502604603767,
+      "p10": 0.9488775432109833,
+      "p90": 0.9829081594944,
+      "n": 16
+     },
+     "argmax_agreement": 0.5625,
+     "flat_fraction": 0.0
+    },
+    "mixture_probability": {
+     "rank_correlation": {
+      "mean": 0.9293303564190865,
+      "p10": 0.8163775503635406,
+      "p90": 0.9941836893558502,
+      "n": 16
+     },
+     "argmax_agreement": 0.5625,
+     "flat_fraction": 0.0
+    },
+    "mixture_tv_between_draws": {
+     "mean": 0.1402505785226822,
+     "p10": 0.03025864250957966,
+     "p90": 0.20538437366485596,
+     "n": 16
+    },
+    "expected_hud_share": 0.30075129866600037,
+    "max_probability": {
+     "mean": 0.13247472047805786,
+     "p10": 0.03946762904524803,
+     "p90": 0.1828310787677765,
+     "n": 32
+    }
+   }
+  },
+  "10": {
+   "all": {
+    "contingency": {
+     "rank_correlation": {
+      "mean": 0.8552721103963753,
+      "p10": 0.6606836795806885,
+      "p90": 0.9962448716163635,
+      "n": 48
+     },
+     "argmax_agreement": 0.6041666666666666,
+     "flat_fraction": 0.0
+    },
+    "surprise": {
+     "rank_correlation": {
+      "mean": 0.8688903030900595,
+      "p10": 0.7585102200508118,
+      "p90": 0.9839898109436035,
+      "n": 48
+     },
+     "argmax_agreement": 0.4583333333333333,
+     "flat_fraction": 0.0
+    },
+    "mixture_probability": {
+     "rank_correlation": {
+      "mean": 0.8729761865300437,
+      "p10": 0.7767755031585694,
+      "p90": 0.9931224524974823,
+      "n": 48
+     },
+     "argmax_agreement": 0.5625,
+     "flat_fraction": 0.0
+    },
+    "mixture_tv_between_draws": {
+     "mean": 0.16689176857471466,
+     "p10": 0.027061820030212402,
+     "p90": 0.3579992651939392,
+     "n": 48
+    },
+    "expected_hud_share": 0.3327955901622772,
+    "max_probability": {
+     "mean": 0.13883274793624878,
+     "p10": 0.03969879820942879,
+     "p90": 0.27064961194992065,
+     "n": 96
+    }
+   },
+   "heldout": {
+    "contingency": {
+     "rank_correlation": {
+      "mean": 0.9091645367443562,
+      "p10": 0.7344897985458374,
+      "p90": 0.9944897890090942,
+      "n": 16
+     },
+     "argmax_agreement": 0.6875,
+     "flat_fraction": 0.0
+    },
+    "surprise": {
+     "rank_correlation": {
+      "mean": 0.9250063709914684,
+      "p10": 0.8376530408859253,
+      "p90": 0.9788265228271484,
+      "n": 16
+     },
+     "argmax_agreement": 0.5,
+     "flat_fraction": 0.0
+    },
+    "mixture_probability": {
+     "rank_correlation": {
+      "mean": 0.9319834113121033,
+      "p10": 0.8129591643810272,
+      "p90": 0.9922448992729187,
+      "n": 16
+     },
+     "argmax_agreement": 0.625,
+     "flat_fraction": 0.0
+    },
+    "mixture_tv_between_draws": {
+     "mean": 0.1494605541229248,
+     "p10": 0.04752179980278015,
+     "p90": 0.29816126823425293,
+     "n": 16
+    },
+    "expected_hud_share": 0.3264622092247009,
+    "max_probability": {
+     "mean": 0.15775185823440552,
+     "p10": 0.04300030693411827,
+     "p90": 0.22833316028118134,
+     "n": 32
+    }
+   }
+  }
+ },
+ "sequential": {
+  "mix": {
+   "all": {
+    "frames": 2549,
+    "episodes": 12,
+    "exact_window_repeat_rate": 0.032715806070161606,
+    "max_streak_per_episode": {
+     "mean": 2.5,
+     "p10": 2.0,
+     "p90": 3.0,
+     "n": 12
+    },
+    "window_coverage_fraction": {
+     "mean": 0.9506802721088435,
+     "p10": 0.8469387755102041,
+     "p90": 1.0,
+     "n": 12
+    },
+    "window_return_gap": {
+     "mean": 33.76231155778895,
+     "p10": 3.0,
+     "p90": 82.0,
+     "n": 1990
+    },
+    "realized_hud_share": 0.2934484111416242,
+    "mob_covered_share": 0.2557865829737152,
+    "expected_same_window_probability": 0.02228083461523056,
+    "max_probability": {
+     "mean": 0.160544291138649,
+     "p10": 0.040805839002132416,
+     "p90": 0.374983549118042,
+     "n": 2549
+    },
+    "effective_windows": {
+     "mean": 22.23080062866211,
+     "p10": 4.367277145385742,
+     "p90": 43.780975341796875,
+     "n": 2549
+    },
+    "day": {
+     "frames": 1654,
+     "hud_share": 0.2992744860943168,
+     "mob_covered_share": 0.2587666263603386
+    },
+    "night": {
+     "frames": 895,
+     "hud_share": 0.28268156424581004,
+     "mob_covered_share": 0.25027932960893856
+    },
+    "attempt_coverage": {
+     "drink": {
+      "frames": 37,
+      "counter": 0.7297297297297297,
+      "faced": 0.0
+     },
+     "wood": {
+      "frames": 112,
+      "counter": 0.35714285714285715,
+      "faced": 0.24107142857142858
+     },
+     "sapling": {
+      "frames": 117,
+      "counter": 0.1623931623931624,
+      "faced": 0.37606837606837606
+     },
+     "stone": {
+      "frames": 115,
+      "counter": 0.41739130434782606,
+      "faced": 0.22608695652173913
+     },
+     "coal": {
+      "frames": 30,
+      "counter": 0.4,
+      "faced": 0.26666666666666666
+     },
+     "iron": {
+      "frames": 13,
+      "counter": 0.38461538461538464,
+      "faced": 0.23076923076923078
+     },
+     "stone_no_tool": {
+      "frames": 0
+     }
+    }
+   },
+   "heldout": {
+    "frames": 909,
+    "episodes": 4,
+    "exact_window_repeat_rate": 0.02430939226519337,
+    "max_streak_per_episode": {
+     "mean": 2.25,
+     "p10": 2.0,
+     "p90": 2.7,
+     "n": 4
+    },
+    "window_coverage_fraction": {
+     "mean": 0.9846938775510204,
+     "p10": 0.9571428571428572,
+     "p90": 1.0,
+     "n": 4
+    },
+    "window_return_gap": {
+     "mean": 34.80307262569833,
+     "p10": 3.0,
+     "p90": 85.0,
+     "n": 716
+    },
+    "realized_hud_share": 0.27832783278327833,
+    "mob_covered_share": 0.29372937293729373,
+    "expected_same_window_probability": 0.02168731391429901,
+    "max_probability": {
+     "mean": 0.15789037942886353,
+     "p10": 0.04147687181830406,
+     "p90": 0.37442487478256226,
+     "n": 909
+    },
+    "effective_windows": {
+     "mean": 22.58608627319336,
+     "p10": 4.331122398376465,
+     "p90": 43.662757873535156,
+     "n": 909
+    },
+    "day": {
+     "frames": 589,
+     "hud_share": 0.298811544991511,
+     "mob_covered_share": 0.28522920203735147
+    },
+    "night": {
+     "frames": 320,
+     "hud_share": 0.240625,
+     "mob_covered_share": 0.309375
+    },
+    "attempt_coverage": {
+     "drink": {
+      "frames": 9,
+      "counter": 0.6666666666666666,
+      "faced": 0.0
+     },
+     "wood": {
+      "frames": 35,
+      "counter": 0.22857142857142856,
+      "faced": 0.3142857142857143
+     },
+     "sapling": {
+      "frames": 33,
+      "counter": 0.09090909090909091,
+      "faced": 0.45454545454545453
+     },
+     "stone": {
+      "frames": 36,
+      "counter": 0.4444444444444444,
+      "faced": 0.3055555555555556
+     },
+     "coal": {
+      "frames": 13,
+      "counter": 0.3076923076923077,
+      "faced": 0.15384615384615385
+     },
+     "iron": {
+      "frames": 5,
+      "counter": 0.2,
+      "faced": 0.4
+     },
+     "stone_no_tool": {
+      "frames": 0
+     }
+    }
+   }
+  },
+  "mix_recency": {
+   "all": {
+    "frames": 2549,
+    "episodes": 12,
+    "exact_window_repeat_rate": 0.02404414662987781,
+    "max_streak_per_episode": {
+     "mean": 2.1666666666666665,
+     "p10": 2.0,
+     "p90": 3.0,
+     "n": 12
+    },
+    "window_coverage_fraction": {
+     "mean": 0.965986394557823,
+     "p10": 0.8653061224489795,
+     "p90": 1.0,
+     "n": 12
+    },
+    "window_return_gap": {
+     "mean": 35.09994952044422,
+     "p10": 4.0,
+     "p90": 80.0,
+     "n": 1981
+    },
+    "realized_hud_share": 0.302471557473519,
+    "mob_covered_share": 0.23264025107885444,
+    "expected_same_window_probability": 0.02234683930873871,
+    "max_probability": {
+     "mean": 0.16451731324195862,
+     "p10": 0.044676415622234344,
+     "p90": 0.3769920766353607,
+     "n": 2549
+    },
+    "effective_windows": {
+     "mean": 22.440189361572266,
+     "p10": 4.387017726898193,
+     "p90": 41.91172790527344,
+     "n": 2549
+    },
+    "day": {
+     "frames": 1654,
+     "hud_share": 0.3059250302297461,
+     "mob_covered_share": 0.22914147521160821
+    },
+    "night": {
+     "frames": 895,
+     "hud_share": 0.29608938547486036,
+     "mob_covered_share": 0.23910614525139665
+    },
+    "attempt_coverage": {
+     "drink": {
+      "frames": 37,
+      "counter": 0.7027027027027027,
+      "faced": 0.0
+     },
+     "wood": {
+      "frames": 112,
+      "counter": 0.39285714285714285,
+      "faced": 0.22321428571428573
+     },
+     "sapling": {
+      "frames": 117,
+      "counter": 0.18803418803418803,
+      "faced": 0.38461538461538464
+     },
+     "stone": {
+      "frames": 115,
+      "counter": 0.4260869565217391,
+      "faced": 0.1826086956521739
+     },
+     "coal": {
+      "frames": 30,
+      "counter": 0.43333333333333335,
+      "faced": 0.23333333333333334
+     },
+     "iron": {
+      "frames": 13,
+      "counter": 0.46153846153846156,
+      "faced": 0.23076923076923078
+     },
+     "stone_no_tool": {
+      "frames": 0
+     }
+    }
+   },
+   "heldout": {
+    "frames": 909,
+    "episodes": 4,
+    "exact_window_repeat_rate": 0.01878453038674033,
+    "max_streak_per_episode": {
+     "mean": 2.0,
+     "p10": 1.3,
+     "p90": 2.7,
+     "n": 4
+    },
+    "window_coverage_fraction": {
+     "mean": 0.9948979591836735,
+     "p10": 0.9857142857142857,
+     "p90": 1.0,
+     "n": 4
+    },
+    "window_return_gap": {
+     "mean": 36.23109243697479,
+     "p10": 5.0,
+     "p90": 83.70000000000005,
+     "n": 714
+    },
+    "realized_hud_share": 0.2915291529152915,
+    "mob_covered_share": 0.2684268426842684,
+    "expected_same_window_probability": 0.021544044837355614,
+    "max_probability": {
+     "mean": 0.16120220720767975,
+     "p10": 0.043745577335357666,
+     "p90": 0.379257470369339,
+     "n": 909
+    },
+    "effective_windows": {
+     "mean": 23.098024368286133,
+     "p10": 4.455793380737305,
+     "p90": 42.59611892700195,
+     "n": 909
+    },
+    "day": {
+     "frames": 589,
+     "hud_share": 0.3073005093378608,
+     "mob_covered_share": 0.25806451612903225
+    },
+    "night": {
+     "frames": 320,
+     "hud_share": 0.2625,
+     "mob_covered_share": 0.2875
+    },
+    "attempt_coverage": {
+     "drink": {
+      "frames": 9,
+      "counter": 0.7777777777777778,
+      "faced": 0.0
+     },
+     "wood": {
+      "frames": 35,
+      "counter": 0.2857142857142857,
+      "faced": 0.2571428571428571
+     },
+     "sapling": {
+      "frames": 33,
+      "counter": 0.09090909090909091,
+      "faced": 0.45454545454545453
+     },
+     "stone": {
+      "frames": 36,
+      "counter": 0.4166666666666667,
+      "faced": 0.3055555555555556
+     },
+     "coal": {
+      "frames": 13,
+      "counter": 0.3076923076923077,
+      "faced": 0.15384615384615385
+     },
+     "iron": {
+      "frames": 5,
+      "counter": 0.2,
+      "faced": 0.4
+     },
+     "stone_no_tool": {
+      "frames": 0
+     }
+    }
+   }
+  },
+  "uniform": {
+   "all": {
+    "frames": 2549,
+    "episodes": 12,
+    "exact_window_repeat_rate": 0.023255813953488372,
+    "max_streak_per_episode": {
+     "mean": 2.1666666666666665,
+     "p10": 2.0,
+     "p90": 2.9000000000000004,
+     "n": 12
+    },
+    "window_coverage_fraction": {
+     "mean": 0.9693877551020408,
+     "p10": 0.9224489795918368,
+     "p90": 1.0,
+     "n": 12
+    },
+    "window_return_gap": {
+     "mean": 37.166750884284994,
+     "p10": 5.0,
+     "p90": 83.0,
+     "n": 1979
+    },
+    "realized_hud_share": 0.28050215770890546,
+    "mob_covered_share": 0.11337779521380933,
+    "expected_same_window_probability": 0.020408160984516144,
+    "max_probability": {
+     "mean": 0.020408162847161293,
+     "p10": 0.020408162847161293,
+     "p90": 0.020408162847161293,
+     "n": 2549
+    },
+    "effective_windows": {
+     "mean": 49.00000762939453,
+     "p10": 49.000003814697266,
+     "p90": 49.000003814697266,
+     "n": 2549
+    },
+    "day": {
+     "frames": 1654,
+     "hud_share": 0.2883917775090689,
+     "mob_covered_share": 0.09008464328899637
+    },
+    "night": {
+     "frames": 895,
+     "hud_share": 0.2659217877094972,
+     "mob_covered_share": 0.1564245810055866
+    },
+    "attempt_coverage": {
+     "drink": {
+      "frames": 37,
+      "counter": 0.21621621621621623,
+      "faced": 0.05405405405405406
+     },
+     "wood": {
+      "frames": 112,
+      "counter": 0.20535714285714285,
+      "faced": 0.125
+     },
+     "sapling": {
+      "frames": 117,
+      "counter": 0.09401709401709402,
+      "faced": 0.1623931623931624
+     },
+     "stone": {
+      "frames": 115,
+      "counter": 0.16521739130434782,
+      "faced": 0.1565217391304348
+     },
+     "coal": {
+      "frames": 30,
+      "counter": 0.03333333333333333,
+      "faced": 0.3
+     },
+     "iron": {
+      "frames": 13,
+      "counter": 0.07692307692307693,
+      "faced": 0.38461538461538464
+     },
+     "stone_no_tool": {
+      "frames": 0
+     }
+    }
+   },
+   "heldout": {
+    "frames": 909,
+    "episodes": 4,
+    "exact_window_repeat_rate": 0.02430939226519337,
+    "max_streak_per_episode": {
+     "mean": 2.25,
+     "p10": 2.0,
+     "p90": 2.7,
+     "n": 4
+    },
+    "window_coverage_fraction": {
+     "mean": 0.9897959183673469,
+     "p10": 0.9714285714285714,
+     "p90": 1.0,
+     "n": 4
+    },
+    "window_return_gap": {
+     "mean": 37.65874125874126,
+     "p10": 6.0,
+     "p90": 82.60000000000002,
+     "n": 715
+    },
+    "realized_hud_share": 0.27282728272827284,
+    "mob_covered_share": 0.12211221122112212,
+    "expected_same_window_probability": 0.020408157259225845,
+    "max_probability": {
+     "mean": 0.020408164709806442,
+     "p10": 0.020408162847161293,
+     "p90": 0.020408162847161293,
+     "n": 909
+    },
+    "effective_windows": {
+     "mean": 49.000003814697266,
+     "p10": 49.000003814697266,
+     "p90": 49.000003814697266,
+     "n": 909
+    },
+    "day": {
+     "frames": 589,
+     "hud_share": 0.2920203735144312,
+     "mob_covered_share": 0.09507640067911714
+    },
+    "night": {
+     "frames": 320,
+     "hud_share": 0.2375,
+     "mob_covered_share": 0.171875
+    },
+    "attempt_coverage": {
+     "drink": {
+      "frames": 9,
+      "counter": 0.1111111111111111,
+      "faced": 0.1111111111111111
+     },
+     "wood": {
+      "frames": 35,
+      "counter": 0.11428571428571428,
+      "faced": 0.17142857142857143
+     },
+     "sapling": {
+      "frames": 33,
+      "counter": 0.06060606060606061,
+      "faced": 0.09090909090909091
+     },
+     "stone": {
+      "frames": 36,
+      "counter": 0.1388888888888889,
+      "faced": 0.25
+     },
+     "coal": {
+      "frames": 13,
+      "counter": 0.0,
+      "faced": 0.23076923076923078
+     },
+     "iron": {
+      "frames": 5,
+      "counter": 0.0,
+      "faced": 0.2
+     },
+     "stone_no_tool": {
+      "frames": 0
+     }
+    }
+   }
+  }
+ },
+ "static": {
+  "1": {
+   "mix_tv_same_world_different_static": {
+    "mean": 0.035873088985681534,
+    "p10": 0.019081100821495056,
+    "p90": 0.0573415569961071,
+    "n": 24
+   },
+   "C_max_absolute_change": 0.0,
+   "S_rank_correlation": {
+    "mean": 0.8292091811696688,
+    "p10": 0.7340714514255524,
+    "p90": 0.9513469338417053,
+    "n": 24
+   },
+   "note": "C does not read the current frame; invariance to current-frame static is structural, not learned."
+  },
+  "5": {
+   "mix_tv_same_world_different_static": {
+    "mean": 0.04765923693776131,
+    "p10": 0.024792522192001343,
+    "p90": 0.06964978575706482,
+    "n": 24
+   },
+   "C_max_absolute_change": 0.0,
+   "S_rank_correlation": {
+    "mean": 0.7046683679024378,
+    "p10": 0.5514183580875397,
+    "p90": 0.918948996067047,
+    "n": 24
+   },
+   "note": "C does not read the current frame; invariance to current-frame static is structural, not learned."
+  },
+  "10": {
+   "mix_tv_same_world_different_static": {
+    "mean": 0.04573358967900276,
+    "p10": 0.021342093124985695,
+    "p90": 0.06544238328933716,
+    "n": 24
+   },
+   "C_max_absolute_change": 0.0,
+   "S_rank_correlation": {
+    "mean": 0.7522661611437798,
+    "p10": 0.6056734800338746,
+    "p90": 0.9343571305274962,
+    "n": 24
+   },
+   "note": "C does not read the current frame; invariance to current-frame static is structural, not learned."
+  }
+ }
+}

@@ -1,0 +1,17 @@
+{
+ "1": {
+  "sha256": "796a27c764036de35fe1bdd883a3ab8d71e040db07da476af7e51a29e80cd3b5",
+  "bp_recorded_rel_error_max": 0.006525528617203236,
+  "rows": 48
+ },
+ "5": {
+  "sha256": "5bfc7811bfeb111a5a2f393a87d389d17f94e0628325f718c04deff37b23c1fa",
+  "bp_recorded_rel_error_max": 0.0066582937724888325,
+  "rows": 48
+ },
+ "10": {
+  "sha256": "95fa2cc82cb9dc3cae11cbf9f44f880aff17e250de639911f39d159564978128",
+  "bp_recorded_rel_error_max": 0.0069790976122021675,
+  "rows": 48
+ }
+}

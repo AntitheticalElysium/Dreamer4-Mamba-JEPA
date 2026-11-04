@@ -10,6 +10,11 @@ base.{json,txt}`, `readings/codex_summary.json` (`readings_summary.py`: beta-TSP
 **Against P1-F this run changes two things (fixations: rule-placed on 13% of frames -> uniform; generator: joint ->
 factorised), so no difference below is attributed to either alone.** One seed; descriptive, no gate.
 
+Follow-up 11-02 (Codex, now owning this segment): native weighted gradients, outcome-chain sampler checks,
+probe-independent token geometry, a controlled own-history pilot and training-window support are consolidated in
+[`saccade/design/P2_READINESS.md`](../../../saccade/design/P2_READINESS.md), with protocol/raw evidence in
+`../20261102_p1f15_readiness/`. These do not change this run or retroactively turn its S1 readings into S2 results.
+
 ## Instrument checks
 - Interface (random gaze): P1-F's re-run equals its 10-31 output exactly (recorded quantities, generated rates, head on
   the real successor; max difference 0).
@@ -22,7 +27,11 @@ factorised), so no difference below is attributed to either alone.** One seed; d
   checkpoint 10: 0.0191 / 0.0286 / 0.0271); losses are compared only between P1-F and this run, and against world 1
   only as ratios.
 
-## 1. The world is gaze-invariant (the structural change)
+## 1. Physical current-query invariance and reduced dependence on the training gaze
+Correction 11-02 (Codex): the physical marginal is independent of the CURRENT query at fixed history by structure.
+The random/guided comparisons below do not prove full-world invariance under every gaze policy. Reading 3 finds
+remaining fixation-dependent integrated reward expectations, with a largest per-context range of 0.231 reward
+units. The effect is not uniformly negligible on rewarding contexts.
 Actor interface, this run's generated rates under random vs guided gaze (P1-F's in brackets): first wood 0.842 / 0.838
 (0.038 / 0.972), first drink 0.874 / 0.874 (0.238 / 0.913), place table 0.912 / 0.901 (0.672 / 0.953), damage (risky)
 0.054 / 0.052 (0.027 / 0.119), death (risky) 0.017 / 0.016 (0.012 / 0.079). Codex's HUD-counter consequences (generated
@@ -71,9 +80,12 @@ skeletons 13.8 -> 12.1). No rare-content regression (beta-TSP's failure).
 
 ## 4. Per-query consistency and the conditioning gap (readings 3-4; 128 uniform + 128 post-DO contexts, K = 8)
 - **The reward head's expectation integrated over generated glimpses depends on the fixation, beyond sampling error,
-  but little.** In every context the spread of the 49 per-fixation means is 9-18x their sampling error (median 14 /
+  and can be material on rewarding contexts.** In every context the spread of the 49 per-fixation means is 9-18x their sampling error (median 14 /
   12); in absolute terms it is tiny where no reward is likely, and in the 15 contexts where it is (E[r] > 0.05) the
   spread is 0.000-0.048 against E[r] 0.05-1.0. Continuation is 1.0 everywhere (no terminal contexts): uninformative.
+  Across those 15 rewarding contexts the median max-minus-min of the per-fixation means is 0.0566 and the maximum
+  0.2308. Example e79,t14: 0.6654-0.8962 (largest reported per-fixation MC SE 0.01194). These are finite-K selected
+  extrema, not a measured learned-policy return gain. Full reward-distribution consistency was not measured here.
 - Coherence (TSP render vs reconstruction render of the crop): generated 0.0015 vs real 0.0006 pixel MSE, the same on
   HUD and map windows: modestly less coherent than real percepts, no window-type-specific leak.
 - Conditioning: given the real periphery (noised to 0.1), the glimpse stage reproduces the real glimpse closely (token
@@ -105,20 +117,25 @@ P1 world 1:
 | wood (0.12) | 0.31 / 0.04 / 0.25 | 0.41 | 0.39 / 0.51* / 0.42 |
 | sapling (0.12) | 0.32 / 0.13 / 0.22 | 0.18 | 0.04 / 0.04 / 0.07 |
 Top cell of the contingency map is the consequence: drink 0.78 (P1-F 0.19), coal 0.84, stone 0.92, iron 0.56, wood
-0.30, sapling 0.19. On random frames the arg-max window is on the HUD for 10% (contingency) / 4% (surprise) of frames
-(uniform: 28.5%).
+0.30, sapling 0.19. Correction 11-02: locus.py's saved HUD share counts only windows centred on row 7 (bottom
+row), for which uniform is 14.3%: contingency 10%, surprise 4%. Counting ANY window overlapping HUD rows 7-8
+(centres 6 or 7, consistent with selection.py/consistency.py), shares are **20.3% / 21.2%**, uniform 28.6%.
+Row 6 overlaps the upper HUD row but not the bottom inventory row. Historical raw outputs are retained;
+the correction is recomputed from them in `../20261102_p1f15_review/readout.json`.
 
 ## What this establishes for decision 2 (TEACHING 15)
-- **The baseline's main property is gaze invariance**, obtained with uniform looks and the factorised denoiser
-  together: consequences, the reward head on real successors and the actor-facing rates are the same under any gaze.
-  A chooser must keep it: sampling with the uniform floor, never arg-max (as agreed).
+- **The physical current-query marginal is invariant by construction**, and the old large random/guided gate is
+  substantially reduced. This does not establish full-world consistency under any gaze: the outcome-head test
+  above still fails. A sampling floor gives overlap; it does not prove calibration or remove policy confounding.
 - **Contingency from the world's own expectation locates most attempt consequences in this world, including the HUD
   drink counter (0.77), which P1-F's world could not (0.21); wood and sapling stay weak (0.31 / 0.32).** Surprise is
   complementary (better than contingency for iron 0.79 and wood 0.41, worse for drink and stone). Both point at the
-  HUD rarely on random frames, so the floor and sampling carry the HUD's looks there.
-- **Inhibition of return must be explicit** (the user's condition, TEACHING 15): looks do not measurably reach the
-  belief, so a look does not lower the next frame's surprise there; a persistently surprising window would keep
-  winning without an explicit short trace.
+  bottom inventory strip rarely on random frames; any-HUD coverage uses the corrected shares above.
+- **A short recency trace remains the proposed controller choice** (TEACHING 15). Reading 5 does not establish
+  its necessity or measure the proposed controller's surprise after a look: it measures next-step whole-map
+  denoising loss at noisy-real-target levels, not the pure-noise first-call forecast used by the controller.
+  It finds weak evidence uptake on that statistic. Discouraging revisits and learning to use evidence remain
+  separate requirements; an explicit trace does not repair memory uptake by itself.
 - What uniform gaze leaves unlearned (the baseline's deficits, the chooser's targets): wake up (0.49 vs 0.88
   recorded), damage and death (0.05 / 0.02 vs 0.13), defeat zombie (0.20), coal (0.10), iron (0.03), unreadable
   generated HUD digits (29-46%), HUD pixel error up, map generation slightly worse. Which of these a chooser could

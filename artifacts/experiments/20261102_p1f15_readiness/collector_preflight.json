@@ -1,0 +1,91 @@
+{
+ "checkpoint_sha256": "95fa2cc82cb9dc3cae11cbf9f44f880aff17e250de639911f39d159564978128",
+ "prototype": true,
+ "streams": 2,
+ "phases": [
+  {
+   "steps": 64,
+   "update": 0,
+   "collection_seconds": 4.80836820602417,
+   "resets": 2,
+   "loss": 4.187141418457031,
+   "gradients": {
+    "fovea": 0.054464293511460336,
+    "periphery": 0.20611128676625298,
+    "belief": 0.025029979910544013,
+    "denoiser": 0.22225117522032778,
+    "TSP": 0.02248525670810059,
+    "pixels": 0.45959808643344596,
+    "outcome": 0.0032074415303505726
+   },
+   "collection_vs_training_final_bp_rms": 0.006609519012272358,
+   "boundary_score_bp_rms": [],
+   "native_train_seconds": 0.8407675170898438
+  },
+  {
+   "steps": 64,
+   "update": 1,
+   "collection_seconds": 4.6355485916137695,
+   "resets": 0,
+   "loss": 32.94640350341797,
+   "gradients": {
+    "fovea": 8.28602856383331,
+    "periphery": 18.666243312780594,
+    "belief": 2.1345490883936318,
+    "denoiser": 14.609214576101106,
+    "TSP": 1.6021000852585285,
+    "pixels": 51.30417116436525,
+    "outcome": 0.8015939325777255
+   },
+   "collection_vs_training_final_bp_rms": 0.007512465585023165,
+   "boundary_score_bp_rms": [
+    0.00913010723888874,
+    0.011942819692194462
+   ],
+   "native_train_seconds": 0.2610257873535156
+  },
+  {
+   "steps": 256,
+   "update": 0,
+   "collection_seconds": 18.013987064361572,
+   "resets": 4,
+   "loss": 19.00649642944336,
+   "gradients": {
+    "fovea": 3.941539328325634,
+    "periphery": 13.872841005490878,
+    "belief": 5.101336064521136,
+    "denoiser": 11.931733771171137,
+    "TSP": 0.7190244678975438,
+    "pixels": 25.898680046910215,
+    "outcome": 2.2369410590457135
+   },
+   "collection_vs_training_final_bp_rms": 0.006740857847034931,
+   "boundary_score_bp_rms": [],
+   "native_train_seconds": 0.8240322265625
+  },
+  {
+   "steps": 256,
+   "update": 1,
+   "collection_seconds": 18.135855674743652,
+   "resets": 2,
+   "loss": 16.773494720458984,
+   "gradients": {
+    "fovea": 2.7840241198394318,
+    "periphery": 14.505672726368358,
+    "belief": 3.955153065590641,
+    "denoiser": 6.711150089606984,
+    "TSP": 0.4514092174368092,
+    "pixels": 22.132116896605325,
+    "outcome": 2.321744315426239
+   },
+   "collection_vs_training_final_bp_rms": 0.006020178087055683,
+   "boundary_score_bp_rms": [
+    0.011256682686507702,
+    0.013632279820740223
+   ],
+   "native_train_seconds": 0.7813920288085937
+  }
+ ],
+ "clean_generated_callback_identity": true,
+ "limitation": "per-stream correctness prototype, not optimized batched collector; no production launcher qualification"
+}

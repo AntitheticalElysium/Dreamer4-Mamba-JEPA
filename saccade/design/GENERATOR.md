@@ -1,5 +1,9 @@
 # Generator — CURRENT: v3 (section below, 2026-10-27). v2 sections kept above it for the record (superseded).
 
+Status 2026-11-02: decision 1's factorized v3 amendment is implemented in P1-F1.5. It generates physical percepts
+then conditional glimpses, not the separate concrete world of the historical v0-v2 summary below. Its current
+evidence and P2 limitations are in [P2_READINESS.md](P2_READINESS.md).
+
 The generator advances one concrete world by a step and renders its percept. It is the prior inside the belief update
 (propagating records' hypotheses) and the simulator in imagination. v0 had six named code families; v1 replaced them
 with three token types sampled in a fixed order (records -> locations -> global), which Codex showed does not couple

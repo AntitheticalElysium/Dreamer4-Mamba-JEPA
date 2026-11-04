@@ -1,0 +1,58 @@
+[
+ {
+  "e": 0,
+  "t": 210,
+  "original_max_pixel_error": 0,
+  "light": 0.0,
+  "repeat_pixel_rms": 5.704665972840259
+ },
+ {
+  "e": 1,
+  "t": 210,
+  "original_max_pixel_error": 0,
+  "light": 0.0,
+  "repeat_pixel_rms": 5.7039486555782615
+ },
+ {
+  "e": 2,
+  "t": 210,
+  "original_max_pixel_error": 0,
+  "light": 0.0,
+  "repeat_pixel_rms": 5.702955945175952
+ },
+ {
+  "e": 3,
+  "t": 182,
+  "original_max_pixel_error": 0,
+  "light": 0.12265419960021973,
+  "repeat_pixel_rms": 3.7781879494193946
+ },
+ {
+  "e": 6,
+  "t": 210,
+  "original_max_pixel_error": 0,
+  "light": 0.0,
+  "repeat_pixel_rms": 5.702586299107521
+ },
+ {
+  "e": 7,
+  "t": 210,
+  "original_max_pixel_error": 0,
+  "light": 0.0,
+  "repeat_pixel_rms": 5.703438965975344
+ },
+ {
+  "e": 8,
+  "t": 210,
+  "original_max_pixel_error": 0,
+  "light": 0.0,
+  "repeat_pixel_rms": 5.70117314393647
+ },
+ {
+  "e": 10,
+  "t": 210,
+  "original_max_pixel_error": 0,
+  "light": 0.0,
+  "repeat_pixel_rms": 5.701516311453284
+ }
+]

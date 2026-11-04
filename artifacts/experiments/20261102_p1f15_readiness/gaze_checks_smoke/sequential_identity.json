@@ -1,0 +1,72 @@
+{
+ "sha256": "95fa2cc82cb9dc3cae11cbf9f44f880aff17e250de639911f39d159564978128",
+ "timings": {
+  "uniform": 0.154280424118042,
+  "mix": 0.20527935028076172,
+  "mix_recency": 0.19585371017456055
+ },
+ "policy": "equal mean-normalized C/S; softmax T1; uniform .2; recency window-mean trace half-life4",
+ "rows": 144,
+ "finite_checks": [
+  {
+   "policy": "uniform",
+   "t": 0,
+   "actual_fork_rms_error": 0.005095049738883972
+  },
+  {
+   "policy": "uniform",
+   "t": 1,
+   "actual_fork_rms_error": 0.005466909613460302
+  },
+  {
+   "policy": "uniform",
+   "t": 2,
+   "actual_fork_rms_error": 0.0051099993288517
+  },
+  {
+   "policy": "uniform",
+   "t": 3,
+   "actual_fork_rms_error": 0.005736192222684622
+  },
+  {
+   "policy": "mix",
+   "t": 0,
+   "actual_fork_rms_error": 0.005210738629102707
+  },
+  {
+   "policy": "mix",
+   "t": 1,
+   "actual_fork_rms_error": 0.005466909613460302
+  },
+  {
+   "policy": "mix",
+   "t": 2,
+   "actual_fork_rms_error": 0.0054516904056072235
+  },
+  {
+   "policy": "mix",
+   "t": 3,
+   "actual_fork_rms_error": 0.005736192222684622
+  },
+  {
+   "policy": "mix_recency",
+   "t": 0,
+   "actual_fork_rms_error": 0.005210738629102707
+  },
+  {
+   "policy": "mix_recency",
+   "t": 1,
+   "actual_fork_rms_error": 0.005466909613460302
+  },
+  {
+   "policy": "mix_recency",
+   "t": 2,
+   "actual_fork_rms_error": 0.0054516904056072235
+  },
+  {
+   "policy": "mix_recency",
+   "t": 3,
+   "actual_fork_rms_error": 0.005736192222684622
+  }
+ ]
+}
