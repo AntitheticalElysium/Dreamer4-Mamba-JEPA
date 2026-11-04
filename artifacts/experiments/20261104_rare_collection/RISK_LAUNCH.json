@@ -1,0 +1,60 @@
+{
+  "unit": "saccade-risk-v1.service",
+  "invocation_id": "3bb1436305fa468f869e9e132deef273",
+  "status": "launched; use live service and manifest",
+  "planned_episodes": 12288,
+  "max_seconds": 7200,
+  "preflight": {
+    "old_reset_keys": 10080,
+    "fresh_reset_keys": 12288,
+    "overlap": 0,
+    "first_collection_reset_keys": 3072,
+    "first_collection_overlap": 0,
+    "exact_legacy_parity": true,
+    "environments": 4,
+    "steps": 32,
+    "epsilon": 0.1
+  },
+  "cpu_contract_checks": 9,
+  "first_component_replays": {
+    "reset_exploration": [
+      {
+        "slot": 0,
+        "steps": 80,
+        "all_frames_exact": true,
+        "all_rewards_exact": true,
+        "all_terminations_exact": true
+      },
+      {
+        "slot": 23,
+        "steps": 314,
+        "all_frames_exact": true,
+        "all_rewards_exact": true,
+        "all_terminations_exact": true
+      }
+    ],
+    "late_failure": [
+      {
+        "slot": 0,
+        "steps": 348,
+        "all_frames_exact": true,
+        "all_rewards_exact": true,
+        "all_terminations_exact": true
+      },
+      {
+        "slot": 23,
+        "steps": 280,
+        "all_frames_exact": true,
+        "all_rewards_exact": true,
+        "all_terminations_exact": true
+      }
+    ]
+  },
+  "latest_snapshot": {
+    "rounds": 156,
+    "episodes": 3744,
+    "transitions": 899352,
+    "seconds": 728.0862700939178,
+    "complete": false
+  }
+}

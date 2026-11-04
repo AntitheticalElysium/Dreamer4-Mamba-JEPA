@@ -1,0 +1,36 @@
+{
+  "unit": "saccade-coverage-v1.service",
+  "invocation_id": "c6f44f467d634cfc88b1e976b8c400c6",
+  "output": "artifacts/craftax_coverage_v1",
+  "source_sha256": "fe118f133a64bf9da68964c134fefda07bdc30fe5331273e514e712aa718ee2d",
+  "status": "launched; consult live service and manifest, not this launch record",
+  "cpu_contract_checks": 6,
+  "preflight": {
+    "old_reset_keys": 10080,
+    "fresh_reset_keys": 3072,
+    "overlap": 0,
+    "exact_legacy_parity": true,
+    "environments": 4,
+    "steps": 32,
+    "epsilon": 0.1
+  },
+  "first_batch_replay": [
+    {
+      "slot": 0,
+      "steps": 2500,
+      "all_frames_exact": true,
+      "all_rewards_exact": true,
+      "all_terminations_exact": true
+    },
+    {
+      "slot": 23,
+      "steps": 2500,
+      "all_frames_exact": true,
+      "all_rewards_exact": true,
+      "all_terminations_exact": true
+    }
+  ],
+  "max_seconds": 7200,
+  "rounds": 128,
+  "num_envs": 24
+}

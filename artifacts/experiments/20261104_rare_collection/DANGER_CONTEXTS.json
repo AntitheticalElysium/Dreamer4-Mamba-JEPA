@@ -1,0 +1,1827 @@
+{
+  "advanced": {
+    "complete": true,
+    "snapshot_rounds": 128,
+    "counts": {
+      "all": {
+        "transitions": 3711420,
+        "episodes": 2932,
+        "damage": {
+          "events": 40211,
+          "episodes": 2932
+        },
+        "death": {
+          "events": 2311,
+          "episodes": 2311
+        },
+        "risk": {
+          "events": 12194,
+          "episodes": 1738
+        },
+        "risk_death": {
+          "events": 759,
+          "episodes": 759
+        }
+      },
+      "night": {
+        "transitions": 1470790,
+        "episodes": 2875,
+        "damage": {
+          "events": 17211,
+          "episodes": 2832
+        },
+        "death": {
+          "events": 1181,
+          "episodes": 1181
+        },
+        "risk": {
+          "events": 6227,
+          "episodes": 1102
+        },
+        "risk_death": {
+          "events": 412,
+          "episodes": 412
+        }
+      },
+      "day": {
+        "transitions": 2240630,
+        "episodes": 2932,
+        "damage": {
+          "events": 23000,
+          "episodes": 2869
+        },
+        "death": {
+          "events": 1130,
+          "episodes": 1130
+        },
+        "risk": {
+          "events": 5967,
+          "episodes": 1080
+        },
+        "risk_death": {
+          "events": 347,
+          "episodes": 347
+        }
+      },
+      "health_1": {
+        "transitions": 21870,
+        "episodes": 1134,
+        "damage": {
+          "events": 661,
+          "episodes": 661
+        },
+        "death": {
+          "events": 661,
+          "episodes": 661
+        },
+        "risk": {
+          "events": 3882,
+          "episodes": 818
+        },
+        "risk_death": {
+          "events": 319,
+          "episodes": 319
+        }
+      },
+      "health_2": {
+        "transitions": 52964,
+        "episodes": 1811,
+        "damage": {
+          "events": 995,
+          "episodes": 953
+        },
+        "death": {
+          "events": 505,
+          "episodes": 505
+        },
+        "risk": {
+          "events": 8312,
+          "episodes": 1447
+        },
+        "risk_death": {
+          "events": 440,
+          "episodes": 440
+        }
+      },
+      "health_above_2": {
+        "transitions": 3636586,
+        "episodes": 2932,
+        "damage": {
+          "events": 38555,
+          "episodes": 2932
+        },
+        "death": {
+          "events": 1145,
+          "episodes": 1145
+        },
+        "risk": {
+          "events": 0,
+          "episodes": 0
+        },
+        "risk_death": {
+          "events": 0,
+          "episodes": 0
+        }
+      },
+      "food_empty": {
+        "transitions": 108862,
+        "episodes": 1682,
+        "damage": {
+          "events": 3992,
+          "episodes": 1224
+        },
+        "death": {
+          "events": 198,
+          "episodes": 198
+        },
+        "risk": {
+          "events": 578,
+          "episodes": 149
+        },
+        "risk_death": {
+          "events": 57,
+          "episodes": 57
+        }
+      },
+      "drink_empty": {
+        "transitions": 357009,
+        "episodes": 2590,
+        "damage": {
+          "events": 11505,
+          "episodes": 2259
+        },
+        "death": {
+          "events": 609,
+          "episodes": 609
+        },
+        "risk": {
+          "events": 2079,
+          "episodes": 447
+        },
+        "risk_death": {
+          "events": 169,
+          "episodes": 169
+        }
+      },
+      "sleeping": {
+        "transitions": 822816,
+        "episodes": 2921,
+        "damage": {
+          "events": 6135,
+          "episodes": 2592
+        },
+        "death": {
+          "events": 1345,
+          "episodes": 1345
+        },
+        "risk": {
+          "events": 431,
+          "episodes": 188
+        },
+        "risk_death": {
+          "events": 170,
+          "episodes": 170
+        }
+      },
+      "zombie_adjacent": {
+        "transitions": 258453,
+        "episodes": 2927,
+        "damage": {
+          "events": 19867,
+          "episodes": 2920
+        },
+        "death": {
+          "events": 1840,
+          "episodes": 1840
+        },
+        "risk": {
+          "events": 12194,
+          "episodes": 1738
+        },
+        "risk_death": {
+          "events": 759,
+          "episodes": 759
+        }
+      },
+      "adjacent_zombie_ready": {
+        "transitions": 212182,
+        "episodes": 2927,
+        "damage": {
+          "events": 19484,
+          "episodes": 2919
+        },
+        "death": {
+          "events": 1793,
+          "episodes": 1793
+        },
+        "risk": {
+          "events": 5341,
+          "episodes": 1175
+        },
+        "risk_death": {
+          "events": 713,
+          "episodes": 713
+        }
+      },
+      "adjacent_zombie_not_ready": {
+        "transitions": 46271,
+        "episodes": 2896,
+        "damage": {
+          "events": 383,
+          "episodes": 353
+        },
+        "death": {
+          "events": 47,
+          "episodes": 47
+        },
+        "risk": {
+          "events": 6853,
+          "episodes": 1577
+        },
+        "risk_death": {
+          "events": 46,
+          "episodes": 46
+        }
+      },
+      "arrow_visible": {
+        "transitions": 427499,
+        "episodes": 2867,
+        "damage": {
+          "events": 7459,
+          "episodes": 2295
+        },
+        "death": {
+          "events": 286,
+          "episodes": 286
+        },
+        "risk": {
+          "events": 1249,
+          "episodes": 433
+        },
+        "risk_death": {
+          "events": 91,
+          "episodes": 91
+        }
+      },
+      "skeleton_visible": {
+        "transitions": 658285,
+        "episodes": 2891,
+        "damage": {
+          "events": 9666,
+          "episodes": 2567
+        },
+        "death": {
+          "events": 415,
+          "episodes": 415
+        },
+        "risk": {
+          "events": 1814,
+          "episodes": 572
+        },
+        "risk_death": {
+          "events": 139,
+          "episodes": 139
+        }
+      },
+      "iron_equipment": {
+        "transitions": 2937222,
+        "episodes": 2506,
+        "damage": {
+          "events": 30569,
+          "episodes": 2506
+        },
+        "death": {
+          "events": 1890,
+          "episodes": 1890
+        },
+        "risk": {
+          "events": 9363,
+          "episodes": 1406
+        },
+        "risk_death": {
+          "events": 608,
+          "episodes": 608
+        }
+      }
+    },
+    "components": {
+      "competent": {
+        "all": {
+          "transitions": 2202611,
+          "episodes": 1476,
+          "damage": {
+            "events": 21836,
+            "episodes": 1476
+          },
+          "death": {
+            "events": 894,
+            "episodes": 894
+          },
+          "risk": {
+            "events": 5203,
+            "episodes": 779
+          },
+          "risk_death": {
+            "events": 242,
+            "episodes": 242
+          }
+        },
+        "night": {
+          "transitions": 874229,
+          "episodes": 1437,
+          "damage": {
+            "events": 9071,
+            "episodes": 1418
+          },
+          "death": {
+            "events": 422,
+            "episodes": 422
+          },
+          "risk": {
+            "events": 2456,
+            "episodes": 455
+          },
+          "risk_death": {
+            "events": 113,
+            "episodes": 113
+          }
+        },
+        "day": {
+          "transitions": 1328382,
+          "episodes": 1476,
+          "damage": {
+            "events": 12765,
+            "episodes": 1440
+          },
+          "death": {
+            "events": 472,
+            "episodes": 472
+          },
+          "risk": {
+            "events": 2747,
+            "episodes": 515
+          },
+          "risk_death": {
+            "events": 129,
+            "episodes": 129
+          }
+        },
+        "health_1": {
+          "transitions": 11528,
+          "episodes": 543,
+          "damage": {
+            "events": 292,
+            "episodes": 292
+          },
+          "death": {
+            "events": 292,
+            "episodes": 292
+          },
+          "risk": {
+            "events": 1736,
+            "episodes": 362
+          },
+          "risk_death": {
+            "events": 101,
+            "episodes": 101
+          }
+        },
+        "health_2": {
+          "transitions": 26069,
+          "episodes": 865,
+          "damage": {
+            "events": 445,
+            "episodes": 422
+          },
+          "death": {
+            "events": 172,
+            "episodes": 172
+          },
+          "risk": {
+            "events": 3467,
+            "episodes": 652
+          },
+          "risk_death": {
+            "events": 141,
+            "episodes": 141
+          }
+        },
+        "health_above_2": {
+          "transitions": 2165014,
+          "episodes": 1476,
+          "damage": {
+            "events": 21099,
+            "episodes": 1476
+          },
+          "death": {
+            "events": 430,
+            "episodes": 430
+          },
+          "risk": {
+            "events": 0,
+            "episodes": 0
+          },
+          "risk_death": {
+            "events": 0,
+            "episodes": 0
+          }
+        },
+        "food_empty": {
+          "transitions": 64397,
+          "episodes": 904,
+          "damage": {
+            "events": 2224,
+            "episodes": 671
+          },
+          "death": {
+            "events": 65,
+            "episodes": 65
+          },
+          "risk": {
+            "events": 193,
+            "episodes": 56
+          },
+          "risk_death": {
+            "events": 11,
+            "episodes": 11
+          }
+        },
+        "drink_empty": {
+          "transitions": 213750,
+          "episodes": 1289,
+          "damage": {
+            "events": 6563,
+            "episodes": 1162
+          },
+          "death": {
+            "events": 285,
+            "episodes": 285
+          },
+          "risk": {
+            "events": 875,
+            "episodes": 199
+          },
+          "risk_death": {
+            "events": 66,
+            "episodes": 66
+          }
+        },
+        "sleeping": {
+          "transitions": 495330,
+          "episodes": 1472,
+          "damage": {
+            "events": 3123,
+            "episodes": 1283
+          },
+          "death": {
+            "events": 512,
+            "episodes": 512
+          },
+          "risk": {
+            "events": 108,
+            "episodes": 58
+          },
+          "risk_death": {
+            "events": 54,
+            "episodes": 54
+          }
+        },
+        "zombie_adjacent": {
+          "transitions": 155002,
+          "episodes": 1473,
+          "damage": {
+            "events": 9814,
+            "episodes": 1469
+          },
+          "death": {
+            "events": 648,
+            "episodes": 648
+          },
+          "risk": {
+            "events": 5203,
+            "episodes": 779
+          },
+          "risk_death": {
+            "events": 242,
+            "episodes": 242
+          }
+        },
+        "adjacent_zombie_ready": {
+          "transitions": 132637,
+          "episodes": 1473,
+          "damage": {
+            "events": 9635,
+            "episodes": 1468
+          },
+          "death": {
+            "events": 628,
+            "episodes": 628
+          },
+          "risk": {
+            "events": 2377,
+            "episodes": 475
+          },
+          "risk_death": {
+            "events": 222,
+            "episodes": 222
+          }
+        },
+        "adjacent_zombie_not_ready": {
+          "transitions": 22365,
+          "episodes": 1460,
+          "damage": {
+            "events": 179,
+            "episodes": 171
+          },
+          "death": {
+            "events": 20,
+            "episodes": 20
+          },
+          "risk": {
+            "events": 2826,
+            "episodes": 696
+          },
+          "risk_death": {
+            "events": 20,
+            "episodes": 20
+          }
+        },
+        "arrow_visible": {
+          "transitions": 266375,
+          "episodes": 1433,
+          "damage": {
+            "events": 4222,
+            "episodes": 1189
+          },
+          "death": {
+            "events": 115,
+            "episodes": 115
+          },
+          "risk": {
+            "events": 526,
+            "episodes": 196
+          },
+          "risk_death": {
+            "events": 30,
+            "episodes": 30
+          }
+        },
+        "skeleton_visible": {
+          "transitions": 399267,
+          "episodes": 1449,
+          "damage": {
+            "events": 5342,
+            "episodes": 1305
+          },
+          "death": {
+            "events": 158,
+            "episodes": 158
+          },
+          "risk": {
+            "events": 735,
+            "episodes": 254
+          },
+          "risk_death": {
+            "events": 47,
+            "episodes": 47
+          }
+        },
+        "iron_equipment": {
+          "transitions": 1792721,
+          "episodes": 1209,
+          "damage": {
+            "events": 16534,
+            "episodes": 1209
+          },
+          "death": {
+            "events": 632,
+            "episodes": 632
+          },
+          "risk": {
+            "events": 3492,
+            "episodes": 572
+          },
+          "risk_death": {
+            "events": 159,
+            "episodes": 159
+          }
+        }
+      },
+      "bursts": {
+        "all": {
+          "transitions": 1508809,
+          "episodes": 1456,
+          "damage": {
+            "events": 18375,
+            "episodes": 1456
+          },
+          "death": {
+            "events": 1417,
+            "episodes": 1417
+          },
+          "risk": {
+            "events": 6991,
+            "episodes": 959
+          },
+          "risk_death": {
+            "events": 517,
+            "episodes": 517
+          }
+        },
+        "night": {
+          "transitions": 596561,
+          "episodes": 1438,
+          "damage": {
+            "events": 8140,
+            "episodes": 1414
+          },
+          "death": {
+            "events": 759,
+            "episodes": 759
+          },
+          "risk": {
+            "events": 3771,
+            "episodes": 647
+          },
+          "risk_death": {
+            "events": 299,
+            "episodes": 299
+          }
+        },
+        "day": {
+          "transitions": 912248,
+          "episodes": 1456,
+          "damage": {
+            "events": 10235,
+            "episodes": 1429
+          },
+          "death": {
+            "events": 658,
+            "episodes": 658
+          },
+          "risk": {
+            "events": 3220,
+            "episodes": 565
+          },
+          "risk_death": {
+            "events": 218,
+            "episodes": 218
+          }
+        },
+        "health_1": {
+          "transitions": 10342,
+          "episodes": 591,
+          "damage": {
+            "events": 369,
+            "episodes": 369
+          },
+          "death": {
+            "events": 369,
+            "episodes": 369
+          },
+          "risk": {
+            "events": 2146,
+            "episodes": 456
+          },
+          "risk_death": {
+            "events": 218,
+            "episodes": 218
+          }
+        },
+        "health_2": {
+          "transitions": 26895,
+          "episodes": 946,
+          "damage": {
+            "events": 550,
+            "episodes": 531
+          },
+          "death": {
+            "events": 333,
+            "episodes": 333
+          },
+          "risk": {
+            "events": 4845,
+            "episodes": 795
+          },
+          "risk_death": {
+            "events": 299,
+            "episodes": 299
+          }
+        },
+        "health_above_2": {
+          "transitions": 1471572,
+          "episodes": 1456,
+          "damage": {
+            "events": 17456,
+            "episodes": 1456
+          },
+          "death": {
+            "events": 715,
+            "episodes": 715
+          },
+          "risk": {
+            "events": 0,
+            "episodes": 0
+          },
+          "risk_death": {
+            "events": 0,
+            "episodes": 0
+          }
+        },
+        "food_empty": {
+          "transitions": 44465,
+          "episodes": 778,
+          "damage": {
+            "events": 1768,
+            "episodes": 553
+          },
+          "death": {
+            "events": 133,
+            "episodes": 133
+          },
+          "risk": {
+            "events": 385,
+            "episodes": 93
+          },
+          "risk_death": {
+            "events": 46,
+            "episodes": 46
+          }
+        },
+        "drink_empty": {
+          "transitions": 143259,
+          "episodes": 1301,
+          "damage": {
+            "events": 4942,
+            "episodes": 1097
+          },
+          "death": {
+            "events": 324,
+            "episodes": 324
+          },
+          "risk": {
+            "events": 1204,
+            "episodes": 248
+          },
+          "risk_death": {
+            "events": 103,
+            "episodes": 103
+          }
+        },
+        "sleeping": {
+          "transitions": 327486,
+          "episodes": 1449,
+          "damage": {
+            "events": 3012,
+            "episodes": 1309
+          },
+          "death": {
+            "events": 833,
+            "episodes": 833
+          },
+          "risk": {
+            "events": 323,
+            "episodes": 130
+          },
+          "risk_death": {
+            "events": 116,
+            "episodes": 116
+          }
+        },
+        "zombie_adjacent": {
+          "transitions": 103451,
+          "episodes": 1454,
+          "damage": {
+            "events": 10053,
+            "episodes": 1451
+          },
+          "death": {
+            "events": 1192,
+            "episodes": 1192
+          },
+          "risk": {
+            "events": 6991,
+            "episodes": 959
+          },
+          "risk_death": {
+            "events": 517,
+            "episodes": 517
+          }
+        },
+        "adjacent_zombie_ready": {
+          "transitions": 79545,
+          "episodes": 1454,
+          "damage": {
+            "events": 9849,
+            "episodes": 1451
+          },
+          "death": {
+            "events": 1165,
+            "episodes": 1165
+          },
+          "risk": {
+            "events": 2964,
+            "episodes": 700
+          },
+          "risk_death": {
+            "events": 491,
+            "episodes": 491
+          }
+        },
+        "adjacent_zombie_not_ready": {
+          "transitions": 23906,
+          "episodes": 1436,
+          "damage": {
+            "events": 204,
+            "episodes": 182
+          },
+          "death": {
+            "events": 27,
+            "episodes": 27
+          },
+          "risk": {
+            "events": 4027,
+            "episodes": 881
+          },
+          "risk_death": {
+            "events": 26,
+            "episodes": 26
+          }
+        },
+        "arrow_visible": {
+          "transitions": 161124,
+          "episodes": 1434,
+          "damage": {
+            "events": 3237,
+            "episodes": 1106
+          },
+          "death": {
+            "events": 171,
+            "episodes": 171
+          },
+          "risk": {
+            "events": 723,
+            "episodes": 237
+          },
+          "risk_death": {
+            "events": 61,
+            "episodes": 61
+          }
+        },
+        "skeleton_visible": {
+          "transitions": 259018,
+          "episodes": 1442,
+          "damage": {
+            "events": 4324,
+            "episodes": 1262
+          },
+          "death": {
+            "events": 257,
+            "episodes": 257
+          },
+          "risk": {
+            "events": 1079,
+            "episodes": 318
+          },
+          "risk_death": {
+            "events": 92,
+            "episodes": 92
+          }
+        },
+        "iron_equipment": {
+          "transitions": 1144501,
+          "episodes": 1297,
+          "damage": {
+            "events": 14035,
+            "episodes": 1297
+          },
+          "death": {
+            "events": 1258,
+            "episodes": 1258
+          },
+          "risk": {
+            "events": 5871,
+            "episodes": 834
+          },
+          "risk_death": {
+            "events": 449,
+            "episodes": 449
+          }
+        }
+      }
+    }
+  },
+  "danger": {
+    "complete": false,
+    "snapshot_rounds": 23,
+    "counts": {
+      "all": {
+        "transitions": 123806,
+        "episodes": 524,
+        "damage": {
+          "events": 2817,
+          "episodes": 524
+        },
+        "death": {
+          "events": 524,
+          "episodes": 524
+        },
+        "risk": {
+          "events": 1929,
+          "episodes": 375
+        },
+        "risk_death": {
+          "events": 330,
+          "episodes": 330
+        }
+      },
+      "night": {
+        "transitions": 36345,
+        "episodes": 333,
+        "damage": {
+          "events": 1215,
+          "episodes": 327
+        },
+        "death": {
+          "events": 262,
+          "episodes": 262
+        },
+        "risk": {
+          "events": 910,
+          "episodes": 195
+        },
+        "risk_death": {
+          "events": 169,
+          "episodes": 169
+        }
+      },
+      "day": {
+        "transitions": 87461,
+        "episodes": 524,
+        "damage": {
+          "events": 1602,
+          "episodes": 420
+        },
+        "death": {
+          "events": 262,
+          "episodes": 262
+        },
+        "risk": {
+          "events": 1019,
+          "episodes": 207
+        },
+        "risk_death": {
+          "events": 161,
+          "episodes": 161
+        }
+      },
+      "health_1": {
+        "transitions": 1462,
+        "episodes": 175,
+        "damage": {
+          "events": 144,
+          "episodes": 144
+        },
+        "death": {
+          "events": 144,
+          "episodes": 144
+        },
+        "risk": {
+          "events": 639,
+          "episodes": 150
+        },
+        "risk_death": {
+          "events": 113,
+          "episodes": 113
+        }
+      },
+      "health_2": {
+        "transitions": 2978,
+        "episodes": 318,
+        "damage": {
+          "events": 261,
+          "episodes": 260
+        },
+        "death": {
+          "events": 227,
+          "episodes": 227
+        },
+        "risk": {
+          "events": 1290,
+          "episodes": 288
+        },
+        "risk_death": {
+          "events": 217,
+          "episodes": 217
+        }
+      },
+      "health_above_2": {
+        "transitions": 119366,
+        "episodes": 524,
+        "damage": {
+          "events": 2412,
+          "episodes": 524
+        },
+        "death": {
+          "events": 153,
+          "episodes": 153
+        },
+        "risk": {
+          "events": 0,
+          "episodes": 0
+        },
+        "risk_death": {
+          "events": 0,
+          "episodes": 0
+        }
+      },
+      "food_empty": {
+        "transitions": 3188,
+        "episodes": 54,
+        "damage": {
+          "events": 228,
+          "episodes": 51
+        },
+        "death": {
+          "events": 42,
+          "episodes": 42
+        },
+        "risk": {
+          "events": 92,
+          "episodes": 24
+        },
+        "risk_death": {
+          "events": 21,
+          "episodes": 21
+        }
+      },
+      "drink_empty": {
+        "transitions": 10924,
+        "episodes": 165,
+        "damage": {
+          "events": 656,
+          "episodes": 153
+        },
+        "death": {
+          "events": 127,
+          "episodes": 127
+        },
+        "risk": {
+          "events": 323,
+          "episodes": 86
+        },
+        "risk_death": {
+          "events": 73,
+          "episodes": 73
+        }
+      },
+      "sleeping": {
+        "transitions": 22971,
+        "episodes": 506,
+        "damage": {
+          "events": 484,
+          "episodes": 367
+        },
+        "death": {
+          "events": 224,
+          "episodes": 224
+        },
+        "risk": {
+          "events": 162,
+          "episodes": 74
+        },
+        "risk_death": {
+          "events": 70,
+          "episodes": 70
+        }
+      },
+      "zombie_adjacent": {
+        "transitions": 9863,
+        "episodes": 516,
+        "damage": {
+          "events": 1985,
+          "episodes": 516
+        },
+        "death": {
+          "events": 479,
+          "episodes": 479
+        },
+        "risk": {
+          "events": 1929,
+          "episodes": 375
+        },
+        "risk_death": {
+          "events": 330,
+          "episodes": 330
+        }
+      },
+      "adjacent_zombie_ready": {
+        "transitions": 4254,
+        "episodes": 516,
+        "damage": {
+          "events": 1942,
+          "episodes": 516
+        },
+        "death": {
+          "events": 469,
+          "episodes": 469
+        },
+        "risk": {
+          "events": 467,
+          "episodes": 326
+        },
+        "risk_death": {
+          "events": 320,
+          "episodes": 320
+        }
+      },
+      "adjacent_zombie_not_ready": {
+        "transitions": 5609,
+        "episodes": 505,
+        "damage": {
+          "events": 43,
+          "episodes": 40
+        },
+        "death": {
+          "events": 10,
+          "episodes": 10
+        },
+        "risk": {
+          "events": 1462,
+          "episodes": 350
+        },
+        "risk_death": {
+          "events": 10,
+          "episodes": 10
+        }
+      },
+      "arrow_visible": {
+        "transitions": 9454,
+        "episodes": 290,
+        "damage": {
+          "events": 465,
+          "episodes": 191
+        },
+        "death": {
+          "events": 52,
+          "episodes": 52
+        },
+        "risk": {
+          "events": 138,
+          "episodes": 58
+        },
+        "risk_death": {
+          "events": 31,
+          "episodes": 31
+        }
+      },
+      "skeleton_visible": {
+        "transitions": 16764,
+        "episodes": 325,
+        "damage": {
+          "events": 612,
+          "episodes": 219
+        },
+        "death": {
+          "events": 83,
+          "episodes": 83
+        },
+        "risk": {
+          "events": 310,
+          "episodes": 86
+        },
+        "risk_death": {
+          "events": 50,
+          "episodes": 50
+        }
+      },
+      "iron_equipment": {
+        "transitions": 31905,
+        "episodes": 51,
+        "damage": {
+          "events": 527,
+          "episodes": 51
+        },
+        "death": {
+          "events": 51,
+          "episodes": 51
+        },
+        "risk": {
+          "events": 172,
+          "episodes": 36
+        },
+        "risk_death": {
+          "events": 29,
+          "episodes": 29
+        }
+      }
+    },
+    "components": {
+      "reset_exploration": {
+        "all": {
+          "transitions": 82786,
+          "episodes": 477,
+          "damage": {
+            "events": 2211,
+            "episodes": 477
+          },
+          "death": {
+            "events": 477,
+            "episodes": 477
+          },
+          "risk": {
+            "events": 1739,
+            "episodes": 341
+          },
+          "risk_death": {
+            "events": 304,
+            "episodes": 304
+          }
+        },
+        "night": {
+          "transitions": 20234,
+          "episodes": 286,
+          "damage": {
+            "events": 958,
+            "episodes": 282
+          },
+          "death": {
+            "events": 235,
+            "episodes": 235
+          },
+          "risk": {
+            "events": 809,
+            "episodes": 172
+          },
+          "risk_death": {
+            "events": 151,
+            "episodes": 151
+          }
+        },
+        "day": {
+          "transitions": 62552,
+          "episodes": 477,
+          "damage": {
+            "events": 1253,
+            "episodes": 374
+          },
+          "death": {
+            "events": 242,
+            "episodes": 242
+          },
+          "risk": {
+            "events": 930,
+            "episodes": 191
+          },
+          "risk_death": {
+            "events": 153,
+            "episodes": 153
+          }
+        },
+        "health_1": {
+          "transitions": 1094,
+          "episodes": 147,
+          "damage": {
+            "events": 118,
+            "episodes": 118
+          },
+          "death": {
+            "events": 118,
+            "episodes": 118
+          },
+          "risk": {
+            "events": 571,
+            "episodes": 134
+          },
+          "risk_death": {
+            "events": 101,
+            "episodes": 101
+          }
+        },
+        "health_2": {
+          "transitions": 2289,
+          "episodes": 283,
+          "damage": {
+            "events": 234,
+            "episodes": 233
+          },
+          "death": {
+            "events": 213,
+            "episodes": 213
+          },
+          "risk": {
+            "events": 1168,
+            "episodes": 265
+          },
+          "risk_death": {
+            "events": 203,
+            "episodes": 203
+          }
+        },
+        "health_above_2": {
+          "transitions": 79403,
+          "episodes": 477,
+          "damage": {
+            "events": 1859,
+            "episodes": 477
+          },
+          "death": {
+            "events": 146,
+            "episodes": 146
+          },
+          "risk": {
+            "events": 0,
+            "episodes": 0
+          },
+          "risk_death": {
+            "events": 0,
+            "episodes": 0
+          }
+        },
+        "food_empty": {
+          "transitions": 1046,
+          "episodes": 27,
+          "damage": {
+            "events": 100,
+            "episodes": 27
+          },
+          "death": {
+            "events": 24,
+            "episodes": 24
+          },
+          "risk": {
+            "events": 47,
+            "episodes": 15
+          },
+          "risk_death": {
+            "events": 13,
+            "episodes": 13
+          }
+        },
+        "drink_empty": {
+          "transitions": 5391,
+          "episodes": 121,
+          "damage": {
+            "events": 411,
+            "episodes": 114
+          },
+          "death": {
+            "events": 103,
+            "episodes": 103
+          },
+          "risk": {
+            "events": 267,
+            "episodes": 70
+          },
+          "risk_death": {
+            "events": 61,
+            "episodes": 61
+          }
+        },
+        "sleeping": {
+          "transitions": 13773,
+          "episodes": 459,
+          "damage": {
+            "events": 407,
+            "episodes": 331
+          },
+          "death": {
+            "events": 210,
+            "episodes": 210
+          },
+          "risk": {
+            "events": 152,
+            "episodes": 70
+          },
+          "risk_death": {
+            "events": 66,
+            "episodes": 66
+          }
+        },
+        "zombie_adjacent": {
+          "transitions": 7386,
+          "episodes": 469,
+          "damage": {
+            "events": 1730,
+            "episodes": 469
+          },
+          "death": {
+            "events": 447,
+            "episodes": 447
+          },
+          "risk": {
+            "events": 1739,
+            "episodes": 341
+          },
+          "risk_death": {
+            "events": 304,
+            "episodes": 304
+          }
+        },
+        "adjacent_zombie_ready": {
+          "transitions": 2397,
+          "episodes": 469,
+          "damage": {
+            "events": 1696,
+            "episodes": 469
+          },
+          "death": {
+            "events": 438,
+            "episodes": 438
+          },
+          "risk": {
+            "events": 412,
+            "episodes": 297
+          },
+          "risk_death": {
+            "events": 295,
+            "episodes": 295
+          }
+        },
+        "adjacent_zombie_not_ready": {
+          "transitions": 4989,
+          "episodes": 458,
+          "damage": {
+            "events": 34,
+            "episodes": 32
+          },
+          "death": {
+            "events": 9,
+            "episodes": 9
+          },
+          "risk": {
+            "events": 1327,
+            "episodes": 318
+          },
+          "risk_death": {
+            "events": 9,
+            "episodes": 9
+          }
+        },
+        "arrow_visible": {
+          "transitions": 5486,
+          "episodes": 244,
+          "damage": {
+            "events": 342,
+            "episodes": 157
+          },
+          "death": {
+            "events": 43,
+            "episodes": 43
+          },
+          "risk": {
+            "events": 112,
+            "episodes": 48
+          },
+          "risk_death": {
+            "events": 26,
+            "episodes": 26
+          }
+        },
+        "skeleton_visible": {
+          "transitions": 10044,
+          "episodes": 278,
+          "damage": {
+            "events": 450,
+            "episodes": 177
+          },
+          "death": {
+            "events": 68,
+            "episodes": 68
+          },
+          "risk": {
+            "events": 252,
+            "episodes": 72
+          },
+          "risk_death": {
+            "events": 41,
+            "episodes": 41
+          }
+        },
+        "iron_equipment": {
+          "transitions": 579,
+          "episodes": 5,
+          "damage": {
+            "events": 22,
+            "episodes": 5
+          },
+          "death": {
+            "events": 5,
+            "episodes": 5
+          },
+          "risk": {
+            "events": 16,
+            "episodes": 4
+          },
+          "risk_death": {
+            "events": 3,
+            "episodes": 3
+          }
+        }
+      },
+      "late_failure": {
+        "all": {
+          "transitions": 41020,
+          "episodes": 47,
+          "damage": {
+            "events": 606,
+            "episodes": 47
+          },
+          "death": {
+            "events": 47,
+            "episodes": 47
+          },
+          "risk": {
+            "events": 190,
+            "episodes": 34
+          },
+          "risk_death": {
+            "events": 26,
+            "episodes": 26
+          }
+        },
+        "night": {
+          "transitions": 16111,
+          "episodes": 47,
+          "damage": {
+            "events": 257,
+            "episodes": 45
+          },
+          "death": {
+            "events": 27,
+            "episodes": 27
+          },
+          "risk": {
+            "events": 101,
+            "episodes": 23
+          },
+          "risk_death": {
+            "events": 18,
+            "episodes": 18
+          }
+        },
+        "day": {
+          "transitions": 24909,
+          "episodes": 47,
+          "damage": {
+            "events": 349,
+            "episodes": 46
+          },
+          "death": {
+            "events": 20,
+            "episodes": 20
+          },
+          "risk": {
+            "events": 89,
+            "episodes": 16
+          },
+          "risk_death": {
+            "events": 8,
+            "episodes": 8
+          }
+        },
+        "health_1": {
+          "transitions": 368,
+          "episodes": 28,
+          "damage": {
+            "events": 26,
+            "episodes": 26
+          },
+          "death": {
+            "events": 26,
+            "episodes": 26
+          },
+          "risk": {
+            "events": 68,
+            "episodes": 16
+          },
+          "risk_death": {
+            "events": 12,
+            "episodes": 12
+          }
+        },
+        "health_2": {
+          "transitions": 689,
+          "episodes": 35,
+          "damage": {
+            "events": 27,
+            "episodes": 27
+          },
+          "death": {
+            "events": 14,
+            "episodes": 14
+          },
+          "risk": {
+            "events": 122,
+            "episodes": 23
+          },
+          "risk_death": {
+            "events": 14,
+            "episodes": 14
+          }
+        },
+        "health_above_2": {
+          "transitions": 39963,
+          "episodes": 47,
+          "damage": {
+            "events": 553,
+            "episodes": 47
+          },
+          "death": {
+            "events": 7,
+            "episodes": 7
+          },
+          "risk": {
+            "events": 0,
+            "episodes": 0
+          },
+          "risk_death": {
+            "events": 0,
+            "episodes": 0
+          }
+        },
+        "food_empty": {
+          "transitions": 2142,
+          "episodes": 27,
+          "damage": {
+            "events": 128,
+            "episodes": 24
+          },
+          "death": {
+            "events": 18,
+            "episodes": 18
+          },
+          "risk": {
+            "events": 45,
+            "episodes": 9
+          },
+          "risk_death": {
+            "events": 8,
+            "episodes": 8
+          }
+        },
+        "drink_empty": {
+          "transitions": 5533,
+          "episodes": 44,
+          "damage": {
+            "events": 245,
+            "episodes": 39
+          },
+          "death": {
+            "events": 24,
+            "episodes": 24
+          },
+          "risk": {
+            "events": 56,
+            "episodes": 16
+          },
+          "risk_death": {
+            "events": 12,
+            "episodes": 12
+          }
+        },
+        "sleeping": {
+          "transitions": 9198,
+          "episodes": 47,
+          "damage": {
+            "events": 77,
+            "episodes": 36
+          },
+          "death": {
+            "events": 14,
+            "episodes": 14
+          },
+          "risk": {
+            "events": 10,
+            "episodes": 4
+          },
+          "risk_death": {
+            "events": 4,
+            "episodes": 4
+          }
+        },
+        "zombie_adjacent": {
+          "transitions": 2477,
+          "episodes": 47,
+          "damage": {
+            "events": 255,
+            "episodes": 47
+          },
+          "death": {
+            "events": 32,
+            "episodes": 32
+          },
+          "risk": {
+            "events": 190,
+            "episodes": 34
+          },
+          "risk_death": {
+            "events": 26,
+            "episodes": 26
+          }
+        },
+        "adjacent_zombie_ready": {
+          "transitions": 1857,
+          "episodes": 47,
+          "damage": {
+            "events": 246,
+            "episodes": 47
+          },
+          "death": {
+            "events": 31,
+            "episodes": 31
+          },
+          "risk": {
+            "events": 55,
+            "episodes": 29
+          },
+          "risk_death": {
+            "events": 25,
+            "episodes": 25
+          }
+        },
+        "adjacent_zombie_not_ready": {
+          "transitions": 620,
+          "episodes": 47,
+          "damage": {
+            "events": 9,
+            "episodes": 8
+          },
+          "death": {
+            "events": 1,
+            "episodes": 1
+          },
+          "risk": {
+            "events": 135,
+            "episodes": 32
+          },
+          "risk_death": {
+            "events": 1,
+            "episodes": 1
+          }
+        },
+        "arrow_visible": {
+          "transitions": 3968,
+          "episodes": 46,
+          "damage": {
+            "events": 123,
+            "episodes": 34
+          },
+          "death": {
+            "events": 9,
+            "episodes": 9
+          },
+          "risk": {
+            "events": 26,
+            "episodes": 10
+          },
+          "risk_death": {
+            "events": 5,
+            "episodes": 5
+          }
+        },
+        "skeleton_visible": {
+          "transitions": 6720,
+          "episodes": 47,
+          "damage": {
+            "events": 162,
+            "episodes": 42
+          },
+          "death": {
+            "events": 15,
+            "episodes": 15
+          },
+          "risk": {
+            "events": 58,
+            "episodes": 14
+          },
+          "risk_death": {
+            "events": 9,
+            "episodes": 9
+          }
+        },
+        "iron_equipment": {
+          "transitions": 31326,
+          "episodes": 46,
+          "damage": {
+            "events": 505,
+            "episodes": 46
+          },
+          "death": {
+            "events": 46,
+            "episodes": 46
+          },
+          "risk": {
+            "events": 156,
+            "episodes": 32
+          },
+          "risk_death": {
+            "events": 26,
+            "episodes": 26
+          }
+        }
+      }
+    }
+  },
+  "interpretation": "Pre-transition contexts overlap. Empty hunger/thirst, visible projectiles or nearby zombies are not claims of the actual cause of death. Episode counts are independent source episodes within each context, not sum-disjoint categories. Danger store is a committed-batch snapshot if still running."
+}
