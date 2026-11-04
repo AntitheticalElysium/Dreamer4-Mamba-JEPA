@@ -1,0 +1,454 @@
+{
+  "rule": [
+    {
+      "kind": "wood",
+      "episode": 58,
+      "truth": 1,
+      "read": 1,
+      "mae": 0.8597880005836487
+    },
+    {
+      "kind": "wood",
+      "episode": 93,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.9242393970489502
+    },
+    {
+      "kind": "wood",
+      "episode": 141,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.1581512689590454
+    },
+    {
+      "kind": "wood",
+      "episode": 276,
+      "truth": 1,
+      "read": 1,
+      "mae": 0.9413823485374451
+    },
+    {
+      "kind": "wood",
+      "episode": 68,
+      "truth": 1,
+      "read": 1,
+      "mae": 0.9558504223823547
+    },
+    {
+      "kind": "wood",
+      "episode": 97,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.6461137533187866
+    },
+    {
+      "kind": "wood",
+      "episode": 88,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.6626673936843872
+    },
+    {
+      "kind": "wood",
+      "episode": 82,
+      "truth": 1,
+      "read": 1,
+      "mae": 0.8945924639701843
+    },
+    {
+      "kind": "wood",
+      "episode": 159,
+      "truth": 2,
+      "read": 2,
+      "mae": 0.8799723982810974
+    },
+    {
+      "kind": "wood",
+      "episode": 158,
+      "truth": 2,
+      "read": 2,
+      "mae": 1.2117010354995728
+    },
+    {
+      "kind": "wood",
+      "episode": 34,
+      "truth": 2,
+      "read": 2,
+      "mae": 1.2019914388656616
+    },
+    {
+      "kind": "wood",
+      "episode": 24,
+      "truth": 3,
+      "read": 3,
+      "mae": 1.6903890371322632
+    },
+    {
+      "kind": "wood",
+      "episode": 224,
+      "truth": 2,
+      "read": 2,
+      "mae": 0.902880847454071
+    },
+    {
+      "kind": "wood",
+      "episode": 130,
+      "truth": 4,
+      "read": 4,
+      "mae": 2.0397989749908447
+    },
+    {
+      "kind": "wood",
+      "episode": 147,
+      "truth": 4,
+      "read": 4,
+      "mae": 1.8002041578292847
+    },
+    {
+      "kind": "wood",
+      "episode": 262,
+      "truth": 2,
+      "read": 2,
+      "mae": 0.9445987343788147
+    },
+    {
+      "kind": "drink",
+      "episode": 141,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.3122707605361938
+    },
+    {
+      "kind": "drink",
+      "episode": 96,
+      "truth": 1,
+      "read": 1,
+      "mae": 2.2477810382843018
+    },
+    {
+      "kind": "drink",
+      "episode": 63,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.2194180488586426
+    },
+    {
+      "kind": "drink",
+      "episode": 209,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.5022982358932495
+    },
+    {
+      "kind": "drink",
+      "episode": 295,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.4347329139709473
+    },
+    {
+      "kind": "drink",
+      "episode": 155,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.6254891157150269
+    },
+    {
+      "kind": "drink",
+      "episode": 117,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.5288323163986206
+    },
+    {
+      "kind": "drink",
+      "episode": 10,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.3831579685211182
+    },
+    {
+      "kind": "drink",
+      "episode": 280,
+      "truth": 2,
+      "read": 2,
+      "mae": 1.5763909816741943
+    },
+    {
+      "kind": "drink",
+      "episode": 240,
+      "truth": 4,
+      "read": 4,
+      "mae": 0.9028210043907166
+    },
+    {
+      "kind": "drink",
+      "episode": 200,
+      "truth": 3,
+      "read": 3,
+      "mae": 1.4127073287963867
+    },
+    {
+      "kind": "drink",
+      "episode": 123,
+      "truth": 4,
+      "read": 4,
+      "mae": 0.6023709774017334
+    },
+    {
+      "kind": "drink",
+      "episode": 24,
+      "truth": 3,
+      "read": 3,
+      "mae": 1.367696762084961
+    },
+    {
+      "kind": "drink",
+      "episode": 231,
+      "truth": 3,
+      "read": 3,
+      "mae": 1.5297443866729736
+    },
+    {
+      "kind": "drink",
+      "episode": 262,
+      "truth": 5,
+      "read": 5,
+      "mae": 1.5063222646713257
+    },
+    {
+      "kind": "drink",
+      "episode": 94,
+      "truth": 6,
+      "read": 6,
+      "mae": 1.3543511629104614
+    }
+  ],
+  "cover": [
+    {
+      "kind": "wood",
+      "episode": 58,
+      "truth": 1,
+      "read": 1,
+      "mae": 0.8556969165802002
+    },
+    {
+      "kind": "wood",
+      "episode": 93,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.2091413736343384
+    },
+    {
+      "kind": "wood",
+      "episode": 141,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.0467839241027832
+    },
+    {
+      "kind": "wood",
+      "episode": 276,
+      "truth": 1,
+      "read": 1,
+      "mae": 0.908950924873352
+    },
+    {
+      "kind": "wood",
+      "episode": 68,
+      "truth": 1,
+      "read": 1,
+      "mae": 0.9289121031761169
+    },
+    {
+      "kind": "wood",
+      "episode": 97,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.181395411491394
+    },
+    {
+      "kind": "wood",
+      "episode": 88,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.3053536415100098
+    },
+    {
+      "kind": "wood",
+      "episode": 82,
+      "truth": 1,
+      "read": 1,
+      "mae": 0.9354264736175537
+    },
+    {
+      "kind": "wood",
+      "episode": 159,
+      "truth": 2,
+      "read": 2,
+      "mae": 0.9806520342826843
+    },
+    {
+      "kind": "wood",
+      "episode": 158,
+      "truth": 2,
+      "read": 2,
+      "mae": 0.9287263751029968
+    },
+    {
+      "kind": "wood",
+      "episode": 34,
+      "truth": 2,
+      "read": 2,
+      "mae": 1.1765540838241577
+    },
+    {
+      "kind": "wood",
+      "episode": 24,
+      "truth": 3,
+      "read": 3,
+      "mae": 1.8073397874832153
+    },
+    {
+      "kind": "wood",
+      "episode": 224,
+      "truth": 2,
+      "read": 2,
+      "mae": 0.9945508241653442
+    },
+    {
+      "kind": "wood",
+      "episode": 130,
+      "truth": 4,
+      "read": 4,
+      "mae": 2.0152604579925537
+    },
+    {
+      "kind": "wood",
+      "episode": 147,
+      "truth": 4,
+      "read": 4,
+      "mae": 2.175039529800415
+    },
+    {
+      "kind": "wood",
+      "episode": 262,
+      "truth": 2,
+      "read": 2,
+      "mae": 1.1162816286087036
+    },
+    {
+      "kind": "drink",
+      "episode": 141,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.2771146297454834
+    },
+    {
+      "kind": "drink",
+      "episode": 96,
+      "truth": 1,
+      "read": 1,
+      "mae": 2.1199493408203125
+    },
+    {
+      "kind": "drink",
+      "episode": 63,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.4331930875778198
+    },
+    {
+      "kind": "drink",
+      "episode": 209,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.6367855072021484
+    },
+    {
+      "kind": "drink",
+      "episode": 295,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.5020434856414795
+    },
+    {
+      "kind": "drink",
+      "episode": 155,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.6894583702087402
+    },
+    {
+      "kind": "drink",
+      "episode": 117,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.687743067741394
+    },
+    {
+      "kind": "drink",
+      "episode": 10,
+      "truth": 1,
+      "read": 1,
+      "mae": 1.5030665397644043
+    },
+    {
+      "kind": "drink",
+      "episode": 280,
+      "truth": 2,
+      "read": 2,
+      "mae": 1.678696632385254
+    },
+    {
+      "kind": "drink",
+      "episode": 240,
+      "truth": 4,
+      "read": 4,
+      "mae": 1.1862821578979492
+    },
+    {
+      "kind": "drink",
+      "episode": 200,
+      "truth": 3,
+      "read": 3,
+      "mae": 1.229407787322998
+    },
+    {
+      "kind": "drink",
+      "episode": 123,
+      "truth": 4,
+      "read": 4,
+      "mae": 0.8071290254592896
+    },
+    {
+      "kind": "drink",
+      "episode": 24,
+      "truth": 3,
+      "read": 3,
+      "mae": 1.2577004432678223
+    },
+    {
+      "kind": "drink",
+      "episode": 231,
+      "truth": 3,
+      "read": 3,
+      "mae": 1.3077534437179565
+    },
+    {
+      "kind": "drink",
+      "episode": 262,
+      "truth": 5,
+      "read": 5,
+      "mae": 1.2755953073501587
+    },
+    {
+      "kind": "drink",
+      "episode": 94,
+      "truth": 6,
+      "read": 6,
+      "mae": 1.1426621675491333
+    }
+  ]
+}

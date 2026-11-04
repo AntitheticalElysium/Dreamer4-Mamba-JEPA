@@ -1,0 +1,27 @@
+{
+  "authorized_by": "User: Launch it, and queue up the evaluation after like we discussed.",
+  "unit": "saccade-p1f2.service",
+  "invocation": "08ad625927a347fd927753069220097f",
+  "worker_pid": 579880,
+  "started_at": "2026-11-03T11:38:28.710637+00:00",
+  "memory_max_GiB": 24,
+  "world_seed": 1,
+  "source_pins_sha256": "6d8308c1dc782b85187a2bd5747fd55f2df91fff32a820d39ab09663c9f5fcf1",
+  "source_archive_sha256": "e7dba84761a6bc57cd9ce7d38dc6e793a09cad63ab768663666aab22132d3513",
+  "initial_update_matches_reviewed_smoke": [
+    "g1",
+    "change",
+    "tsp",
+    "rec",
+    "reward",
+    "cont",
+    "noise",
+    "grad_norm",
+    "sigma"
+  ],
+  "evaluation_automatic": true,
+  "checkpoint_rule": "Final unless three consecutive monitor increases; then existing minimum rule.",
+  "checkpoints": "10 numbered plus latest; full 25.6M-frame budget.",
+  "followup": "Same F1.6 comparison battery plus genuine-look, frozen online chooser and gaze-coverage readings; no P2/P3.",
+  "verified_at": "2026-11-03T11:39:28.955915+00:00"
+}

@@ -1,0 +1,68 @@
+{
+  "phase": "complete",
+  "started_at": "2026-11-03T11:38:28.710637+00:00",
+  "source_pins_sha256": "6d8308c1dc782b85187a2bd5747fd55f2df91fff32a820d39ab09663c9f5fcf1",
+  "training_completed_at": "2026-11-03T23:11:20.376134+00:00",
+  "selection": {
+    "checkpoint": 10,
+    "monitor_loss": 0.03022446110844612,
+    "three_increases_triggered": false,
+    "rule": "final unless any three successive strict increases; then global minimum, earliest tie",
+    "monitor_history": [
+      {
+        "checkpoint": 1,
+        "frames": 2560000,
+        "loss": 0.10235856473445892
+      },
+      {
+        "checkpoint": 2,
+        "frames": 5120000,
+        "loss": 0.06689683347940445
+      },
+      {
+        "checkpoint": 3,
+        "frames": 7680000,
+        "loss": 0.046585530042648315
+      },
+      {
+        "checkpoint": 4,
+        "frames": 10240000,
+        "loss": 0.040001511573791504
+      },
+      {
+        "checkpoint": 5,
+        "frames": 12800000,
+        "loss": 0.04007089510560036
+      },
+      {
+        "checkpoint": 6,
+        "frames": 15360000,
+        "loss": 0.03334730863571167
+      },
+      {
+        "checkpoint": 7,
+        "frames": 17920000,
+        "loss": 0.03150859847664833
+      },
+      {
+        "checkpoint": 8,
+        "frames": 20480000,
+        "loss": 0.031234242022037506
+      },
+      {
+        "checkpoint": 9,
+        "frames": 23040000,
+        "loss": 0.03049798496067524
+      },
+      {
+        "checkpoint": 10,
+        "frames": 25600000,
+        "loss": 0.03022446110844612
+      }
+    ],
+    "checkpoint_path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261103_p1f2/run/ckpt_10.pt",
+    "checkpoint_sha256": "e0f6a24ec51d2bf021ca88ba8080f804595800dc9295aecf0e37c7da7d7e1234",
+    "selected_at": "2026-11-03T23:11:20.374775+00:00"
+  },
+  "completed_at": "2026-11-04T02:07:37.519114+00:00"
+}
