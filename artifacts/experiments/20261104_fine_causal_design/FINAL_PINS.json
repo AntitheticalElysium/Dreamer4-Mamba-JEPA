@@ -1,0 +1,10 @@
+{
+  "artifacts/experiments/20261104_fine_causal_design/analyze_content.py": "d73129b869f0ed81768130a2fc9ccd0e09064a4eb9be39f1e268c92001c0afbf",
+  "artifacts/experiments/20261104_fine_causal_design/RESULTS.md": "c90847518fe04b512449e8d43430a6a2ef3d72da906d2f192cea3a9ea1cb0fff",
+  "artifacts/experiments/20261104_fine_causal_design/RESULTS.json": "bf32c4cae549697de1da04db0a17abd18c92fc882c2320a16e0386225e8ef51a",
+  "artifacts/experiments/20261104_fine_causal_design/CONTENT_RESULTS.json": "998b05b87118fd972876487765d83fcfea3363fcb1b469549eb19ed0f4a58f7f",
+  "artifacts/experiments/20261104_fine_causal_design/source_pairs.pt": "58ce13e39d2c6b7acd928a2ffadbc9672ed04c105a60ff23b9e1c05036434f1e",
+  "artifacts/experiments/20261104_fine_causal_design/natural_pairs.pt": "62509898c9000a81d03b15668ff269a32cdbc0199fb4fb50b5038871b9b84a3a",
+  "artifacts/experiments/20261104_fine_causal_design/native_results.pt": "87e6c8039fbc926e4ed00bfbf7e61280adba3f8826f6380694cdb316124540ea",
+  "artifacts/experiments/20261104_fine_causal_design/content_control.pt": "8bc80c5ccc3d0b8edaa393f52eab36801d28bc0b70220c10130f561d9a0d5877"
+}

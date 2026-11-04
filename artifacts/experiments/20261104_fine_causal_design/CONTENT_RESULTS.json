@@ -1,0 +1,1450 @@
+{
+  "content": {
+    "all12": {
+      "3": {
+        "arrow_gA_pA": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "arrow_gB_pA": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "arrow_gA_pB": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "arrow_gB_pB": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "arrow_content_gain_pA": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "arrow_content_gain_pB": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "score_content_gain_pA": {
+          "mean": 5.345545373384534e-07,
+          "ci95": [
+            -1.517252687978828e-07,
+            1.6964157337882406e-06
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "score_content_gain_pB": {
+          "mean": -5.229376374103293e-07,
+          "ci95": [
+            -1.4998816919881141e-06,
+            1.0288455911100048e-07
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "changed_arrow_calls": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "paired_calls": {
+          "mean": 128.0,
+          "ci95": [
+            128.0,
+            128.0
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "embedding_delta_pA": {
+          "mean": 0.001483697390599801,
+          "ci95": [
+            0.0012453276012799692,
+            0.0017185351939312337
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "predicted_delta_pA": {
+          "mean": 0.005254714805015118,
+          "ci95": [
+            0.005007657827040308,
+            0.005495199189292405
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "total_changed_arrow_calls": 0,
+        "total_paired_calls": 1536
+      },
+      "8": {
+        "arrow_gA_pA": {
+          "mean": 0.00390625,
+          "ci95": [
+            0.0,
+            0.0078125
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "arrow_gB_pA": {
+          "mean": 0.00390625,
+          "ci95": [
+            0.0,
+            0.0078125
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "arrow_gA_pB": {
+          "mean": 0.0026041666666666665,
+          "ci95": [
+            0.0,
+            0.006510416666666667
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "arrow_gB_pB": {
+          "mean": 0.0026041666666666665,
+          "ci95": [
+            0.0,
+            0.006510416666666667
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "arrow_content_gain_pA": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "arrow_content_gain_pB": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "score_content_gain_pA": {
+          "mean": 2.4669214963542647e-05,
+          "ci95": [
+            2.346901440830607e-06,
+            5.045565135445666e-05
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "score_content_gain_pB": {
+          "mean": -2.2919492070154018e-05,
+          "ci95": [
+            -6.138165214200815e-05,
+            6.8315696596007125e-06
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "changed_arrow_calls": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "paired_calls": {
+          "mean": 128.0,
+          "ci95": [
+            128.0,
+            128.0
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "embedding_delta_pA": {
+          "mean": 0.001483697390599801,
+          "ci95": [
+            0.0012453276012799692,
+            0.0017185351939312337
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "predicted_delta_pA": {
+          "mean": 0.005254714805015118,
+          "ci95": [
+            0.005007657827040308,
+            0.005495199189292405
+          ],
+          "cases": 12,
+          "episodes": 12
+        },
+        "total_changed_arrow_calls": 0,
+        "total_paired_calls": 1536
+      }
+    },
+    "source_specific5": {
+      "3": {
+        "arrow_gA_pA": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "arrow_gB_pA": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "arrow_gA_pB": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "arrow_gB_pB": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "arrow_content_gain_pA": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "arrow_content_gain_pB": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "score_content_gain_pA": {
+          "mean": 1.1334151245101508e-06,
+          "ci95": [
+            -3.990738962400542e-07,
+            3.8931012824150455e-06
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "score_content_gain_pB": {
+          "mean": -1.2196724128443748e-06,
+          "ci95": [
+            -3.2862015814316693e-06,
+            2.993837838971558e-07
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "changed_arrow_calls": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "paired_calls": {
+          "mean": 128.0,
+          "ci95": [
+            128.0,
+            128.0
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "embedding_delta_pA": {
+          "mean": 0.001776147228241314,
+          "ci95": [
+            0.001640176540224112,
+            0.0019075859235037494
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "predicted_delta_pA": {
+          "mean": 0.005066983970447217,
+          "ci95": [
+            0.004632144403353029,
+            0.0054091273411016935
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "total_changed_arrow_calls": 0,
+        "total_paired_calls": 640
+      },
+      "8": {
+        "arrow_gA_pA": {
+          "mean": 0.003125,
+          "ci95": [
+            0.0,
+            0.009375
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "arrow_gB_pA": {
+          "mean": 0.003125,
+          "ci95": [
+            0.0,
+            0.009375
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "arrow_gA_pB": {
+          "mean": 0.003125,
+          "ci95": [
+            0.0,
+            0.009375
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "arrow_gB_pB": {
+          "mean": 0.003125,
+          "ci95": [
+            0.0,
+            0.009375
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "arrow_content_gain_pA": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "arrow_content_gain_pB": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "score_content_gain_pA": {
+          "mean": 3.7137713661650196e-05,
+          "ci95": [
+            -5.8965444623027e-06,
+            8.18772976344917e-05
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "score_content_gain_pB": {
+          "mean": -2.9403048120002496e-05,
+          "ci95": [
+            -0.00010821959949680604,
+            2.3430284181813475e-05
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "changed_arrow_calls": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "paired_calls": {
+          "mean": 128.0,
+          "ci95": [
+            128.0,
+            128.0
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "embedding_delta_pA": {
+          "mean": 0.001776147228241314,
+          "ci95": [
+            0.001640176540224112,
+            0.0019075859235037494
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "predicted_delta_pA": {
+          "mean": 0.005066983970447217,
+          "ci95": [
+            0.004632144403353029,
+            0.0054091273411016935
+          ],
+          "cases": 5,
+          "episodes": 5
+        },
+        "total_changed_arrow_calls": 0,
+        "total_paired_calls": 640
+      }
+    }
+  },
+  "genuine_gaze_source_specific5": {
+    "3": {
+      "health_focus_minus_control_A": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "health_contrast_focus": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "health_contrast_control": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "health_contrast_gaze_gain": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "health_correct_gaze_gain": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "health_supported_correct_gaze_gain": {
+        "mean": -0.003125,
+        "ci95": [
+          -0.00625,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "arrow_focus_A": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "arrow_control_A": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "arrow_focus_B": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "arrow_control_B": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "arrow_gaze_gain_A": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "arrow_causal_separation_focus": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "arrow_causal_separation_control": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "arrow_causal_separation_gaze_gain": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "arrow_score_gaze_gain_A": {
+        "mean": 4.647150149139634e-07,
+        "ci95": [
+          -1.7749244193510095e-06,
+          3.5323264228281915e-06
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "negative_focus_A": {
+        "mean": 0.0001090848256870558,
+        "ci95": [
+          3.703780144803659e-08,
+          0.000327108380422203
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "negative_control_A": {
+        "mean": 5.9016231829289725e-05,
+        "ci95": [
+          3.539937054597431e-08,
+          0.00017691300635291896
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "negative_focus_B": {
+        "mean": 0.00014474888392630448,
+        "ci95": [
+          3.970928084129355e-08,
+          0.00043409310713045103
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "negative_control_B": {
+        "mean": 5.3652764059108904e-05,
+        "ci95": [
+          3.691171315267638e-08,
+          0.00016081952871189743
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "negative_causal_separation_gaze_gain": {
+        "mean": -4.1027526009429494e-05,
+        "ci95": [
+          -0.00012307820434926954,
+          -1.1591367865548818e-09
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "health_support_focus_A": {
+        "mean": 0.96875,
+        "ci95": [
+          0.93125,
+          1.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "health_support_control_A": {
+        "mean": 0.971875,
+        "ci95": [
+          0.934375,
+          1.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "real_health_accuracy": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "real_health_support": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "real_arrow_A": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "real_arrow_B": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "real_negative_A": {
+        "mean": 0.00020412730717342953,
+        "ci95": [
+          3.2929810700466075e-08,
+          0.0006122710697432865
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "real_negative_B": {
+        "mean": 0.0002348285540932693,
+        "ci95": [
+          3.3701530810503753e-08,
+          0.0007043766458068035
+        ],
+        "cases": 5,
+        "episodes": 5
+      }
+    },
+    "8": {
+      "health_focus_minus_control_A": {
+        "mean": -0.021875,
+        "ci95": [
+          -0.053125,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "health_contrast_focus": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "health_contrast_control": {
+        "mean": -0.015625,
+        "ci95": [
+          -0.046875,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "health_contrast_gaze_gain": {
+        "mean": 0.015625,
+        "ci95": [
+          0.0,
+          0.046875
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "health_correct_gaze_gain": {
+        "mean": -0.003125,
+        "ci95": [
+          -0.009375,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "health_supported_correct_gaze_gain": {
+        "mean": -0.0015625,
+        "ci95": [
+          -0.0046875,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "arrow_focus_A": {
+        "mean": 0.003125,
+        "ci95": [
+          0.0,
+          0.009375
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "arrow_control_A": {
+        "mean": 0.003125,
+        "ci95": [
+          0.0,
+          0.009375
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "arrow_focus_B": {
+        "mean": 0.003125,
+        "ci95": [
+          0.0,
+          0.009375
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "arrow_control_B": {
+        "mean": 0.003125,
+        "ci95": [
+          0.0,
+          0.009375
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "arrow_gaze_gain_A": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "arrow_causal_separation_focus": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "arrow_causal_separation_control": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "arrow_causal_separation_gaze_gain": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "arrow_score_gaze_gain_A": {
+        "mean": 3.593310248106718e-05,
+        "ci95": [
+          3.270711749792099e-06,
+          7.943575212266333e-05
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "negative_focus_A": {
+        "mean": 0.0372241172939539,
+        "ci95": [
+          0.021891729906201363,
+          0.05851211696863175
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "negative_control_A": {
+        "mean": 0.032973358407616615,
+        "ci95": [
+          0.018745941296219825,
+          0.05197346806526184
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "negative_focus_B": {
+        "mean": 0.037142534740269184,
+        "ci95": [
+          0.02189242672175169,
+          0.058265765011310575
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "negative_control_B": {
+        "mean": 0.03345679361373186,
+        "ci95": [
+          0.01874550525099039,
+          0.05343074090778828
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "negative_causal_separation_gaze_gain": {
+        "mean": 0.0005650177597999572,
+        "ci95": [
+          -1.1666975915431976e-05,
+          0.0017071504145860672
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "health_support_focus_A": {
+        "mean": 0.984375,
+        "ci95": [
+          0.965625,
+          1.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "health_support_control_A": {
+        "mean": 0.98125,
+        "ci95": [
+          0.965625,
+          0.996875
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "real_health_accuracy": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "real_health_support": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "real_arrow_A": {
+        "mean": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "real_arrow_B": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "real_negative_A": {
+        "mean": 0.00020412730717342953,
+        "ci95": [
+          3.2929810700466075e-08,
+          0.0006122710697432865
+        ],
+        "cases": 5,
+        "episodes": 5
+      },
+      "real_negative_B": {
+        "mean": 0.0002348285540932693,
+        "ci95": [
+          3.3701530810503753e-08,
+          0.0007043766458068035
+        ],
+        "cases": 5,
+        "episodes": 5
+      }
+    }
+  },
+  "detail": [
+    {
+      "case": 44,
+      "episode": 0,
+      "source_specific": false,
+      "steps": 3,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": 8.665591053613753e-07,
+        "score_content_gain_pB": -2.0193469651985652e-07,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.0020741249228394022,
+        "predicted_delta_pA": 0.0052046436793439675
+      }
+    },
+    {
+      "case": 44,
+      "episode": 0,
+      "source_specific": false,
+      "steps": 8,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": 5.376246917876415e-05,
+        "score_content_gain_pB": -0.0001280899887206033,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.0020741249228394022,
+        "predicted_delta_pA": 0.0052046436793439675
+      }
+    },
+    {
+      "case": 47,
+      "episode": 2,
+      "source_specific": false,
+      "steps": 3,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": -1.875339528112363e-08,
+        "score_content_gain_pB": 5.173250716694611e-12,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.0006687814111903719,
+        "predicted_delta_pA": 0.005128628199245942
+      }
+    },
+    {
+      "case": 47,
+      "episode": 2,
+      "source_specific": false,
+      "steps": 8,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": -2.273394784424454e-05,
+        "score_content_gain_pB": -1.4723939784744289e-05,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.0006687814111903719,
+        "predicted_delta_pA": 0.005128628199245942
+      }
+    },
+    {
+      "case": 50,
+      "episode": 6,
+      "source_specific": false,
+      "steps": 3,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": 1.1306053693260765e-07,
+        "score_content_gain_pB": 8.58552482441155e-08,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.0011760495173342037,
+        "predicted_delta_pA": 0.005123070070676392
+      }
+    },
+    {
+      "case": 50,
+      "episode": 6,
+      "source_specific": false,
+      "steps": 8,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": -5.155526650924003e-06,
+        "score_content_gain_pB": 3.1743620638735592e-06,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.0011760495173342037,
+        "predicted_delta_pA": 0.005123070070676392
+      }
+    },
+    {
+      "case": 51,
+      "episode": 7,
+      "source_specific": false,
+      "steps": 3,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": -2.8838300636380154e-07,
+        "score_content_gain_pB": -2.9452669991769653e-07,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.0011057198773622612,
+        "predicted_delta_pA": 0.006056442656517678
+      }
+    },
+    {
+      "case": 51,
+      "episode": 7,
+      "source_specific": false,
+      "steps": 8,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": 6.474245310528204e-06,
+        "score_content_gain_pB": 1.10755599962431e-05,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.0011057198773622612,
+        "predicted_delta_pA": 0.006056442656517678
+      }
+    },
+    {
+      "case": 54,
+      "episode": 8,
+      "source_specific": true,
+      "steps": 3,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": 2.868542026135401e-08,
+        "score_content_gain_pB": 9.003316137068396e-08,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.0019229631246283172,
+        "predicted_delta_pA": 0.0051484534172333615
+      }
+    },
+    {
+      "case": 54,
+      "episode": 8,
+      "source_specific": true,
+      "steps": 8,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": -2.619572842377238e-05,
+        "score_content_gain_pB": 5.415289251686772e-06,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.0019229631246283172,
+        "predicted_delta_pA": 0.0051484534172333615
+      }
+    },
+    {
+      "case": 56,
+      "episode": 17,
+      "source_specific": false,
+      "steps": 3,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": -7.82577913582827e-09,
+        "score_content_gain_pB": 6.736364799309058e-09,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.00135987403358578,
+        "predicted_delta_pA": 0.005200243630776759
+      }
+    },
+    {
+      "case": 56,
+      "episode": 17,
+      "source_specific": false,
+      "steps": 8,
+      "metrics": {
+        "arrow_gA_pA": 0.015625,
+        "arrow_gB_pA": 0.015625,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": 7.568976434413344e-05,
+        "score_content_gain_pB": 5.559654709941242e-07,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.00135987403358578,
+        "predicted_delta_pA": 0.005200243630776759
+      }
+    },
+    {
+      "case": 61,
+      "episode": 35,
+      "source_specific": true,
+      "steps": 3,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": 3.698477080149587e-10,
+        "score_content_gain_pB": 1.7121912776474346e-08,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.0017660070848269018,
+        "predicted_delta_pA": 0.005564198707591306
+      }
+    },
+    {
+      "case": 61,
+      "episode": 35,
+      "source_specific": true,
+      "steps": 8,
+      "metrics": {
+        "arrow_gA_pA": 0.015625,
+        "arrow_gB_pA": 0.015625,
+        "arrow_gA_pB": 0.015625,
+        "arrow_gB_pB": 0.015625,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": 4.205567893222906e-05,
+        "score_content_gain_pB": 1.9619372324086726e-05,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.0017660070848269018,
+        "predicted_delta_pA": 0.005564198707591306
+      }
+    },
+    {
+      "case": 62,
+      "episode": 36,
+      "source_specific": true,
+      "steps": 3,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": -6.653697255387669e-07,
+        "score_content_gain_pB": -5.112745384394657e-06,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.001504558384684605,
+        "predicted_delta_pA": 0.005355653260545032
+      }
+    },
+    {
+      "case": 62,
+      "episode": 36,
+      "source_specific": true,
+      "steps": 8,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": 5.3767329518450424e-05,
+        "score_content_gain_pB": -2.377454802626744e-05,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.001504558384684605,
+        "predicted_delta_pA": 0.005355653260545032
+      }
+    },
+    {
+      "case": 63,
+      "episode": 40,
+      "source_specific": true,
+      "steps": 3,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": -2.6332537572670844e-07,
+        "score_content_gain_pB": 6.498653419839684e-07,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.001962998141717605,
+        "predicted_delta_pA": 0.004997387322189515
+      }
+    },
+    {
+      "case": 63,
+      "episode": 40,
+      "source_specific": true,
+      "steps": 8,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": -9.573472198098898e-06,
+        "score_content_gain_pB": 3.624869350460358e-05,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.001962998141717605,
+        "predicted_delta_pA": 0.004997387322189515
+      }
+    },
+    {
+      "case": 64,
+      "episode": 41,
+      "source_specific": true,
+      "steps": 3,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": 6.566715455846861e-06,
+        "score_content_gain_pB": -1.7426370959583437e-06,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.0017242094053491399,
+        "predicted_delta_pA": 0.004269227144676866
+      }
+    },
+    {
+      "case": 64,
+      "episode": 41,
+      "source_specific": true,
+      "steps": 8,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": 0.00012563476047944278,
+        "score_content_gain_pB": -0.00018452404765412211,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.0017242094053491399,
+        "predicted_delta_pA": 0.004269227144676866
+      }
+    },
+    {
+      "case": 65,
+      "episode": 42,
+      "source_specific": false,
+      "steps": 3,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": 1.1498138263732471e-07,
+        "score_content_gain_pB": -4.63518929905149e-08,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.001597699166630465,
+        "predicted_delta_pA": 0.005732991497620554
+      }
+    },
+    {
+      "case": 65,
+      "episode": 42,
+      "source_specific": false,
+      "steps": 8,
+      "metrics": {
+        "arrow_gA_pA": 0.015625,
+        "arrow_gB_pA": 0.015625,
+        "arrow_gA_pB": 0.015625,
+        "arrow_gB_pB": 0.015625,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": -2.3219976696964295e-07,
+        "score_content_gain_pB": 2.3554559902549954e-07,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.001597699166630465,
+        "predicted_delta_pA": 0.005732991497620554
+      }
+    },
+    {
+      "case": 66,
+      "episode": 60,
+      "source_specific": false,
+      "steps": 3,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": -3.206001863986785e-08,
+        "score_content_gain_pB": 2.7332691843184875e-07,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.0009413836170485578,
+        "predicted_delta_pA": 0.005275638073764036
+      }
+    },
+    {
+      "case": 66,
+      "episode": 60,
+      "source_specific": false,
+      "steps": 8,
+      "metrics": {
+        "arrow_gA_pA": 0.0,
+        "arrow_gB_pA": 0.0,
+        "arrow_gA_pB": 0.0,
+        "arrow_gB_pB": 0.0,
+        "arrow_content_gain_pA": 0.0,
+        "arrow_content_gain_pB": 0.0,
+        "score_content_gain_pA": 2.537206682973192e-06,
+        "score_content_gain_pB": -2.4616886662442994e-07,
+        "changed_arrow_calls": 0,
+        "paired_calls": 128,
+        "embedding_delta_pA": 0.0009413836170485578,
+        "predicted_delta_pA": 0.005275638073764036
+      }
+    }
+  ],
+  "qualification": "Five first-visible cases pass BOTH fixed fine readers on BOTH presence/absence alternatives. Other seven retained, not used to claim semantic fine acquisition.",
+  "non_claim": "Internal content swaps need not be natural joint percepts. Zero observed label changes is not a population proof of exact zero influence."
+}

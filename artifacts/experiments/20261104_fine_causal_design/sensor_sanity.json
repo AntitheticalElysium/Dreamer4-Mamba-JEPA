@@ -1,0 +1,36 @@
+{
+  "scope": "Clean arrow asset on a constant grass-color background, exact resize/flip/pool operations only.",
+  "non_claim": "No night noise, trained encoder, model-use or natural-episode result.",
+  "pairs": {
+    "up_down": {
+      "equal_3x3_input": false,
+      "different_channels": 6,
+      "max_pixel_difference": 8.0
+    },
+    "up_left": {
+      "equal_3x3_input": false,
+      "different_channels": 12,
+      "max_pixel_difference": 38.0
+    },
+    "up_right": {
+      "equal_3x3_input": false,
+      "different_channels": 12,
+      "max_pixel_difference": 38.0
+    },
+    "down_left": {
+      "equal_3x3_input": false,
+      "different_channels": 12,
+      "max_pixel_difference": 38.0
+    },
+    "down_right": {
+      "equal_3x3_input": false,
+      "different_channels": 12,
+      "max_pixel_difference": 38.0
+    },
+    "left_right": {
+      "equal_3x3_input": false,
+      "different_channels": 6,
+      "max_pixel_difference": 8.0
+    }
+  }
+}

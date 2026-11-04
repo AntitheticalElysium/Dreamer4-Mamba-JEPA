@@ -1,0 +1,32 @@
+[
+  {
+    "case": 54,
+    "episode": 8,
+    "t": 216,
+    "visible_in_previous8": 0
+  },
+  {
+    "case": 61,
+    "episode": 35,
+    "t": 189,
+    "visible_in_previous8": 0
+  },
+  {
+    "case": 62,
+    "episode": 36,
+    "t": 206,
+    "visible_in_previous8": 2
+  },
+  {
+    "case": 63,
+    "episode": 40,
+    "t": 218,
+    "visible_in_previous8": 0
+  },
+  {
+    "case": 64,
+    "episode": 41,
+    "t": 513,
+    "visible_in_previous8": 3
+  }
+]
