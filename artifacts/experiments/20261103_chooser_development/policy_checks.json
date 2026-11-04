@@ -1,0 +1,11 @@
+{
+  "probability_normalization": true,
+  "exploration_floor": true,
+  "flat_uniform": true,
+  "mixture_identity": true,
+  "reversed_signal_detected": true,
+  "existing_probability_max_error_611601_saved": 3.1605168221426894e-07,
+  "existing_probability_max_error_611602_saved": 2.4299833334406884e-07,
+  "existing_probability_max_error_611601_confirmation": 1.8585755701128193e-07,
+  "existing_probability_max_error_611602_confirmation": 2.3291226325383718e-07
+}
