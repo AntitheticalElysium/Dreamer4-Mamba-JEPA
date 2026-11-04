@@ -1,0 +1,10 @@
+{
+ "0": {
+  "query_weight_rms_change": 0.09986447542905807,
+  "last_train_ce": 0.0002444305282551795
+ },
+ "1": {
+  "query_weight_rms_change": 0.08328822255134583,
+  "last_train_ce": 7.317319250432774e-05
+ }
+}
