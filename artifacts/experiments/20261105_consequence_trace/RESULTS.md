@@ -122,3 +122,20 @@ almost never drawn even by a perfect field, and one > 0.5 is drawn almost always
 (p 0.15: 0.019-0.027 with churn, 0.028-0.050 without). Cross-instrument check: the actor interface's generated first
 unlocks agree with the trace's appearance rates (drink 0.86-0.89 vs 0.85; coal 0.24 vs 0.11-0.18; iron 0.05-0.09 vs
 0.02-0.04): no readout mismatch on the HUD appearances.
+
+## 6. Stage B2: stone (declared reading, PLAN "Stage B2"; run 15:14-15:22, trace.py sha256 ed314162...)
+
+R0 passes both worlds (recorded count + 1 and PATH in 100%; bias at sigma 0.05 and rerun < 0.01). Primary: the stone
+count's field at sigma 20 = 0.632 +- 0.007 (F2), 0.633 +- 0.007 (F2.1): >= 0.6 in both -> **exposure-consistent**
+(margin ~4.6 SE). Stone shares coal's HUD row, faced-cell geometry, tool and rule and has increments at every digit,
+so neither the route / locality (b) nor the digit composition (c) blocks a count at this exposure; per-slot exposure is
+the leading account (not proven: stone's slot also changes by placing / crafting; its look differs).
+
+Descriptive: first call 0.627 / 0.610, production 0.620 / 0.593 (sampler within 0.02: most rows exceed 0.5); start 0
+0.78 / 0.78 vs increments 0.59 / 0.57 at the first call (the appearance advantage again: a secondary cost, not a block);
+increments at sigma 20 0.58 / 0.59 vs the blind reference 0.04 (coal 0.10 / 0.11); NOOP contrast 0.59; R7 -0.41 / -0.45
+(the count's action dependence also needs clean context). Cell 0.74 / 0.70 at sigma 20 (recorded 0.85 / 0.80).
+Exposure (events per 25.6M frames) vs the count's conditioning use at sigma 20 (F2 / F2.1): iron 63k 0.02-0.10, coal
+102k 0.10-0.11, drink 414k 0.44 (increments), wood 682k 0.70 / 0.62, stone 929k 0.63 / 0.63; the shared cell rule
+~1.8M 0.84-0.94. Rising, then flat near 0.6-0.7 for counts: even the most exposed count stays well short of the exact
+1.0, so a second limit caps counts (not identified here).

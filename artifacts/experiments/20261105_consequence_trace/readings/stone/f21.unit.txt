@@ -1,0 +1,6 @@
+Running as unit: trace-stone-f21.service
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 3min 45.883s
+             CPU time consumed: 5min 13.815s
+                   Memory peak: 4G (swap: 0B)
