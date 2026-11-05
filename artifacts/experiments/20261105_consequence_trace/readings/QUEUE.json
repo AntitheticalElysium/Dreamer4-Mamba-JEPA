@@ -1,0 +1,8 @@
+{
+ "queue": "user-prioritized traces before remaining F2.1 evaluation",
+ "updated": "2026-11-05 14:35:11",
+ "f21_checkpoint": "artifacts/experiments/20261104_p1f21/run/ckpt_10.pt",
+ "smoke_gpu": "exit 0 at 2026-11-05 14:13:45; GPU peak (whole card) 4221 MiB;  Service runtime: 5min 23.331s; Memory peak: 3.5G (swap: 0B);",
+ "f2": "exit 0 at 2026-11-05 14:35:11; GPU peak (whole card) 3567 MiB;  Service runtime: 21min 25.783s; Memory peak: 9.8G (swap: 0B);",
+ "f21": "running since 2026-11-05 14:35:11"
+}
