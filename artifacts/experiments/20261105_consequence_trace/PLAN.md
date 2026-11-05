@@ -178,3 +178,24 @@ the stone count's field mean on real successor + noise at sigma 20 (the conditio
 - otherwise, or the worlds disagree: unresolved, reported as such.
 Descriptive: first call, production, the cell, the joint cell / count outcome, appearance vs increment, the blind
 reference (`posthoc.py`), B4. One world seed each; no further run queued on any outcome.
+
+## Stage B3: the sampler's step count (user 11-05: "proceed with all 3, executive authority")
+
+**Claim.** RESULTS.md 5: with 3 Euler steps the production rate equals P(first estimate > 0.5) per row; an exact
+two-outcome denoiser under the same schedule turns p 0.15 into 0.02-0.03 and recovers p with 32-128 steps. So the
+samples' loss of minority outcomes (risky damage: first 0.105 -> production 0.028) is the discretisation's.
+**Competing explanation.** The network's later calls (on the sampler's off-manifold blends, at sigma 0.4-5) suppress the
+minority themselves (e.g. the HUD's copy pull measured by R5 from sigma 0.7): then more steps do not recover it.
+**Separating control.** Same rows, inputs and seeds as the trace's base variant; only edm.sampler.steps: 3 (must
+reproduce the trace's production row by row), 8, 16, 32 (EDM's per-step churn follows N). F2, then F2.1 for agreement.
+`sampler_steps.py`, `sampler_queue.sh` (lets F2.1's evaluation finish m05, pauses it, runs both, resumes it with
+Codex's command and stops it at uptake, deferred by the user's trim).
+
+**Declared readings.** R0: 3 steps reproduce the trace's production (max |diff| per row < 1e-3) on every class and
+part, else not read; SAFE production < 0.05 at every N. Primary, per minority class (risky, adjacent damage; coal, iron
+HUD): recovery r(N) = production(N) / first call(3 steps). At N = 32: r >= 0.75 -> the 3-step rounding is the samples'
+main loss of what the field holds (a sampling fix recovers it); r <= 0.4 -> the network's later calls suppress the
+minority (sampling alone does not); else partial. Prediction from the exact simulation if the field is
+self-consistent: r(32) ~ 0.9-1.0 for damage. Descriptive: majority outcomes (wood, stone HUD; cells; drink) move from
+above toward the first call as N grows (simulation: p 0.7 -> 0.83 at 3 steps, 0.70 at 32); the first call at each N's
+sigma-hat. No training; no follow-up queued.
