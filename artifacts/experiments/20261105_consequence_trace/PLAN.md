@@ -107,6 +107,15 @@ would fix it; generality beyond these two single-seed worlds.
 
 ## Run (automatic, user 11-05)
 
+**Priority amendment, user 11-05 at approximately 14:08 AEDT:** pause the remaining F2.1 evaluation and run the
+unchanged trace measurement first. `priority_queue.sh`, unit `trace-priority-queue`, invokes
+`launch.sh --before-evaluation`: verify the selected checkpoint, wait for the GPU, then smoke -> F2 -> F2.1.
+Only after all three exit successfully does it start the serial, resumable evaluation worker in
+`saccade-p1f21-eval-recovery4`. Previously completed S1 and both interface readings are retained; the interrupted
+M0.5 stage is rerun. The old waiting queue and evaluation unit were stopped before starting this queue.
+The default `launch.sh` mode below remains available, but is not the current order. No measurement or training
+setting changes in this amendment.
+
 `launch.sh` (systemd unit `trace-queue`, its own cgroup) waits until F2.1's `STATUS.json` says `complete` and its
 evaluation unit has stopped (any other end state: it stops without launching), then, each under
 `MAMBA_DETERMINISTIC=1`: (1) a GPU smoke, 40 dev episodes, into `readings/smoke_gpu` (time, host / GPU peak, the

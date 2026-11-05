@@ -4,6 +4,11 @@
 # each in its own capped unit under MAMBA_DETERMINISTIC=1: a 40-episode GPU smoke, F2, F2.1's selected checkpoint.
 # The chain stops at the first failure. State, exit codes, runtimes and peaks: readings/QUEUE.json.
 set -u
+MODE=${1:---after-evaluation}
+case "$MODE" in
+  --after-evaluation|--before-evaluation) ;;
+  *) echo "usage: $0 [--after-evaluation|--before-evaluation]" >&2; exit 2 ;;
+esac
 REPO=/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA
 OUT=$REPO/artifacts/experiments/20261105_consequence_trace/readings
 STATUS=$REPO/artifacts/experiments/20261104_p1f21/STATUS.json
@@ -48,15 +53,29 @@ step() {                                                     # step NAME CKPT [N
   return $rc
 }
 
-state queue "waiting for F2.1's evaluation (STATUS.json phase: $(phase))"
-while true; do
-  p=$(phase)
-  [ "$p" = complete ] && [ "$(gpu_python)" -eq 0 ] && break
-  [ "$p" = failed ] && { state queue "not launched: F2.1 STATUS.json phase 'failed'"; exit 1; }   # '?' = mid-write: wait
-  sleep 60
-done
+if [ "$MODE" = --after-evaluation ]; then
+  state queue "waiting for F2.1's evaluation (STATUS.json phase: $(phase))"
+  while true; do
+    p=$(phase)
+    [ "$p" = complete ] && [ "$(gpu_python)" -eq 0 ] && break
+    [ "$p" = failed ] && { state queue "not launched: F2.1 STATUS.json phase 'failed'"; exit 1; }
+    sleep 60
+  done
+  state f21_evaluation_complete_seen "$(date '+%F %T')"
+else
+  # User 11-05: explicitly prioritize the traces; evaluation is NOT complete.
+  "$PY" - "$STATUS" <<'EOF' || exit 1
+import hashlib, json, pathlib, sys
+d = json.loads(pathlib.Path(sys.argv[1]).read_text())
+assert d.get('training_completed_at'), 'training must be complete'
+p = pathlib.Path(d['selection']['checkpoint_path'])
+with p.open('rb') as f:
+    assert hashlib.file_digest(f, 'sha256').hexdigest() == d['selection']['checkpoint_sha256']
+EOF
+  state queue "user-prioritized traces before remaining F2.1 evaluation"
+  wait_gpu
+fi
 F21=$("$PY" -c "import json; print('artifacts/experiments/20261104_p1f21/run/ckpt_%02d.pt' % json.load(open('$STATUS'))['selection']['checkpoint'])")
-state f21_evaluation_complete_seen "$(date '+%F %T')"
 state f21_checkpoint "$F21"
 step smoke_gpu "$F2" 40 || { state queue "stopped: GPU smoke failed"; exit 1; }
 step f2 "$F2" || { state queue "stopped: F2 failed"; exit 1; }
