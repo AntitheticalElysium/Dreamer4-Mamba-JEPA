@@ -139,3 +139,25 @@ Exposure (events per 25.6M frames) vs the count's conditioning use at sigma 20 (
 102k 0.10-0.11, drink 414k 0.44 (increments), wood 682k 0.70 / 0.62, stone 929k 0.63 / 0.63; the shared cell rule
 ~1.8M 0.84-0.94. Rising, then flat near 0.6-0.7 for counts: even the most exposed count stays well short of the exact
 1.0, so a second limit caps counts (not identified here).
+
+## 7. Stage B3: the sampler's step count (declared reading, PLAN "Stage B3"; 15:51-16:31, both worlds)
+
+R0 passes: 3 steps reproduce the trace's production exactly (max |diff| 0) on every class and part, both worlds; SAFE
+production <= 0.016 at every N. Primary, recovery r(32) = production(32 steps) / first call(3 steps), F2 / F2.1:
+risky damage 1.07 / 1.09, adjacent damage 1.01 / 0.98, coal HUD 1.16 / 1.10, iron HUD 2.05 / 1.21: all >= 0.75 ->
+**the 3-step rounding is the samples' main loss of what the field holds; a sampling fix recovers it.**
+
+| class (F2) | recorded | 3 steps | 8 | 16 | 32 | first call |
+|---|---|---|---|---|---|---|
+| risky damage | 0.125 | 0.029 | 0.088 | 0.105 | 0.112 | 0.105 |
+| adjacent damage | 0.180 | 0.018 | 0.049 | 0.060 | 0.064 | 0.063 |
+| coal HUD | 1.0 | 0.114 | 0.166 | 0.180 | 0.185 | 0.159 |
+| iron HUD | 1.0 | 0.022 | 0.080 | 0.097 | 0.104 | 0.051 |
+| wood / stone HUD | 1.0 | 0.70 / 0.62 | 0.63 / 0.56 | 0.63 / 0.54 | 0.63 / 0.54 | 0.69 / 0.63 |
+| coal / iron cell | 1.02 / 0.76 | 0.98 / 0.67 | 0.89 / 0.58 | 0.87 / 0.55 | 0.86 / 0.55 | 0.95 / 0.65 |
+
+Descriptive: with more steps risky damage in samples goes from 23% to 90% of the recorded rate (F2.1 0.028 -> 0.120);
+adjacent damage only to its field's value (36%: field-limited; its readiness is not readable from the conditioning, B1
+attack best arm 0.58-0.62 vs rule 0.94). Majority outcomes fall below their first call by 0.05-0.1 (the 3-step vote
+was inflating them; the field's later calls are not fully self-consistent). 8 steps recovers most (risky 84% of 32
+steps' value); cost per generated frame ~N.
