@@ -1,115 +1,141 @@
-# Stage B: where each failing consequence stops (plan + code for review; not run)
+# Stage B: where each failing consequence stops (plan + code; revised after Codex's review)
 
-User 11-05: research first (RESEARCH.md = Stage A), then this measurement, written up for Codex's review before
-anything touches the GPU. No training, no repair, no follow-up queued.
+User 11-05: research first (RESEARCH.md = Stage A), then this measurement; Codex reviewed be525f12
+(`../20261105_consequence_trace_review/REVIEW.md`); the user asked for B to run automatically after F2.1's evaluation
+queue. No training, no repair, no follow-up queued beyond the declared GPU smoke -> F2 -> F2.1 sequence.
 
 ## Question
 
 On the frozen F2 world, for each failing consequence: is it (H1 / H2) missing from what the generator receives (lost
-at the 6,569 -> 256 projection, or in Mamba), (H3 / N1) received but missing from the field's own estimate at the
-production decision point, (N2) in that estimate but lost by the sampler; and (N3) which route carries it?
+at the 6,569 -> 256 projection, or in Mamba), (H3 / N1) received but missing from the field's own estimate on
+correctly distributed inputs, (start) present there but not at the sampler's pure-noise start, (N2) in the first
+estimate but lost by the sampler; and how sensitive is it to each route (N3, descriptive)?
 
 Why this is not a repeat. Measured on F2 already: what the SAMPLES contain (actor interface; M0.5 battery's readers:
 drink appearance 67-83%, increment 8-25%, wood 31-72%, table 35-43%, adjacent / risky damage 0-1.7% vs recorded
 14-22%), the action's route for drink / wood / table (belief only: NOOP in the belief removes them), memorisation (not
 memorised). Never measured on any factorised world: the field's estimate across noise levels, the field at the first
-sampling call, the sampler's own loss relative to that call; never on coal, iron or damage. The field instruments
-(10-29 A / F, 11-01 first call) ran on joint-denoiser worlds only.
+sampling call, the sampler's own loss relative to that call, the actual training term's allocation; never on coal,
+iron or damage. The field instruments (10-29 A / F, 11-01 first call) ran on joint-denoiser worlds only.
 
 ## World, data, classes
 
 F2 checkpoint 10 (`20261103_p1f2/run/ckpt_10.pt`, sha256 e0f6a24e...), dev labels (1,009 episodes), S1-seeded random
 fixations (F2's outcomes are gaze-insensitive, own-gaze reading 11-04). Second world, same script and readings, read
-for agreement only: F2.1's selected checkpoint after Codex's evaluation queue. One world seed each.
+for agreement only: F2.1's selected checkpoint 10 (`20261104_p1f21/run/ckpt_10.pt`). One world seed each.
 
 Classes from the state at t - 1 and a_{t-1} (game_logic rules, RESEARCH.md 1), two draws per context:
 coal 1,184 contexts (491 start at 0), iron 669 (382), wood <= 1,500, drink <= 1,500 (all: awake, DO, faced block,
 tool, count <= 8, no mob on the faced cell; checked on the labels: count + 1 and the faced cell becoming path / grass
-in 100% of rows), field_calibration's risky <= 2,000 and adjacent <= 2,000 (with the cooldown split) and safe <= 500
-(negative control). Functional: catalogue's linear f per part, 0 = no consequence, 1 = consequence: the HUD count
-cell (start -> consequence value, mean real tokens) and, for mining, the faced map cell (its token at t - 1 -> the mean
-real token of path / grass at that screen cell). By the law of total expectation the field's mean f over a class must
-equal the recorded mean f at every noise level if the field is the conditional mean (10-29 A).
+in 100% of rows), field_calibration's risky <= 2,000 and adjacent <= 2,000 (cooldown split descriptive: hidden) and
+safe <= 500 (negative control); random <= 1,000 frames for B4 only. Functional: catalogue's linear f per part, 0 = no
+consequence, 1 = consequence: the HUD count cell (start -> consequence value, mean real tokens) and, for mining, the
+faced map cell (its token at t - 1 -> the mean real token of path / grass at that screen cell). For a class measurable
+from the conditioning, the exact conditional mean's average f over the class equals the recorded average at every
+noise level on real successor + noise (10-29 A); not within subgroups defined by hidden state (Codex 2).
 
 ## Measurements (trace.py)
 
-- B0 consequence size |b - a| per part and sigma* = |b - a| / 2 (above it the noisy input no longer shows the
-  consequence: detection d' < 2); training draws and objective above sigma*, ours vs Dreamer-4-style (noise_profile).
+- B0 geometry: |b - a| per part; sigma_d2 = |b - a| / 2 is a declared SNR threshold (d' = 2: two known modes still
+  ~84% separable, Codex 6), with |b - a| / sigma at the first level; draws and SURROGATE objective above sigma_d2.
 - B1 readers (information_probe 10-29 E, unchanged protocol) for coal, iron (awake, faced block, any action; label
-  count + 1), drink and zombie attack (10-29's populations), on: (a) the full conditioning, (b) predicted belief +
-  action + fixation (the memory route's source), (c) last frame + action (the direct route's last frame),
-  (e) frame t - 1's percept embedding (after the projection) + action, (d) the rule's inputs (positive control).
-- B2 the field on real successor + noise at 0.05 ... 20 plus the 8 monitor levels and the production first level;
-  the first call itself (the cascade's first evaluation from pure noise, asserted bitwise equal to the sampler's own
-  first evaluation); the production sample from that same start.
+  count + 1), drink and zombie attack (10-29's populations), on (a) the full conditioning; (b) predicted belief + action
+  + fixation (the memory route's source); (c) frame t - 1's raw percept (periphery, glimpse, fixation, lighting) +
+  a_{t-1}, the projection's input; (e) frame t - 1's percept embedding + the same a_{t-1}, the projection's output;
+  (f) the 8 context frames' coarse tokens (periphery, lighting) + a_{t-1}, what the physical tokens can read directly
+  (never the glimpse); (d) the rule's inputs. (c), (e), (f) carry no predicted belief (the first version's "last frame"
+  arm carried that frame's 256-D belief: Codex 1, verified on s1.frame_features).
+- B2 inference: the field on real successor + noise at 0.05 ... 20 plus the 8 monitor levels and the production first
+  level; the first call (the cascade's first evaluation from pure noise, asserted bitwise equal to the sampler's own
+  first evaluation) beside the exact two-outcome conditional mean on the same pure-noise input, computed in each row's
+  measured geometry (|a|, |b|, |b - a|) with the class's recorded rate (Codex 2's analytic control; for a class whose
+  outcome the conditioning determines, p = 1 and the exact value is 1 from any input); the production sample from the
+  same start.
 - B3 routes, same draws: beliefs recomputed (control); NOOP at t - 1 in both action channels (in support; the M0.5
   routing kept the denoiser's own action, so belief-only); both again with the 8 context frames entered at sigma 5
-  instead of 0.1 (direct route mostly removed, memory intact). The route reading is the action contrast DO - NOOP
-  with and without the direct context, so a drift that the noised context causes in every row cancels.
-- B4 the consequence cells' share of the objective on their event frames, at the 8 equal-mass monitor levels.
+  (a stress test: all eight training sigmas above 5 has probability ~2e-11, Codex 5).
+- B4 the actual P1 G1 term: model.denoise_loss's computation on [8 context + target] windows, every frame its own
+  independent physical and glimpse sigma ~ p_train (factorised P1's diffusion forcing), the chunked training forward,
+  the UNCLIPPED raw output against its preconditioned target, 4 draws per row (Codex 3). Reported per part (periphery
+  + lighting by the physical sigma, glimpse by its own): the whole term's allocation by band on random frames, the
+  consequence cells' share on their event frames by band and above sigma_d2, each as trained and with the same errors
+  weighted as an x-space loss, and the constant that matches the two magnitudes.
 
 ## Declared readings (per class and part; episode-bootstrap SE; "beyond 3 SE")
 
 - R0 instrument checks, else the class is not read: recorded outcome as defined >= 99% (mining, drink); |bias| < 0.01
   at sigma 0.05; SAFE |f| < 0.05 at every level <= the first level, first call and production; |rerun control| < 0.01;
-  first call = the sampler's first evaluation (asserted).
-- R1 information: rule inputs AP >= 0.95 qualifies the population. Per input: AP >= 0.9 accessible, <= 0.7 not
-  accessible to this reader, else partial. Accessible in (c) but not (e): lost at the projection (H1); in (e) but
-  not (b): lost in Mamba (H2). A negative is a reader result, not proof of absence (Codex).
-- R2 decision point: rho = first call / recorded f. >= 0.8 the field carries it; <= 0.5 the field lacks it.
-- R3 leak: field(real + noise at the first level) - first call. If R2 lacks and leak > 0.2 beyond 3 SE: the field
-  answers from the successor leaking through the noise, not from the conditioning (Lin et al. 2024 pattern; N1).
-- R4 sampler: production - first call. < -0.1 beyond 3 SE: the sampler loses the field's estimate (N2); within
-  +-0.05: the deficit is the field's.
-- R5 profile: the lowest level with bias < -0.05 beyond 3 SE, against sigma*. N1 predicts calibration below ~sigma*
-  and underweighting above it.
-- R6 action route: rerun - NOOP first call vs the first call (the action reaches the consequence through the inputs
-  it changes); NOOP first call ~0 for mining / drink (control); ready risky / adjacent rows under NOOP are a
-  deterministic hit (game_logic.update_mobs: zombie adjacent before its move, player stays, cooldown <= 0): NOOP first
-  call against 1.
-- R7 direct route: C(0.1) = first call(DO) - first call(NOOP) with the context at 0.1, C(5) the same with the context
-  at sigma 5; contrast_change = C(5) - C(0.1). Within +-0.1 (and 3 SE): the action-conditional consequence does not
-  depend on the direct context (memory carries it, or carries its absence). C(5) above C(0.1) by > 0.1 beyond 3 SE:
-  the memory predicts the consequence and the direct context SUPPRESSES it (the field copies the context's unchanged
-  cell); below by > 0.1: the direct context supports it.
-- R8 objective share: descriptive.
+  first call = the sampler's first evaluation (asserted). Measurability: R2 and R5 are read as conditional-mean
+  statements for coal / iron / drink only if reader (b) or (c) reaches AP >= 0.95 on that population; otherwise
+  descriptively.
+- R1 information (one-sided): rule inputs AP >= 0.95 qualifies the population. Per arm: AP >= 0.9 accessible to this
+  reader, <= 0.7 not accessible to it, else partial. (c) accessible and (e) not: the projection's output is not
+  accessible to this reader (H1-consistent); (e) accessible and (b) not: H2-consistent. A weak reader is not proof of
+  absence; (f) says whether the physical route could read it directly, not that the network does.
+- R2 decision point: rho = first call / exact two-outcome first call. >= 0.8 the field's first estimate is what an
+  exact denoiser would give from that start; <= 0.5 it lacks it.
+- R5 calibration (the N1 reading): bias(sigma) on real successor + noise; the lowest level with bias < -0.05 beyond
+  3 SE, against sigma_d2. N1 predicts calibration below ~sigma_d2 and underweighting above it.
+- R3 descriptive: field(real + noise at the first level) - first call. Not evidence of under-training by itself
+  (Codex 2: an exact denoiser can show a large gap when p < 1).
+- R4 sampler: production - first call. < -0.1 beyond 3 SE: the sampler loses the field's first estimate (N2); within
+  +-0.05: the deficit is the first estimate's. (The interpolation coefficient 0.958 does not decide the outcome; later
+  calls can, which is what R4 measures.)
+- R6 action route: rerun - NOOP first call vs the first call; NOOP first call ~0 for mining / drink (control); ready
+  risky / adjacent rows under NOOP are a deterministic hit (game_logic.update_mobs), read descriptively (the cooldown
+  is hidden from the conditioning unless inferable).
+- R7 route stress, descriptive only: contrast_change = C(5) - C(0.1), C = first call(DO) - first call(NOOP), C(5) with
+  every context frame at sigma 5. Sensitivity, not a route identification; N3 stays unresolved without a
+  route-specific control (Codex 5).
+- R8 B4, descriptive: the measured allocation of the training term (replaces RESEARCH.md's surrogate).
 
 Interpretation, declared now, per class:
-- R1 accessible in (b), R2 lacks, R3 large: the information reaches the generator; the field did not learn to use it
-  at the decision level. Points at the objective / noise allocation (N1). Stage C would then be a training test of the
-  noise recipe, designed and reviewed separately.
-- R1 not accessible in (b) but in (c) / (e): lost before the generator's memory input, at the node R1 localises; with
-  R7 showing no direct-route use, the factorised memory-only path is the bottleneck for that consequence.
-- R2 lacks while R7 shows suppression (C(5) well above C(0.1)): the memory route carries the consequence and the
-  direct context overrides it: route competition (N3), not missing information.
-- R2 carries, R4 loses: the sampler (N2): the user deferred shortcut forcing; report only.
-- R2 carries, R4 within +-0.05, yet the samples' readers show low rates: readout mismatch between f and the readers;
+- N1-consistent: (b) accessible, R5 underweighting at levels >= sigma_d2 while calibrated below, R2 <= 0.5. The
+  conditioning carries the consequence; the field does not use it where the input hides it. Names the objective's
+  allocation as the candidate for a training test (Stage C); does not prove it.
+- Start-distribution: R5 calibrated at the first level (|bias| < 0.05) but R2 <= 0.5: the field is right on correctly
+  distributed inputs at that level and wrong from the sampler's pure-noise start: a sampler / schedule mismatch
+  (Lin et al.'s finite terminal SNR), not under-training.
+- H1 / H2-consistent: R1 as above, the consequence not accessible after the node it localises.
+- N2: R2 >= 0.8, R4 < -0.1.
+- R2 >= 0.8, R4 within +-0.05, yet the samples' readers show low rates: readout mismatch between f and the readers;
   stop and reconcile before reading anything else.
 - Anything else: "not localised", reported as such.
 
 What this cannot show: why training produced the field (only a training intervention can, Stage C); that a change
 would fix it; generality beyond these two single-seed worlds.
 
-## Run
+## Run (automatic, user 11-05)
 
-After F2.1's evaluation queue (one GPU job at a time; Codex owns that queue), on the user's go after review:
-`systemd-run --user --unit trace-f2 -p MemoryMax=16G -E MAMBA_DETERMINISTIC=1 --working-directory=$PWD
-.venv/bin/python -m artifacts.experiments.20261105_consequence_trace.trace
-artifacts/experiments/20261105_consequence_trace/readings/f2 artifacts/experiments/20261103_p1f2/run/ckpt_10.pt`,
-then the same for F2.1's selected checkpoint into `readings/f21`.
+`launch.sh` (systemd unit `trace-queue`, its own cgroup) waits until F2.1's `STATUS.json` says `complete` and its
+evaluation unit has stopped (any other end state: it stops without launching), then, each under
+`MAMBA_DETERMINISTIC=1`: (1) a GPU smoke, 40 dev episodes, into `readings/smoke_gpu` (time, host / GPU peak, the
+first-call assertion on the GPU kernels; must exit 0), (2) F2 into `readings/f2`, (3) F2.1 into `readings/f21`.
+Logs and `QUEUE.json` (state, times, exit codes, peaks) beside them.
 
 ## Smoke (CPU, 11-05; not a reading)
 
 40 dev episodes, 6 contexts per class, every module's device on the CPU, Mamba on its reference scan, no GPU visible
-(driver in Claude's scratchpad, not committed). The whole pipeline ran (B0-B4, all seven classes, all five
-readers per population); the first-call assertion held on every class and variant; recomputed beliefs differ from
-the stored ones by ~3e-6 in f; the field at sigma 0.05 has bias ~0 (coal 0.0003). One amendment came from it,
-recorded here: the first version read the direct route as first call(context 0.1) - first call(context 5), declared
-for a DROP only; the smoke showed values moving UP under the noised context, also on the SAFE control, so the route
-is now read as the change of the DO - NOOP contrast (a fifth variant, NOOP with the noised context), in both
-directions (R7). Opportunity rates were computed after capping (fixed: uncapped counts). No smoke number is read.
+(driver in Claude's scratchpad, not committed). The whole pipeline ran (B0-B4, all classes, all reader arms); the
+first-call assertion held on every class and variant; recomputed beliefs differ from the stored ones by ~3e-6 in f;
+the field at sigma 0.05 has bias ~0. One amendment came from the first smoke, recorded: the direct route was first
+read as first call(context 0.1) - first call(context 5), declared for a DROP only; values moved UP under the noised
+context, also on SAFE, so it became the change of the DO - NOOP contrast (fifth variant), now descriptive (R7).
+Opportunity rates had been computed after capping (fixed). The revised script smoked again after the review (3 min
+55 s, 1.8 GB). No smoke number is read.
 
-For the reviewer: (a) context sigma 5 on all 8 frames is in support frame by frame under diffusion forcing but
-jointly rare; (b) the NOOP variant changes both action channels; (c) B4 uses the inference context (0.1), not the
-training form's noisy context; the exact training form is loss_accounting (10-29 H), which has no coal / iron
-classes; (d) real successor + noise contains the answer at low sigma: an instrument, never a repair.
+## Review (Codex, 11-05) and what changed
+
+1. Last-frame arm contained that frame's predicted belief: correct (s1.frame_features + bp). Rebuilt (c), added (f);
+   R1 wording one-sided.
+2. Pure noise vs real + noise can flag an exact denoiser: correct when p < 1; its counterexamples use separation /
+   sigma 2-4 and an outcome at the origin. Added the exact two-outcome reference in each row's measured geometry; R2
+   is now relative to it; R3 descriptive; R5 (real + noise calibration) is the N1 reading. For p = 1 classes the exact
+   value is 1 from any input, so the original concern does not apply to them; measurability gated by B1. Hidden-state
+   subgroups (cooldown) descriptive.
+3. B4 used the clipped estimate, one sigma and clean context: correct. Replaced by the training-form term (unclipped,
+   independent sigmas, noisy context, glimpse separate).
+4. Wording (sigma_data, surrogate, Dreamer-4 mixture, 0.958 coefficient): conceded, RESEARCH.md amended.
+5. Context-sigma-5 is a stress test: conceded (R7 descriptive). Recomputed NOOP inputs now reused for noop_ctx5. A GPU
+   smoke precedes the full runs (time and memory not claimed from the CPU smoke).
+6. sigma* renamed sigma_d2 with the separation / sigma curve reported.

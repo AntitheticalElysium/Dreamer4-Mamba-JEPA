@@ -76,7 +76,7 @@ Choices the user and agents made deliberately are marked as such; departures are
 
 | Choice | Ours | Source | Departure |
 |---|---|---|---|
-| training noise | ln sigma ~ N(-0.4, 1.2), clip [0.002, 20], sigma_data = 1 | DIAMOND: same numbers with sigma_data = 0.5 (agent/default.yaml; trainer.yaml). JEDI: kept DIAMOND's library, changed only "sigma of input data to be 1" (App., hyperparameters) | relative to the data scale we (and JEDI) train at half DIAMOND's noise: median sigma / sigma_data 0.67 vs 1.34 |
+| training noise | ln sigma ~ N(-0.4, 1.2), clip [0.002, 20], sigma_data = 1 | DIAMOND: same numbers with sigma_data = 0.5 (agent/default.yaml; trainer.yaml). JEDI: kept DIAMOND's library, changed only "sigma of input data to be 1" (App., hyperparameters) | the absolute draws are identical; sigma_data is a preconditioning constant (Codex). If DIAMOND's 0.5 matches its pixels' spread (EDM's image convention, not measured here) and ours roughly matches our tokens (periphery RMS 0.88), we train at about half DIAMOND's noise relative to the data |
 | loss weight | x-space error x (1 + 1 / sigma^2) (EDM / DIAMOND raw-output MSE) | D4: x-space error x (0.9 tau + 0.1), tau uniform (eq. 4, 6, 8) | ours is close to the v-loss weighting (1 / (1 - tau)^2) that D4 replaced (Table 2: x-loss 326 -> 151 FVD, then ramp 151 -> 102) |
 | noise on context in training | each frame its own sigma (diffusion forcing, D4) | D4: per-frame uniform tau, context included (reimplementation: every frame); DIAMOND and JEDI: CLEAN context frames (JEDI: randomly its own denoised output) | DIAMOND / JEDI's distribution was built for clean context; we apply it to context too, beside an always-clean memory route D4 does not have |
 | context at inference | sigma 0.1 | D4 text: "slightly corrupt ... to signal level tau_ctx = 0.1" (by its own convention tau = 1 is clean, so literally 90% noise); reimplementations: clean (nicklashansen) or signal 0.9 (edwhu) | ours = edwhu's reading; declared in STEP_SPEC 7 as an interpretation |
@@ -91,9 +91,11 @@ toward clean, but on an x-space error that vanishes as the input becomes clean),
 in tau with a network trained (shortcut bootstrap) to take exactly those steps. Its own ablation measures that plain
 diffusion forcing cut to 4 steps degrades badly (FVD 306 -> 875) and that the shortcut objective recovers it (329).
 
-Our draws above sigma = 5: 4.7% (D4: 16.7%; 25% at k_max = 8). The objective itself, with F2's OWN error profile
-(`noise_profile.py`: G1 per monitor level / lambda; F2 checkpoint 10; two extrapolations above sigma 4.2), weighted by
-each recipe:
+Our draws above sigma = 5: 4.7% (D4-style continuous tau: 16.7%; 25% at k_max = 8; D4's bootstrap rows sample coarser
+grids, up to 47% pure noise if step sizes are uniform over 1-1/8: Codex). A SURROGATE of the objective (Codex 11-05:
+F2's 8 monitor errors under the inference context and one shared sigma, reweighted; extrapolated above sigma 4.2; not
+the stochastic-context P1 term, not gradients; the D4 rows are a flow-loss illustration on finest-step rows, not D4's
+shortcut mixture). Stage B's B4 measures the actual term. Weighted by each recipe:
 
 | Share of the objective | sigma < 0.3 | 0.3-1 | 1-3 | 3-7 | > 7 |
 |---|---|---|---|---|---|
@@ -123,9 +125,9 @@ How this could make the consequences fail (hypotheses; Stage B measures each):
   stay-asleep from pure noise (beta .53 vs .49) but did when the real successor leaked through the same noise level
   (.83 vs -.02): the pattern of Lin et al. 2024 (models trained without zero terminal SNR learn to use the leaked
   signal and fail from pure noise). Not yet measured on a factorised world or on coal, iron, damage.
-- N2, sampler. With rho = 7, after the first call x moves 96% of the way to its estimate (x1 = 0.042 x-hat + 0.958 D
-  from sigma-hat 6.67 to 0.28); the next call at 0.38 only cleans up. A first estimate that blends branches is snapped
-  to the nearer one: 10-29 (exact two-outcome field, real token geometry) 3-step Euler alone turned a 15% branch into
+- N2, sampler. With rho = 7, the first update puts 95.8% of the state on the first estimate (x1 = 0.042 x-hat +
+  0.958 D from sigma-hat 6.67 to 0.28): an interpolation coefficient, not the share of the outcome decided there
+  (Codex); the next call at 0.38 can still change it, for instance by snapping a blended estimate to the nearer branch: 10-29 (exact two-outcome field, real token geometry) 3-step Euler alone turned a 15% branch into
   5%; F1.5 (Codex 11-02): 8 steps without churn raised risky death .010 -> .076 (recorded .145), coal .07 -> .21,
   iron .02 -> .17. Um et al. 2024: Tweedie denoising favours majority features.
 - N3, route competition. In training the previous frame is cleaner than sigma 0.2 only 16% of the time (D4: 17%
@@ -186,8 +188,10 @@ Each entry: setting; claim; what would have to hold in our model; what in our mo
   path is not on their critical path. Fine information remains an open question for fine targets (HUD digits in the
   glimpse, night creatures), measured by Codex.
 - The noise recipe is the least examined part of the design and departs from every source at once: DIAMOND's
-  distribution at JEDI's scale, applied to context (D4's practice) beside a clean memory route (ours), with an EDM
-  weighting D4 moved away from and a 3-step schedule D4 measured as bad without shortcut training. Each departure had
-  a reason; their combination was never checked against consequences.
+  distribution at JEDI's preconditioning, applied to context (D4's practice) beside a clean memory route (ours), with
+  an EDM weighting D4 moved away from and a 3-step schedule D4 measured as bad without shortcut training. Each
+  departure had a reason, and neither finite-noise EDM nor departing from D4 is a defect by itself (DIAMOND and JEDI
+  work with them: Codex); their combination was never checked against consequences.
+- Codex's review of this note and of Stage B: `../20261105_consequence_trace_review/REVIEW.md`; responses in PLAN.md.
 - Stage B measures, on F2, where each primary consequence stops: in what the generator receives (H1 / H2), in the
   field's estimate at the decision level (N1, H3), in the sampler (N2), and through which route (N3).

@@ -2,21 +2,25 @@
 
 Classes are functions of the state at t - 1 and a_{t-1} (dev labels, game_logic rules; RESEARCH.md section 1), never of
 the outcome: COAL / IRON / WOOD (awake, DO, faced block, tool, count <= 8, no mob on the faced cell), DRINK (awake, DO,
-faced water, drink <= 8), and field_calibration's RISKY / ADJACENT / SAFE (10-29 A). Functional: catalogue's linear f
-(10-29 F), per part: the HUD count cell (start value -> consequence value, mean real tokens) and, for mining, the faced
-map cell (its token at t - 1 -> the mean real token of the block left behind at that screen cell).
-B0  size of each consequence in token space |b - a|, sigma* = |b - a| / 2 (noise above which the input no longer
-    shows it), training draws / objective above sigma* (noise_profile).
-B1  readers (information_probe, 10-29 E) on what the generator receives: full conditioning, predicted belief + action
-    + fixation, last frame + action, frame t - 1's percept embedding (the 256-D projection) + action, the rule's inputs.
-B2  the field across noise levels (real successor + noise; law of total expectation, 10-29 A / F), the field at the
-    production decision point (the cascade's first evaluation, from pure noise; asserted bitwise equal to the
-    sampler's own first evaluation), and the production samples drawn from that same start.
-B3  routes, same draws: beliefs recomputed (control), recomputed with a NOOP at t - 1 in both action channels (the
-    in-support counterfactual), and both with the 8 context frames entered at sigma 5 instead of 0.1 (the direct
-    route mostly removed, memory intact): the action contrast DO - NOOP with and without the direct context.
-B4  the consequence cells' share of the denoising objective on their event frames, at the 8 equal-mass monitor levels
-    of p_train (context at 0.1, not the training form's noisy context: an approximation).
+faced water, drink <= 8), and field_calibration's RISKY / ADJACENT / SAFE (10-29 A); RANDOM frames for B4 only.
+Functional: catalogue's linear f (10-29 F), per part: the HUD count cell (start value -> consequence value, mean real
+tokens) and, for mining, the faced map cell (its token at t - 1 -> the mean real token of the block left behind there).
+B0  consequence size |b - a| per part; a declared SNR threshold sigma_d2 = |b - a| / 2 (d' = 2: still ~84% two-mode
+    accuracy, not absence of information) and |b - a| / sigma at the first level; draws / surrogate objective above it.
+B1  readers (information_probe's protocol, 10-29 E): full conditioning; predicted belief + action + fixation (the memory
+    route's source); frame t - 1's raw percept + action (the projection's input) vs its percept embedding + the same
+    action (the projection's output); the 8 context frames' COARSE tokens + action (what the physical tokens can read
+    directly: never the glimpse); the rule's inputs. One-sided: a weak reader is not proof of absence.
+B2  inference: the field across noise levels (real successor + noise; law of total expectation, 10-29 A / F), the field
+    at the production decision point (the cascade's first evaluation from pure noise, asserted bitwise equal to the
+    sampler's own) beside the exact two-outcome field's value for the same pure-noise input (Codex 11-05: an exact
+    denoiser need not reproduce the class rate from pure noise when p < 1), and the production samples from that start.
+B3  routes, same draws: beliefs recomputed (control), NOOP at t - 1 in both action channels (in support), and both with
+    the 8 context frames entered at sigma 5 (a stress test, not a route identification).
+B4  the ACTUAL P1 G1 term (model.denoise_loss's computation, chunked training forward over 8 context frames + the target,
+    every frame its own independent physical and glimpse sigma ~ p_train, unclipped raw output vs its preconditioned
+    target): the consequence cells' share on their event frames by the target's physical sigma, and on RANDOM frames the
+    allocation of the whole term by band, as trained and as an x-space loss would weight the same errors.
 Usage (project venv, GPU): python -m artifacts.experiments.20261105_consequence_trace.trace OUT_DIR CKPT [N_EPISODES]
 """
 import os
@@ -27,6 +31,8 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from numpy.polynomial.hermite import hermgauss
+from scipy.special import expit
 
 from saccade import model as M, train as TR
 from saccade.eval import s1 as S, gates as G
@@ -37,14 +43,17 @@ IPB = importlib.import_module("artifacts.experiments.20261029_generation_diagnos
 IP = importlib.import_module("artifacts.experiments.20261030_increment_diagnosis.increment_probe")
 NP = importlib.import_module("artifacts.experiments.20261105_consequence_trace.noise_profile")
 ROOT = Path(__file__).resolve().parents[3]
-DEV, P, R, SEED = FC.DEV, FC.P, 2, 2105
+DEV, P, R, SEED, K_OBJ = FC.DEV, FC.P, 2, 2105, 4                      # K_OBJ: B4 draws of (sigmas, noise) per row
 GRASS, WATER, TREE, PATH, COAL, IRON, DO = 2, 3, 5, 7, 8, 9, 5          # constants.BlockType / Action
 HUD = {63: ("s_body", 0), 65: ("s_body", 2), 68: ("s_inv", 0), 70: ("s_inv", 2), 71: ("s_inv", 3)}   # renderer slots
 MINING = {"coal": (COAL, PATH, 70, 6), "iron": (IRON, PATH, 71, 7), "wood": (TREE, GRASS, 68, None)}  # block, left, cell, tool
-KINDS = ("coal", "iron", "wood", "drink", "risky", "adjacent", "safe")
-CAP = {"wood": 1500, "drink": 1500, "risky": 2000, "adjacent": 2000, "safe": 500}
+KINDS = ("coal", "iron", "wood", "drink", "risky", "adjacent", "safe", "random")
+CAP = {"wood": 1500, "drink": 1500, "risky": 2000, "adjacent": 2000, "safe": 500, "random": 1000}
 VARIANTS = ("base", "rerun", "noop", "ctx5", "noop_ctx5")
+BANDS = [(0, 0.3), (0.3, 1), (1, 3), (3, 7), (7, np.inf)]               # RESEARCH.md section 4's surrogate bands
 CTX_SIGMA, MIN_ROWS = 5.0, 200
+FRAME_P, FRAME_G, FRAME_FIX, FRAME_V = 1296, 576, 49, 8                 # s1.frame_features layout (then reward, term,
+                                                                         # previous action 17, predicted belief 256, valid)
 
 
 def mob_at(L, g, cell):
@@ -76,7 +85,7 @@ def contexts(L, enc, rng):
         fc = FC.contexts(L, enc, rng)
     finally:
         FC.N_MAX.update(saved)
-    for kind in ("risky", "adjacent", "safe"):
+    for kind in ("risky", "adjacent", "safe", "random"):
         out[kind] = fc[kind]
     counts = {k: len(v) for k, v in out.items()}
     for kind, n in CAP.items():
@@ -104,7 +113,8 @@ def means(L, enc):
 
 
 def functional(kind, part, batch, enc, L, hud, blocks):
-    """A, W [B, 81, 16] with f(y) = ((y - A) * W).sum() / |W|^2 (catalogue), the separation |W| and validity."""
+    """A, W [B, 81, 16] with f(y) = ((y - A) * W).sum() / |W|^2 (catalogue); the separation |b - a|, |a|^2 and |b|^2
+    over the part's cells (for the exact two-outcome reference), and validity."""
     s_off = np.r_[0, np.cumsum(L["ep_T"] + 1)]
     A, W = torch.zeros(len(batch), 81, 16), torch.zeros(len(batch), 81, 16)
     for i, (e, t, cell, start, end, _) in enumerate(batch):
@@ -118,18 +128,19 @@ def functional(kind, part, batch, enc, L, hud, blocks):
             prev = enc[e]["p"][t - 1, c].float()
             if (c, MINING[kind][1]) in blocks:
                 A[i, c], W[i, c] = prev, blocks[(c, MINING[kind][1])] - prev
-    sep = W.square().sum((-1, -2))
-    return A, W / sep.clamp(min=1e-9)[:, None, None], sep.sqrt(), sep >= CAT.MIN_SEPARATION
+    sep2 = W.square().sum((-1, -2))
+    a2, b2 = A.square().sum((-1, -2)), (A + W).square().sum((-1, -2))
+    return A, W / sep2.clamp(min=1e-9)[:, None, None], sep2.sqrt(), a2, b2, sep2 >= CAT.MIN_SEPARATION
 
 
 def inputs(model, cfg, enc, batch, variant):
     """Stacked denoiser inputs per context: 8 context frames, fixations / previous actions / predicted beliefs t - 8 ..
-    t, the real frame t. base / ctx5: stored beliefs; rerun / noop: increment_probe.row_inputs (belief recomputed from
-    the stored tokens; noop: NOOP at t - 1 in the belief AND in the denoiser's own action input)."""
+    t, the real frame t. base: stored beliefs; rerun / noop: increment_probe.row_inputs (belief recomputed from the
+    stored tokens; noop: NOOP at t - 1 in the belief AND in the denoiser's own action input)."""
     rows = []
     for e, t, *_ in batch:
-        if variant in ("rerun", "noop", "noop_ctx5"):
-            rows.append(IP.row_inputs(model, cfg, enc[e], t, {"rerun": True, "noop": variant.startswith("noop")}, None))
+        if variant in ("rerun", "noop"):
+            rows.append(IP.row_inputs(model, cfg, enc[e], t, {"rerun": True, "noop": variant == "noop"}, None))
         else:
             ep = enc[e]
             rows.append({"p": ep["p"][t - P:t].float(), "g": ep["g"][t - P:t].float(), "v": ep["v"][t - P:t].float(),
@@ -164,10 +175,10 @@ def first_call(den, shapes, a, mem, fx, cache, cfg, gen):
 
 
 @torch.no_grad()
-def run(model, cfg, inp, fs, seed, levels=None, mask=None, check=False):
-    """One variant on one batch: context passes, the first evaluation, the production sample from the same start
-    (generator state restored), and, with `levels`, the field on the real successor + noise at every level and the
-    weighted squared error of the consequence cells (mask [B, 81, 1]) and of the whole frame. fs: {part: f(y [B, 81, 16])}."""
+def run(model, cfg, inp, fs, seed, levels=None, check=False):
+    """One variant on one batch (inference): context passes, the first evaluation, the production sample from the same
+    start (generator state restored) and, with `levels`, the field on the real successor + noise at every level (the
+    clean estimate the sampler uses). fs: {part: f(y [B, 81, 16])}."""
     den, clamp, sd = model.denoiser, cfg["perception"]["periphery"]["tanh_clamp"], cfg["edm"]["sigma_data"]
     gen = torch.Generator(device=DEV).manual_seed(seed)
     cache = den.new_cache()
@@ -197,94 +208,167 @@ def run(model, cfg, inp, fs, seed, levels=None, mask=None, check=False):
             g2 = torch.Generator(device=DEV).manual_seed(seed + 1)
             for part, f in fs.items():
                 out[f"real_{part}"] = f(x0[0])
-            for j, s_ in enumerate(levels):
+            for s_ in levels:
                 xs = tuple(t[:, None] + s_ * torch.randn(t[:, None].shape, device=DEV, generator=g2) for t in x0)
                 D, _ = M.denoised(den, xs, torch.full((len(x0[0]), 1), s_, device=DEV), a, mem, fx, cache, clamp, sd)
-                lam = (s_ ** 2 + sd ** 2) / (s_ * sd) ** 2
                 for part, f in fs.items():
                     out.setdefault(f"field_{part}", []).append(f(D[0][:, 0]))
-                se = [(d[:, 0].float() - t.float()).square() for d, t in zip(D, x0)]
-                out.setdefault("loss_frame", []).append(lam * sum(z.flatten(1).sum(1) for z in se).cpu())
-                out.setdefault("loss_cells", []).append(lam * (se[0] * mask).flatten(1).sum(1).cpu())
             for k in [k for k in out if isinstance(out[k], list)]:
                 out[k] = torch.stack(out[k], 1)
     return out
 
 
+@torch.no_grad()
+def objective(model, cfg, inp, mask, seed):
+    """B4: model.denoise_loss's computation on [8 context frames + target] windows, element-wise at the target. Every
+    frame its own physical and glimpse sigma (TR.sample_sigma, independent: factorised P1), fresh noise, the chunked
+    training forward, the unclipped raw output against (x0 - c_skip x) / c_out. Per row and draw: the target's two
+    sigmas, the raw loss of the consequence cells (mask [B, 81, 1]), periphery, glimpse and lighting, and c_out^2 of
+    each part (raw x c_out^2 = the x-space error)."""
+    den, sd = model.denoiser, cfg["edm"]["sigma_data"]
+    g = torch.Generator(device=DEV).manual_seed(seed)
+    x0 = tuple(torch.cat([inp[k], inp[f"x0{k}"][:, None]], 1) for k in ("p", "g", "v"))      # [B, P + 1, ...]
+    B, T = x0[0].shape[:2]
+    mem = model.belief.memory(inp["bp"])
+    ep, valid = torch.zeros(B, T, dtype=torch.long, device=DEV), torch.ones(B, T, dtype=torch.bool, device=DEV)
+    out = {k: [] for k in ("sig_p", "sig_g", "cells", "peri", "glim", "light", "co_p", "co_g")}
+    with TR.autocast(DEV, cfg):
+        for _ in range(K_OBJ):
+            sigma = (TR.sample_sigma((B, T), cfg, DEV, g), TR.sample_sigma((B, T), cfg, DEV, g))
+            noise = tuple(torch.randn(t.shape, device=DEV, generator=g) for t in x0)
+            pre = [M.precondition(s_, sd) for s_ in M._parts(sigma)]
+            xs = tuple(t + M._bcast(s_, t) * n for t, n, s_ in zip(x0, noise, M._parts(sigma)))
+            Fo = den(tuple(M._bcast(c[2], t) * t for t, c in zip(xs, pre)), (pre[0][3], pre[1][3]), inp["pa"], mem,
+                     inp["fix"], ep, valid)
+            se = [(f.float() - (t - M._bcast(c[0], t) * s_) / M._bcast(c[1], t))[:, -1].square()
+                  for f, t, s_, c in zip(Fo, x0, xs, pre)]
+            for k, v in (("sig_p", sigma[0][:, -1]), ("sig_g", sigma[1][:, -1]), ("cells", (se[0] * mask).sum((1, 2))),
+                         ("peri", se[0].sum((1, 2))), ("glim", se[1].sum((1, 2))), ("light", se[2].sum(1)),
+                         ("co_p", pre[0][1][:, -1].square()), ("co_g", pre[1][1][:, -1].square())):
+                out[k].append(v.float().cpu())
+    return {k: torch.stack(v, 1) for k, v in out.items()}                 # [B, K_OBJ]
+
+
 def measure(model, cfg, enc, L, rows, kind, hud, blocks, levels):
-    parts = ("hud", "cell") if kind in MINING else ("hud",)
+    parts = ("hud", "cell") if kind in MINING else ("hud",) if kind != "random" else ()
     cfg5 = copy.deepcopy(cfg)
     cfg5["edm"]["inference_context_sigma"] = CTX_SIGMA
-    res = {v: {} for v in VARIANTS}
-    extra = {k: [] for k in ("valid", "sep", "row_ctx")}
+    res = {v: {} for v in VARIANTS + ("obj",)}
+    extra = {k: [] for k in ("valid", "sep", "a2", "b2", "row_ctx")}
     n_ctx = 128 // R
     for b, start in enumerate(range(0, len(rows), n_ctx)):
         batch = rows[start:start + n_ctx]
-        fw = {part: functional(kind, part, batch, enc, L, hud, blocks) for part in parts}
         idx = torch.arange(len(batch)).repeat_interleave(R)
+        extra["row_ctx"].append(start + idx)
+        fw = {part: functional(kind, part, batch, enc, L, hud, blocks) for part in parts}
         fs, mask = {}, torch.zeros(len(idx), 81, 1, device=DEV)
-        for part, (A, W, sep, ok) in fw.items():
+        for part, (A, W, *_r) in fw.items():
             A_, W_ = A[idx].to(DEV), W[idx].to(DEV)
             fs[part] = lambda y, A_=A_, W_=W_: ((y.float() - A_) * W_).sum((-1, -2)).cpu()
             mask = torch.maximum(mask, (W_.abs().sum(-1, keepdim=True) > 0).float())
-        valid = torch.stack([fw[p_][3][idx] for p_ in parts], 1).all(1)
-        extra["valid"].append(valid); extra["row_ctx"].append(start + idx)
-        extra["sep"].append(torch.stack([fw[p_][2][idx] for p_ in parts], 1))
+        if parts:
+            for k, j in (("sep", 2), ("a2", 3), ("b2", 4)):
+                extra[k].append(torch.stack([fw[p_][j][idx] for p_ in parts], 1))
+            extra["valid"].append(torch.stack([fw[p_][5][idx] for p_ in parts], 1).all(1))
+        else:
+            extra["valid"].append(torch.ones(len(idx), dtype=torch.bool))
+        cached = {"base": inputs(model, cfg, enc, batch, "base")}
+        for k, v in objective(model, cfg, cached["base"], mask, SEED + 7919 * b).items():
+            res["obj"].setdefault(k, []).append(v)
+        if not parts:                                                    # RANDOM: B4 only
+            continue
+        cached.update({v: inputs(model, cfg, enc, batch, v) for v in ("rerun", "noop")})
         for variant in VARIANTS:                                         # same seed: every variant gets the same draws
-            inp = inputs(model, cfg, enc, batch, variant)
-            base = variant == "base"
-            o = run(model, cfg5 if variant.endswith("ctx5") else cfg, inp, fs, SEED + b, levels if base else None,
-                    mask if base else None, check=b == 0)
+            inp = cached[variant.replace("_ctx5", "") if variant != "ctx5" else "base"]
+            o = run(model, cfg5 if variant.endswith("ctx5") else cfg, inp, fs, SEED + b, levels if variant == "base" else None,
+                    check=b == 0)
             for k, v in o.items():
                 res[variant].setdefault(k, []).append(v)
     flat = {f"{v}_{k}": torch.cat(x).numpy() for v, d in res.items() for k, x in d.items()}
-    return {**flat, **{k: torch.cat(v).numpy() for k, v in extra.items()}}
+    return {**flat, **{k: torch.cat(v).numpy() for k, v in extra.items() if v}}
 
 
-def summary(o, rows, kind, L, levels, first, mon, s_prof, e_prof):
+def exact_pure(p, sep, a2, b2, sigma):
+    """The exact two-outcome conditional mean (outcomes a, b with prior p, Gaussian noise) averaged over a pure-noise
+    input x = sigma eps, read through f: E_z sigmoid(logit p + |b - a| z / sigma - (|b|^2 - |a|^2) / (2 sigma^2)).
+    Codex's REVIEW.md control in the measured geometry (|a| and |b| are the real tokens' norms: pure noise is centred
+    on the origin, not on either outcome). For p -> 1 it is 1 whatever the input."""
+    z, w = hermgauss(80)
+    z, w = z * math.sqrt(2), w / math.sqrt(math.pi)
+    p = float(np.clip(p, 1e-6, 1 - 1e-6))
+    lo = math.log(p / (1 - p)) + sep[None] * z[:, None] / sigma - (b2 - a2)[None] / (2 * sigma ** 2)
+    return (w[:, None] * expit(lo)).sum(0)
+
+
+def objective_summary(o, sig_d2=None):
+    """B4 shares from the training-form draws (raw = as trained; x = the same errors weighted as an x-space loss)."""
+    q = {k: o[f"obj_{k}"].astype(float) for k in ("sig_p", "sig_g", "cells", "peri", "glim", "light", "co_p", "co_g")}
+    raw = {"phys": q["peri"] + q["light"], "glim": q["glim"], "cells": q["cells"]}
+    xsp = {"phys": raw["phys"] * q["co_p"], "glim": raw["glim"] * q["co_g"], "cells": raw["cells"] * q["co_p"]}
+    out = {}
+    for name, L_ in (("as_trained", raw), ("x_space_weighting", xsp)):
+        total = L_["phys"].sum() + L_["glim"].sum()
+        band = lambda sg, a, b: (sg >= a) & (sg < b)
+        r = {"whole_term_by_band": {f"{a}-{b}": float((L_["phys"][band(q["sig_p"], a, b)].sum()
+                                                       + L_["glim"][band(q["sig_g"], a, b)].sum()) / total) for a, b in BANDS},
+             "glimpse_share": float(L_["glim"].sum() / total)}
+        if L_["cells"].sum() > 0:
+            r["cells_share_of_term"] = float(L_["cells"].sum() / total)
+            r["cells_share_of_physical_by_band"] = {f"{a}-{b}": float(L_["cells"][band(q["sig_p"], a, b)].sum()
+                                                                      / max(L_["phys"][band(q["sig_p"], a, b)].sum(), 1e-12)) for a, b in BANDS}
+            if sig_d2 is not None:
+                r["cells_loss_above_sigma_d2"] = float(L_["cells"][q["sig_p"] >= sig_d2].sum() / L_["cells"].sum())
+        out[name] = r
+    out["x_space_scale_matching_constant"] = float((raw["phys"].sum() + raw["glim"].sum()) / (xsp["phys"].sum() + xsp["glim"].sum()))
+    return out
+
+
+def summary(o, rows, kind, L, levels, first, s_prof, e_prof):
     ep = np.array([rows[i][0] for i in o["row_ctx"]])
     valid = o["valid"].astype(bool)
     est = lambda x, m=None: G.estimate(np.asarray(x, float), valid if m is None else valid & m, ep)
+    if kind == "random":
+        return {"contexts": len(rows), "objective": objective_summary(o)}
     s_off = np.r_[0, np.cumsum(L["ep_T"] + 1)]
     g = np.array([s_off[rows[i][0]] + rows[i][1] - 1 for i in o["row_ctx"]])
     cell = np.array([rows[i][2] for i in o["row_ctx"]]); start = np.array([rows[i][3] for i in o["row_ctx"]])
     end = np.array([rows[i][4] for i in o["row_ctx"]]); ready = np.array([rows[i][5] for i in o["row_ctx"]], bool)
     after = np.array([L[HUD[c][0]][gg + 1, HUD[c][1]] for c, gg in zip(cell, g)]).clip(min=0)
     parts = ("hud", "cell") if kind in MINING else ("hud",)
-    j6 = levels.index(first)
+    p_class = float((after == end)[valid].mean())                       # recorded event rate of the class
+    jf = levels.index(first)
     res = {"contexts": len(rows), "rows_valid": int(valid.sum()), "recorded_reached_end": est(after == end),
-           "recorded_kept_start": est(after == start), "sigma_star": {}, "parts": {}}
+           "recorded_kept_start": est(after == start), "geometry": {}, "parts": {}}
     for k, part in enumerate(parts):
-        sep = float(np.median(o["sep"][valid, k]))
-        res["sigma_star"][part] = {"separation_median": sep, "sigma_star": sep / 2,
-                                   "above_sigma_star": NP.above(sep / 2, s_prof, e_prof)}
+        sep = o["sep"][:, k]
+        d2 = float(np.median(sep[valid])) / 2
+        res["geometry"][part] = {"separation_median": 2 * d2, "sigma_d2": d2,
+                                 "separation_over_first_level_median": float(np.median(sep[valid]) / first),
+                                 "above_sigma_d2_surrogate": NP.above(d2, s_prof, e_prof)}
         f = lambda v, q: o[f"{v}_{q}_{part}"]
+        ref = exact_pure(p_class, sep, o["a2"][:, k], o["b2"][:, k], first)
         r = {"f_recorded": est(f("base", "real")), "first_call": est(f("base", "first")),
-             "production": est(f("base", "prod")),
-             "leak_at_first_level": est(f("base", "field")[:, j6] - f("base", "first")),
-             "sampler": est(f("base", "prod") - f("base", "first")),
+             "exact_two_outcome_first_call": est(ref), "first_call_minus_exact": est(f("base", "first") - ref),
+             "production": est(f("base", "prod")), "sampler": est(f("base", "prod") - f("base", "first")),
+             "real_plus_noise_minus_pure_at_first_level": est(f("base", "field")[:, jf] - f("base", "first")),
              "rerun_control": est(f("rerun", "first") - f("base", "first")),
              "noop": {"first_call": est(f("noop", "first")), "production": est(f("noop", "prod")),
                       "action_contrast": est(f("rerun", "first") - f("noop", "first"))},
-             "context_sigma_5": {"first_call": est(f("ctx5", "first")), "production": est(f("ctx5", "prod")),
-                                 "noop_first_call": est(f("noop_ctx5", "first")), "noop_production": est(f("noop_ctx5", "prod")),
-                                 "action_contrast": est(f("ctx5", "first") - f("noop_ctx5", "first")),
-                                 "contrast_change": est(f("ctx5", "first") - f("noop_ctx5", "first")
-                                                        - f("rerun", "first") + f("noop", "first"))},
+             "context_sigma_5_stress": {"first_call": est(f("ctx5", "first")), "production": est(f("ctx5", "prod")),
+                                        "noop_first_call": est(f("noop_ctx5", "first")), "noop_production": est(f("noop_ctx5", "prod")),
+                                        "action_contrast": est(f("ctx5", "first") - f("noop_ctx5", "first")),
+                                        "contrast_change": est(f("ctx5", "first") - f("noop_ctx5", "first")
+                                                               - f("rerun", "first") + f("noop", "first"))},
              "field": {str(s): {"mean": est(f("base", "field")[:, j]), "bias": est(f("base", "field")[:, j] - f("base", "real"))}
                        for j, s in enumerate(levels)}}
-        if ready.any() and (~ready).any():
-            r["cooldown"] = {name: {"rows": int((valid & m).sum()), "f_recorded": est(f("base", "real"), m),
-                                    "first_call": est(f("base", "first"), m), "production": est(f("base", "prod"), m),
-                                    "noop_first_call": est(f("noop", "first"), m), "noop_production": est(f("noop", "prod"), m)}
-                             for name, m in (("ready", ready), ("not_ready", ~ready))}
+        if ready.any() and (~ready).any():                               # descriptive: the cooldown is hidden
+            r["cooldown_descriptive"] = {name: {"rows": int((valid & m).sum()), "f_recorded": est(f("base", "real"), m),
+                                                "first_call": est(f("base", "first"), m), "production": est(f("base", "prod"), m),
+                                                "noop_first_call": est(f("noop", "first"), m), "noop_production": est(f("noop", "prod"), m)}
+                                         for name, m in (("ready", ready), ("not_ready", ~ready))}
         res["parts"][part] = r
-    mon = [levels.index(s) for s in mon]
-    lc, lf = o["base_loss_cells"][:, mon], o["base_loss_frame"][:, mon]
-    star = min(res["sigma_star"][p_]["sigma_star"] for p_ in parts)
-    res["objective_share"] = {"event_frames": float(lc[valid].sum() / lf[valid].sum()),
-                              "by_level": {str(levels[j]): float(lc[valid, i].sum() / lf[valid, i].sum()) for i, j in enumerate(mon)},
-                              "cells_loss_above_sigma_star": float(lc[valid][:, [levels[j] >= star for j in mon]].sum() / lc[valid].sum())}
+    res["p_class"] = p_class
+    res["objective"] = objective_summary(o, min(res["geometry"][p_]["sigma_d2"] for p_ in parts))
     return res
 
 
@@ -323,6 +407,22 @@ def embeddings(model, cfg, enc, rows):
     return torch.cat(out).numpy()
 
 
+def reader_inputs(X, emb):
+    """The B1 arms, sliced from IPB.features' layout (per history frame t - 8 .. t - 1: periphery, glimpse, fixation,
+    lighting, reward, termination [zeroed], previous action, predicted belief, valid; then the current predicted
+    belief, a_{t-1}, the target fixation). Raw / embedding / coarse arms carry NO predicted belief (Codex 11-05)."""
+    H, Fw = IPB.HISTORY, IPB.FRAME
+    n_last = X.shape[1] - (256 + 17 + 49)
+    act = X[:, n_last + 256:n_last + 256 + 17]
+    percept = FRAME_P + FRAME_G + FRAME_FIX + FRAME_V
+    last = (H - 1) * Fw
+    coarse = [np.concatenate([X[:, h * Fw:h * Fw + FRAME_P], X[:, h * Fw + percept - FRAME_V:h * Fw + percept]], 1) for h in range(H)]
+    return {"a_full_conditioning": X, "b_belief_action_fixation": X[:, n_last:],
+            "c_raw_frame_action": np.concatenate([X[:, last:last + percept], act], 1),
+            "e_embedding_action": np.concatenate([emb, act], 1),
+            "f_coarse_history_action": np.concatenate(coarse + [act], 1)}
+
+
 def readers(model, cfg, enc, L):
     res = {}
     for name, rows in populations(L, enc).items():
@@ -331,17 +431,12 @@ def readers(model, cfg, enc, L):
             res[name] = {"rows": len(rows), "skipped": "too few rows or one class"}
             continue
         X = IPB.features(enc, rows)
-        n_last = X.shape[1] - (256 + 17 + 49)
-        act = X[:, n_last + 256:n_last + 256 + 17]
-        inputs_ = {"a_full_conditioning": X, "b_belief_action_fixation": X[:, n_last:],
-                   "c_last_frame_action": np.concatenate([X[:, (IPB.HISTORY - 1) * IPB.FRAME:IPB.HISTORY * IPB.FRAME], X[:, n_last + 256:]], 1),
-                   "e_embedding_action": np.concatenate([embeddings(model, cfg, enc, rows), act], 1),
-                   "d_rule_inputs": np.stack([r[3] for r in rows])}
+        arms = {**reader_inputs(X, embeddings(model, cfg, enc, rows)), "d_rule_inputs": np.stack([r[3] for r in rows])}
         res[name] = {"rows": len(rows), "rate": float(y.mean())}
-        for key, Xi in inputs_.items():
+        for key, Xi in arms.items():
             res[name][key] = IPB.probe(Xi, y, ep, np.random.default_rng(SEED))[0]
             print("B1", name, key, {k: (round(v, 4) if isinstance(v, float) else v) for k, v in res[name][key].items()}, flush=True)
-        del X, inputs_
+        del X, arms
     return res
 
 
@@ -368,8 +463,8 @@ def main():
     frames = int(sum(len(e["p"]) - P for e in enc))
     res = {"checkpoint": str(ckpt.relative_to(ROOT)), "checkpoint_sha256": TR.file_sha256(ckpt),
            "script_sha256": TR.file_sha256(Path(__file__)), "episodes": len(enc), "target_frames": frames,
-           "levels": levels, "monitor_levels": mon, "first_level": first, "rows_per_context": R, "context_sigma_route": CTX_SIGMA,
-           "sampler": cfg["edm"]["sampler"], "opportunities": counts,
+           "levels": levels, "monitor_levels": mon, "first_level": first, "rows_per_context": R, "objective_draws": K_OBJ,
+           "context_sigma_stress": CTX_SIGMA, "sampler": cfg["edm"]["sampler"], "opportunities": counts,
            "opportunity_rate": {k: n / frames for k, n in counts.items()}, "classes": {}}
     for kind in KINDS:
         rows = ctx[kind]
@@ -377,11 +472,14 @@ def main():
             continue
         o = measure(model, cfg, enc, L, rows, kind, hud, blocks, levels)
         np.savez_compressed(out_dir / f"{kind}.npz", **o, ctx=np.array(rows, dtype=np.int64))
-        res["classes"][kind] = summary(o, rows, kind, L, levels, first, mon, s_prof, e_prof)
-        h = res["classes"][kind]["parts"]["hud"]
-        print("B2", kind, len(rows), "rec", round(h["f_recorded"]["est"], 3), "first", round(h["first_call"]["est"], 3),
-              "prod", round(h["production"]["est"], 3), "noop", round(h["noop"]["first_call"]["est"], 3),
-              "ctx5", round(h["context_sigma_5"]["first_call"]["est"], 3), flush=True)
+        res["classes"][kind] = summary(o, rows, kind, L, levels, first, s_prof, e_prof)
+        c = res["classes"][kind]
+        if kind != "random":
+            h = c["parts"]["hud"]
+            print("B2", kind, len(rows), "rec", round(h["f_recorded"]["est"], 3), "first", round(h["first_call"]["est"], 3),
+                  "exact", round(h["exact_two_outcome_first_call"]["est"], 3), "prod", round(h["production"]["est"], 3),
+                  "noop", round(h["noop"]["first_call"]["est"], 3), flush=True)
+        print("B4", kind, json.dumps(c["objective"]["as_trained"])[:300], flush=True)
         (out_dir / "results.json").write_text(json.dumps(res, indent=1))
     res["readers"] = readers(model, cfg, enc, L)
     (out_dir / "results.json").write_text(json.dumps(res, indent=1))
