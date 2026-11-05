@@ -1,0 +1,3 @@
+readings/**/*.npz
+__pycache__/
+*.log
