@@ -1,5 +1,5 @@
 #!/bin/bash
-# NOT ARMED until the user's go (11-05 P2 discussion): F2's own-history pilot (Codex's recursion.py, parameterised copy)
+# Armed 11-05 ~17:40 on the user's go ("run it; necessary, not sufficient"): F2's own-history pilot (Codex's recursion.py, parameterised copy)
 # at 3 then 16 sampler steps, same 128 windows and seeds; after evening_queue2 (the 16-step interfaces), before F3.
 set -u
 REPO=/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA
