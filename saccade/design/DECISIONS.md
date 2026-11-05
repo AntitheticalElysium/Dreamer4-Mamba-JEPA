@@ -114,6 +114,20 @@ was not exogenous-filtered. No overnight launch or architecture/loss/corpus chan
   weak exactly where threats matter.
 
 ## Open, in discussion
+- UP FOR DEBATE LATER (user, 11-05; nothing below is decided by a test so far; evidence in
+  artifacts/experiments/20261105_consequence_trace/RESEARCH_N1.md and RESULTS.md):
+  - Glimpse G1 weighting. EDM is kept in P1-F3 for a clean reading of the physical change. The 11-05 glimpse check
+    (glimpse field from near-pure noise beats a coarse-window regressor, F2 and F2.1) shows no conditioning-use
+    deficit; it does NOT establish EDM as optimal, and no frozen measurement can select a weighting (it acts through
+    training). Candidates: EDM (sigma_data 1 or 0.5), x-space, Kingma & Gao's sigmoid (as a total weighting, with
+    1/p under our draws), P2, Min-SNR, EDM2-style learned per-level weighting.
+  - Physical G1 weighting beyond P1-F3's x-space arm: the same candidates, read on the consequence trace.
+  - Learned / adaptive weightings together: the chooser's surprise / contingency weighting (decision 2's lasting
+    action-contingency bias, still open), EDM2-style per-level uncertainty weighting, the HarmonyDream harmoniser
+    (measured rate-limited, 10-31).
+  - Sampling: the 3-step Euler sampler decodes per-row probabilities by majority vote (RESULTS 5, 7); more steps vs
+    shortcut forcing (Dreamer 4) is a speed / fidelity choice. A sampler fix is necessary, not sufficient (user):
+    P2 is still needed for overall world stability, sampling persistence and identity.
 - Records design v3 (RECORDS.md), AGREED in direction (user, 10-26): one coherent association per step, per-object
   position hypotheses, layered ownership, presence vs visibility (no dormant state), births = inactive records
   activating, amortised correction (observation stage unchanged), imagination samples one world while the actor reads
