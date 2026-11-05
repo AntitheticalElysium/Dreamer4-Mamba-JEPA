@@ -50,6 +50,18 @@ The N1 training test was proposed only if B showed the N1 signature on F2. It do
 events is drawn from the conditioning under the same noise draws and weights (section 3): an allocation account alone
 predicts both parts starved. The N1 overnight run is withdrawn.
 
+Correction (11-05, after F2.1, mine): the declared signature's threshold sigma_d2 = separation / 2 assumes even odds.
+A field that ignores the conditioning and holds the event's marginal prior p0 departs at sigma ~ separation /
+sqrt(2 |logit p0|) (coal 0.4%: 1.49, below sigma_d2 2.48), which is where the coal / iron HUD departs. So "signature
+absent" does not refute N1's mechanism (input read, conditioning unused); only the cell / count split argues against
+allocation as the sole cause. Allocation as a multiplier on per-slot exposure is not separated by this run.
+
+Training exposure at F2's budget (`../20261104_dataset_eda/RESULTS.md`, events per 25.6M frames) beside the count's
+use of the conditioning (field at sigma 20, F2 / F2.1): wood 682k -> 0.72 / 0.64; drink 414k -> 0.44 / 0.44
+(increments); coal 102k -> 0.10 / 0.11; iron 63k -> 0.02 / 0.10; the cell rule, shared by all mined materials (stone
+929k + wood + coal + iron + ...), 0.94 / 0.84. Monotone in exposure on four slots; stone (the most exposed count, the
+same HUD row as coal) was not measured.
+
 ## 3. POST-HOC (after the declared readings; descriptive, `posthoc.py`, `readings/f2/posthoc.json`)
 
 Same rows, first estimate (sample in brackets), threshold 0.5 on each part's f:
