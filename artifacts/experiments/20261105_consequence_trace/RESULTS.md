@@ -69,3 +69,27 @@ behaves almost as if it never saw the event (within ~0.07 of the blind denoiser 
 wood's count uses the conditioning. Open, not tested here: why the count token ignores what the cell token uses
 (candidates: per-slot exposure, wood being ~7-12x more frequent than coal / iron, while the cell rule is shared across all
 mined materials; the count needs the event from elsewhere on the screen; the digit increment's composition).
+
+## 4. F2.1 (second world, read for agreement)
+
+Run 14:35-14:56 (unit trace-f21; 21 min 43 s, host peak 11.8 GB: within 0.2 GB of the 12G cap, tighter than estimated),
+F2.1 ckpt_10 (sha256 de007bf1...), same script, dev rows and seeds. R0 passes (SAFE 0.007); gate: coal passes
+(b 0.9998), iron (b 0.889, c 0.758) and drink (b 0.948, c 0.876) fail again; attack not qualified (rule 0.939).
+
+Agreement with F2 on every declared reading's direction: HUD first calls lack the consequence (coal 0.152, iron 0.095,
+drink 0.483, wood 0.617), cells carried (coal 0.886, wood 0.984), N1 signature absent (HUD departs at sigma 0.56-1.2),
+R3 ~ 0 (<= 0.05), no H1 / H2 pattern (coal b 0.9998 vs c 0.76 / e 0.78; iron e 0.991 vs b 0.889). Difference: the HUD
+R4 is "between" for coal (-0.078 +- 0.003), iron (-0.075) and drink (-0.057) where F2 was within 0.05: F2.1's sampler
+loses more of an already small first estimate (coal 0.152 -> 0.075, iron 0.095 -> 0.020; F2 0.159 -> 0.114, 0.051 ->
+0.022). Damage as in F2 (risky 0.111 -> 0.028). B4 allocation identical to F2 within 0.002 per band (c 3.88).
+
+POST-HOC (`readings/f21/posthoc.json`): coal block removed / count unchanged 85% (F2 86%); iron 65% (68%); wood 26%
+(21%). Increments vs the blind denoiser at sigma 0.7 / 1.2 / 2 / 3.5 / 20: iron 0.91 / 0.64 / 0.32 / 0.14 / 0.10 vs
+0.94 / 0.65 / 0.22 / 0.02 / 0.00; coal 0.88 / 0.63 / 0.37 / 0.20 / 0.11 vs 0.91 / 0.60 / 0.23 / 0.03 / 0.00; wood count
+0.64 at sigma 20; coal cell 0.84 at sigma 20 (F2 0.94). The union corpus did not change the pattern (train-vs-dev
+prior: coal / iron not expected to improve).
+
+Descriptive, both worlds: where the first estimate is fractional, the 3-step sampler resolves most rows to "no
+consequence" (relative loss coal 28 / 51%, iron 57 / 79%, risky damage 72 / 75%, F2 / F2.1). The declared absolute
+R4 thresholds cannot register this for small first estimates (plan defect, mine). It matters after the field's own
+deficit, not before it.
