@@ -12,6 +12,27 @@ from pathlib import Path
 import numpy as np
 
 BANDS = [(0, 0.3), (0.3, 1), (1, 3), (3, 7), (7, np.inf)]
+# PUBLISHED total weightings w*(lambda) on the eps-loss (Kingma & Gao 2023, Table 1 / eq. 6; lambda = -2 ln sigma), as
+# objectives over lambda: on OUR draws (ln sigma ~ N(-0.4, 1.2^2) -> lambda ~ N(0.8, 2.4^2)) each draw's x-space
+# weight is w*(lambda) / p_ours(lambda) x e^lambda (Codex 11-05: the 1 / p factor was missing for sigmoid, Min-SNR, P2;
+# the rows above transplant each paper's per-sample weight onto our draws instead). Mass beyond our clip [0.002, 20]
+# is not representable; tails rest on few draws (bootstrap below).
+SECH = lambda u: 1 / np.cosh(u)
+P_OURS = lambda lam: np.exp(-0.5 * ((lam - 0.8) / 2.4) ** 2) / (2.4 * np.sqrt(2 * np.pi))
+SIG = lambda u: 1 / (1 + np.exp(-u))
+P_D4 = lambda lam: SIG(lam / 2) * (1 - SIG(lam / 2)) / 2              # uniform tau, tau = 1 / (1 + sigma) = sigmoid(lambda / 2)
+PUBLISHED = {
+    "ours (EDM sigma_data 1, our lognormal)": lambda lam: P_OURS(lam) * (np.exp(-lam) + 1),
+    "EDM as published (sigma_data 0.5, N(2.4, 2.4^2))": lambda lam: np.exp(-0.5 * ((lam - 2.4) / 2.4) ** 2) * (np.exp(-lam) + 0.25),
+    "Dreamer 4 x-loss as published (uniform tau)": lambda lam: P_D4(lam) * np.exp(-lam),
+    "Dreamer 4 x-loss + ramp as published": lambda lam: P_D4(lam) * np.exp(-lam) * (0.9 * SIG(lam / 2) + 0.1),
+    "v-prediction cosine / flow matching OT": lambda lam: np.exp(-lam / 2),
+    "IDDPM (eps, cosine)": lambda lam: SECH(lam / 2),
+    "P2 gamma 1 (cosine)": lambda lam: SECH(lam / 2) / (1 + np.exp(lam)),
+    "Min-SNR-5 (cosine)": lambda lam: SECH(lam / 2) * np.minimum(1, 5 * np.exp(-lam)),
+    "sigmoid(-lambda + 2)": lambda lam: SIG(2 - lam),
+    "ELBO": lambda lam: np.ones_like(lam),
+}
 D4_RAMP = lambda s: 0.9 / (1 + s) + 0.1                                 # Dreamer 4 w(tau) = 0.9 tau + 0.1, tau = 1 / (1 + sigma)
 W = {
     "edm_sigma_data_1 (ours)": lambda s: 1 + 1 / s ** 2,
@@ -22,6 +43,8 @@ W = {
     "p2_k1_g1 (Choi 2022, on eps)": lambda s: 1 / (1 + s ** 2),
     "sigmoid_k2 (Kingma & Gao 2023)": lambda s: math.e ** 2 / (math.e ** 2 * s ** 2 + 1),
 }
+for _name, _w in PUBLISHED.items():                                      # x-weight = w*(lambda) / p_ours(lambda) x e^lambda
+    W["published: " + _name] = (lambda w: lambda s: w(-2 * np.log(s)) / P_OURS(-2 * np.log(s)) / s ** 2)(_w)
 
 
 def load(r, kind):

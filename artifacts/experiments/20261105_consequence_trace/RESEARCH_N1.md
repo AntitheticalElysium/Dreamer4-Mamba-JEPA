@@ -86,3 +86,19 @@ Predictions for A, to be declared before launch: on the exposure curve the count
 by a declared margin at sigma 20); the cell stays; if the 0.6-0.7 plateau is signal-limited, wood / stone rise above
 it; fidelity: low-sigma bias, regression panel. A null on all counts with the teaching share x3.5 would say the
 allocation does not substitute for exposure (the data side then carries the explanation).
+
+## 5. Correction (Codex review 11-05, verified): published weightings need 1 / p(lambda)
+
+Kingma & Gao's weightings are TOTAL weightings over lambda (eq. 6: per-draw weight w / p). Section 3's Min-SNR, P2 and
+sigmoid rows transplanted each paper's per-sample weight onto our draws; they are not the published objectives.
+Recomputed (`weighting_allocation.py`, "published:" rows; per-draw x-weight = w*(lambda) / p_ours(lambda) x e^lambda,
+lambda ~ N(0.8, 2.4^2) on our draws; the machinery reproduces our own row exactly). Teaching share vs ours, bootstrap
+95% over rows (coal / drink / risky): published sigmoid(-lambda + 2) 0.62-0.65 / 0.77-0.81 / 0.57-0.59 (below ours; 43%
+of the term below sigma 0.3 vs ours 51.5%); Min-SNR-5 0.57-0.62 / 0.89-0.97 / 0.45-0.50; P2 1.35-1.48 / 1.84-1.99 /
+1.11-1.24; v-prediction / flow matching 1.4-1.6; Dreamer 4 x-loss + ramp AS PUBLISHED (uniform tau) 3.28-3.59 /
+2.96-3.18 / 3.37-3.69 (= our x-loss arm, 3.31-3.59 / 3.05-3.27 / 3.41-3.67); Dreamer 4 x-loss with uniform tau, no ramp,
+3.7-5.0. The earlier "Dreamer 4 full" row was our draws + ramp, mislabelled. Conclusions narrowed: the published
+sigmoid and Min-SNR put LESS of the objective above sigma* than ours (modestly, not 0.3x); our x-loss arm equals Dreamer
+4's published recipe on this measure. Also conceded (Codex): the glimpse is generated from noise through its own
+schedule (0.1 is its coarse conditioning's level), so "a low-noise task" was not established; the glimpse's 23.4% share
+holds on the calibration measurement, not throughout training.
