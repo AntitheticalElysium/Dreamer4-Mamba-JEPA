@@ -17,4 +17,8 @@ if __name__ == '__main__':
                'artifacts/experiments/20261030_increment_diagnosis/increment_probe.py',
                'artifacts/experiments/20261104_p1f21/run.py', 'artifacts/experiments/20261104_p1f21/checks.py',
                'artifacts/experiments/20261103_p1f2/run/ckpt_10.pt', 'artifacts/eda/s0/s0_dev_labels.npz']
+    # compare.py's F2 references (Codex review 11-05, finding 3)
+    inputs += [f'{CT}/readings/{n}' for n in ('f2/results.json', 'stone/f2/results.json', 'evening/interface_f2_steps.json',
+                                              'recursion/f2_steps16/raw.npz', 'recursion/f2_steps16/identity.json')]
+    inputs += ['artifacts/experiments/20261103_p1f2/run/s1/results.json']
     P.seal(HERE, ('PLAN.md', 'checks.json'), inputs)

@@ -27,6 +27,8 @@ def steps(ckpt):
         ('readings', [str(TR.ROOT / 'artifacts/experiments/20261105_consequence_trace/readings.py'), str(trace / 'results.json')]),
         ('posthoc', [str(TR.ROOT / 'artifacts/experiments/20261105_consequence_trace/posthoc.py'), str(trace)]),
         ('allocation', [str(TR.ROOT / 'artifacts/experiments/20261105_consequence_trace/weighting_allocation.py'), str(trace)]),
+        ('f3_allocation', [str(HERE / 'f3_allocation.py'), str(trace), str(r / 'f3_allocation.json')]),   # Codex 11-05, 1
+        ('compare', [str(HERE / 'compare.py')]),                                                       # Codex 11-05, 2
     ]
 
 
@@ -34,6 +36,9 @@ def main():
     assert os.environ.get('MAMBA_DETERMINISTIC') == '1'
     logs = HERE / 'readings/logs'; logs.mkdir(parents=True, exist_ok=True)
     status = HERE / 'readings/STATUS.json'; done = json.loads(status.read_text()) if status.exists() else {}
+    sha = TR.file_sha256(Path(sys.argv[1]).resolve())                    # Codex 11-05, 4: completed stages are kept
+    if done.setdefault('checkpoint_sha256', sha) != sha:                 # only for the checkpoint that produced them
+        raise RuntimeError('readout status belongs to another checkpoint')
     for name, args in steps(sys.argv[1]):
         if done.get(name) == 'complete':
             continue

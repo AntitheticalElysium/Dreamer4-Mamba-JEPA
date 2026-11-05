@@ -4,7 +4,8 @@
 only the conditioning can supply a consequence improve the world's rare consequences without unacceptable regressions?
 (Codex's framing, 11-05.) The consequence trace (`../20261105_consequence_trace/RESULTS.md`) localised the counts'
 failure to the field's own estimate, ~2e-4 of the objective under our EDM weighting (sigma_data 1 = x-loss + eps-loss,
-Kingma & Gao 2023); the x-space loss raises that share ~3.5x on F2's measured term (RESEARCH_N1.md 3, 5). F2 does not
+Kingma & Gao 2023); F3's actual hybrid (physical x-space x 3.425, glimpse EDM) raises that share 2.8-3.1x on F2's
+measured term (`f3_allocation.py`; the all-parts x-space figure of ~3.5x in RESEARCH_N1.md is a counterfactual). F2 does not
 fit first coal even on training histories seen 10.5 times (11-04 train-vs-dev): an under-fitting, learning-signal
 problem, the part of the ceiling this lever targets. Hidden state (zombie readiness, mob health), head ceilings,
 self-feeding drift and false positives are NOT targeted (RESULTS.md 8; tomorrow's investigation).
@@ -33,8 +34,10 @@ Primary (the lever), trace B2 field at sigma 20 (conditioning only), F2 / thresh
 - coal HUD 0.12, iron HUD 0.05: lever CONFIRMED if F3 coal >= 0.25 AND iron >= 0.15 (each beyond 3 SE of F2);
   NO measurable lever if coal <= 0.15 AND iron <= 0.08; otherwise partial.
 - plateau: wood 0.70, stone 0.63 HUD: both >= 0.80 -> signal-limited plateau; both <= 0.72 -> not; else unresolved.
-- descriptive: drink increments (0.41-0.44), first call per class, posthoc blind-denoiser comparison, B4 on F3's errors (its
-  "as_trained" column is the EDM convention; F3's physical term is the "x_space_weighting" column, descriptive).
+- descriptive: drink increments (0.41-0.44), first call per class, posthoc blind-denoiser comparison, and F3's ACTUAL
+  allocation (`f3_allocation.py`: physical 3.425 x c_out^2 x raw, glimpse raw; on F2's errors: glimpse 23.43%, below
+  sigma 0.3 18.83% vs all-EDM 51.49%). The trace's as_trained (all-parts EDM) and x_space_weighting (all-parts x-space)
+  columns are counterfactuals for F3 (Codex 11-05, finding 1).
 
 Actor-facing, interface at 16 steps (native heads on generated futures), F3 - F2, "improved" = +0.05 beyond 3 SE
 (unpaired SE): first coal (F2 0.364), first iron (0.193), risky death (0.062; recorded 0.128), adjacent damage (0.056;
@@ -53,7 +56,10 @@ Guards (harm; each reported, any breach is a regression to weigh, not an automat
 `run.py` = F2.1's one-shot worker (`../20261104_p1f21/run.py: main`, unchanged) with this launcher, gate checks.json,
 then `readout.py` on the selected checkpoint: S1 (writes run/s1 and its frozen reader) -> consequence trace (all
 classes incl. stone, readers) -> sampler steps -> actor interface 3 / 16 steps -> own-history 3 / 16 steps -> glimpse
-check -> readings / posthoc / allocation (CPU). Launch (user's approval after review): `systemd-run --user
+check -> readings / posthoc / allocation / f3_allocation (CPU) -> `compare.py`: every declared verdict and guard above
+(including the own-history S2.1 count check) against F2's PINNED references, written to readings/comparison.json
+(self-test on F2's own references passed: all differences 0, 'no measurable lever', every guard passes, count gate 2/8).
+The readout's resume status is bound to the selected checkpoint's SHA (a mismatch is rejected). Launch (user's approval after review): `systemd-run --user
 --unit=saccade-p1f3 -p MemoryMax=24G -E MAMBA_DETERMINISTIC=1 -E PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 --working-directory=REPO .venv/bin/python -u -m artifacts.experiments.20261105_p1f3.run`. ~11.5 h training + ~1.7 h
 readout. One GPU job at a time; F2.1's deferred CPU uptake is not run beside it.
@@ -78,6 +84,16 @@ to it within 1.1e-7; the active value equals 3.425 c_out^2 x physical + glimpse 
 logged update 1 identical in update, frames, steps, lr, sigma, change, tsp, rec, reward, cont, noise; g1 0.9457 ->
 1.1325 and grad norm 6.50 -> 6.74 (only G1 changed); monitor bitwise identical with the patch installed vs removed; G1
 (descriptive, its own units) 1.13 -> 0.55 over 200 updates vs F2's 0.95 -> 0.65.
+
+## Codex review (11-05, `../20261105_p1f3_review/REVIEW.md`) and what changed
+
+Training change verified sound (117 hashes, recipe parity, resume states, GPU loss algebra re-run). Readout fixes, all
+applied before launch: (1) F3's actual allocation summary (`f3_allocation.py`; reproduces Codex's 23.43% / 18.83%);
+(2) `compare.py` computes every declared verdict, guard and the own-history count check, self-tested on F2; (3) the F2
+reference artifacts it reads are pinned (consequence-trace F2 and stone results, F2's 16-step interface, F2's 16-step
+own-history raw + identity, F2's S1 report); (4) readout resume bound to the checkpoint SHA. Interpretation limit
+(Codex): G1 values of F2 and F3 are in different units; their curves crossing in the preflight says nothing about
+learning speed: read the unchanged EDM monitor and the semantic readings.
 
 ## For the reviewer
 
