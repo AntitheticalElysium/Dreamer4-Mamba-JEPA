@@ -22,7 +22,8 @@ unlocks (0.71-0.83x) and danger (0.77-0.86x); if distinct instances govern, gain
 | consistency | reward-head view-dependence: mean over fixations 0.008 -> 0.031, spread / SE 21.6 -> 26.2 | small, up |
 | locus (world's action contingency) | more on the counter: iron 0.23 -> 0.33, stone 0.37 -> 0.50 (z ~4), coal 0.25 -> 0.31 | modest shift; no class changes classification |
 | head / fovea / gaze / chooser trace | changes <= 0.05 within their intervals; coal / iron stay surprise-led | unchanged |
-| own-gaze held-out (dev, coverage, risk) | pending | the reading F2.1 was designed for |
+| own-gaze dev (each world's closed-loop gaze) | wake +0.120 (z 8.6), cow +0.104 (8.7), zombie +0.064 (5.9), stone pickaxe / sword +0.049 / +0.041; wood -0.059, skeleton -0.060, iron sword -0.051, iron -0.034, place plant -0.034 (all z 3.2-4.5); damage, coal, sapling unchanged | reproduces the random-gaze interface: F2.1 is gaze-insensitive like F2 |
+| own-gaze held-out coverage / risk | pending | the reading F2.1 was designed for |
 
 Overall (pending the held-out stages): the union corpus at F2's compute reshuffles classes rather than repairing the
 primaries: large gains (tables, wake, cow, zombie) and large losses (drink appearance, wood) beside unchanged coal /
