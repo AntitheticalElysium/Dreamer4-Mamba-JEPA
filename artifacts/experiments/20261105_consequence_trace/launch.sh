@@ -36,7 +36,9 @@ step() {                                                     # step NAME CKPT [N
   ( while true; do m=$(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits | head -1)
       [ "$m" -gt "$(cat "$peak")" ] && echo "$m" > "$peak"; sleep 5; done ) &
   sampler=$!
-  systemd-run --user --unit="trace-$name" --wait --collect -p MemoryMax=16G -E MAMBA_DETERMINISTIC=1 \
+  # 12G: expected peak ~8-10 GB (dev encoding ~1.5 GB, B1's 40k-row float16 features ~1.4 GB + arms + the probe's
+  # float32 train copy), below the ~14 GB the host has free once F2.1's evaluation exits (/tmp tmpfs holds ~9.8 GB)
+  systemd-run --user --unit="trace-$name" --wait --collect -p MemoryMax=12G -E MAMBA_DETERMINISTIC=1 \
     -E JAX_PLATFORMS=cpu --working-directory="$REPO" /bin/sh -c \
     "$PY -u -m artifacts.experiments.20261105_consequence_trace.trace $OUT/$name $ckpt $n > $OUT/$name.log 2>&1" \
     > "$OUT/$name.unit.txt" 2>&1
