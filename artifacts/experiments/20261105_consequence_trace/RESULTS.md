@@ -161,3 +161,34 @@ adjacent damage only to its field's value (36%: field-limited; its readiness is 
 attack best arm 0.58-0.62 vs rule 0.94). Majority outcomes fall below their first call by 0.05-0.1 (the 3-step vote
 was inflating them; the field's later calls are not fully self-consistent). 8 steps recovers most (risky 84% of 32
 steps' value); cost per generated frame ~N.
+
+## 8. Evening readings (11-05, 17:28-18:33): actor interface at 3 vs 16 steps, swing test, own-history pilot
+
+All instrument checks pass: each 3-step pass reproduces its earlier reading exactly (interface: max |diff| 0 over 104
+class x quantity pairs, both worlds); own-history pilot: first step identical across modes, real-replay belief RMS
+<= 0.011 (Codex's asserts). One world seed each; per-class seed spread unmeasured (2-10 pp between recipes).
+
+**Actor interface (native reward / termination heads on generated futures; F2, F2.1 agrees):** 3 -> 16 steps, recorded:
+- danger: risky damage 0.042 -> 0.115 (rec 0.127; F2.1 0.038 -> 0.124), risky DEATH 0.013 -> 0.062 (rec 0.128: half
+  recovered; F2.1 0.063), adjacent damage 0.012 -> 0.056 (rec 0.159: field-limited, F2.1 0.067); all z 19-27.
+- stochastic: sapling context reward 0.056 -> 0.142 (rec 0.135: calibrated); random-history damage 0.004 -> 0.027
+  (rec 0.020: now 35% OVER), death 0.000 -> 0.003 (rec 0.004); wake 0.40 -> 0.51 (F2.1 0.52 -> 0.60).
+- false positives rise with steps: random-history unlocks 0.040 -> 0.048 (rec 0.034; 3 steps already +18%), adjacent
+  death 0 -> 0.003 (rec 0). The vote hid false outcomes as well as true minorities.
+- deterministic, under-learned: coal 0.24 -> 0.36, iron 0.09 -> 0.19 (head on the real successor 0.99): field-limited.
+- majority outcomes fall to the field's own level: skeleton defeat 0.57 -> 0.42 (both worlds), wood -0.05 / -0.06,
+  stone -0.06 / -0.12, iron sword -0.06 / -0.11, cow -0.02 / -0.08.
+
+**Swing test (F2.1 - F2 at equal budgets; unpaired SE, conservative):** vanish at 16 steps: zombie defeat +0.070 ->
++0.002, stone +0.045 -> -0.016, iron -0.038 -> +0.001; shrink: cow +0.099 -> +0.040; persist: wake +0.120 -> +0.085
+(z 4.2), wood -0.06 -> -0.07, skeleton -0.06 -> -0.06; grows: iron sword -0.05 -> -0.105. Several F2.1 "gains" were the
+3-step vote amplifying small field differences; worlds must be compared at >= 16 steps (and on fields).
+
+**Own-history pilot (Codex's recursion.py, F2, 128 exogenous windows x 4 futures, same seeds):** mean visible
+entities, free running, steps 1 / 4 / 8 / 16: 3 steps 0.72 / 0.37 / 0.17 / 0.10 (collapse, as on F1.5); 16 steps
+1.13 / 1.20 / 1.31 / 1.49 (reader on the real percepts 1.08 / 1.21 / 1.28 / 1.23). The collapse is almost entirely
+the 3-step vote compounding through the history. S2.1 count gate (mean over 16 steps, > 30% and > 3 SE): 3 steps 7 of
+8 kind x mode checks fire (free: zombies 0.27x, cows 0.17x, skeletons 0.07x; real history: cows 0.59x, skeletons 0.34x,
+arrows 3.06x); 16 steps 2 of 8 (free zombies 1.34x, rising 0.18 -> 0.47 vs real 0.15 -> 0.31; real-history arrows
+1.88x). Not measured here (user: necessary, not sufficient): persistence, identity, positions; deaths are not
+calibratable on these survival-selected windows (free running samples 2.7% deaths by step 16, recorded 0%).
