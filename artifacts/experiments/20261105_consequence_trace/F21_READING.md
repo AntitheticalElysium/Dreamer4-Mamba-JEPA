@@ -23,10 +23,14 @@ unlocks (0.71-0.83x) and danger (0.77-0.86x); if distinct instances govern, gain
 | locus (world's action contingency) | more on the counter: iron 0.23 -> 0.33, stone 0.37 -> 0.50 (z ~4), coal 0.25 -> 0.31 | modest shift; no class changes classification |
 | head / fovea / gaze / chooser trace | changes <= 0.05 within their intervals; coal / iron stay surprise-led | unchanged |
 | own-gaze dev (each world's closed-loop gaze) | wake +0.120 (z 8.6), cow +0.104 (8.7), zombie +0.064 (5.9), stone pickaxe / sword +0.049 / +0.041; wood -0.059, skeleton -0.060, iron sword -0.051, iron -0.034, place plant -0.034 (all z 3.2-4.5); damage, coal, sapling unchanged | reproduces the random-gaze interface: F2.1 is gaze-insensitive like F2 |
-| own-gaze held-out coverage / risk | pending | the reading F2.1 was designed for |
+| own-gaze held-out COVERAGE (new states; F2 never trained on them) | cow +0.101 (z 4.8), stone pickaxe / sword +0.052 / +0.033, wake +0.061 (3.1); skeleton -0.093 (-4.6), coal -0.081 (-3.1), iron sword -0.075 (-3.7); risky damage 0.006 / 0.011 and death 0.001 / 0.002 vs recorded 0.069 / 0.064 (both worlds ~0) | the dev pattern repeats on new states |
+| own-gaze held-out RISK (danger-rich; F2.1 trained on its source) | cow +0.140 (z 11.6), wake +0.131 (9.4), zombie +0.068 (4.4), stone +0.051 (3.7); iron -0.048 (-3.0); risky damage 0.066 / 0.066 vs 0.169, DEATH 0.022 / 0.028 vs 0.167 (no change) | danger is not improved even on the danger-rich distribution F2.1 trained on |
 
-Overall (pending the held-out stages): the union corpus at F2's compute reshuffles classes rather than repairing the
+Overall (all stages read except the deferred CPU uptake): the union corpus at F2's compute reshuffles classes rather than repairing the
 primaries: large gains (tables, wake, cow, zombie) and large losses (drink appearance, wood) beside unchanged coal /
 iron / damage / death. The exposure-ratio pattern declared in the PLAN does not organise the changes; the table gain
 where exposure fell favours context diversity for that class. Some swings may be the 3-step sampler's threshold
 amplifying small field changes (hypothesis; the equal-budget 16-step interface on both worlds tests it).
+The held-out readings settle the F2.1 question: diversity at F2's compute does not improve danger or death, even on
+the danger-rich source it trained on (death 2.2% -> 2.8% vs 16.7% recorded); consistent with the 3-step sampler erasing
+per-row minority outcomes regardless of data (RESULTS.md 5, 7), and with the adjacent-damage field deficit.
