@@ -105,3 +105,20 @@ Descriptive, both worlds: where the first estimate is fractional, the 3-step sam
 consequence" (relative loss coal 28 / 51%, iron 57 / 79%, risky damage 72 / 75%, F2 / F2.1). The declared absolute
 R4 thresholds cannot register this for small first estimates (plan defect, mine). It matters after the field's own
 deficit, not before it.
+
+## 5. The sampler rounds (POST-HOC analysis + simulation, 11-05; `sampler_rounding.py`)
+
+Per row, both worlds: the production sample's rate equals the fraction of rows whose first estimate exceeds 0.5
+(coal HUD F2 P(first > 0.5) 0.115, production 0.114; drink 0.457 / 0.440; risky 0.023 / 0.029; F2.1 alike). Rows with
+a first estimate in (0.1, 0.5) produce the consequence 0.6-11% of the time (mean first 0.18-0.35); risky damage: 28-39%
+of rows are there (mean first 0.19-0.21) and 0.6-0.9% of them draw damage.
+An EXACT two-outcome denoiser under the same schedule, started from the correct marginal (only the step count
+varies): p 0.05 / 0.15 / 0.30 / 0.70 / 0.90 -> 3 steps 0.000-0.001 / 0.02-0.03 / 0.15-0.17 / 0.83-0.85 / 0.99;
+8 steps 0.03 / 0.12 / 0.28 / 0.72 / 0.93; 32 steps 0.045 / 0.145 / 0.295 / 0.705 / 0.905; 128 steps = p. The first
+Euler step (6.67 -> 0.283) lands on the posterior MEAN, a blend; the next call reads the blend as a noisy copy of the
+nearer outcome. So with 3 steps the world is a majority-vote decoder of each row's probability: an outcome with
+per-row probability < 0.5 (damage under a hidden cooldown: p ~ 0.11, predicted 0.02-0.03, measured 0.028-0.029) is
+almost never drawn even by a perfect field, and one > 0.5 is drawn almost always. Churn does not help at 3 steps
+(p 0.15: 0.019-0.027 with churn, 0.028-0.050 without). Cross-instrument check: the actor interface's generated first
+unlocks agree with the trace's appearance rates (drink 0.86-0.89 vs 0.85; coal 0.24 vs 0.11-0.18; iron 0.05-0.09 vs
+0.02-0.04): no readout mismatch on the HUD appearances.
