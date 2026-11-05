@@ -12,7 +12,7 @@ import json, sys
 from pathlib import Path
 
 READER = {"coal": "coal", "iron": "iron", "drink": "drink", "risky": "attack", "adjacent": "attack"}
-MINING_DRINK = ("coal", "iron", "wood", "drink")
+MINING_DRINK = ("coal", "iron", "wood", "drink", "stone")
 
 
 def below(x, thr, k=3):

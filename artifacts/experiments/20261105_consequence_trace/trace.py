@@ -22,6 +22,7 @@ B4  the ACTUAL P1 G1 term (model.denoise_loss's computation, chunked training fo
     target): the consequence cells' share on their event frames by the target's physical sigma, and on RANDOM frames the
     allocation of the whole term by band, as trained and as an x-space loss would weight the same errors.
 Usage (project venv, GPU): python -m artifacts.experiments.20261105_consequence_trace.trace OUT_DIR CKPT [N_EPISODES]
+    [KINDS]  (comma list: only those classes, no B1 readers; stone added 11-05, PLAN "Stage B2")
 """
 import os
 
@@ -44,11 +45,13 @@ IP = importlib.import_module("artifacts.experiments.20261030_increment_diagnosis
 NP = importlib.import_module("artifacts.experiments.20261105_consequence_trace.noise_profile")
 ROOT = Path(__file__).resolve().parents[3]
 DEV, P, R, SEED, K_OBJ = FC.DEV, FC.P, 2, 2105, 4                      # K_OBJ: B4 draws of (sigmas, noise) per row
-GRASS, WATER, TREE, PATH, COAL, IRON, DO = 2, 3, 5, 7, 8, 9, 5          # constants.BlockType / Action
-HUD = {63: ("s_body", 0), 65: ("s_body", 2), 68: ("s_inv", 0), 70: ("s_inv", 2), 71: ("s_inv", 3)}   # renderer slots
-MINING = {"coal": (COAL, PATH, 70, 6), "iron": (IRON, PATH, 71, 7), "wood": (TREE, GRASS, 68, None)}  # block, left, cell, tool
-KINDS = ("coal", "iron", "wood", "drink", "risky", "adjacent", "safe", "random")
-CAP = {"wood": 1500, "drink": 1500, "risky": 2000, "adjacent": 2000, "safe": 500, "random": 1000}
+GRASS, WATER, STONE, TREE, PATH, COAL, IRON, DO = 2, 3, 4, 5, 7, 8, 9, 5  # constants.BlockType / Action
+HUD = {63: ("s_body", 0), 65: ("s_body", 2), 68: ("s_inv", 0), 69: ("s_inv", 1), 70: ("s_inv", 2), 71: ("s_inv", 3)}  # renderer
+MINING = {"coal": (COAL, PATH, 70, 6), "iron": (IRON, PATH, 71, 7), "wood": (TREE, GRASS, 68, None),  # block, left,
+          "stone": (STONE, PATH, 69, 6)}                                                           # cell, tool
+KINDS = ("coal", "iron", "wood", "drink", "risky", "adjacent", "safe", "random", "stone")
+CAP = {"wood": 1500, "drink": 1500, "risky": 2000, "adjacent": 2000, "safe": 500, "random": 1000, "stone": 1500}  # last:
+                                                                         # earlier classes' draws unchanged
 VARIANTS = ("base", "rerun", "noop", "ctx5", "noop_ctx5")
 BANDS = [(0, 0.3), (0.3, 1), (1, 3), (3, 7), (7, np.inf)]               # RESEARCH.md section 4's surrogate bands
 CTX_SIGMA, MIN_ROWS = 5.0, 200
@@ -443,6 +446,7 @@ def readers(model, cfg, enc, L):
 def main():
     out_dir, ckpt = Path(sys.argv[1]), ROOT / sys.argv[2]
     n_ep = int(sys.argv[3]) if len(sys.argv) > 3 else 0
+    only = sys.argv[4].split(",") if len(sys.argv) > 4 else None
     out_dir.mkdir(parents=True, exist_ok=True)
     ck = torch.load(ckpt, weights_only=False, map_location="cpu")
     cfg = ck["cfg"]
@@ -468,7 +472,7 @@ def main():
            "opportunity_rate": {k: n / frames for k, n in counts.items()}, "classes": {}}
     for kind in KINDS:
         rows = ctx[kind]
-        if not rows:
+        if not rows or (only and kind not in only):
             continue
         o = measure(model, cfg, enc, L, rows, kind, hud, blocks, levels)
         np.savez_compressed(out_dir / f"{kind}.npz", **o, ctx=np.array(rows, dtype=np.int64))
@@ -481,7 +485,8 @@ def main():
                   "noop", round(h["noop"]["first_call"]["est"], 3), flush=True)
         print("B4", kind, json.dumps(c["objective"]["as_trained"])[:300], flush=True)
         (out_dir / "results.json").write_text(json.dumps(res, indent=1))
-    res["readers"] = readers(model, cfg, enc, L)
+    if not only:
+        res["readers"] = readers(model, cfg, enc, L)
     (out_dir / "results.json").write_text(json.dumps(res, indent=1))
 
 

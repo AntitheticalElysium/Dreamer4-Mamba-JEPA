@@ -148,3 +148,33 @@ Opportunity rates had been computed after capping (fixed). The revised script sm
 5. Context-sigma-5 is a stress test: conceded (R7 descriptive). Recomputed NOOP inputs now reused for noop_ctx5. A GPU
    smoke precedes the full runs (time and memory not claimed from the CPU smoke).
 6. sigma* renamed sigma_d2 with the separation / sigma curve reported.
+
+## Stage B2: stone (user 11-05 ~15:20: "launch it"; "pause F2.1 to run this, it's more important")
+
+**Claim.** On F2 and F2.1 the coal / iron counts ignore the conditioning that the same rows' mined cell uses, and the
+counts' use of the conditioning is monotone in per-slot training exposure (RESULTS.md 2: wood 682k events -> 0.72 /
+0.64, drink 414k -> 0.44, coal 102k -> 0.10, iron 63k -> 0.02-0.10; shared cell rule ~1.8M -> 0.94 / 0.84).
+**Competing explanations.** (a) per-slot exposure; (b) the count needs the event from elsewhere on the screen (a route /
+locality limit); (c) the digit increment's composition (copy d, render d + 1); (d) something material-specific.
+**Separating control.** Stone: the most exposed count (929k events at F2's budget, ~1.4x wood, ~9x coal), the same HUD
+row as coal (slot 69, between wood 68 and coal 70), the same faced-cell geometry, the same tool (wood pickaxe), the
+same rule (block -> PATH, count + 1; verified 100% on dev's 10,903 contexts, 18% start at 0), increments at every
+digit. It differs from coal in exposure (and the block's look), not in route or composition.
+
+**Measurement.** trace.py with stone added (HUD 69 = s_inv column 1, renderer column 6; MINING stone = (STONE 4, PATH,
+69, wood_pickaxe); appended last in CAP so the other classes' draws are unchanged; `KINDS` argument = stone only, no
+B1 readers). Same B2 / B3 / B4, 1,500 contexts x 2 rows, F2 ckpt_10 then F2.1 ckpt_10, MAMBA_DETERMINISTIC=1.
+`stone_queue.sh` (unit trace-stone-queue): runs both, then resumes F2.1's evaluation with Codex's recovery command
+(serial worker, completed stages kept) whatever the traces' exit codes.
+
+**Declared reading** (R0 as before: recorded >= 99%, |bias| at 0.05 < 0.01, rerun < 0.01, else not read). Primary:
+the stone count's field mean on real successor + noise at sigma 20 (the conditioning's use; coal 0.12 / 0.11, wood
+0.70 / 0.62 overall), both worlds:
+- >= 0.6 in both: exposure-consistent. Rules out (b) and (c) as blocking at this exposure (stone shares coal's route
+  and composition); per-slot exposure is the leading account (not proven: stone's slot also changes by placing and
+  crafting, which counts as exposure of the slot, and its look differs).
+- <= 0.2 in both: per-slot exposure does not govern at these magnitudes (stone > wood); (b) / (c) / (d) remain and wood's
+  success needs another account.
+- otherwise, or the worlds disagree: unresolved, reported as such.
+Descriptive: first call, production, the cell, the joint cell / count outcome, appearance vs increment, the blind
+reference (`posthoc.py`), B4. One world seed each; no further run queued on any outcome.

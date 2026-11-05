@@ -24,7 +24,7 @@ def main():
     d = json.load(open(r + "results.json"))
     levels, out = d["levels"], {}
     sel = [i for i, s in enumerate(levels) if s in SHOW]
-    for kind in ("coal", "iron", "wood", "drink"):
+    for kind in [k for k in ("coal", "iron", "wood", "drink", "stone") if k in d["classes"]]:
         z = np.load(r + kind + ".npz")
         v = z["valid"]
         start = z["ctx"][z["row_ctx"]][v, 3]
