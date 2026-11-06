@@ -117,4 +117,11 @@ Declared readings:
   low false = the majority outcome of an attempt (nothing), blind as well.
 - Heads beside: the unlock head's contrast on generated and on recorded frames (first craft only), and its agreement
   with the frame (WORLD-DRAWN / HEAD-READ).
+- Route reading (added before any crafting output; model.py: temporal attention is per token index, spatial attention
+  is within the frame being generated): crafting's determinants (table, furnace, materials) are unchanged by the
+  craft, so they are present in the generated frame itself, one spatial hop from the tool slot once denoising has
+  restored them. A count's determinant is ANOTHER token's PAST (the faced cell was coal, now path): temporal attention
+  at that token, then spatial attention to the slot, or the belief. If crafting tracks while coal / iron counts fail at
+  similar or higher exposure, the hard part is another token's past, not cross-token dependence as such; if crafting
+  is blind too, cross-token dependence at low exposure is enough to fail.
 Limits: one world seed; dev histories; token-space readers; feasible-from-n >= 1 is small (26-203 per tool).
