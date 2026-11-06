@@ -111,6 +111,10 @@ reward per step on real history 0.065 -> 0.057 vs truth 0.017 (3.4x; free runnin
   at energy 9 and ~197k asleep-at-energy-8 transitions in the train split (x ~10 epochs). The WAKE_UP regression of
   section 3 is the same mechanism re-calibrated (fewer wakes, true and false), not a separate failure. Open: whether
   the generated frame shows the agent awake (world) or the head reads a wake from an asleep frame (head).
+  CORRECTION 11-06 (`../20261106_determinant_curves/RESULTS.md` 2): "world P per step" above is the HEAD's P(reward >
+  0.5) on generated futures, not the world's wake rate. Read by a frame reader, the world wakes the agent in ~50% of
+  futures at every energy (flat; 10x the training rate); the energy grading is the head's. The open question is
+  answered: WORLD-DRAWN (every head-reported wake is an awake frame).
 - Damage by the hidden zombie cooldown (trace's cooldown strata, adjacent damage, first call): recorded ready 0.314 /
   not ready 0.018 (18x); F2 0.049 / 0.080 (blind, inverted); F3 0.145 / 0.089 (1.6x). The trace's attack readers:
   belief AP 0.64 vs rule inputs 0.94: the belief carries the cooldown only partly (history-inferable: <= 5 steps).
