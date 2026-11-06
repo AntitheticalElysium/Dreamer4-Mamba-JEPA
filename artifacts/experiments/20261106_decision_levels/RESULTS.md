@@ -54,3 +54,30 @@ the determinant curves survive the corrected start. The heads still read what th
 and 284 / 284 on awake frames, death 1,003 / 1,003). The false-wake reward exploit shrinks (head unlock per asleep step
 0.15-0.36 -> 0.03-0.10), but true waking at energy 9 falls to 0.15: with the start fixed, imagined sleep becomes a
 state the agent rarely leaves.
+
+## 4. Which relations the world learns (user 11-06: "let's see that analysis"; `need.py`, `readings/need.json`, existing data only)
+
+Per relation: training events per pass (labels); the change size D at the consequence token(s) (F3's own tokens);
+need = events x D^2 x the share of training noise draws at which the target does not already reveal the outcome
+(the squared-error reduction the determinant offers when the model otherwise predicts the default: copy / persist /
+marginal; the x-space weight is the same at every level, so it drops out). Success at the frame level (T2 prefix-20,
+T1) unless marked.
+
+| where the determinant lives | relation (events / pass, need -> success) |
+|---|---|
+| own past + the action | movement (905k, 5.7M -> 1.00); faced cell cleared when mining wood (86k, 217k -> 0.98), stone (130k, 164k -> 0.94), coal (11k, 23k -> 0.96), iron (8k, 9k -> 0.81) |
+| another token (the count slot must learn what happened at the faced cell) | wood 0 -> 1 (17k, 67k -> 0.82), wood n -> n+1 (51k, 149k -> 0.80), stone (16k / 77k, 65k / 164k -> 0.89 / 0.66), coal (4k / 6k, 16k / 16k -> 0.25 / 0.10), iron (3k / 3k, 12k / 8k -> 0.13 / 0.08) |
+| another token, global consequence, smallest cue | energy 9 -> wake (16k, 101k -> 0.15) |
+| history (hidden) | damage when a zombie is ready (50k, 103k -> 0.42 of recorded); cow killed leaves the cell (13k, 42k -> 0.75, but non-kill hits 0.62); food +6 after a kill (13k, 14k -> 0.17 of recorded) |
+| own past + a specific action (head only, frame not measured) | crafting a tool: slot 0 -> 1 (iron pickaxe / sword 1.4k per pass, need 5.5k): head 0.92 / 0.89 of its ceiling; placing table / furnace / plant 0.94-0.97 |
+
+- The natural control: the SAME coal event, same frequency and cue, clears the faced cell 0.96 and increments the
+  count 0.10-0.25 (needs within 1.4x). What differs is where the determinant lives: the cell's new value is its own
+  past (coal) + the action; the count's new value needs what happened at ANOTHER token.
+- Within "another token", need orders success (wood / stone work at 65-164k; coal / iron fail at 8-16k), except the
+  energy rule: wood-level need, 0.15. It stacks every difficulty: a global consequence (every map token and the
+  lighting must change), the smallest cue of any determinant (8 -> 9, 1.38), half-hidden in noised contexts (exp 3),
+  decided at the highest level (T1).
+- "Own past + action" relations work at low need (coal cell at 23k, iron cell 9k). Crafting would be the strongest
+  case (1.4k events per pass) but it is measured only by the head, which also reads the belief that knows the craft
+  action; the frame was not checked. That is the one gap in this table.
