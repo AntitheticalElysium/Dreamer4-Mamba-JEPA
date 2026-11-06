@@ -97,3 +97,20 @@ reward per step on real history 0.065 -> 0.057 vs truth 0.017 (3.4x; free runnin
    are safe; actor differences of 0.03-0.07 are on the scale of F2 vs F2.1 swings and need a second seed before they
    are read as properties of the weighting.
 4. Own-history drift is unchanged (P2's job).
+
+## 7. Post-hoc 11-06 (existing outputs only): false rewards are premature wake-ups; damage ignores the cooldown
+
+- Own-history real-history ("teacher") false rewards (`posthoc_wake.py`, `readings/posthoc_wake.json`): 87% (F2 90%) of
+  the false positive-reward mass falls on steps where the agent is asleep and stays asleep. There P(reward > 0.5) is
+  0.42 (F2 0.50) while WAKE_UP is not yet unlocked and 0.00001 once it is: the head's first-time bookkeeping is right;
+  the false reward is a WAKE_UP. Its dependence on the visible energy digit is graded, the rule is a step (Craftax
+  Classic: asleep, actions become NOOP; wake at energy >= 9, ~100% in the labels, or when hit, 1-2%): world P per
+  step at energy 6 / 7 / 8 = 0.00 / 0.16 / 0.20 (F2 0.00 / 0.19 / 0.24); on true wakes 0.26 (F2 0.31) vs 0.52 rewarded.
+  Not action-driven (every ignored action 0.08-0.28). Free running shows fewer (0.017) because a falsely woken
+  agent stays awake; the real history keeps re-offering the sleeping frame. Training data is not short: ~20k wakes
+  at energy 9 and ~197k asleep-at-energy-8 transitions in the train split (x ~10 epochs). The WAKE_UP regression of
+  section 3 is the same mechanism re-calibrated (fewer wakes, true and false), not a separate failure. Open: whether
+  the generated frame shows the agent awake (world) or the head reads a wake from an asleep frame (head).
+- Damage by the hidden zombie cooldown (trace's cooldown strata, adjacent damage, first call): recorded ready 0.314 /
+  not ready 0.018 (18x); F2 0.049 / 0.080 (blind, inverted); F3 0.145 / 0.089 (1.6x). The trace's attack readers:
+  belief AP 0.64 vs rule inputs 0.94: the belief carries the cooldown only partly (history-inferable: <= 5 steps).
