@@ -92,7 +92,8 @@ def train(arm, smoke=None):
     streams = D.Streams(split["train"], d["streams"], P, seed=ck["world_seed"], targets_offsets=offsets)
     streams.load_state(ck["streams"])
     controller = C.Controller(model, cfg, C.config(), out, dev)
-    controller.load_state(ck["fixation_controller"])
+    controller.load_state(dict(ck["fixation_controller"], trace_rows=0, log_bytes=0))   # the head, optimiser and RNGs;
+                                                                         # this arm's own gaze trace / log start empty
     carry, cache = ck["carry"], ck["cache"]
     torch.set_rng_state(ck["rng"]["cpu"].cpu()), torch.cuda.set_rng_state(ck["rng"]["cuda"].cpu())
     lr0 = o["lr"] * TR.lr_factor(ck["state"]["frames"], cfg)
