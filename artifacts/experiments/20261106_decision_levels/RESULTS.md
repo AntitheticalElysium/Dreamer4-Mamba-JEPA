@@ -81,3 +81,43 @@ T1) unless marked.
 - "Own past + action" relations work at low need (coal cell at 23k, iron cell 9k). Crafting would be the strongest
   case (1.4k events per pass) but it is measured only by the head, which also reads the belief that knows the craft
   action; the frame was not checked. That is the one gap in this table.
+
+## 5. Crafting at the frame level (PLAN, last section; `crafting.py`, `readings/crafting/`)
+
+Frozen F3, dev, prefix-20, K = 4: 6,051 histories, 24,204 futures (strata in `run.json`). Tool-slot readers fitted on
+train400: values 0 and 1 read 1.00 in all six slots (wood sword 5 and iron sword 3-4 fail, never seen in train400, so the
+declared rule flags those two readers for those values only; appearance uses 0 and 1). Recorded successors read
+correctly in every stratum (tool +1 on feasible-from-0: 1.00 in all six; 0.00 on infeasible). Per pass = counts per
+pass over the train split (need.json's unit); appearances only (the need row's 1,444 for the iron pickaxe included
+increments; appearances are 1,103).
+
+| tool | appearances / pass (need) | feasible from 0: tool drawn | infeasible: station missing / materials missing / both | T [95%] | verdict | tool already held: +1 drawn (incr. / pass) | materials spent, per slot (wood / stone / coal / iron) |
+|---|---|---|---|---|---|---|---|
+| wood pickaxe | 5.4k (20.9k) | 0.90 | 0.08 / 0.04 / 0.00 | 0.85 [0.82, 0.87] | TRACKS | 0.04 (1.6k) | 0.84 |
+| stone pickaxe | 3.2k (12.5k) | 0.81 | 0.10 / 0.00 / 0.00 | 0.77 [0.74, 0.80] | TRACKS | 0.01 (0.7k) | 0.70 / 0.67 |
+| iron pickaxe | 1.1k (4.3k) | 0.83 | 0.04 / 0.03 / 0.00 | 0.80 [0.75, 0.84] | TRACKS | 0.02 (0.3k) | 0.77 / 0.46 / 0.72 / 0.82 |
+| wood sword | 4.2k (16.5k) | 0.91 | 0.03 / 0.04 / 0.00 | 0.88 [0.86, 0.91] | TRACKS | 0.04 (0.9k) | 0.86 |
+| stone sword | 3.1k (12.5k) | 0.79 | 0.21 / 0.02 / 0.00 | 0.71 [0.67, 0.74] | TRACKS | 0.07 (1.2k) | 0.80 / 0.62 |
+| iron sword | 1.1k (4.6k) | 0.86 | 0.04 / 0.08 / 0.00 | 0.82 [0.77, 0.87] | TRACKS | 0.19 (0.2k) | 0.75 / 0.44 / 0.67 / 0.78 |
+
+- **Declared prediction: refuted.** Both iron tools TRACK (T lower bounds 0.75 / 0.77 >= 2/3) at 1.1k appearances per
+  pass. Cross-token dependence at low exposure is not enough to fail: the gate (a table / furnace among the 8 cells
+  around the player = map tokens; the materials = other HUD tokens) is read, with 3-8% false tools for the iron tools.
+- **Declared route reading: crafting tracks while the coal / iron counts' appearance fails at higher exposure and need**
+  (0.25 / 0.13 at 4.1k / 3.1k per pass, need 16k / 12k), so the hard part is another token's past, not cross-token
+  dependence as such. The plan named one two-step order (temporal at that token, then spatial); model.py also allows
+  the other (spatial within frame t - 1, carried forward by the slot's own cache entry). The reading, one attention step
+  against two, is unchanged. **Not separated:** DO is shared by every collection, while MAKE_X names its slot. In
+  mining the two coincide (which item was collected lives only in the faced cell's past), so these data cannot
+  separate "past vs present" from "generic vs slot-specific action". No relation in the data has a generic action with
+  its cause present in frame t at low exposure (drink: 41k per pass).
+- **A second difficulty, separate from the route:** with the same action and the same gate, a held tool's count is
+  drawn +1 in 0.01-0.19 of futures (copied 0.77-0.99), at 0.2-1.6k increments per pass, while the appearance is drawn
+  0.79-0.91 at 1.1-5.4k. Counts point the same way at matched items (appearance -> increment: coal 0.25 -> 0.10, iron
+  0.13 -> 0.08, stone 0.89 -> 0.66, wood 0.82 -> 0.80).
+- **A craft is drawn as one coupled event.** P(wood spent | tool drawn) 0.79-0.94 against 0.18-0.51 when the tool is not
+  drawn; when the tool is already held, the materials are spent in 0.01-0.35 of futures.
+- Heads: WORLD-DRAWN for all six (P(frame | head) 0.90-0.99); the unlock head on recorded frames T 0.98-1.00.
+- **Correction to section 4:** crafting was classed "own past + a specific action (head only)". Its gate lives in other
+  tokens that are still present in the frame being generated, and its frame-level success is now measured (this
+  section).
