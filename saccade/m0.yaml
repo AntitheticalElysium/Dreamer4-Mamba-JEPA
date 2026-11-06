@@ -88,6 +88,15 @@ edm:
   train_sigma: {lognormal_loc: -0.4, lognormal_scale: 1.2, min: 0.002, max: 20.0}   # DIAMOND
   training_form: diffusion_forcing            # D4: each frame its own noise level; noisy past = context corruption
   loss: raw_output_mse                        # DIAMOND code: MSE of F against (x0 - c_skip x) / c_out = EDM lambda = 1/c_out^2
+                                              # g1_weighting (absent = EDM for every part, P1 world 1 .. P1-F2.1; set by a
+                                              # launcher, as factorised; canonical 11-06 after P1-F3, user): {physical:
+                                              # x_space, scale: 3.425, glimpse: edm}. Periphery and lighting raw-output error
+                                              # x scale x c_out^2 = scale x the x-space error (Dreamer 4, 2509.24527: "we
+                                              # formulate the objective in data space", FVD 326 -> 151; Kingma & Gao 2023: EDM
+                                              # at sigma_data 1 = x-loss + eps-loss); scale = sum(raw) / sum(raw c_out^2) of the
+                                              # physical part on F2 ckpt_10's training term (consequence trace B4), keeping
+                                              # the glimpse's 23.4% share; glimpse EDM (11-05 glimpse check: no deficit).
+                                              # Training term only; the checkpoint monitor stays EDM. Result: P1-F3 RESULTS.md
   loss_reduction: mean_over_percept_elements  # 81 x 16 + 9 x 64 + 8 = 1,880 scalars per frame, then mean over frames
   noise_offset: 0.0                           # DIAMOND's 0.3 shifts image brightness; lighting has its own token
   sampler:                                    # NVIDIA EDM Algorithm 2 (generate.py), order 1 (STEP_SPEC 7)

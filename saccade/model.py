@@ -501,10 +501,11 @@ def _parts(sigma):
     return (sigma[0], sigma[1], sigma[0]) if isinstance(sigma, tuple) else (sigma, sigma, sigma)
 
 
-def denoise_loss(den: Denoiser, x0, sigma, prev_action, memory, fix, episode, valid, sd=1.0, noise=None):
+def denoise_loss(den: Denoiser, x0, sigma, prev_action, memory, fix, episode, valid, sd=1.0, noise=None, weighting=None):
     """LOSSES G1: MSE of the raw output against (x0 - c_skip x) / c_out (DIAMOND; EDM lambda = 1 / c_out^2), mean over
     each frame's percept scalars (every scalar equal) -> [B, T]. x0 = (p, g, v) stop-gradient targets; sigma [B, T], or
-    a (physical, glimpse) pair of independent levels (factorised, UniDiffuser)."""
+    a (physical, glimpse) pair of independent levels (factorised, UniDiffuser). weighting = edm.g1_weighting (absent:
+    EDM for every part): periphery and lighting errors x scale x c_out^2, i.e. scale x the x-space error (P1-F3)."""
     noise = noise or tuple(torch.randn_like(t) for t in x0)
     pre = [precondition(sg, sd) for sg in _parts(sigma)]                # (c_skip, c_out, c_in, c_noise) per part
     xs = tuple(t + _bcast(sg, t) * n for t, n, sg in zip(x0, noise, _parts(sigma)))
@@ -512,6 +513,9 @@ def denoise_loss(den: Denoiser, x0, sigma, prev_action, memory, fix, episode, va
     Fo = den(tuple(_bcast(c[2], t) * t for t, c in zip(xs, pre)), c_noise, prev_action, memory, fix, episode, valid)
     se = [((f.float() - (t - _bcast(c[0], t) * s) / _bcast(c[1], t)) ** 2).flatten(2).sum(-1)
           for f, t, s, c in zip(Fo, x0, xs, pre)]
+    if weighting:
+        assert (weighting["physical"], weighting["glimpse"]) == ("x_space", "edm"), weighting
+        se = [e * (weighting["scale"] * c[1].float() ** 2 if k in (0, 2) else 1) for k, (e, c) in enumerate(zip(se, pre))]
     return sum(se) / sum(t[0, 0].numel() for t in x0)
 
 

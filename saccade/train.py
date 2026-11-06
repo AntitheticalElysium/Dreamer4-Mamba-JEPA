@@ -129,7 +129,8 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg):
         if model.denoiser.factorised:                                    # decision 1: an independent glimpse level (UniDiffuser)
             sigma = (sigma, sample_sigma(first.shape, cfg, dev))
         g1 = M.denoise_loss(model.denoiser, x0, sigma, t["prev_action"], model.belief.memory(b_pred), fix,
-                            t["episode"], t["valid"], cfg["edm"]["sigma_data"])[:, P:].mean()
+                            t["episode"], t["valid"], cfg["edm"]["sigma_data"],
+                            weighting=cfg["edm"].get("g1_weighting"))[:, P:].mean()
         bp, cells = b_pred[:, P:], M.window(fix[:, P:])
         pix = M.cell_pixels(M.crop(t["frames"][:, P:], fix[:, P:]))
         faithful = cfg["heads"]["pixel_decoder"].get("mean_loss", "nll") == "faithful"
@@ -244,6 +245,7 @@ def _monitor(model: M.M0, cfg, episodes, n_windows=None) -> dict:
                 g = torch.Generator(device=dev).manual_seed(m["fixed_noise_seed"] * 1_000_003 + int(i) * 4_099 + t)
                 x0 = tuple(rep(a) for a in Pe.parts())
                 noise = tuple(torch.randn(a.shape, device=dev, generator=g) for a in x0)
+                # EDM units whatever edm.g1_weighting trains with: checkpoint selection reads comparable numbers
                 l = M.denoise_loss(model.denoiser, x0, sig, rep(c["prev_action"]), model.belief.memory(rep(b_pred)),
                                    rep(c["fixation"]), rep(c["episode"]), rep(c["valid"]), e["sigma_data"], noise)
                 losses.append(l[:, -1].float().cpu())

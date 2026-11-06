@@ -122,6 +122,9 @@ was not exogenous-filtered. No overnight launch or architecture/loss/corpus chan
     training). Candidates: EDM (sigma_data 1 or 0.5), x-space, Kingma & Gao's sigmoid (as a total weighting, with
     1/p under our draws), P2, Min-SNR, EDM2-style learned per-level weighting.
   - Physical G1 weighting beyond P1-F3's x-space arm: the same candidates, read on the consequence trace.
+    ADOPTED 11-06 (user): P1-F3's physical x-space loss (scale 3.425, glimpse EDM) is canonical, cfg
+    edm.g1_weighting in saccade code (m0.yaml documents it; absent = EDM). Evidence: P1-F3 RESULTS.md (broad lift of
+    the conditional fields, partial on coal / iron). F2.1's evaluation seal broken by this (its uptake not run, user).
   - Learned / adaptive weightings together: the chooser's surprise / contingency weighting (decision 2's lasting
     action-contingency bias, still open), EDM2-style per-level uncertainty weighting, the HarmonyDream harmoniser
     (measured rate-limited, 10-31).
