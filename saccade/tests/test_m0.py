@@ -598,3 +598,324 @@ def test_resumed_run_equals_uninterrupted(cfg, tmp_path):
     diff = max(float((u - v).abs().max()) for u, v in zip(a.state_dict().values(), b.state_dict().values())
                if u.is_floating_point())
     assert diff == 0, diff
+
+
+# ---- P1-F4: dense temporal attention and shortcut forcing ----
+
+def _f4(cfg, factorised=True, dense=True):
+    """A shortcut-forcing denoiser (dense temporal layers unless dense=False) as the P1-F4 launcher configures it, with
+    non-trivial adaLN, final modulation and output heads."""
+    c = copy.deepcopy(cfg)
+    c["denoiser"]["factorised"] = factorised
+    if dense:
+        c["denoiser"]["temporal_attention"] = "dense"
+    c["edm"]["objective"] = "shortcut_forcing"
+    c["edm"]["shortcut"] = {"k_max": 8, "self_fraction": 0.25, "bootstrap_start": 5000, "ramp": [0.9, 0.1], "context_signal": 7, "init_seed": 4}
+    c["edm"]["sampler"]["steps"] = 4
+    torch.manual_seed(0)
+    den = M.Denoiser(c).eval()
+    for blk in den.blocks:
+        torch.nn.init.normal_(blk.mod.weight, std=0.02)
+    torch.nn.init.normal_(den.final_mod.weight, std=0.02)
+    for m in den.out:
+        torch.nn.init.normal_(m.weight, std=0.02)
+    return c, den
+
+
+def _codes(B, T, seed):
+    g = torch.Generator().manual_seed(seed)
+    return M.shortcut_code(torch.randint(0, 8, (B, T), generator=g), torch.randint(0, 4, (B, T), generator=g), 8)
+
+
+@pytest.mark.parametrize("factorised", [True, False])
+def test_dense_streaming_equals_chunked(cfg, factorised):
+    """Dense temporal layers: the streaming form (cache of every token of the last `window` frames) equals the chunked
+    form (window slots), across an episode reset and beyond the window, under per-group shortcut codes."""
+    c, den = _f4(cfg, factorised)
+    B, T = 2, 11
+    x, mem, _, act, fix, _ = _den_inputs(c, B, T)
+    code = (_codes(B, T, 1), _codes(B, T, 2)) if factorised else _codes(B, T, 1)
+    episode = torch.zeros(B, T, dtype=torch.long)
+    episode[1, 6:] = 1
+    valid = torch.ones(B, T, dtype=torch.bool)
+    with torch.no_grad():
+        ref = den(x, code, act, mem, fix, episode, valid)
+        for b in range(B):
+            cache = den.new_cache()
+            for t in range(T):
+                if t and episode[b, t] != episode[b, t - 1]:
+                    cache = den.new_cache()
+                sl = lambda a: a[b:b + 1, t:t + 1]
+                cd = tuple(sl(z) for z in code) if factorised else sl(code)
+                out, new = den.step(tuple(sl(a) for a in x), cd, sl(act), sl(mem), sl(fix), cache)
+                cache = den.commit(cache, new)
+                assert all(k.shape[1] <= den.window for k, _ in cache["kv"])
+                for o, r in zip(out, ref):
+                    assert torch.allclose(o[0, 0], r[b, t], atol=1e-4), (b, t)
+
+
+def test_dense_physical_outputs_ignore_glimpse_and_fixation(cfg):
+    """Decision 1 holds with dense temporal layers: periphery and lighting outputs depend on neither the glimpse inputs
+    (any frame), nor the glimpse code, nor the fixation; glimpse outputs do."""
+    c, den = _f4(cfg)
+    B, T = 2, 7
+    x, mem, _, act, fix, _ = _den_inputs(c, B, T)
+    episode, valid = torch.zeros(B, T, dtype=torch.long), torch.ones(B, T, dtype=torch.bool)
+    g2 = torch.Generator().manual_seed(9)
+    x2 = (x[0], torch.randn(x[1].shape, generator=g2), x[2])
+    fix2 = torch.randint(1, 8, fix.shape, generator=g2)
+    with torch.no_grad():
+        a = den(x, (_codes(B, T, 1), _codes(B, T, 2)), act, mem, fix, episode, valid)
+        b = den(x2, (_codes(B, T, 1), _codes(B, T, 3)), act, mem, fix2, episode, valid)
+    assert torch.equal(a[0], b[0]) and torch.equal(a[2], b[2])
+    assert not torch.allclose(a[1], b[1])
+
+
+def test_dense_glimpse_step_equals_full_step(cfg):
+    """The cascade's stage 2 with dense temporal layers: every block's entry kept from one full step (spatial physical
+    keys, temporal full-frame keys) gives, for another glimpse input and code, the full step's glimpse output."""
+    c, den = _f4(cfg)
+    B, T = 2, 6
+    x, mem, _, act, fix, _ = _den_inputs(c, B, T, seed=1)
+    sl = lambda a, t: a[:, t:t + 1]
+    with torch.no_grad():
+        cache = den.new_cache()
+        for t in range(T - 1):
+            cache = M.context_pass(den, tuple(sl(p, t) for p in x), sl(act, t), sl(mem, t), sl(fix, t), cache, c,
+                                   torch.Generator().manual_seed(t))
+        xt, at, mt, ft = tuple(sl(p, T - 1) for p in x), sl(act, T - 1), sl(mem, T - 1), sl(fix, T - 1)
+        cp, kept = torch.full((B, 1), M.shortcut_code(7, 3, 8)), []
+        den.step(xt, (cp, torch.full((B, 1), M.shortcut_code(2, 2, 8))), at, mt, ft, cache, kept)
+        g2 = torch.randn(xt[1].shape, generator=torch.Generator().manual_seed(7))
+        cg = torch.full((B, 1), M.shortcut_code(4, 2, 8))
+        full = den.step((xt[0], g2, xt[2]), (cp, cg), at, mt, ft, cache)[0][1]
+        alone = den.glimpse_step(g2, cg, at, ft, cache, kept)
+    assert len(kept) == len(den.blocks) and cache["kv"][0][0].shape[1] == den.window
+    assert torch.allclose(alone, full, atol=1e-6), float((alone - full).abs().max())
+
+
+def test_shortcut_cascade_equals_recomputed_history(cfg):
+    """The whole cached shortcut sampler (K = 4 evaluations per stage, then one context pass per frame) equals a sampler
+    that recomputes the full history with the chunked form and the stored context copies, under identical draws:
+    several frames beyond the window, an episode reset, branch duplication, a cache round trip."""
+    c, den = _f4(cfg)
+    k, ctx = 8, 7
+    clamp = c["perception"]["periphery"]["tanh_clamp"]
+    B, T = 1, 13
+    _, mem, _, act, fix, dims = _den_inputs(c, B, T)
+    ladder = [(i * 2, i / 4) for i in range(4)]
+    cc = M.shortcut_code(ctx, 3, k)
+
+    def recompute(hist, t, gen, reps):
+        sl = lambda a: a[:, t - len(hist):t + 1].repeat_interleave(reps, 0)
+        n = len(hist) + 1
+        ep, va = torch.zeros(reps, n, dtype=torch.long), torch.ones(reps, n, dtype=torch.bool)
+        seq = lambda cur: tuple(torch.cat([*(h[i] for h in hist), a], 1) if hist else a for i, a in enumerate(cur))
+        codes = lambda phys, glim: tuple(torch.cat([torch.full((reps, n - 1), cc), torch.full((reps, 1), z)], 1) for z in (phys, glim))
+        move = lambda z, o, tau: z + (o.clamp(-clamp, clamp) - z) / (1 - tau) * 0.25
+        p, v = (torch.randn((reps, 1, *dims[i]), generator=gen) for i in (0, 2))
+        g0 = torch.zeros((reps, 1, *dims[1]))
+        for s_, tau in ladder:
+            out = den(seq((p, g0, v)), codes(M.shortcut_code(s_, 2, k), M.shortcut_code(s_, 2, k)), sl(act), sl(mem), sl(fix), ep, va)
+            p, v = move(p, out[0][:, -1:], tau), move(v, out[2][:, -1:], tau)
+        pc, vc = ((1 - ctx / k) * torch.randn(a.shape, generator=gen) + ctx / k * a for a in (p, v))
+        g = torch.randn((reps, 1, *dims[1]), generator=gen)
+        for s_, tau in ladder:
+            out = den(seq((pc, g, vc)), codes(cc, M.shortcut_code(s_, 2, k)), sl(act), sl(mem), sl(fix), ep, va)
+            g = move(g, out[1][:, -1:], tau)
+        x = (p, g, v)
+        return x, tuple((1 - ctx / k) * torch.randn(a.shape, generator=gen) + ctx / k * a for a in x)
+
+    with torch.no_grad():
+        ga, gb = torch.Generator().manual_seed(7), torch.Generator().manual_seed(7)
+        cache, hist, reps = den.new_cache(), [], 1
+        for t in range(T):
+            if t == 11:
+                cache, hist = den.new_cache(), []
+            if t == 7:
+                cache = {"t": cache["t"], "kv": [(k_.repeat_interleave(2, 0), v_.repeat_interleave(2, 0)) for k_, v_ in cache["kv"]]}
+                hist, reps = [tuple(a.repeat_interleave(2, 0) for a in h) for h in hist], 2
+            if t == 9:
+                buf = io.BytesIO()
+                torch.save(cache, buf)
+                buf.seek(0)
+                cache = torch.load(buf, weights_only=False)
+            sl = lambda a: a[:, t:t + 1].repeat_interleave(reps, 0)
+            xa = M.sample(den, dims, sl(act), sl(mem), sl(fix), cache, c, ga)
+            cache = M.context_pass(den, xa, sl(act), sl(mem), sl(fix), cache, c, ga)
+            xb, ctx_copy = recompute(hist, t, gb, reps)
+            hist.append(ctx_copy)
+            for u, w in zip(xa, xb):
+                assert torch.allclose(u, w, atol=1e-4), t
+
+
+def test_shortcut_cascade_periphery_ignores_fixation_and_choose(cfg):
+    c, den = _f4(cfg)
+    B = 2
+    _, mem, _, act, fix, dims = _den_inputs(c, B, 1)
+    with torch.no_grad():
+        outs = [M.sample(den, dims, act, mem, f, den.new_cache(), c, torch.Generator().manual_seed(5))
+                for f in (fix, torch.full_like(fix, 4))]
+        chosen = M.sample(den, dims, act, mem, fix, den.new_cache(), c, torch.Generator().manual_seed(5),
+                          choose=lambda p, v: torch.full_like(fix, 4))
+    assert torch.equal(outs[0][0], outs[1][0]) and torch.equal(outs[0][2], outs[1][2])
+    (frame, f_out) = chosen
+    assert torch.equal(f_out, torch.full_like(fix, 4)) and all(torch.equal(a, b) for a, b in zip(frame, outs[1]))
+
+
+def _nh_pretrain_loss(dyn, z1, k_max, B_self, do_boot, sigma_full, sigma_idx_full, step_idx_full, z0_full):
+    """nicklashansen/dreamer4 (b8abafbf) train_dynamics.py dynamics_pretrain_loss, transcribed line by line with its
+    random draws passed in and dynamics(..) called as dyn(rows, step_idx, sigma_idx, z) -> z1_hat; z1 [B, T, D] (one
+    flattened frame), so its mean over dims (2, 3) is a mean over dim 2. Returns the scalar loss."""
+    B, T = z1.shape[:2]
+    B_emp = B - B_self
+    step_idx_self = step_idx_full[B_emp:]
+    d_self = 1.0 / (1 << step_idx_self).to(torch.float32)
+    sigma_emp, sigma_self, sigma_idx_self = sigma_full[:B_emp], sigma_full[B_emp:], sigma_idx_full[B_emp:]
+    z_tilde_full = (1.0 - sigma_full)[..., None] * z0_full + sigma_full[..., None] * z1
+    z_tilde_self = z_tilde_full[B_emp:]
+    w_emp, w_self = 0.9 * sigma_emp + 0.1, 0.9 * sigma_self + 0.1
+    z1_hat_full = dyn(slice(None), step_idx_full, sigma_idx_full, z_tilde_full)
+    z1_hat_self = z1_hat_full[B_emp:]
+    flow_per = (z1_hat_full[:B_emp].float() - z1[:B_emp].float()).pow(2).mean(dim=2)
+    loss_emp = (flow_per * w_emp).mean()
+    loss_self = torch.zeros(())
+    if do_boot:
+        d_half = d_self / 2.0
+        step_idx_half = step_idx_self + 1
+        sigma_plus = sigma_self + d_half
+        sigma_idx_plus = sigma_idx_self + (torch.tensor(k_max, dtype=torch.float32) * d_half).to(torch.long)
+        rows = slice(B_emp, None)
+        z1_hat_half1 = dyn(rows, step_idx_half, sigma_idx_self, z_tilde_self)
+        b_prime = (z1_hat_half1.float() - z_tilde_self.float()) / (1.0 - sigma_self).clamp_min(1e-6)[..., None]
+        z_prime = z_tilde_self.float() + b_prime * d_half[..., None]
+        z1_hat_half2 = dyn(rows, step_idx_half, sigma_idx_plus, z_prime.to(z_tilde_self.dtype))
+        b_doubleprime = (z1_hat_half2.float() - z_prime.float()) / (1.0 - sigma_plus).clamp_min(1e-6)[..., None]
+        vhat_sigma = (z1_hat_self.float() - z_tilde_self.float()) / (1.0 - sigma_self).clamp_min(1e-6)[..., None]
+        vbar_target = ((b_prime + b_doubleprime) / 2.0).detach()
+        boot_per = (1.0 - sigma_self).pow(2) * (vhat_sigma - vbar_target).pow(2).mean(dim=2)
+        loss_self = (boot_per * w_self).mean()
+    return ((loss_emp * (B - B_self)) + (loss_self * B_self)) / B
+
+
+@pytest.mark.parametrize("start", [True, False])
+def test_shortcut_loss_equals_dreamer4_reimplementation(cfg, start):
+    """M.shortcut_loss (one group, dense) equals the transcribed reimplementation on the same draws: flow rows first,
+    bootstrap rows last as there; the ramp, both half steps, the (1 - tau)^2 x-space scaling and the row combination."""
+    c, den = _f4(cfg, factorised=False)
+    B, T, k = 6, 5, 8
+    x, mem, _, act, fix, dims = _den_inputs(c, B, T, seed=2)
+    episode, valid = torch.zeros(B, T, dtype=torch.long), torch.ones(B, T, dtype=torch.bool)
+    boot = torch.tensor([False] * 4 + [True] * 2)
+    torch.manual_seed(11)
+    sig, stp = M.shortcut_levels((B, T), k, boot, torch.device("cpu"))
+    noise = tuple(torch.randn(a.shape) for a in x)
+    sizes = [a[0, 0].numel() for a in x]
+    flat = lambda parts: torch.cat([p.flatten(2) for p in parts], 2)
+    unflat = lambda z: tuple(a.reshape(*z.shape[:2], *d) for a, d in zip(z.split(sizes, 2), dims))
+
+    def dyn(rows, step_idx, sigma_idx, z):
+        r = lambda a: a[rows]
+        return flat(den(unflat(z), M.shortcut_code(sigma_idx, step_idx, k), r(act), r(mem), r(fix), r(episode), r(valid)))
+
+    with torch.no_grad():
+        ours = M.shortcut_loss(den, x, act, mem, fix, episode, valid, c["edm"]["shortcut"], boot, start, [(sig, stp)], noise).mean()
+        ref = _nh_pretrain_loss(dyn, flat(x), k, 2, start, sig.float() / k, sig, stp, flat(noise))
+    assert torch.allclose(ours, ref, rtol=1e-5, atol=1e-7), (float(ours), float(ref))
+
+
+def test_shortcut_loss_factorised_groups(cfg):
+    """Factorised: each part uses its own group's level in the interpolation, the ramp, both half steps and the
+    bootstrap scaling (an explicit per-part computation of the same formulas)."""
+    c, den = _f4(cfg)
+    B, T, k = 4, 4, 8
+    x, mem, _, act, fix, _ = _den_inputs(c, B, T, seed=3)
+    episode, valid = torch.zeros(B, T, dtype=torch.long), torch.ones(B, T, dtype=torch.bool)
+    boot = torch.tensor([False, True, False, True])
+    torch.manual_seed(12)
+    lv = [M.shortcut_levels((B, T), k, boot, torch.device("cpu")) for _ in range(2)]
+    noise = tuple(torch.randn(a.shape) for a in x)
+    with torch.no_grad():
+        ours = M.shortcut_loss(den, x, act, mem, fix, episode, valid, c["edm"]["shortcut"], boot, True, lv, noise)
+        part = lambda pair: (pair[0], pair[1], pair[0])
+        sig, stp = part((lv[0][0], lv[1][0])), part((lv[0][1], lv[1][1]))
+        tau = [s.float() / k for s in sig]
+        bc = lambda a, z: a.reshape(*a.shape, *([1] * (z.ndim - a.ndim)))
+        zt = tuple((1 - bc(t, a)) * n + bc(t, a) * a for a, n, t in zip(x, noise, tau))
+        code = lambda s, e: (M.shortcut_code(s[0], e[0], k), M.shortcut_code(s[1], e[1], k))
+        out = den(zt, code((lv[0][0], lv[1][0]), (lv[0][1], lv[1][1])), act, mem, fix, episode, valid)
+        n_el = sum(a[0, 0].numel() for a in x)
+        per = lambda terms: sum(e.flatten(2).sum(-1) for e in terms) / n_el
+        w = [0.9 * t + 0.1 for t in tau]
+        flow = per([bc(wt, a) * (o - a) ** 2 for o, a, wt in zip(out, x, w)])
+        h = [(lv[g][0], lv[g][1] + boot[:, None].long()) for g in range(2)]   # half steps (bootstrap rows; the others unused)
+        dh = part(tuple(2.0 ** -(e.float()) for _, e in h))
+        h1 = den(zt, code((h[0][0], h[1][0]), (h[0][1], h[1][1])), act, mem, fix, episode, valid)
+        b1 = [(o - z) / bc(1 - t, z) for o, z, t in zip(h1, zt, tau)]
+        z1 = [z + b * bc(d, z) for z, b, d in zip(zt, b1, dh)]
+        pl = [(h[g][0] + k // 2 ** h[g][1], h[g][1]) for g in range(2)]
+        h2 = den(tuple(z1), code((pl[0][0], pl[1][0]), (pl[0][1], pl[1][1])), act, mem, fix, episode, valid)
+        b2 = [(o - z) / bc(1 - t - d, z) for o, z, t, d in zip(h2, z1, tau, dh)]
+        vh = [(o - z) / bc(1 - t, z) for o, z, t in zip(out, zt, tau)]
+        bt = per([bc(wt * (1 - t) ** 2, z) * (v - (a + b_) / 2) ** 2 for v, a, b_, z, t, wt in zip(vh, b1, b2, zt, tau, w)])
+        expect = torch.where(boot[:, None], bt, flow)
+    assert torch.allclose(ours, expect, rtol=1e-5, atol=1e-7)
+
+
+def test_shortcut_levels_follow_the_reimplementation_grid():
+    k, B, T = 8, 4000, 3
+    boot = torch.arange(B) % 4 == 0
+    torch.manual_seed(0)
+    s, e = M.shortcut_levels((B, T), k, boot, torch.device("cpu"))
+    assert (e[~boot] == 3).all() and set(e[boot].unique().tolist()) == {0, 1, 2}
+    K = 2 ** e
+    assert ((s * K) % k == 0).all() and (s < k).all() and (s >= 0).all()
+    for ee in (0, 1, 2, 3):                                             # tau uniform over its step's grid
+        m = e == ee
+        counts = torch.bincount(s[m] // (k // 2 ** ee), minlength=2 ** ee).float()
+        assert (counts / counts.sum() - 1 / 2 ** ee).abs().max() < 0.04, (ee, counts)
+
+
+def test_shortcut_sampler_equals_dreamer4_reimplementation(cfg):
+    """M.sample for a (non-factorised) shortcut world equals nicklashansen sample_one_timestep_packed's recursion
+    (z from N(0, I); z += (x1_hat - z) / max(1e-4, 1 - tau_i) dt over tau_i = i / K) with a bounded stub network that
+    reads the code: the data-range clip is then inactive."""
+    c = copy.deepcopy(_f4(cfg, factorised=False)[0])
+
+    class Stub:
+        shortcut, factorised, k_max = True, False, 8
+
+        def step(self, x, code, *a):
+            return tuple(0.5 * torch.tanh(t + 0.1 * code.float()[..., None]) for t in x), []
+
+    dims = [(5,), (3, 2)]
+    ga, gb = torch.Generator().manual_seed(3), torch.Generator().manual_seed(3)
+    out = M.sample(Stub(), dims, None, torch.zeros(2, 1, 1), None, None, c, ga)
+    z = tuple(torch.randn((2, 1, *d), generator=gb) for d in dims)
+    K, emax = 4, 3
+    for i in range(K):
+        tau = i / K
+        x1 = Stub().step(z, torch.full((2, 1), M.shortcut_code(i * 2, 2, 8)))[0]
+        z = tuple(a + (x - a) / max(1e-4, 1 - tau) * (1 / K) for a, x in zip(z, x1))
+    assert all(torch.allclose(a, b, atol=1e-6) for a, b in zip(out, z))
+    c["edm"]["sampler"]["steps"] = 16
+    with pytest.raises(AssertionError):
+        M.sample(Stub(), dims, None, torch.zeros(2, 1, 1), None, None, c, ga)
+
+
+def test_bootstrap_rows_fraction_and_determinism(cfg):
+    c = _f4(cfg)[0]
+    a, b, d = TR.bootstrap_rows(c, 1, 10), TR.bootstrap_rows(c, 1, 10), TR.bootstrap_rows(c, 1, 11)
+    assert a.sum() == 4 and np.array_equal(a, b) and not np.array_equal(a, d)
+
+
+def test_shortcut_conditioning_reads_signal_and_step(cfg):
+    c, den = _f4(cfg)
+    act = torch.zeros(1, 1, dtype=torch.long)
+    with torch.no_grad():
+        base = den.cond(torch.full((1, 1), M.shortcut_code(3, 1, 8)), act)
+        assert not torch.allclose(base, den.cond(torch.full((1, 1), M.shortcut_code(3, 2, 8)), act))
+        assert not torch.allclose(base, den.cond(torch.full((1, 1), M.shortcut_code(4, 1, 8)), act))
+    assert den.signal_embed.num_embeddings == 9 and den.step_embed.num_embeddings == 4
+    plain = M.Denoiser(cfg)
+    assert not hasattr(plain, "signal_embed") and not plain.dense and not plain.shortcut

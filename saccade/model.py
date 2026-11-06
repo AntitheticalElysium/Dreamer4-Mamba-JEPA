@@ -292,9 +292,9 @@ class Attention(nn.Module):
 class Block(nn.Module):
     """Pre-norm RMSNorm block with adaLN-Zero modulation; space-only or time-only attention (Dreamer 4), SwiGLU MLP."""
 
-    def __init__(self, W, H, hidden, temporal):
+    def __init__(self, W, H, hidden, temporal, dense=False):
         super().__init__()
-        self.temporal = temporal
+        self.temporal, self.dense = temporal, dense and temporal
         self.n1, self.n2 = nn.RMSNorm(W, elementwise_affine=False), nn.RMSNorm(W, elementwise_affine=False)
         self.attn = Attention(W, H)
         self.gate_up, self.down = nn.Linear(W, 2 * hidden, bias=False), nn.Linear(hidden, W, bias=False)
@@ -312,7 +312,8 @@ class Block(nn.Module):
         conditionings applied to their token groups (glimpse tokens N:N+G, the rest physical), and with phys (the
         physical token indices) the physical queries attend only to physical keys in spatial layers; their keys /
         values are returned. pkv (spatial, x = the 9 glimpse tokens only): those physical keys / values, around which
-        the glimpse's own are placed in the full frame's order."""
+        the glimpse's own are placed in the full frame's order. Dense temporal layers: see dense_time (mask = its
+        window, pkv = this frame's full keys / values in a glimpse-only pass)."""
         if isinstance(c, tuple):
             (sh1, sc1, g1, sh2, sc2, g2), mg = (self.mod(F.silu(z)).unsqueeze(2).chunk(6, -1) for z in c)
             grp = lambda t, f: torch.cat([f(t[:, :, :N], 0), f(t[:, :, N:N + G], 1), f(t[:, :, N + G:], 0)], 2)
@@ -333,6 +334,8 @@ class Block(nn.Module):
                 new = sel(k), sel(v)
                 ap, ag = self.attn.attend(sel(q), *new), self.attn.attend(q[..., N:N + G, :], k, v)
                 a = torch.cat([ap[:, :, :N], ag, ap[:, :, N:]], 2)
+        elif self.dense:
+            a, new = self.dense_time(h, ang, mask, cache, phys, pkv)
         else:
             ht = h.transpose(1, 2)                                            # [B, n, T, W]
             q, k, v = self.attn.project(ht, ang[:, None].expand(-1, ht.shape[1], -1, -1))
@@ -346,6 +349,44 @@ class Block(nn.Module):
             return x + grp(self.mlp(grp(self.n2(x), lambda t, j: t * (1 + pick(4, j)) + pick(3, j))), lambda t, j: t * pick(5, j)), new
         x = x + g1 * a
         return x + g2 * self.mlp(self.n2(x) * (1 + sc2) + sh2), new
+
+    def dense_time(self, h, ang, win=None, cache=None, phys=None, cur=None):
+        """Dense temporal attention (P1-F4): Dreamer 4's long-context layers before its "time factorized long context"
+        step (2509.24527 Table 2, FVD 71 -> 91 when factorised): every token of a frame attends every token of its own
+        frame and of the window's earlier frames, with 1D RoPE over frame positions; factorised, physical queries read
+        physical keys only (decision 1, as in the spatial layers). h [B, T, n, W], ang [B, T, hd/2]. Chunked: win =
+        (frame index [T, w + 1] oldest first, allowed [B, T, w + 1]). Streaming (T = 1): cache = this layer's (k, v) of
+        the committed frames [B, F, H, n, hd] (or None); this frame's (k, v) is returned to commit. Glimpse-only pass
+        (h = the 9 glimpse tokens): cur = this frame's full (k, v) from the full step, its glimpse rows replaced."""
+        q, k, v = self.attn.project(h, ang[:, :, None].expand(-1, -1, h.shape[2], -1))   # [B, T, H, n, hd]
+        if cur is not None:
+            k, v = (torch.cat([c[..., :N, :], t, c[..., N + G:, :]], -2) for c, t in zip(cur, (k, v)))
+        new, n = (k, v), k.shape[-2]
+        if win is not None:                                              # [B, H, T, (w + 1) n, hd] from shifted slices of
+            idx, ok = win                                                # the front-padded frames (slot j = frame t - (w - j)):
+            w, T = idx.shape[1] - 1, idx.shape[0]                        # an index gather's backward would accumulate the
+            pad = lambda t: F.pad(t.transpose(1, 2), (0, 0, 0, 0, w, 0))  # repeated frames with atomics (not bitwise)
+            kw, vw = (torch.stack([p[:, :, j:j + T] for j in range(w + 1)], 3).flatten(3, 4) for p in (pad(k), pad(v)))
+            allowed = ok[:, None, :, None].repeat_interleave(n, -1)         # [B, 1, T, 1, (w + 1) n]: broadcast, never expanded
+        else:
+            if cache is not None and cache[0] is not None:
+                k, v = torch.cat([cache[0], k], 1), torch.cat([cache[1], v], 1)         # [B, F + 1, H, n, hd]
+            kw, vw = (t.permute(0, 2, 1, 3, 4).flatten(2, 3)[:, :, None] for t in (k, v))   # [B, H, 1, (F + 1) n, hd]
+            allowed = None
+        qh = q.transpose(1, 2)                                           # [B, H, T, n, hd]
+
+        def attend(qq, mask):                                            # SDPA on 4-D [B H, T, ., hd] (fused kernels)
+            B, H, T = kw.shape[:3]
+            m = None if mask is None else mask.expand(B, H, T, 1, kw.shape[-2]).reshape(B * H, T, 1, -1)
+            o = F.scaled_dot_product_attention(qq.reshape(B * H, T, *qq.shape[-2:]), kw.reshape(B * H, T, *kw.shape[-2:]),
+                                               vw.reshape(B * H, T, *vw.shape[-2:]), attn_mask=m)
+            return self.attn.out(o.unflatten(0, (B, H)).permute(0, 2, 3, 1, 4).flatten(-2))
+        if phys is None or cur is not None:                                  # all queries read all keys
+            return attend(qh, allowed), new
+        physical = torch.zeros(n, dtype=torch.bool, device=h.device).index_fill(0, phys, True).repeat(kw.shape[-2] // n)
+        ap = attend(qh.index_select(-2, phys), physical if allowed is None else allowed & physical)
+        ag = attend(qh[..., N:N + G, :], allowed)
+        return torch.cat([ap[:, :, :N], ag, ap[:, :, N:]], 2), new
 
 
 class Denoiser(nn.Module):
@@ -368,7 +409,9 @@ class Denoiser(nn.Module):
         self.register_buffer("fourier", torch.randn(nf // 2))
         self.action = nn.Embedding(cfg["data"]["actions"], nf)
         self.cond_proj = nn.Sequential(nn.Linear(nf, W), nn.SiLU(), nn.Linear(W, W))
-        self.blocks = nn.ModuleList([Block(W, H, d["mlp_hidden"], (i + 1) % d["temporal_every"] == 0)
+        self.dense = d.get("temporal_attention", "per_token") == "dense"   # P1-F4; absent = per-token (time-only)
+        assert d.get("temporal_attention", "per_token") in ("per_token", "dense")
+        self.blocks = nn.ModuleList([Block(W, H, d["mlp_hidden"], (i + 1) % d["temporal_every"] == 0, self.dense)
                                      for i in range(d["layers"])])
         self.final_norm = nn.RMSNorm(W, elementwise_affine=False)
         self.final_mod = nn.Linear(W, 2 * W)
@@ -381,6 +424,15 @@ class Denoiser(nn.Module):
         self.checkpoint = False
         self.factorised = d.get("factorised", False)                     # TEACHING 10 / 10a (decision 1); default off
         self.register_buffer("phys", torch.cat([torch.arange(N), torch.arange(N + G, N + G + 1 + self.K)]), persistent=False)
+        self.shortcut = cfg["edm"].get("objective", "edm") == "shortcut_forcing"   # P1-F4; absent = EDM
+        assert cfg["edm"].get("objective", "edm") in ("edm", "shortcut_forcing")
+        if self.shortcut:                                                # Dreamer 4: discrete signal-level and step-size
+            self.k_max = cfg["edm"]["shortcut"]["k_max"]                 # embeddings (nicklashansen/dreamer4 model.py:
+            assert self.k_max >= 2 and self.k_max & (self.k_max - 1) == 0   # signal_embed k_max + 1, step_embed log2 + 1)
+            with torch.random.fork_rng(devices=[]):                      # own draws: every other parameter keeps the
+                torch.random.default_generator.manual_seed(cfg["edm"]["shortcut"]["init_seed"])   # legacy draws
+                self.signal_embed = nn.Embedding(self.k_max + 1, nf)
+                self.step_embed = nn.Embedding(self.k_max.bit_length(), nf)
 
     def conds(self, c_noise, prev_action):
         """Factorised: (physical, glimpse) conditionings from a noise-level pair (a single tensor = tied); else one."""
@@ -389,8 +441,11 @@ class Denoiser(nn.Module):
         return tuple(self.cond(z, prev_action) for z in (c_noise if isinstance(c_noise, tuple) else (c_noise, c_noise)))
 
     def cond(self, c_noise: Tensor, prev_action: Tensor) -> Tensor:
-        f = 2 * math.pi * c_noise[..., None].float() * self.fourier
+        """c_noise: EDM's c_noise, or (shortcut) the integer code of shortcut_code (signal index, step index)."""
         a = self.action(prev_action.clamp(min=0)) * (prev_action >= 0)[..., None]
+        if self.shortcut:                                                # sum = concatenation then cond_proj's linear
+            return self.cond_proj(self.signal_embed(c_noise % (self.k_max + 1)) + self.step_embed(c_noise // (self.k_max + 1)) + a)
+        f = 2 * math.pi * c_noise[..., None].float() * self.fourier
         return self.cond_proj(torch.cat([f.cos(), f.sin()], -1) + a)            # DIAMOND: proj(noise_emb + act_emb)
 
     def embed(self, x, memory: Tensor, fix: Tensor):
@@ -425,10 +480,13 @@ class Denoiser(nn.Module):
         lag = t[:, None] - t[None, :]
         ok = (lag >= 0) & (lag <= self.window) & (episode[:, :, None] == episode[:, None, :]) & valid[:, None, :]
         mask = (ok | torch.eye(T, dtype=torch.bool, device=tok.device))[:, None, None]
+        if self.dense:                                                   # the same rule per window slot (oldest first)
+            idx = t[:, None] - torch.arange(self.window, -1, -1, device=tok.device)
+            mask = (idx.clamp(min=0), (idx >= 0) & (mask[:, 0, 0].gather(2, idx.clamp(min=0).expand(len(mask), -1, -1))))
         ang_t = t.float()[:, None] * self.f_time
         phys = self.phys if self.factorised else None
         for blk in self.blocks:
-            a = (ang_t.expand(tok.shape[0], -1, -1), mask) if blk.temporal else (ang, None, None, phys)
+            a = (ang_t.expand(tok.shape[0], -1, -1), mask, None, phys if blk.dense else None) if blk.temporal else (ang, None, None, phys)
             if self.checkpoint and self.training:
                 tok = checkpoint(lambda z, b=blk, a=a: b(z, c, *a)[0], tok, use_reentrant=False)
             else:
@@ -439,15 +497,17 @@ class Denoiser(nn.Module):
         """Streaming form for one frame per stream (T = 1) at frame position cache["t"]; cache["kv"] holds, per temporal
         layer, the keys / values of the previous <= `window` committed frames. Returns (F, kv of this frame); commit()
         appends them. Factorised, with a list `keep`: the physical tokens' spatial keys / values per layer are appended
-        to it (for glimpse_step)."""
+        to it (for glimpse_step); dense, also each temporal layer's keys / values of this frame, in block order."""
         tok, ang = self.embed(x, memory, fix)
         c = self.conds(c_noise, prev_action)
         ang_t = torch.full((tok.shape[0], 1, 1), float(cache["t"]), device=tok.device) * self.f_time
         new, i = [], 0
         for blk in self.blocks:
             if blk.temporal:
-                tok, kv = blk(tok, c, ang_t, None, cache["kv"][i])
+                tok, kv = blk(tok, c, ang_t, None, cache["kv"][i], self.phys if self.factorised and self.dense else None)
                 new.append(kv)
+                if self.dense and keep is not None:
+                    keep.append(kv)
                 i += 1
             else:
                 tok, pkv = blk(tok, c, ang, None, None, self.phys if self.factorised else None)
@@ -466,7 +526,9 @@ class Denoiser(nn.Module):
         ang_t = torch.full((tok.shape[0], 1, 1), float(cache["t"]), device=tok.device) * self.f_time
         i = j = 0
         for blk in self.blocks:
-            if blk.temporal:
+            if blk.dense:                                                # kept holds every block's entry (step, dense)
+                tok, i, j = blk(tok, c, ang_t, None, cache["kv"][i], pkv=kept[j])[0], i + 1, j + 1
+            elif blk.temporal:
                 kv = tuple(t if t is None else t[:, N:N + G] for t in cache["kv"][i])
                 tok, i = blk(tok, c, ang_t, None, kv)[0], i + 1
             else:
@@ -480,6 +542,10 @@ class Denoiser(nn.Module):
     def commit(self, cache: dict, new) -> dict:
         kv = []
         for (k0, v0), (k, v) in zip(cache["kv"], new):
+            if self.dense:                                               # [B, frames, H, n, hd]: every token of a frame
+                k, v = (k, v) if k0 is None else (torch.cat([k0, k], 1), torch.cat([v0, v], 1))
+                kv.append((k[:, -self.window:], v[:, -self.window:]))
+                continue
             k, v = (k, v) if k0 is None else (torch.cat([k0, k], -2), torch.cat([v0, v], -2))
             kv.append((k[..., -self.window:, :], v[..., -self.window:, :]))
         return {"t": cache["t"] + 1, "kv": kv}
@@ -545,7 +611,9 @@ def sample(den: Denoiser, shapes, prev_action, memory, fix, cache, cfg, gen=None
     as a cascade (decision 1): periphery and lighting first (the glimpse tokens, which they never read, held at a
     placeholder), then the glimpse given them, noised once to edm.sampler.glimpse_conditioning_sigma (cascaded
     diffusion's conditioning augmentation); `choose(p, v) -> fix` may set the fixation between the two stages
-    (TEACHING 14), and is then returned beside the frame."""
+    (TEACHING 14), and is then returned beside the frame. A shortcut-forcing world samples with shortcut_sample."""
+    if getattr(den, "shortcut", False):
+        return shortcut_sample(den, shapes, prev_action, memory, fix, cache, cfg, gen, choose)
     e, s = cfg["edm"], cfg["edm"]["sampler"]
     n, dev = s["steps"], memory.device
     i = torch.arange(n, device=dev, dtype=torch.float64)
@@ -603,12 +671,129 @@ def _cascade(den, shapes, prev_action, memory, fix, cache, cfg, sig, B, randn, c
 def context_pass(den: Denoiser, x, prev_action, memory, fix, cache, cfg, gen=None):
     """Enter a finished frame into the context once: one fresh draw noises it to the context level, one pass in its
     context role writes its keys / values (STEP_SPEC 7). Returns the new cache."""
+    if getattr(den, "shortcut", False):                                 # Dreamer 4: past inputs slightly corrupted to the
+        k = den.k_max                                                    # context signal level, labelled at the finest step
+        tau = cfg["edm"]["shortcut"]["context_signal"] / k
+        xs = tuple((1 - tau) * torch.randn(t.shape, device=t.device, generator=gen) + tau * t for t in x)
+        code = torch.full((x[0].shape[0], 1), shortcut_code(cfg["edm"]["shortcut"]["context_signal"], k.bit_length() - 1, k),
+                          device=x[0].device)
+        _, new = den.step(xs, code, prev_action, memory, fix, cache)
+        return den.commit(cache, new)
     e = cfg["edm"]
     sc = e["inference_context_sigma"]
     xs = tuple(t + sc * torch.randn(t.shape, device=t.device, generator=gen) for t in x)
     c_skip, c_out, c_in, c_noise = precondition(torch.full((x[0].shape[0], 1), sc, device=x[0].device), e["sigma_data"])
     _, new = den.step(tuple(_bcast(c_in, t) * t for t in xs), c_noise, prev_action, memory, fix, cache)
     return den.commit(cache, new)
+
+
+# ---- shortcut forcing (P1-F4): Dreamer 4 (2509.24527) eq. 6-8 and section 3.2, as implemented by both public
+# reimplementations (nicklashansen/dreamer4 train_dynamics.py: dynamics_pretrain_loss, sample_one_timestep_packed;
+# edwhu/dreamer4-jax scripts/train_dynamics.py). Signal level tau in [0, 1) on the grid of a step size d = 2^-e:
+# z_tau = (1 - tau) z0 + tau x1 (z0 ~ N(0, I), tau = 0 pure noise); the network predicts x1 (x-prediction) from z_tau,
+# conditioned on the signal index tau k_max and the step index e (e_max = log2 k_max: the finest step d_min). ----
+
+def shortcut_code(signal, step, k_max):
+    """(signal index 0..k_max, step index 0..log2 k_max) -> the integer code Denoiser.cond reads."""
+    return step * (k_max + 1) + signal
+
+
+def shortcut_levels(shape, k_max, bootstrap, device, gen=None):
+    """Per frame: the step index (finest on flow rows; uniform over the coarser ones on bootstrap rows, `bootstrap` [B]
+    bool) and a signal index on that step's grid (j uniform in 0..2^e - 1, tau = j / 2^e, index j k_max / 2^e)."""
+    e_max = k_max.bit_length() - 1
+    coarse = torch.randint(0, e_max, shape, device=device, generator=gen)
+    e = torch.where(bootstrap.reshape(-1, *([1] * (len(shape) - 1))), coarse, torch.full_like(coarse, e_max))
+    K = 2 ** e
+    j = (torch.rand(shape, device=device, generator=gen) * K).floor().long()
+    return j * (k_max // K), e
+
+
+def shortcut_loss(den: Denoiser, x0, prev_action, memory, fix, episode, valid, sc, bootstrap, start, levels=None, noise=None):
+    """Shortcut forcing's G1 per frame [B, T] (mean over each frame's percept scalars, every scalar equal; ramp weight
+    w(tau) = 0.9 tau + 0.1 per element at its group's level). Rows `bootstrap` [B] bool train the self-consistency
+    (bootstrap) term at a coarser step, the others the flow term at the finest step; before the bootstrap start
+    (start False) the bootstrap rows contribute 0, as in both reimplementations. Factorised: physical (p, v) and glimpse
+    levels drawn independently (decision 1). levels / noise (tests): ((signal, step) per group, z0 per part)."""
+    k = sc["k_max"]
+    B, T = x0[0].shape[:2]
+    groups = 2 if den.factorised else 1
+    levels = levels or [shortcut_levels((B, T), k, bootstrap, x0[0].device) for _ in range(groups)]
+    noise = noise or tuple(torch.randn_like(t) for t in x0)
+    part = lambda pair: _parts(pair if groups == 2 else pair[0])        # (p, g, v)
+    sig, stp = part(tuple(l[0] for l in levels)), part(tuple(l[1] for l in levels))
+    tau = [s.float() / k for s in sig]
+    code = lambda s_, e_: tuple(shortcut_code(a, b, k) for a, b in zip(s_, e_)) if groups == 2 else shortcut_code(s_[0], e_[0], k)
+    zt = tuple((1 - _bcast(t, x)) * n + _bcast(t, x) * x for x, n, t in zip(x0, noise, tau))
+    out = den(zt, code(*zip(*levels)), prev_action, memory, fix, episode, valid)
+    w = [sc["ramp"][0] * t + sc["ramp"][1] for t in tau]
+    per_frame = lambda terms: sum(e.flatten(2).sum(-1) for e in terms) / sum(t[0, 0].numel() for t in x0)
+    flow = per_frame([_bcast(wt, x) * (o.float() - x) ** 2 for o, x, wt in zip(out, x0, w)])
+    loss = torch.where(bootstrap[:, None], torch.zeros_like(flow), flow)
+    if start and bootstrap.any():
+        r = bootstrap
+        sub = lambda a: a[r]
+        zr, tr, wr = tuple(sub(z).float() for z in zt), [sub(t) for t in tau], [sub(t) for t in w]
+        half = [(sub(l[0]), sub(l[1]) + 1) for l in levels]               # d / 2: the next finer step
+        plus = [(s_ + k // 2 ** e_, e_) for s_, e_ in half]                # tau + d / 2 on that grid
+        args = (sub(prev_action), sub(memory).detach(), sub(fix), sub(episode), sub(valid))
+        with torch.no_grad():
+            h1 = den(tuple(z.to(t.dtype) for z, t in zip(zr, zt)), code(*zip(*half)), *args)
+            b1 = tuple((h.float() - z) / _bcast(1 - t, z) for h, z, t in zip(h1, zr, tr))
+            dh = part(tuple(2.0 ** -(l[1].float()) for l in half))       # d / 2 per part
+            z1 = tuple(z + b * _bcast(d, z) for z, b, d in zip(zr, b1, dh))
+            h2 = den(tuple(z.to(t.dtype) for z, t in zip(z1, zt)), code(*zip(*plus)), *args)
+            b2 = tuple((h.float() - z) / _bcast(1 - t - d, z) for h, z, t, d in zip(h2, z1, tr, dh))
+            target = tuple((a + b) / 2 for a, b in zip(b1, b2))
+        vhat = tuple((sub(o).float() - z) / _bcast(1 - t, z) for o, z, t in zip(out, zr, tr))
+        boot = per_frame([_bcast(wt * (1 - t) ** 2, z) * (v - g) ** 2 for v, g, z, t, wt in zip(vhat, target, zr, tr, wr)])
+        loss = loss.index_put((r.nonzero()[:, 0],), boot)
+    return loss
+
+
+def shortcut_ladder(cfg):
+    """The sampler's K = edm.sampler.steps evaluations (a power of two <= k_max, Dreamer 4: 4): (signal index, tau)
+    from tau = 0, the step index log2 K, the step size 1 / K."""
+    k, K = cfg["edm"]["shortcut"]["k_max"], cfg["edm"]["sampler"]["steps"]
+    assert K >= 1 and K & (K - 1) == 0 and K <= k, f"shortcut sampler steps {K} must be a power of two <= k_max {k}"
+    return [(i * (k // K), i / K) for i in range(K)], K.bit_length() - 1, 1 / K
+
+
+def shortcut_sample(den, shapes, prev_action, memory, fix, cache, cfg, gen=None, choose=None):
+    """Dreamer 4's sampler (nicklashansen sample_one_timestep_packed): from pure noise, K evaluations at the step size
+    1 / K, z <- z + (x1_hat - z) / (1 - tau) d (the last lands on x1_hat). x1_hat is clipped to its data range as every
+    inference path here does (clean_estimate). Factorised: the cascade of decision 1 (periphery and lighting, then the
+    glimpse given them, slightly corrupted to the context signal level and labelled at the finest step); `choose` as in
+    sample()."""
+    ladder, e, d = shortcut_ladder(cfg)
+    k, dev, B = den.k_max, memory.device, memory.shape[0]
+    clamp = cfg["perception"]["periphery"]["tanh_clamp"]
+    randn = lambda shp: torch.randn(shp, device=dev, generator=gen)
+    code = lambda s_, e_: torch.full((B, 1), shortcut_code(s_, e_, k), device=dev)
+    move = lambda z, x, tau: z + (x.float().clamp(-clamp, clamp) - z) / (1 - tau) * d
+    if not den.factorised:
+        x = tuple(randn((B, 1, *shp)) for shp in shapes)
+        for s_, tau in ladder:
+            out, _ = den.step(x, code(s_, e), prev_action, memory, fix, cache)
+            x = tuple(move(z, o, tau) for z, o in zip(x, out))
+        return x
+    p, v = randn((B, 1, *shapes[0])), randn((B, 1, *shapes[2]))
+    g0 = torch.zeros((B, 1, *shapes[1]), device=dev)                   # never read by the physical tokens
+    for s_, tau in ladder:
+        out, _ = den.step((p, g0, v), code(s_, e), prev_action, memory, fix, cache)
+        p, v = move(p, out[0], tau), move(v, out[2], tau)
+    chosen = choose(p, v) if choose is not None else None
+    fix = fix if chosen is None else chosen
+    tc = cfg["edm"]["shortcut"]["context_signal"]
+    pc, vc = ((1 - tc / k) * randn(t.shape) + tc / k * t for t in (p, v))
+    g, kept = randn((B, 1, *shapes[1])), []
+    for i, (s_, tau) in enumerate(ladder):
+        if i == 0:                                                       # one full pass keeps the physical keys / values
+            xg = den.step((pc, g, vc), (code(tc, k.bit_length() - 1), code(s_, e)), prev_action, memory, fix, cache, kept)[0][1]
+        else:                                                            # then the 9 glimpse tokens alone
+            xg = den.glimpse_step(g, code(s_, e), prev_action, fix, cache, kept)
+        g = move(g, xg, tau)
+    return (p, g, v) if chosen is None else ((p, g, v), fix)
 
 
 # ---- heads ----
