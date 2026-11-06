@@ -65,28 +65,41 @@ follow the map.
   0.82; n 5: 0.10); stone 0.88 / 0.63 (n 5: 0.29). Copy (count unchanged) is the error; the mined cell is cleared
   0.92-0.99 everywhere (iron 0.73-0.81).
 - `geometry.py` (`readings/geometry.json`, EDA): across the 27 (item, n) cells with >= 25 histories, success follows that
-  transition's own training exposure (mining increments in the train split): Spearman 0.91, logit R^2 0.81; the token
+  transition's own training exposure (mining increments in the train split): Spearman 0.91, logit R^2 0.81 (within item,
+  Codex: coal 0.83, iron 0.80, wood 0.71, stone 0.50); consistent with exposure-sensitive learning, NOT proof that each
+  (item, count) is learned independently or that nothing transfers (exposure also tracks item, count, state); the token
   step |mu(n + 1) - mu(n)| adds little (R^2 0.83) except the smallest step, 5 -> 6 (distance 0.93-1.52 in every slot):
   stone at 5 succeeds 0.29 with 8,281 examples, where 8,000 elsewhere give 0.6-0.8.
 - The coarse tokens are compositional for digits: the step mu(n + 1) - mu(n) points the same way in every count slot
   (cosine 0.85-0.99 wood / stone / coal / iron at equal n) and a linear digit reader fitted on wood + stone tokens reads
-  coal at 93% and iron at 99.7% (same-slot 100%). Perception offers a shared "+1"; the generator does not use it.
-- Perception is not the limit for any visible determinant: every HUD value is read at 100% from the coarse token plus
+  coal at 93% and iron at 99.7% (same-slot 100%; held-out majority baselines 0.43 / 0.74). The steps align at matching
+  STARTING digits; this is not one addition vector for every digit.
+- Simple perceptual aliasing is ruled out for every visible determinant: every HUD value is read at 100% from the clean
+  coarse token plus
   lighting, adjacent digits separated 6-49x their within-value spread (energy 8 -> 9: distance 1.38, the smallest step
   of any slot, separation 10.7).
 
 ## 6. Reading
 
-1. Every failing consequence is BLIND to its determinant (T <= 0.27), for visible (energy, health) and hidden
-   (cooldown, mob health) determinants alike, and the generated frame draws what the heads report.
+1. Every failing consequence is BLIND to its determinant by the declared rule (T <= 0.27: the world reproduces at most
+   27% of the recorded contrast; not zero sensitivity: readiness still moves damage 0.07 -> 0.14), for visible
+   (energy, health) and hidden (cooldown, mob health) determinants alike, and the generated frame draws what the heads
+   report (natural strata, not randomised edits: confounding limits causal claims about hidden determinants).
 2. Wake is not an energy-digit failure in F3: the world does not hold the asleep state (~50% per step, worse in the
    dark). The energy rule cannot be read until sleep persists.
-3. Counts are a generator that learns each (item, digit) transition separately, at a rate set by its own exposure,
-   although its own perception gives the "+1" one shared direction and the belief carries the coal event (trace B1 AP
-   1.0). This is the user's "struggling to understand relationships": a learner without transfer, so data looks short.
+3. Counts: success tracks each (item, digit) transition's own exposure, although clean tokens align the "+1" step
+   across items at matching digits and the belief carries the coal event (trace B1 AP 1.0). Consistent with the user's
+   "struggling to understand relationships" (exposure-sensitive learning that shares little), but this EDA does not
+   prove independent per-item learning, and clean readability does not rule out geometry, small target differences
+   under noise, conditioning failure or later inaccessibility.
 4. Damage / death / kills are limited by the hidden state (readiness, mob health); the health arithmetic is mostly right.
 5. Per PLAN: all six enter the third experiment; it localises where each determinant stops (plan for Codex's review).
 
 Limits: one world seed; one-step futures from real histories; 16 steps; the fixed random gaze; readers fitted on real
 tokens (valid on generated frames where the generated token is on the real support: share of reads at probability >=
 0.9 is >= 0.96 in every stratum with >= 100 histories, except the mined slot at stone 4 / 5: 0.92 / 0.90).
+
+Review (Codex, 11-06, `../20261106_determinant_review/REVIEW.md`): all six contrasts reproduced to 1e-12 from raw; the
+head's probability mass agrees with the frame (wake-unlock mass on asleep frames 0.0023%, death 0.027%, damage 4.0%).
+Wording narrowed above where it went beyond the evidence (BLIND is a threshold; exposure correlation is not proof of
+independent learning; clean readability rules out aliasing only).

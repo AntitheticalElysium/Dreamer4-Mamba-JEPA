@@ -1,5 +1,7 @@
 # Review of `20261106_mamba_hostile_path` (Codex, 11-06): fine hostile evidence through Mamba
 
+Amended 11-06 after Codex's reply (`../20261106_determinant_review/REVIEW.md` 2): claims narrowed in sections 1-3 and 5.
+
 Reviewer: Claude, 11-06, at the user's request. Everything below re-reads Codex's SAVED outputs (`features.pt`,
 `bank.pt`, `latents/`, `native_results.json`); nothing was regenerated. Scripts in this folder; Codex's folder untouched.
 
@@ -14,7 +16,7 @@ Reviewer: Claude, 11-06, at the user's request. Everything below re-reads Codex'
   adjacent-zombie, health <= 2 histories at 16 steps (risky death 0.088, `../20261105_p1f3/RESULTS.md` 3). The
   instrument agrees with a separate population.
 
-## 1. "Weakly readable after Mamba" is a reader-power result: paired, the information is intact
+## 1. Paired, the tested distinction survives; read from one state, accessibility still deteriorates
 
 `paired.py` (`paired.json`): every background has all seven inputs, so the within-background difference
 memory(zombie fine) - memory(empty) removes the background variation an unpaired reader must fight.
@@ -27,7 +29,8 @@ memory(zombie fine) - memory(empty) removes the background variation an unpaired
 | memory tokens | 0.029 | 0.74 | 100% |
 
 The fine-only zombie direction is consistent across backgrounds (the held-out difference projected on the fit-mean
-direction ranks zombie above cow in 100% of held-out backgrounds at every stage). Nothing is erased. What changes is
+direction ranks zombie above cow in 100% of held-out backgrounds at every stage). The tested distinction is not erased (this
+does not show that all fine detail survives). What changes is
 SCALE: at the embedding the fine signal is 14x smaller than the coarse one, then Mamba shrinks it a further ~1.8x
 relative to coarse (fine/coarse ratio 0.073 -> 0.040 -> 0.039). Codex's unpaired readers (600 points in 1,024
 dimensions) cannot find a direction at 3% of background variance; they also read the STRONG coarse signal at only
@@ -35,7 +38,7 @@ dimensions) cannot find a direction at 3% of background variance; they also read
 adequacy. Caveat: a paired reader uses the counterfactual reference, which the deployed model never has; it measures
 information and scale, not usability.
 
-## 2. The localisation Codex left open is answerable from its own saved features: the embedding, before Mamba
+## 2. The largest amplitude attenuation is at the percept embedding, before Mamba (not a unique culprit)
 
 Codex: "we still cannot identify fusion, projection, Mamba, or downstream learned use as the unique cause".
 `features.pt` already held the percept embedding, and `fusion_split.py` (`fusion_split.json`, CPU, F3 on the bank's
@@ -49,8 +52,11 @@ renders) splits it exactly, since d embed = W_canvas d canvas when only g change
 
 The coarse token reaches the projection twice (directly, 1,296 columns, and through the fusion); the fine token only
 through the fusion. Fusion compresses fine and coarse changes alike (fused change 1.28 vs 1.27), so it is not
-specifically discounting fine; the asymmetry is the coarse token's direct, unattenuated path. The dominant
-attenuation (14x) is therefore at the percept embedding (fusion 4.4x, projection 3.4x), and Mamba adds ~1.8x.
+specifically discounting fine; the asymmetry is the coarse token's direct, unattenuated path. The largest AMPLITUDE
+attenuation (14x) is at the percept embedding (fusion 4.4x, projection 3.4x), and Mamba adds ~1.8x. Norms in different
+learned spaces are not lost information or native importance, and Codex's matched binary single-state readers keep
+falling after the embedding (zombie vs cow: fine 98%, embedding 81%, belief 61%, memory 56%; paired 100% throughout):
+the embedding is not identified as the unique cause, and no repair there is justified by this.
 
 ## 3. The danger response is drawn in the frame (my head-only hypothesis refuted); memory draws consequences, the cache draws entities
 
@@ -71,8 +77,8 @@ the bank's simulator successors, dead 98.4% / 0 / 0 as recorded):
 The head's death mass sits entirely on frames that show health 0 (share on alive frames < 1e-6 in every condition).
 So the native effects are WORLD-DRAWN and Codex's reading stands. The structural point is new: memory-only zombie
 evidence makes the world draw the CONSEQUENCE in the HUD (health -> 0, at about half the natural rate) while almost
-never drawing the ENTITY. The two routes divide the work: the cache carries what is on the map, the memory carries
-what happens to the HUD.
+never drawing the ENTITY. On this constructed bank the two routes behave differently: the cache version draws the
+entity, the memory version draws the HUD consequence (a route behaviour on this bank, not an architecture-wide law).
 
 ## 4. What the experiment can and cannot say about the user's question
 
@@ -92,7 +98,7 @@ redundancy predicts USE and a broken route predicts none.
 - But the same stage is on their memory route: every percept fact reaches the belief through the 6,569 -> 256
   projection. The determinant-routes experiment measures the same paired scale profile (token -> embedding -> belief
   -> memory, and the denoiser's cache) for the energy, health and count digits.
-- The route split of section 3 (cache -> entities, memory -> HUD consequences) matches the determinant curves
+- The route behaviour of section 3 (on that bank) is in line with the determinant curves
   (`../20261106_determinant_curves/RESULTS.md`): map-local consequences are drawn (mined cell cleared 0.92-0.99), HUD
   consequences fail (counts, food after a cow, damage arithmetic), and the coal event is fully in the belief (trace B1
   AP 1.0) while the coal slot copies. The memory -> HUD mapping is where our failures concentrate; the third
