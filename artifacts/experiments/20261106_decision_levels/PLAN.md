@@ -90,3 +90,31 @@ first evaluation at sigma 20 for the energy members; the P1 monitor.
 One world seed and one fine-tune seed per arm; 750 updates is ~5% of P1's updates; perception frozen; diagnostic
 populations, not corpus frequencies; token-space readouts. A supported H-learn says the allocation is a sufficient
 lever for this rule, not that it is the recipe to adopt (that is a design decision with costs, discussed after).
+
+## Crafting at the frame level (added 11-06 after the need analysis; user: "For the measurement, run it sure")
+
+The need table's one gap. Correction first: crafting is NOT "own past + a specific action". Craftax Classic
+`do_crafting` makes a tool only if a table (iron tools: a table AND a furnace) is among the 8 cells around the player
+and the materials are in their slots (wood; + stone; iron tools + coal + iron; 1 of each spent). That rule reproduces
+every awake attempt in dev and train400 (0 mismatches), and 87-98% of attempts are infeasible. So the tool slot's
+change is decided by OTHER tokens (map cells around the player, other HUD slots) plus the action. Made events per
+training pass: wood pickaxe 6.9k, stone pickaxe 3.9k, iron pickaxe 1.4k, wood sword 5.0k, stone sword 4.3k, iron sword
+1.4k (need.json).
+
+Frozen F3, dev, one-step futures with the prefix-20 start (T2's recipe and readers, K = 4, seed 4200), plus frozen
+readers for the six tool slots (s1.fit on train400 tokens, same validity rule). Populations: awake attempts at t >= 8,
+per tool, stratified by the rule: feasible from count 0 (all), feasible from count >= 1 (all), infeasible from count 0
+with the station missing only (cap 250), the materials missing only (cap 250), both (cap 150).
+
+Declared readings:
+- Per tool, the feasibility contrast of the tool slot drawing n -> n + 1 (truth 1 feasible, 0 infeasible): T, Q, false
+  and TRACKS / PARTIAL / BLIND as in the determinant curves. Beside it: false appearances split by what is missing
+  (station = map tokens; materials = HUD tokens), and the materials-spent contrast (all cost slots drop by 1).
+- **Location-law prediction**: the iron tools (1.4k events per pass, below coal counts' 4-6k where the count drew
+  0.10-0.25) are NOT TRACKS, and their feasible appearance is <= 0.3. **Refutes the law's exposure threshold**: an iron
+  tool TRACKS (T's lower bound >= 2/3), i.e. a cross-token determinant used at 1.4k events per pass.
+- Pattern, descriptive: high Q with high false = drawn from the action alone (blind to the other tokens); low Q with
+  low false = the majority outcome of an attempt (nothing), blind as well.
+- Heads beside: the unlock head's contrast on generated and on recorded frames (first craft only), and its agreement
+  with the frame (WORLD-DRAWN / HEAD-READ).
+Limits: one world seed; dev histories; token-space readers; feasible-from-n >= 1 is small (26-203 per tool).
