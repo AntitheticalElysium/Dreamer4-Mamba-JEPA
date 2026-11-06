@@ -1,0 +1,4 @@
+smoke/
+readings/raw.npz
+*.log
+__pycache__/
