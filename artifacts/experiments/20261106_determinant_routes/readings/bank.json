@@ -1,0 +1,35 @@
+{
+ "pairs": {
+  "sleep": 240,
+  "energy": 200,
+  "coal": 201,
+  "wood": 201
+ },
+ "episodes": {
+  "sleep": 188,
+  "energy": 200,
+  "coal": 107,
+  "wood": 51
+ },
+ "strata": {
+  "sleep": {
+   "day": 120,
+   "night": 120
+  },
+  "energy": {
+   "null": 200
+  },
+  "coal": {
+   "coal_2": 67,
+   "coal_1": 67,
+   "coal_3": 67
+  },
+  "wood": {
+   "wood_3": 67,
+   "wood_1": 67,
+   "wood_2": 67
+  }
+ },
+ "excluded": {},
+ "bank_sha256": "93d73c07369fc491ec290093e9e644b656abad8f29b6e1b7d4b2ce6dcac7e01e"
+}
