@@ -54,3 +54,34 @@ zombie 0.54 (damaged 0.13), beside a cooling one 0.18 (truth 0.007): the wake / 
 T1's 64 pairs (64 episodes), K = 16 futures per member through F4's sampler: the move member moved in 1.00 of futures
 and the NOOP member in 0.00; all 64 pairs both ways (F3: 1.00 / 0.00). Mean projection 0.10 for the move member (0 =
 the move successor's tokens) and 0.98 for NOOP (1 = the NOOP successor's). Declared reading (>= 0.95 / <= 0.05): holds.
+
+## 4. FlexAttention: correct, deterministic in the model, ~5% faster; the split was never the cost (`flex_bench.py`, `readings/flex/`)
+
+Two failed attempts before the reading (both OOM in `correct`, committed fixes): the loaded model leaves activation
+checkpointing off (train.p1 turns it on); with it on, the check ran at the training microbatch (8 rows x 64 frames).
+
+- **Correctness** (8 rows, 2 spliced across an episode boundary, 2 bootstrap rows, bootstrap on): flex vs SDPA in fp32
+  7.0e-7 (loss per frame) / 1.8e-6 (parameter gradients): the mask is exact on the GPU. In bf16 flex vs SDPA 0.0029 /
+  0.0083, below SDPA's own bf16-vs-fp32 discrepancy 0.0057 / 0.064. Declared reading: holds.
+- **Determinism** (two fresh processes per path, 4 updates, bootstrap from update 2): flex model 228 / 228 tensors
+  bitwise (SDPA 224 / 228, 4.7e-18), optimizer 1.1e-13 (SDPA 1.1e-19), logged terms bitwise in both. Against the
+  declared rule: the model meets it (better than SDPA), the optimizer does not (larger than SDPA's pair, though at
+  F3's own pre-existing cross-process level 2.3e-13 and far inside checks.py's 1e-11).
+- **Cost** (sec / update, final half; peak GiB):
+
+| configuration | 64 steps, bootstrap off | 64 steps, on | 256 steps, on | peak |
+|---|---|---|---|---|
+| F3 at its split (1 / 4) | 1.68 | - | 6.08 | 4.24 |
+| F3 at F4's split (2 / 8) | 1.69 | - | 6.21 | 2.29 |
+| F4 SDPA at 2 / 8 (the run) | 1.92 | 2.15 | 7.81 | 2.54 |
+| F4 flex at 2 / 8 | 1.77 | 2.00 | 7.74 | 2.42-2.59 |
+| F4 flex at F3's split | 1.74 | 1.98 | 8.38 | 4.50-4.56 |
+
+  The 256-step flex rows are compile-contaminated (per update 20.0 / 7.56 / 7.91 and 19.3 / 9.15 / 7.61: each new
+  bootstrap sub-batch shape compiles once), so their steady state is ~7.6, not the table's mean. Projected training
+  (checks.py's formula): F3 11.1 h; F4 SDPA 13.9 h; flex 13.3 h at 2 / 8 (13.2 h at steady state either split).
+- What this says about the 30%: halving the microbatch costs 0.4% (64 steps) / 2% (256) on F3; SDPA's window
+  implementation cost ~0.15 s / update at 64 steps (8%), which flex removes; what remains of F4's +2.8 h is the
+  bootstrap (~1.1 h, intrinsic) and the dense layers' own compute (~1 h). Flex fits F3's split (4.56 <= 5.0 GiB) but
+  buys no speed there. Declared reading: correctness and memory hold; determinism holds for the model, not for the
+  optimizer by the strict rule; the gain is ~0.6-0.7 h per run.

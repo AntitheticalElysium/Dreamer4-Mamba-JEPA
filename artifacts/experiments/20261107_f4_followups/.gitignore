@@ -1,3 +1,5 @@
 readings/**/*.npz
 *.log
 __pycache__/
+readings/flex/det/
+readings/flex/cost/

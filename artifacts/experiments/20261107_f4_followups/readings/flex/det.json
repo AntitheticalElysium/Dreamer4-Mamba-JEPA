@@ -1,0 +1,14 @@
+{
+ "flex": {
+  "model_max_abs": 0.0,
+  "model_bitwise_tensors": "228 / 228",
+  "optimizer_max_abs": 1.1368683772161603e-13,
+  "logged_terms_equal": true
+ },
+ "sdpa": {
+  "model_max_abs": 4.743702141979302e-18,
+  "model_bitwise_tensors": "224 / 228",
+  "optimizer_max_abs": 1.0875770693847208e-19,
+  "logged_terms_equal": true
+ }
+}
