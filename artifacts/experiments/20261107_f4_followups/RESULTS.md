@@ -334,8 +334,8 @@ generated periphery and lighting bitwise equal, `denoiser_probe_sham.py`; the in
 
 Reading (declared rule):
 - **(a) routing: refuted.** The cause reaches the health token from the first block (memory tokens and the action) and
-  after the first dense temporal block the token holds MORE than the belief (share 1.1-1.2: the cached frames add the
-  zombie's position); it keeps that to the last block, at every evaluation asleep, decaying to 0.67 by the 4th awake.
+  after the first dense temporal block the token holds MORE than the belief (share 1.1-1.2: what the cached frames add
+  is not identified - they hold past visual tokens AND past memory tokens, Codex 11-07); it keeps that to the last block, at every evaluation asleep, decaying to 0.67 by the 4th awake.
 - **(b) the output: the culprit.** The last residual holds the hit; the x-prediction moves the health token 0.20 of the
   way to the hit's token awake and 0.055 asleep, where the calibrated move from the memory tokens alone is 0.52 / 0.70
   (below half: declared (b)). Asleep the x-prediction stays linearly decodable (0.75-0.79) yet barely moves toward the
@@ -351,3 +351,21 @@ Reading (declared rule):
   might cost false drops elsewhere (interference) - or the objective gives this rare change too little pull (the
   first evaluation's level also carries the smallest shortcut weight, w(0) = 0.1, m0.yaml ramp [0.9, 0.1]; the
   per-level minimiser is still the conditional mean). Linear probes are a lower bound.
+
+## 13. Corrections after Codex's adversarial audit (`20261107_danger_adversarial/REPORT.md`, 11-07)
+- 11: "energy +1 asleep - in the belief" is withdrawn. Its reference (steps since the last same-direction change,
+  binned) is weak: the fatigue rule (game_logic.py 1281-1295, checked) makes the energy change an exact function of the
+  observed sleep history, and Codex's causal observer predicts every change (0 errors, 33,324 asleep / 129,311 awake
+  transitions). Against that, bp's AP 0.155 (prevalence 0.086) is a weak trace, not a clock: every timer is a
+  belief-inference failure.
+- 10: "F3's timers were its sampler's base rate, the regression is refuted" is too broad: per-history damage Brier
+  (Codex) F3 0.096 / 0.263 vs F4 0.129 / 0.418 (awake / asleep); a two-rate base-rate reference scores 0.251 asleep.
+  Neither world times events; F4's calibration is worse.
+- 6, 8, 9 (M2 route swaps): the cache is not a memory-free route - every cached frame carries its memory tokens;
+  "cache vs memory" separates current memory from a hybrid of past observations and past beliefs.
+- 10 (R3): "the sampler locks in the first copy-like estimate" is withdrawn: F4's first move keeps 75% of the noise,
+  and an exact two-mode flow with a copy-dominated first mean samples the rare mode correctly (Codex). 12 is
+  consistent: the drawn rate equals the mean lean, a proportion, not a lock.
+- Sleep delay measured through the full recursive loop (Codex, 32 sources x 8 futures, NOOP, H = 48): awake by step
+  16 28.5% vs 100%, median wake 30.5 vs 7.5 steps; energy 9 -> wake applied 160 / 165; the 3.7x figure was an
+  inference from one-step rates, not a duration.
