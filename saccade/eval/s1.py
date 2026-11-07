@@ -555,6 +555,15 @@ def main():
         print("s1.1", name, json.dumps({k: v for k, v in res["s1_1"][name][0].items() if k == "night_r1_2"}), flush=True)
     res["s3_perception_blocker"] = perception_blocker(res["s1_1"]["trained"], res["s1_1"]["untrained"])
 
+    # These full per-cell CPU tables are no longer used. Keeping the last pair
+    # alive alongside frame features caused a host OOM in F2.1's S1.2 controls.
+    # The frozen reader owns its parameters; it does not retain these tables.
+    del tr, dv, kp, probe
+    import gc
+    gc.collect()
+    import ctypes
+    ctypes.CDLL(None).malloc_trim(0)  # return freed CPU table storage on Linux
+
     # S1.2
     Ytr, Ydv = belief_targets(Ltr), belief_targets(Ldv)
     first_tr = np.concatenate([np.r_[True, np.zeros(len(r["p"]) - 1, bool)] for r in enc_tr])
