@@ -205,3 +205,34 @@ estimate is right and later evaluations lose it. This probe localizes; it does n
   token on asleep rows (the wake IS drawn, 0.69) is the positive control for a token the cause reaches; where in the
   blocks the share rises (spatial blocks 1-3 read the memory tokens and the action's adaLN; temporal blocks 4 and 8 the
   cache) is descriptive. Linear probes are a lower bound.
+
+## 11. Where on the belief's path are the timers lost? + the timer data, exactly (`counters.py`, `belief_path_probe.py`; user 11-07)
+
+User: "run the test... be careful - Craftax is relatively simple, don't claim that the model is naturally bad at this
+too eagerly... most of the time, the problem was something that we built a certain way, or the data (maybe check it
+as well, more precisely?)". Every timer is a belief-inference failure (RESULTS 11, 13). The game's four counters
+(game_logic.py 1256-1325: hunger, thirst, fatigue, recover) are deterministic given the visible history.
+- **Exact counters (data, CPU).** `counters.py` replays every train and dev episode through the simulator's own step
+  (artifacts/eda/replay.py's keys and actions, its scan with the per-step state recorded) and stores hunger, thirst,
+  fatigue and recover per state; exactness check: the replayed health, food, drink, energy and sleep equal the labels at
+  EVERY state (else stop).
+- **Data facts (train split, from the counters and labels; descriptive):** events per pass of each timer (food -1, drink
+  -1, energy -1 awake, energy +1 asleep, health +1 recovery, health -1 needs) beside hits and coal increments; resets
+  that change no digit (eating / drinking at 9, decrements at 0, energy capped at 9); the share of each timer's events
+  whose previous reset falls inside the same training chunk (64 / 256 steps, the gradient's reach) - against episode
+  starts; per behaviour-policy epsilon.
+- **Probe (frozen F4, dev).** Up to 40k transitions (t >= 8). Features for the step producing frame t: the HUD tokens
+  of frame t - 1 (cells 63-66, control: the readers read them perfectly), percept_embed(frame t - 1) (the belief's
+  input), b_{t-1} (the belief right after it), bp_t (after the action: the memory's source). Targets at state t - 1:
+  the digit values (health, food, drink, energy), the exact counters (hunger, thirst, fatigue, recover), and on asleep
+  rows the steps asleep (an integration control: a duration of a visible state). Readers, 5 episode folds: ridge
+  (linear, lambda 10 on standardised features; sensitivity at 1000) and an MLP (one hidden layer of 256, the
+  nonlinear reader: Codex's point that a failed linear probe is only that reader's failure); out-of-fold R^2 (and
+  accuracy of the rounded value for digits).
+- Reading (declared): **input** carries a digit if percept_embed's R^2 >= 0.9 x the HUD tokens'; the **state keeps**
+  it if b / bp reach >= 0.9 x percept_embed's; a counter is **encoded** if the MLP's R^2 from b or bp >= 0.5, **absent**
+  if <= 0.1. Input lacks -> the belief never receives what it must count. Input has, state lacks the current digit ->
+  the state does not keep the HUD. Digit kept, counter absent -> receives and keeps but does not integrate (then: the
+  steps-asleep control says whether it integrates any duration). Counter encoded -> the representation exists and the
+  hazard failure lies in its precision or its use. Not a claim about Mamba in general: a claim about this trained
+  system and its data; construction and data causes are checked before any capacity explanation.
