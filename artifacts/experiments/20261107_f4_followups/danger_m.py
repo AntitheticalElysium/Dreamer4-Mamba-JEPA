@@ -129,9 +129,17 @@ def m2build():
     print("pairs", len(rows), "excluded", len(excluded), flush=True)
 
 
+def setup():
+    """F4's checkpoint (the canonical Denoiser refuses any other recipe at construction), dev labels, S1 encode."""
+    model, cfg = CV.IF.load(CKPT)
+    assert cfg["edm"]["sampler"]["steps"] == 4
+    L = dict(np.load(CV.LABELS / "s0_dev_labels.npz"))
+    return model, cfg, L, S.encode(model, L, cfg)
+
+
 @torch.no_grad()
 def m2run():
-    model, cfg, L, enc = RF.setup()
+    model, cfg, L, enc = setup()
     with torch.enable_grad():
         R, valid = CV.fit_readers(model, cfg, L, enc, 0)
     s1 = S.load_reader(TR.ROOT / Path(CKPT).parent / "s1/results.reader.pt", TR.ROOT / CKPT, CV.DEV)
