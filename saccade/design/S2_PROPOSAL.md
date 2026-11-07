@@ -1,95 +1,96 @@
-# S2 proposal: what imagination must get right for the actor (11-07, for Codex's review)
+# S2 proposal v2: what imagination must get right for the actor (11-07; v1 bfafb929 reviewed by Codex)
 
-User 11-07: build S2 first; "think about what makes an actor successful, this is cardinal: we need a coherent world, the
-necessary and sufficient requirements should be tested by S2"; P2's objective is chosen afterwards, from where the
-candidate world fails. S2 reads a frozen world (any P1 or P2 candidate: F4 first). It decides whether P3 can run on
-it and, if not, which failure must be fixed. It trains nothing and selects no architecture by itself. This replaces
-nothing yet: TEST_SPEC's S2 section (counts, persistence, events, revisits, uncertainty) becomes its first two layers.
+User 11-07: build S2 first; "think about what makes an actor successful, this is cardinal: we need a coherent world,
+the necessary and sufficient requirements should be tested by S2"; P2's objective is chosen afterwards, from where the
+candidate world fails. S2 reads a frozen world (F4 first, as the known baseline: this is a post-result harness design,
+not a blind preregistered test of F4; the harness is frozen before it judges any later change). It trains nothing and
+selects no architecture by itself. Codex's review (`artifacts/experiments/20261107_s2_danger_review/S2_REVIEW.md`):
+every point taken below, with one qualification (depth-1 conditionals stay valid, item L2a).
 
 ## 1. What the actor needs
 
 P3 (CURRICULUM 3, LOSSES): PMPO with a frozen BC prior, from real beliefs after real prefixes, H = 16 imagined steps,
-lambda-returns with a learned value, survival-weighted continuation; the actor and the value read the corrected belief
-b_t of each imagined step. PMPO moves the policy by the SIGN of the imagined advantage. So the actor improves on BC
-exactly where imagination ranks actions as reality does, on the states it visits, within 16 steps plus the value's
-bootstrap. Model accuracy matters only through those rankings (value equivalence, Grimm et al. NeurIPS 2020;
-objective mismatch, Lambert et al. L4DC 2020); the simulation lemma bounds the value error by the per-step model
-error times H^2 (Kearns & Singh 2002), so errors that compound over 16 steps matter more than one-step ones.
-Our history: the 09-02 actors lost to BC entirely through WAKE_UP (a payoff beyond their 2-step horizon), and the
-10-03 H16 panel found risk decisions need sampled futures (one faithful future 57% of the value, 16 samples 90%).
+lambda-returns with a learned value, survival-weighted continuation; the actor and value read the corrected belief of
+each imagined step. PMPO moves the policy by the sign of sampled imagined advantages through its critic and
+regularisation: imagined action values that order actions as reality does, on the states it visits, are the evidence
+that the update points the right way, not a theorem that it does (v1 overstated this; value equivalence, Grimm et al.
+NeurIPS 2020, concerns specified policies, value classes and Bellman updates). Errors that compound over 16 steps
+matter more than one-step ones (simulation lemma, Kearns & Singh 2002), and timing matters, not only rates: 11-07's
+checks found F4 applies energy 9 -> wake correctly but raises energy while asleep at 0.27 of the true rate, so imagined
+sleep lasts ~3.7x too long and WAKE_UP's payoff arrives late (the 09-02 actors lost to BC through WAKE_UP).
 
-Requirements, each with the failure it prevents:
-- **N1 action contingency.** Imagined futures differ across actions where real ones do. A world that ignores the action
-  gives every action the same value: no signal, the actor stays BC (or drifts on noise).
-- **N2 consequence calibration, both directions.** Reward- and termination-bearing events (unlocks, health changes,
-  death, sleep / wake, eating, drinking, crafting, mining, kills) at the right probability given history and action.
-  A miss hides a real advantage (F4's danger: hits drawn at 0.1-0.3 of truth would make risky actions look safe); a
-  false positive creates a fake one the actor will exploit (a false WAKE_UP, a phantom health gain).
-- **N3 coherence over the horizon.** The imagined state stays a valid world for 16 steps: entities persist and move
-  legally, counts and HUD stay consistent, termination follows health 0. Consequences at step k are computed from the
-  imagined state at k - 1, so an incoherent state makes every later consequence meaningless.
-- **N4 stochasticity where reality is stochastic.** Risk must appear as sampled outcomes; a world that collapses to the
-  likeliest outcome draws no hits (10-03: deterministic worlds), so every gamble looks safe.
-- **N5 the actor's inputs survive imagination.** The belief computed from generated percepts keeps what the actor's
-  decisions read (inventory, health and needs, nearby threats, sleep state); otherwise a correct world is misread.
+Requirements and the failure each prevents:
+- **N1 action contingency.** Futures differ across actions where real ones do; otherwise no advantage signal.
+- **N2 consequence calibration in both directions, with timing.** Reward- and termination-bearing events, and the
+  prerequisites that time them (needs, energy, recovery), at the right probability and speed. A miss hides a real
+  advantage; a false event creates one the actor will exploit.
+- **N3 coherence.** Each generated trajectory obeys its own observable rules (entities persist and move legally,
+  inventory bookkeeping, prerequisites, health and termination); joint futures, not only marginals, are right.
+- **N4 stochasticity where reality is stochastic.** Risk appears as sampled outcomes (10-03: deterministic worlds draw
+  no hits).
+- **N5 the actor's inputs survive imagination.** The belief after generated steps keeps what its OWN generated history
+  determines (inventory, health and needs, nearby threats, sleep), judged against that history.
 
-Sufficiency cannot be proven by a static test; only P3 / S3 settle it. The closest frozen test is to measure P3's own
-mechanism: do imagined action values rank first actions as true values do, and does choosing actions by imagination
-gain or lose real value against BC? That is layer 3.
+No static test proves sufficiency; S3 settles it. S2's closest proxy is the real simulator return of a policy that
+chooses by imagination, against BC (L3).
 
 ## 2. Three layers
 
-**L1 coherence (N3; TEST_SPEC S2.1 / S2.2, kept):** free-running rollouts (m = 8) on the 2,236 dev exogenous 16-step
-windows, the frozen reader on generated and recorded futures: per-kind visible counts (block > 30% and > 3 SE), 4-step
-persistence of zombies / cows / skeletons (block > 0.10 below recorded), legal motion (no diagonal steps; the S0 checks),
-HUD-termination consistency (health 0 <=> terminated), revisit consistency by time since observed. The S0 oracle and
-corruptions supply references and power, as before.
+**L1 coherence (N3).** TEST_SPEC S2.1 / S2.2 kept (counts, 4-step persistence, legal motion, revisits), on a
+**terminal-inclusive** dev bank (P2_DATA.md's admission contract, applied to DEV: starts admitted whatever the recorded
+future's length; a branch that outlives the recorded death continues the precommitted action schedule; each
+trajectory absorbs on its own termination; time truncation is not padded as death). The 2,236-window bank (12
+terminations, all at step 16: survival-censored, Codex reproduced) is kept only as a labelled legacy comparator.
+Termination rule as installed: health <= 0 or lava or the time limit; "health 0 implies done" is checked, the converse
+only where the other causes are absent. Camera alignment: generated trajectories are not aligned to the recorded
+player path; motion and revisit checks use the generated frame's own coordinates, as S0 defined them.
 
-**L2 consequences (N2, N4, N5), at depth:** the determinant-curve families (exp 2 / M1 / crafting / C1 strata, one
-instrument) measured on free-running rollouts at depths 1, 4, 8, 16, conditioned on the IMAGINED situation as the
-reader sees it (e.g. P(damage | an adjacent zombie in the imagined frame)), with the real-history depth-1 reading
-beside it. For each family: drawn vs true rate (truth from the simulator oracle: the replayed state stepped with fresh
-keys under the same actions), misses and false positives separately, and the contrast across actions (N1 at the
-event level). N5: the S1.2 belief probes applied to beliefs after k generated steps, against the same probes on real
-histories.
+**L2 consequences (N2, N4, N5).**
+- **L2a, depth 1 from real prefixes:** the situation is the real one, so the simulator oracle (replayed state, fresh
+  keys, same action) is the truth for the next step: the determinant-curve families (exp 2, M1, C1, crafting) with
+  misses and false events separately, the contrast across actions, and conditioning on what the history shows.
+- **L2b, depth k > 1 (after branches diverge):** two different measurements, never conditional comparisons across
+  branches. (i) Trajectory distributions from a shared real prefix, model vs simulator, under the same exogenous action
+  schedule or the same feedback rule (each acting on its own observations): event timing (time to damage, to death,
+  to energy 9, to the next need decrement), return and death distributions, joint summaries (the energy score as a
+  reported diagnostic), stratified by information at the shared start. (ii) Internal consistency of each generated
+  trajectory with the laws observable in it (bookkeeping, observed prerequisites, health and sampled termination).
+- **N5:** probes of beliefs after k generated steps scored against targets read from that trajectory's own generated
+  observations and rewards; real-percept replay through the same update as the control (P2_READINESS 4's design).
 
-**L3 decisions (the sufficiency proxy):** from real start states (dev; random-play AND expert-mixed, so the states a
-competent actor visits are covered), for a fixed action set per state (all 17, or the subset BC gives > 1%), m
-imagined futures of H = 16 steps under the BC policy after the first action (BC reads the imagined belief), giving
-the imagined Q(s, a) as P3 would compute it (rewards, survival weighting, the frozen value at the end when one exists;
-without a value, the 16-step return). True Q(s, a): the simulator from the replayed state with fresh keys, the same
-first action, BC acting on the real percepts' belief, m' futures. Readings:
-- value calibration: imagined vs true Q, per state, bias and error;
-- ranking: sign agreement of imagined and true action gaps, weighted by the true gap (does imagination order first
-  actions as reality does?), against the null of random ranking and the oracle (simulator vs itself: the noise ceiling);
-- exploitation: the action imagination prefers vs BC's action, scored by TRUE Q. Positive: imagination improves on BC
-  where P3 would move; negative: its errors are exploitable. Per event family, which errors drive the negative part.
+**L3 decisions: a one-step planning stress test** (not PMPO itself). From real dev starts (random-play and
+expert-mixed), all 17 physical actions, the action with the highest imagined 16-step value (m model futures, BC
+continuing on the imagined belief) is executed in the real simulator, then BC continues on real observations through
+the full pipeline (render, perception, belief, BC; its cost measured). Primary reading: the real return of this
+imagination-guided policy minus BC's, paired by start and parent episode, with selection and evaluation draws
+independent. The privileged oracle ranking (replayed full state) is a labelled diagnostic only: a correct belief can
+disagree with a hidden-state-specific ranking (Codex's exact counterexample: 50%), so it is never a blocker. Limits
+kept explicit: BC continuation is P3's starting policy, not every later actor; a truncated 16-step return cannot
+certify delayed consequences or the lambda-return bootstrap; expert-mixed starts widen coverage, not to every state a
+competent actor visits.
 
-L3 needs no exogenous windows: the truth is re-simulated with fresh keys, so recorded actions never leak the future
-(the A8 confound does not arise). This also removes the coverage limit for evaluation.
+## 3. Power and readings (to agree before the harness binds; amends TEST_SPEC's two-blocker rule only once agreed)
+- **The harness passes a correct world first:** the simulator oracle (and exact toy models: hidden-state, stochastic
+  reward) must pass every reading at the chosen sample budgets; S0-style corruptions (wrong-action predictions,
+  delayed and fake consequences, censored admission) must fail. Budgets are set by the effect sizes that matter;
+  unresolved differences are reported as unresolved, never as wrong (Codex: 4 model / 8 oracle draws agree 47.8% on an
+  exact stochastic model).
+- **Outcomes per reading: pass / fail / unresolved / unmeasured**, with parent-episode intervals; absolute error bounds
+  beside ratios, and absolute rates for false events (ratios to zero are undefined).
+- **A declared hierarchy:** primary = L1's blockers, L3's real-return difference, and a short list of decision-critical
+  L2 families with population weights (damage and death given danger, energy / sleep timing, food and drink, the
+  first achievements of the tech tree); everything else descriptive, so a rare tool count is not a universal veto.
+- Pass: P3 runs on that world. Fail: the failing requirement is the target of the next change, chosen after
+  diagnosis (incorrect event probability vs incorrect timing vs inconsistent consequences), never by training longer.
 
-## 3. Declared readings (before any world is measured; numbers for review)
-- L1: TEST_SPEC's blockers unchanged.
-- L2: per family with support, block if a reward- or termination-bearing event is drawn < 0.5 or > 2 of its true rate
-  at depth 1 or 16, or if its false-positive rate exceeds twice the truth's; everything else reported.
-- L3: block if the exploitation gain is negative beyond 3 SE, or ranking agreement is not above the random null beyond
-  3 SE; report agreement as a fraction of the oracle's.
-- Pass all: P3 runs on that world. Fail: the failing requirement (N1-N5) is the target of the next change (P2 or
-  otherwise), chosen after diagnosis, never by training longer.
+## 4. Cost (to measure in the harness build)
+L1 on the terminal-inclusive dev bank ~20-30 min; L2 ~30 min; L3 with all 17 actions at 500 starts, m = 4, H = 16:
+544k model frames and 1.088M simulator steps with full-pipeline BC (Codex's count), so likely hours; budgets follow
+the power check, not the reverse.
 
-## 4. Cost (estimates, to measure)
-F4 generates ~280 frames / s at K = 4. L1 ~290k frames (~20 min); L2 ~4 families x 4 depths x ~4k futures x depth
-(~30 min); L3 500 states x ~6 actions x m = 4 x 16 steps ~190k frames (~15 min) plus the simulator's m' = 8 on CPU.
-About 1.5 h per world on the GPU, plus the instruments' build.
-
-## 5. Open for review
-1. L3's continuation policy: BC (what P3 starts from) vs the actor itself (not available before P3); BC reading the
-   imagined belief is exactly P3's setting at its first update. L3 therefore needs BC trained first (P3's own first
-   stage, CURRICULUM's BC recipe, reused unchanged by P3), and the simulator side needs the online loop (render ->
-   perception -> belief -> BC), which the actor interface's code mostly has.
-2. Value bootstrap: P3's value does not exist before P3; L3 at a pure 16-step return measures the world, not the value.
-3. Thresholds in 3 are first proposals; S0-style corruptions should set their power before they bind.
-4. Whether L2's depth-k truth (oracle futures given the full state) should condition on the imagined or the real
-   situation: imagined is what the actor sees; real isolates the world's per-step error.
-5. Glimpse: the actor's fixation is part of its action in P3; S2 uses the random prior (as TEST_SPEC) and reports a
-   chooser-gaze replicate where it changes an event family.
+## 5. Open for the user / review
+1. **Fixation contract:** CURRICULUM 3 makes fixation part of the actor's action; TEST_SPEC S3 says the SAME controller
+   in both arms with fixation learning evaluated later. S2 uses the controller P3 will actually use, on model and
+   simulator observations alike; random gaze as a declared extra control. Needs a decision before L3 is built.
+2. **BC first:** L3 needs BC (P3's own first stage, CURRICULUM's recipe, reused unchanged by P3).
+3. **Primary L2 families and weights** (3, hierarchy): a proposal to agree, not to tune after reading F4.
