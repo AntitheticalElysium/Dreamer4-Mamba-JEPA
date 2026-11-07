@@ -1,0 +1,80 @@
+{
+ "population_rows_per_pass": {
+  "awake_ready": 95509,
+  "awake_cooling": 89652,
+  "asleep_ready": 6658,
+  "asleep_cooling": 5942
+ },
+ "f3_exp2": {
+  "awake": {
+   "ready drawn / true": [
+    0.13,
+    0.33
+   ],
+   "cooling drawn / true": [
+    0.073,
+    0.007
+   ],
+   "expected Brier": 0.14
+  },
+  "asleep": {
+   "ready drawn / true": [
+    0.381,
+    1.0
+   ],
+   "cooling drawn / true": [
+    0.303,
+    0.005
+   ],
+   "expected Brier": 0.2468
+  }
+ },
+ "f4_k4": {
+  "awake": {
+   "ready drawn / true": [
+    0.062,
+    0.33
+   ],
+   "cooling drawn / true": [
+    0.032,
+    0.007
+   ],
+   "expected Brier": 0.1545
+  },
+  "asleep": {
+   "ready drawn / true": [
+    0.099,
+    1.0
+   ],
+   "cooling drawn / true": [
+    0.046,
+    0.005
+   ],
+   "expected Brier": 0.4325
+  }
+ },
+ "f4_k8": {
+  "awake": {
+   "ready drawn / true": [
+    0.07,
+    0.33
+   ],
+   "cooling drawn / true": [
+    0.037,
+    0.007
+   ],
+   "expected Brier": 0.1526
+  },
+  "asleep": {
+   "ready drawn / true": [
+    0.132,
+    1.0
+   ],
+   "cooling drawn / true": [
+    0.056,
+    0.005
+   ],
+   "expected Brier": 0.4013
+  }
+ }
+}

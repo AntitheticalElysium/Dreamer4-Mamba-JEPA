@@ -201,3 +201,68 @@ Reading of the map: F4 learned every consequence whose cause conditions the fram
 tokens (sleep, wake), and lost ground on single HUD digits changed by anything else (an entity, a hidden timer),
 where F3 had them at or above their rates. The cache carries the hit's cause (the wake proves it is seen and routed);
 the health digit's own estimate does not depend on it.
+
+## 9. Corrections after Codex's danger review (`../20261107_s2_danger_review/DANGER_REVIEW.md`; all verified)
+
+- "Not routing" (section 8's last line) was too strong: the cache pathway carries the zombie (the wake shows it); how
+  much reaches the health output is the open part. Section 10's attention reading measures it.
+- "Data is not the limit" (D1) is withdrawn: split by state, F4's awake cells follow exposure (Spearman 0.64, 9 cells),
+  asleep do not (-0.30); observational correlations cannot exclude data effects. The simple "hardly any examples"
+  explanation is weakened, no more.
+- Section 8's "every consequence whose cause conditions the frame globally" is too broad: sapling, eating, kills and a
+  held tool's + 1 are action-triggered too and not all learned. A "shared DO increment mechanism" is a hypothesis.
+- C2's health strata were not row-matched to F4's M1 (different RNG); the timer strata were (identical true rates).
+- C3: first estimates and final samples used different seeds (descriptive, not a within-future mediation); F3's
+  sigma 5 field is not its exact churned first evaluation.
+- Ratios to zero truth are undefined: false changes are reported as absolute rates.
+
+## 10. Danger readings R1-R3 and adversarial checks (`danger_readings.py`, `readings/danger/r1_*, r2_*, r3_*, zombie_brier.json`)
+
+**R1, timer phase (same rows for every model): neither world learned a hidden timer.** Each timer's truth hazard is
+~0 until it is due and spikes at the due bin; no model follows that profile:
+
+| timer (due bin) | truth due / early | F4 (K = 4) | F3, 16 EDM steps | F3, 3 steps |
+|---|---|---|---|---|
+| food -1 awake (21-25) | 0.136 / 0.000 | flat 0.008-0.035 | flat 0.009-0.048 | ~0 (<= 0.006) |
+| energy +1 asleep (6-10) | 0.176 / 0.000 | 0.051 / 0.016 | flat 0.067-0.167 | 0.000-0.051 |
+| health +1 recovery awake (21-25) | 0.208 / 0.000 | flat 0.008-0.022 | flat 0.020-0.055 | ~0 |
+| energy -1 awake (26-30) | 0.124 / 0.000 | flat 0.003-0.032 | flat 0.012-0.027 | ~0 |
+
+Declared reading: F3 at 16 steps is flat at a higher rate (not a learned timer); F3 at 3 steps draws fewer timer
+changes than F4. So **C2's "F4 regression on timers" is refuted**: F3's aggregate calibration came from its 16-step
+stochastic sampler's base rate, not from timing it had learned (F3 at 16 also draws wrong-way energy changes asleep at
+0.014-0.062). Both worlds fail the timing requirement (S2 N2). Whether the phase is available to them (it lies 11-31
+steps back, beyond the denoiser's 8-frame reach: only the belief could carry it) is unmeasured.
+
+**Zombie hits (saved data, then a proper score).** Discrimination ready minus cooling, fresh arrivals: F3 +0.105 /
++0.064, F4 +0.069 / +0.065 (awake / asleep): about equal, both far below the truth's +0.38 / +1.00. F3's higher rates
+come with impossible drops (asleep cooling 0.30 vs truth 0.005). Under the expected Brier score weighted by the train
+split's situations (awake ready 95.5k / cooling 89.7k rows per pass; asleep 6.7k / 5.9k): awake F3 0.140, F4 0.155
+(K = 8 0.153); asleep F3 0.247, F4 0.433 (K = 8 0.401). F3 is better on danger by a proper score, mostly asleep, while
+neither discriminates readiness. F3 at 3 steps on these strata is unmeasured.
+
+**R2, attention at the decision level (descriptive).** F4: the health queries put little mass on the 4 cells beside the
+player (spatial <= 0.033; dense b7 0.016 now + 0.008 past), comparable to the lighting queries' (dense b7 0.029), so the
+declared "weak routing" criterion (health < a quarter of lighting) is not met; with the zombie removed, dense b7's
+0.016 falls to 0.002. F4's health queries read mostly their own past (dense b3 0.32) and other HUD tokens (dense b7
+0.72), alike with and without the zombie. F3: the health query's mass on the cells beside the player rises with the
+zombie (spatial b6 0.118 vs 0.047 removed; F4 0.033 vs 0.031), and in its last time layer it turns from its own past to
+its current value (self 0.60 vs 0.21 removed). F3 has a zombie-dependent re-weighting at the health token that F4 lacks.
+
+**R3, reliance by signal level** (projection 0 = no-hit successor, 1 = hit; input = hit / no-hit successor at the level):
+
+| F4 signal | health hit / no-hit input | wake | F3 sigma | health | wake |
+|---|---|---|---|---|---|
+| 0 (pure noise) | 0.029 | 0.564 | 5 | 0.46 / 0.02 | 0.89 / 0.01 |
+| 2/8 | 0.32 / 0.01 | 0.97 / 0.01 | 2 | 0.55 / 0.01 | 0.97 / 0.00 |
+| 4/8 | 0.68 / 0.00 | 0.99 / 0.00 | 1 | 0.69 / 0.01 | 0.98 / 0.00 |
+| 6/8 | 0.99 / 0.00 | 1.00 / 0.00 | 0.5 | 0.88 / 0.00 | 0.99 / 0.00 |
+
+Declared reading: F4's health output follows its input from signal 4/8 (own minus no-hit 0.68), the wake's from 2/8;
+no level overrides a no-hit input toward the hit in either model. F4's sampler starts from its prior (0.03: copy) and
+later steps follow what the trajectory already holds; the wake is decided at pure noise (0.56).
+
+**Summary.** Not one regression but three findings: (1) hidden timers are learned by neither world (F3's rates were
+its sampler); (2) zombie readiness is learned by neither, but F3 has a crude zombie-near-sleeper association at the
+health token that F4 lacks, worth a better proper score on danger; (3) F4's health token commits to copy at its first
+evaluation and needs more signal than the wake to follow its input.
