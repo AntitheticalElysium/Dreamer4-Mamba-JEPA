@@ -1,0 +1,368 @@
+{
+ "f3_exp2": {
+  "awake_ready_fresh": {
+   "futures": 2380,
+   "damage_gen": 0.178,
+   "damage_true": 0.388,
+   "drawn_delta_when_damaged": {
+    "-8": 1,
+    "-7": 10,
+    "-6": 6,
+    "-4": 1,
+    "-3": 8,
+    "-2": 290,
+    "-1": 107
+   }
+  },
+  "awake_ready_beside": {
+   "futures": 5620,
+   "damage_gen": 0.11,
+   "damage_true": 0.305,
+   "drawn_delta_when_damaged": {
+    "-7": 3,
+    "-6": 4,
+    "-5": 2,
+    "-4": 3,
+    "-3": 13,
+    "-2": 329,
+    "-1": 264
+   }
+  },
+  "awake_cooling": {
+   "futures": 8000,
+   "damage_gen": 0.073,
+   "damage_true": 0.007
+  },
+  "asleep_ready_fresh": {
+   "futures": 2328,
+   "damage_gen": 0.367,
+   "damage_true": 1.0,
+   "woken_and_damaged": 0.345,
+   "woken_not_damaged": 0.312,
+   "asleep_and_damaged": 0.023,
+   "drawn_delta_when_damaged": {
+    "-9": 15,
+    "-8": 28,
+    "-7": 171,
+    "-6": 82,
+    "-5": 56,
+    "-4": 102,
+    "-3": 26,
+    "-2": 289,
+    "-1": 86
+   },
+   "true_delta": {
+    "-8": 4,
+    "-7": 1344,
+    "-6": 276,
+    "-5": 192,
+    "-4": 204,
+    "-3": 152,
+    "-2": 104,
+    "-1": 52
+   }
+  },
+  "asleep_ready_beside": {
+   "futures": 920,
+   "damage_gen": 0.416,
+   "damage_true": 1.0,
+   "woken_and_damaged": 0.374,
+   "woken_not_damaged": 0.242,
+   "asleep_and_damaged": 0.042,
+   "drawn_delta_when_damaged": {
+    "-8": 4,
+    "-7": 51,
+    "-6": 34,
+    "-5": 45,
+    "-4": 66,
+    "-3": 12,
+    "-2": 97,
+    "-1": 74
+   },
+   "true_delta": {
+    "-7": 260,
+    "-6": 124,
+    "-5": 104,
+    "-4": 128,
+    "-3": 84,
+    "-2": 128,
+    "-1": 92
+   }
+  },
+  "asleep_cooling": {
+   "futures": 3228,
+   "damage_gen": 0.303,
+   "damage_true": 0.005
+  }
+ },
+ "f3_t2": {
+  "awake_ready_fresh": {
+   "futures": 2380,
+   "damage_gen": 0.163,
+   "damage_true": 0.388,
+   "drawn_delta_when_damaged": {
+    "-7": 10,
+    "-6": 4,
+    "-4": 1,
+    "-3": 6,
+    "-2": 286,
+    "-1": 81
+   }
+  },
+  "awake_ready_beside": {
+   "futures": 5620,
+   "damage_gen": 0.09,
+   "damage_true": 0.305,
+   "drawn_delta_when_damaged": {
+    "-7": 2,
+    "-6": 5,
+    "-5": 2,
+    "-4": 2,
+    "-3": 9,
+    "-2": 288,
+    "-1": 200
+   }
+  },
+  "awake_cooling": {
+   "futures": 8000,
+   "damage_gen": 0.058,
+   "damage_true": 0.007
+  },
+  "asleep_ready_fresh": {
+   "futures": 2328,
+   "damage_gen": 0.145,
+   "damage_true": 1.0,
+   "woken_and_damaged": 0.124,
+   "woken_not_damaged": 0.099,
+   "asleep_and_damaged": 0.021,
+   "drawn_delta_when_damaged": {
+    "-9": 5,
+    "-8": 13,
+    "-7": 54,
+    "-6": 34,
+    "-5": 26,
+    "-4": 41,
+    "-3": 8,
+    "-2": 115,
+    "-1": 41
+   },
+   "true_delta": {
+    "-8": 4,
+    "-7": 1344,
+    "-6": 276,
+    "-5": 192,
+    "-4": 204,
+    "-3": 152,
+    "-2": 104,
+    "-1": 52
+   }
+  },
+  "asleep_ready_beside": {
+   "futures": 920,
+   "damage_gen": 0.172,
+   "damage_true": 1.0,
+   "woken_and_damaged": 0.136,
+   "woken_not_damaged": 0.085,
+   "asleep_and_damaged": 0.036,
+   "drawn_delta_when_damaged": {
+    "-8": 2,
+    "-7": 20,
+    "-6": 12,
+    "-5": 17,
+    "-4": 29,
+    "-3": 3,
+    "-2": 44,
+    "-1": 31
+   },
+   "true_delta": {
+    "-7": 260,
+    "-6": 124,
+    "-5": 104,
+    "-4": 128,
+    "-3": 84,
+    "-2": 128,
+    "-1": 92
+   }
+  },
+  "asleep_cooling": {
+   "futures": 3228,
+   "damage_gen": 0.113,
+   "damage_true": 0.005
+  }
+ },
+ "f4_k4": {
+  "awake_ready_fresh": {
+   "futures": 2380,
+   "damage_gen": 0.101,
+   "damage_true": 0.388,
+   "drawn_delta_when_damaged": {
+    "-7": 1,
+    "-2": 214,
+    "-1": 26
+   }
+  },
+  "awake_ready_beside": {
+   "futures": 5620,
+   "damage_gen": 0.046,
+   "damage_true": 0.305,
+   "drawn_delta_when_damaged": {
+    "-6": 3,
+    "-3": 2,
+    "-2": 167,
+    "-1": 89
+   }
+  },
+  "awake_cooling": {
+   "futures": 8000,
+   "damage_gen": 0.032,
+   "damage_true": 0.007
+  },
+  "asleep_ready_fresh": {
+   "futures": 2328,
+   "damage_gen": 0.111,
+   "damage_true": 1.0,
+   "woken_and_damaged": 0.104,
+   "woken_not_damaged": 0.582,
+   "asleep_and_damaged": 0.007,
+   "drawn_delta_when_damaged": {
+    "-8": 1,
+    "-7": 57,
+    "-6": 33,
+    "-5": 17,
+    "-4": 38,
+    "-3": 13,
+    "-2": 60,
+    "-1": 39
+   },
+   "true_delta": {
+    "-8": 4,
+    "-7": 1344,
+    "-6": 276,
+    "-5": 192,
+    "-4": 204,
+    "-3": 152,
+    "-2": 104,
+    "-1": 52
+   }
+  },
+  "asleep_ready_beside": {
+   "futures": 920,
+   "damage_gen": 0.067,
+   "damage_true": 1.0,
+   "woken_and_damaged": 0.054,
+   "woken_not_damaged": 0.187,
+   "asleep_and_damaged": 0.013,
+   "drawn_delta_when_damaged": {
+    "-7": 4,
+    "-6": 8,
+    "-5": 10,
+    "-4": 7,
+    "-3": 5,
+    "-2": 16,
+    "-1": 12
+   },
+   "true_delta": {
+    "-7": 260,
+    "-6": 124,
+    "-5": 104,
+    "-4": 128,
+    "-3": 84,
+    "-2": 128,
+    "-1": 92
+   }
+  },
+  "asleep_cooling": {
+   "futures": 3228,
+   "damage_gen": 0.046,
+   "damage_true": 0.005
+  }
+ },
+ "f4_k8": {
+  "awake_ready_fresh": {
+   "futures": 2380,
+   "damage_gen": 0.108,
+   "damage_true": 0.388,
+   "drawn_delta_when_damaged": {
+    "-7": 1,
+    "-2": 226,
+    "-1": 30
+   }
+  },
+  "awake_ready_beside": {
+   "futures": 5620,
+   "damage_gen": 0.054,
+   "damage_true": 0.305,
+   "drawn_delta_when_damaged": {
+    "-6": 1,
+    "-3": 1,
+    "-2": 198,
+    "-1": 101
+   }
+  },
+  "awake_cooling": {
+   "futures": 8000,
+   "damage_gen": 0.037,
+   "damage_true": 0.007
+  },
+  "asleep_ready_fresh": {
+   "futures": 2328,
+   "damage_gen": 0.152,
+   "damage_true": 1.0,
+   "woken_and_damaged": 0.146,
+   "woken_not_damaged": 0.512,
+   "asleep_and_damaged": 0.006,
+   "drawn_delta_when_damaged": {
+    "-9": 1,
+    "-8": 2,
+    "-7": 79,
+    "-6": 49,
+    "-5": 24,
+    "-4": 55,
+    "-3": 17,
+    "-2": 85,
+    "-1": 43
+   },
+   "true_delta": {
+    "-8": 4,
+    "-7": 1344,
+    "-6": 276,
+    "-5": 192,
+    "-4": 204,
+    "-3": 152,
+    "-2": 104,
+    "-1": 52
+   }
+  },
+  "asleep_ready_beside": {
+   "futures": 920,
+   "damage_gen": 0.083,
+   "damage_true": 1.0,
+   "woken_and_damaged": 0.072,
+   "woken_not_damaged": 0.172,
+   "asleep_and_damaged": 0.011,
+   "drawn_delta_when_damaged": {
+    "-7": 5,
+    "-6": 8,
+    "-5": 11,
+    "-4": 7,
+    "-3": 6,
+    "-2": 27,
+    "-1": 12
+   },
+   "true_delta": {
+    "-7": 260,
+    "-6": 124,
+    "-5": 104,
+    "-4": 128,
+    "-3": 84,
+    "-2": 128,
+    "-1": 92
+   }
+  },
+  "asleep_cooling": {
+   "futures": 3228,
+   "damage_gen": 0.056,
+   "damage_true": 0.005
+  }
+ }
+}
