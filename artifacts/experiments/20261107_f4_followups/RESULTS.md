@@ -121,3 +121,83 @@ by the cache alone (not the memory, unlike part 2's sleep edit), and so is what 
 cached zombie that wakes the agent in 69% of futures moves the health digit in 7%: the failure sits at the health
 token's response, not at perceiving or routing the cause. (Against the true contrast every drop class is NO EFFECT:
 the world's own effect is 0.07.)
+
+## 7. Danger checks C1-C3, D1-D2 (`danger_checks.py`, `readings/danger/c1_f4, c2_f3, c3_f4, c3_f3, d1_d2.json`)
+
+Shams: F3 under fa6edd1a's code regenerates exp 2's zombie futures bitwise (as F4 did under the canonical code). F3's
+rows are drawn from the same populations but not the same rows as F4's M1 (rates, not paired differences).
+
+| stratum (hidden timer or cause) | F4 drawn / true | F4 ratio | F3 drawn / true | F3 ratio |
+|---|---|---|---|---|
+| food -1, awake | 0.020 / 0.042 | 0.48 | 0.030 / 0.042 | 0.72 |
+| food -1, asleep | 0.008 / 0.016 | 0.48 | 0.023 / 0.016 | 1.41 |
+| drink -1, awake | 0.023 / 0.031 | 0.74 | 0.042 / 0.031 | 1.36 |
+| drink -1, asleep | 0.012 / 0.020 | 0.59 | 0.032 / 0.020 | 1.61 |
+| energy -1, awake | 0.010 / 0.019 | 0.54 | 0.020 / 0.019 | 1.03 |
+| energy +1, asleep | 0.028 / 0.101 | 0.27 | 0.102 / 0.101 | 1.00 |
+| health -2, arrow, asleep | 0.005 / 0.318 | 0.02 | 0.105 / 0.318 | 0.33 |
+| health -2, arrow, awake | 0.009 / 0.069 | 0.13 | 0.022 / 0.061 | 0.36 |
+| health -1, a need at 0, awake | 0.010 / 0.038 | 0.27 | 0.012 / 0.039 | 0.29 |
+| health -1, a need at 0, asleep | 0.009 / 0.008 | 1.09 | 0.088 / 0.021 | 4.19 |
+| health +1, recovery, awake | 0.013 / 0.041 | 0.31 | 0.026 / 0.036 | 0.72 |
+| health +1, recovery, asleep | 0.036 / 0.095 | 0.38 | 0.055 / 0.077 | 0.71 |
+
+Wrong-way changes (truth 0): F4 0.0003-0.027, F3 0.0003-0.064 (F3's largest: health drops while recovering asleep).
+- **C1 (F4):** the other HUD timers are under-drawn too (0.27-0.74): not health-specific; by the declared bands most
+  sit between T1's <= 0.5 and health-specific's >= 0.7 (food, energy and energy +1 inside T1's; drink outside).
+- **C2 (F3):** F3 draws these changes at or above their rates (0.72-1.61, with more wrong-way changes), arrows 0.33-0.36
+  and recovery 0.71-0.72; awake need damage is the same in both (0.29 / 0.27). Declared reading: an **F4 regression** for
+  the arrow and recovery strata (F3 >= F4 + 0.2) and every timer; long-standing for awake need damage.
+- **C3 (decision level, M2's 232 hit pairs; projection 0 = no-hit successor, 1 = hit successor):**
+
+| model, level | health mean / > 0.5 | wake mean / > 0.5 |
+|---|---|---|
+| F4, pure noise (its first evaluation) | 0.03 / 0.00 | 0.56 / 0.70 |
+| F4, final sample (K = 4) | 0.07 / 0.06 | 0.66 / 0.68 |
+| F3, pure noise at sigma 5 (its sampler's start) | 0.37 / 0.32 | 0.63 / 0.68 |
+| F3, pure noise at sigma 20 | 0.16 / 0.08 | 0.17 / 0.06 |
+| F3, final sample (16 EDM steps) | 0.23 / 0.24 | 0.61 / 0.65 |
+
+  Declared reading: F4's own estimate never leans to the hit (0.03 <= 0.2): its conditional for the health token lacks
+  the cause, so sampling does not lose it (T3's sampling side ruled out for F4). F3's estimate leans to it (0.37) and
+  its samples keep part of it (0.23). Both draw the wake from the same input alike (0.56-0.66).
+- **D1 (data):** F4's drawn hit rate by starting health is flat (0.05-0.15) except full health (h9 0.39, h8 0.23), and
+  does not follow each value's exposure (Spearman 0.11 < 0.7; F3 likewise higher everywhere): not a per-value data limit.
+- **D2 (tools, per pass):** first tools 1,103-5,368; a held tool's 1 -> 2 208-1,296 (wood pickaxe 1,296), 2 -> 3 10-219.
+  Tool counts are rendered as digits like materials' (Craftax renderer). Wood pickaxe 1 -> 2 at 1,296 / pass is drawn
+  ~0.03, while iron's material increments at 3,130 / pass are drawn 0.88: each tool's + 1 is its own action-specific
+  mechanism, the materials' + 1 one mechanism shared through DO (~140k / pass): the non-shared flavour, for tools.
+
+## 8. Route map: where each consequence's cause enters F4 (all swap readings so far)
+
+```mermaid
+flowchart LR
+    A["action a(t-1)<br/>adaLN on every token"]
+    C["cache: every token of 4 past frames<br/>dense attention"]
+    B["memory: 4 belief tokens<br/>Mamba over the whole history"]
+    A -->|"main: DO + faced block, alone 0.40-0.45"| CNT["material count +1<br/>drawn 0.79-1.00"]
+    B -->|"gate: memory's action, alone 0.15-0.23"| CNT
+    B -->|"alone (1.00), cache 0.05"| SLP["sleep / awake"]
+    C -->|"energy 9 -> wake, alone (0.48)"| SLP
+    C -->|"zombie -> wake, alone (0.69)"| SLP
+    C -.->|"zombie -> health -7: 0.07 (truth 1.00)"| HP["health digit"]
+    T["hidden timers"] -.->|"route unswapped: 0.27-0.74 of truth"| HUD["food / drink / energy digits"]
+    T -.->|"recovery, need damage: 0.27-0.38"| HP
+    A -->|"craft: appears 0.81-0.96; held +1 0.00-0.06"| TOOL["tool slot"]
+```
+
+| consequence | cause enters through (F4, swaps) | drawn / truth on F4 | F3 (exp 3, C2) |
+|---|---|---|---|
+| material + 1 (mining) | action input, gated by memory's action | 0.79-1.00 (n <= 4) | memory's action only; 0.04-0.89 |
+| sleep held / woken by an awake edit | memory alone | false wakes 0.6-2.3% | both, memory dominant; 0.42-0.52 false wakes |
+| energy 9 -> wake | cache alone | 1.00 | no route; 0.04 contrast |
+| zombie -> wake (asleep) | cache alone | 0.69 | - |
+| zombie -> health drop | cache, weak | 0.07-0.11 of 1.00 | 0.37 at its decision level; 0.23-0.42 drawn |
+| arrow -> health drop | unswapped | 0.02-0.13 of truth | 0.33-0.36 |
+| HUD timers | unswapped | 0.27-0.74 of truth | 0.72-1.61 |
+| tool appears / held tool + 1 | action input (unswapped) | 0.81-0.96 / 0.00-0.06 | 0.79-0.91 / 0.01-0.19 |
+
+Reading of the map: F4 learned every consequence whose cause conditions the frame globally (the action) or changes many
+tokens (sleep, wake), and lost ground on single HUD digits changed by anything else (an entity, a hidden timer),
+where F3 had them at or above their rates. The cache carries the hit's cause (the wake proves it is seen and routed);
+the health digit's own estimate does not depend on it.
