@@ -48,3 +48,9 @@ zombie 0.54 (damaged 0.13), beside a cooling one 0.18 (truth 0.007): the wake / 
 - So the dense path does not supersede Mamba wholesale: it took over the one determinant Mamba never carried (energy),
   Mamba now carries sleep alone, and counts are shared. Caveats as declared: crossed cells are interventions; one
   world seed; F4's context is corrupted to signal 7 / 8.
+
+## 3. Movement in F4's own token space: holds (`routes_f4.py movement`, `readings/movement_f4.json`)
+
+T1's 64 pairs (64 episodes), K = 16 futures per member through F4's sampler: the move member moved in 1.00 of futures
+and the NOOP member in 0.00; all 64 pairs both ways (F3: 1.00 / 0.00). Mean projection 0.10 for the move member (0 =
+the move successor's tokens) and 0.98 for NOOP (1 = the NOOP successor's). Declared reading (>= 0.95 / <= 0.05): holds.
