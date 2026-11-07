@@ -1,7 +1,8 @@
 """M0 training phases (saccade/design/M0_CODE.md; CURRICULUM.md; LOSSES.md). P1 = one-step world training on
 episode streams with carried Mamba state (TBTT), diffusion forcing over chunks with an 8-frame context prefix, and
-harmonised groups G1 (next percept), G2 (change map, TSP, fovea reconstruction), G3 (reward, continuation).
-P2 / P3 are written after the S1 / S2 readings, against these interfaces.
+harmonised groups G1 (next percept, shortcut forcing), G2 (change map, TSP, fovea reconstruction), G3 (reward,
+continuation), with the learned fixation controller (saccade/chooser.py) choosing each target frame's glimpse. Canonical
+since P1-F4 (11-07); earlier recipes run from commit fa6edd1a. P2 / P3 are written against these interfaces.
 Usage (project venv, GPU; long runs via systemd-run): python -m saccade.train p1 WORLD_SEED [--updates N] [--steps S]
   [--episodes N] [--out DIR] [--no-checkpoints]
 """
@@ -13,7 +14,7 @@ import torch
 import torch.nn.functional as F
 import yaml
 
-from saccade import data as D, model as M
+from saccade import chooser as C, data as D, model as M
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -29,7 +30,7 @@ def file_sha256(path) -> str:
 
 def run_provenance(cfg) -> dict:
     """Small, content-based identity; unrelated repository commits may change without changing a run."""
-    sources = ("saccade/model.py", "saccade/train.py", "saccade/data.py", "saccade/m0.yaml")
+    sources = ("saccade/model.py", "saccade/train.py", "saccade/data.py", "saccade/chooser.py", "saccade/m0.yaml")
     return {"git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
             "source_sha256": {p: file_sha256(ROOT / p) for p in sources},
             "manifest_sha256": file_sha256(ROOT / cfg["data"]["corpus"] / "manifest.json"),
@@ -67,7 +68,7 @@ def encoder_diagnostics(model, chunk, carry, cache, targets, cfg, bootstrap=None
     n = cfg["data"]["context_prefix"] + 64
     bounded = {k: v[:1, :n] for k, v in chunk.items()}
     with torch.random.fork_rng(devices=[cache.device.index]):
-        terms, _, _ = p1_losses(model, bounded, carry, cache, targets, cfg, None if bootstrap is None else bootstrap[:1], update)
+        terms, _, _ = p1_losses(model, bounded, carry, cache, targets, cfg, bootstrap[:1], update)
         return encoder_grad_norms(model, terms)
 
 
@@ -101,12 +102,6 @@ def lr_factor(frames: float, cfg) -> float:
     return o["min_lr_ratio"] + (1 - o["min_lr_ratio"]) * 0.5 * (1 + math.cos(math.pi * u))
 
 
-def sample_sigma(shape, cfg, device, gen=None) -> torch.Tensor:
-    s = cfg["edm"]["train_sigma"]
-    z = torch.randn(shape, device=device, generator=gen)
-    return (s["lognormal_loc"] + s["lognormal_scale"] * z).exp().clamp(s["min"], s["max"])
-
-
 def autocast(dev, cfg):
     return torch.autocast(dev.type, torch.bfloat16, enabled=dev.type == "cuda" and cfg["p1"]["precision"] == "bf16_autocast")
 
@@ -118,8 +113,8 @@ def tensors(chunk: dict, device) -> dict:
 def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=None, update=None):
     """One microbatch of streams: chunk arrays [B, P + T, ...] (prefix = context only), carried Mamba state, cache =
     predicted beliefs [B, P + 1, W] of the prefix frames and of chunk frame 0 (computed in the previous chunk,
-    detached; never replayed through Mamba). Returns (loss terms, new carry, new cache). A shortcut-forcing world
-    needs these streams' bootstrap rows (bootstrap_rows) and the update index (the bootstrap start)."""
+    detached; never replayed through Mamba), these streams' bootstrap rows (bootstrap_rows) and the update index (the
+    bootstrap start). Returns (loss terms, new carry, new cache)."""
     P = cfg["data"]["context_prefix"]
     dev = cache.device
     t = tensors(chunk, dev)
@@ -137,34 +132,18 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=No
         b_pred = torch.cat([cache.to(nxt.dtype), nxt[:, :-1]], 1) * (~first)[..., None]   # zero belief at resets
         new_cache = torch.cat([b_pred[:, -P:], nxt[:, -1:]], 1).detach().float()
         x0 = tuple(torch.cat([a, b.detach()], 1) for a, b in zip(Pp.parts(), Pc.parts()))
-        if model.denoiser.shortcut:                                      # P1-F4: Dreamer 4's shortcut forcing
-            sc = cfg["edm"]["shortcut"]
-            assert bootstrap is not None and update is not None and "g1_weighting" not in cfg["edm"]
-            g1 = M.shortcut_loss(model.denoiser, x0, t["prev_action"], model.belief.memory(b_pred), fix, t["episode"],
-                                 t["valid"], sc, torch.as_tensor(bootstrap, device=dev), update >= sc["bootstrap_start"])[:, P:].mean()
-        else:
-            sigma = sample_sigma(first.shape, cfg, dev)
-            if model.denoiser.factorised:                                # decision 1: an independent glimpse level (UniDiffuser)
-                sigma = (sigma, sample_sigma(first.shape, cfg, dev))
-            g1 = M.denoise_loss(model.denoiser, x0, sigma, t["prev_action"], model.belief.memory(b_pred), fix,
-                                t["episode"], t["valid"], cfg["edm"]["sigma_data"],
-                                weighting=cfg["edm"].get("g1_weighting"))[:, P:].mean()
+        sc = cfg["edm"]["shortcut"]                                      # Dreamer 4's shortcut forcing (P1-F4)
+        g1 = M.shortcut_loss(model.denoiser, x0, t["prev_action"], model.belief.memory(b_pred), fix, t["episode"],
+                             t["valid"], sc, torch.as_tensor(bootstrap, device=dev), update >= sc["bootstrap_start"])[:, P:].mean()
         bp, cells = b_pred[:, P:], M.window(fix[:, P:])
         pix = M.cell_pixels(M.crop(t["frames"][:, P:], fix[:, P:]))
-        faithful = cfg["heads"]["pixel_decoder"].get("mean_loss", "nll") == "faithful"
-        vs = Pc.v.detach() if faithful else Pc.v                         # the scale's lighting input (the mean never reads it)
+        assert cfg["heads"]["pixel_decoder"]["mean_loss"] == "faithful"   # LOSSES G2 (10-31): Stirn et al. 2023
+        vs = Pc.v.detach()                                               # the scale's lighting input (the mean never reads it)
         mt, st = model.pixels(model.tsp.predict(bp, Pc.p, Pc.v, cells), vs, cells)
         mr, sr = model.pixels(model.tsp.reconstruct(Pc.g, Pc.v, cells), vs, cells)
-        if faithful:                                                     # LOSSES G2 (10-31): Stirn et al. 2023
-            y = pix.float() / 127.5 - 1
-            tsp, rec = (mt.float() - y).square().mean(), (mr.float() - y).square().mean()
-            if cfg["heads"]["pixel_decoder"].get("tsp_mean_loss") == "scale_weighted_nll":   # 11-01 overnight test:
-                # TSP's mean by stopgrad(logistic scale) x NLL, Seitzer et al. 2022's beta = 0.5 in logistic-scale form
-                # (Codex's BM arm, 20261031_grounding_loss_review/followup/beta_fork.py); reconstruction stays faithful
-                tsp = (st.float().clamp(min=-7).exp().detach() * M.pixel_nll(mt, st.detach(), pix)).mean()
-            noise = M.pixel_nll(mt.detach(), st, pix).mean() + M.pixel_nll(mr.detach(), sr, pix).mean()
-        else:
-            tsp, rec = M.pixel_nll(mt, st, pix).mean(), M.pixel_nll(mr, sr, pix).mean()
+        y = pix.float() / 127.5 - 1
+        tsp, rec = (mt.float() - y).square().mean(), (mr.float() - y).square().mean()
+        noise = M.pixel_nll(mt.detach(), st, pix).mean() + M.pixel_nll(mr.detach(), sr, pix).mean()
         logit = model.change(torch.cat([Pp.p, Pc.p], 1)[:, P - 1:L - 1], Pc.p, bp)
         idx = chunk["target"][:, P:]
         tgt = np.full((*idx.shape, 7, D.GRID), np.nan, np.float32)
@@ -178,9 +157,8 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=No
         reward = -model.outcome.reward_logp(h, r).mean()
         cont = F.binary_cross_entropy_with_logits(model.outcome.cont_logit(h, r).float(),
                                                   (~t["terminated"][:, P:][nf]).float())
-    terms = {"g1": g1, "change": change, "tsp": tsp, "rec": rec, "reward": reward, "cont": cont}
-    if faithful:
-        terms["noise"] = noise                                           # reaches only the scale network: outside the groups
+    terms = {"g1": g1, "change": change, "tsp": tsp, "rec": rec, "reward": reward, "cont": cont,
+             "noise": noise}                                             # noise reaches only the scale network: outside the groups
     return {k: v.float() for k, v in terms.items()}, carry, new_cache
 
 
@@ -226,10 +204,10 @@ def monitor(model: M.M0, cfg, episodes, n_windows=None) -> dict:
 
 @torch.no_grad()
 def _monitor(model: M.M0, cfg, episodes, n_windows=None) -> dict:
-    """The fixed P1 monitor (CURRICULUM, Budgets): the G1 loss of the target frame of fixed held-out windows (8 context
-    frames at the inference context level, the target at 8 fixed noise levels = equal-mass quantiles of the training
-    distribution), fixed noise draws, fixed fixations; beliefs from Mamba over each whole episode. Also token
-    diagnostics (never gates): effective rank of the periphery tokens."""
+    """The fixed P1 monitor (CURRICULUM, Budgets): the flow term of G1 (ramp-weighted x-space error) on the target frame
+    of fixed held-out windows at every finest-grid signal level (8 context frames at the context signal level), fixed
+    noise draws, fixed fixations; beliefs from Mamba over each whole episode. Also token diagnostics (never gates):
+    effective rank of the periphery tokens."""
     m, e = cfg["p1"]["monitor"], cfg["edm"]
     P, dev = cfg["data"]["context_prefix"], next(model.parameters()).device
     lengths = np.array([ep.T for ep in episodes])
@@ -237,13 +215,8 @@ def _monitor(model: M.M0, cfg, episodes, n_windows=None) -> dict:
     picks = rng.choice(int(lengths.sum()), n_windows or m["windows"], replace=False)
     off = np.r_[0, np.cumsum(lengths)]
     ep_of = np.searchsorted(off, picks, side="right") - 1
-    z = torch.distributions.Normal(0, 1).icdf((torch.arange(m["sigma_levels"]) + 0.5) / m["sigma_levels"])
-    s = e["train_sigma"]
-    levels = (s["lognormal_loc"] + s["lognormal_scale"] * z).exp().clamp(s["min"], s["max"]).to(dev)
-    shortcut = model.denoiser.shortcut                                   # P1-F4: the flow term (ramp-weighted x-space
-    if shortcut:                                                         # error) at every finest-grid signal level,
-        k = e["shortcut"]["k_max"]                                       # context at its level; fixed draws as above
-        levels = torch.arange(k, device=dev)
+    k = e["shortcut"]["k_max"]
+    levels = torch.arange(k, device=dev)
     losses, toks = [], []
     for i in np.unique(ep_of):
         ep = episodes[i]
@@ -262,29 +235,21 @@ def _monitor(model: M.M0, cfg, episodes, n_windows=None) -> dict:
                 sl = slice(max(0, t - P), t + 1)
                 n = sl.stop - sl.start
                 rep = lambda a: a[:, sl].expand(len(levels), *a[:, sl].shape[1:])
-                sig = torch.full((len(levels), n), e["inference_context_sigma"], device=dev)
-                sig[:, -1] = levels
                 g = torch.Generator(device=dev).manual_seed(m["fixed_noise_seed"] * 1_000_003 + int(i) * 4_099 + t)
                 x0 = tuple(rep(a) for a in Pe.parts())
                 noise = tuple(torch.randn(a.shape, device=dev, generator=g) for a in x0)
-                if shortcut:
-                    sg = torch.full((len(levels), n), e["shortcut"]["context_signal"], device=dev, dtype=torch.long)
-                    sg[:, -1] = levels
-                    lv = [(sg, torch.full_like(sg, k.bit_length() - 1))] * (2 if model.denoiser.factorised else 1)
-                    l = M.shortcut_loss(model.denoiser, x0, rep(c["prev_action"]), model.belief.memory(rep(b_pred)),
-                                        rep(c["fixation"]), rep(c["episode"]), rep(c["valid"]), e["shortcut"],
-                                        torch.zeros(len(levels), dtype=torch.bool, device=dev), False, lv, noise)
-                    losses.append(l[:, -1].float().cpu())
-                    continue
-                # EDM units whatever edm.g1_weighting trains with: checkpoint selection reads comparable numbers
-                l = M.denoise_loss(model.denoiser, x0, sig, rep(c["prev_action"]), model.belief.memory(rep(b_pred)),
-                                   rep(c["fixation"]), rep(c["episode"]), rep(c["valid"]), e["sigma_data"], noise)
+                sg = torch.full((len(levels), n), e["shortcut"]["context_signal"], device=dev, dtype=torch.long)
+                sg[:, -1] = levels
+                lv = [(sg, torch.full_like(sg, k.bit_length() - 1))] * 2
+                l = M.shortcut_loss(model.denoiser, x0, rep(c["prev_action"]), model.belief.memory(rep(b_pred)),
+                                    rep(c["fixation"]), rep(c["episode"]), rep(c["valid"]), e["shortcut"],
+                                    torch.zeros(len(levels), dtype=torch.bool, device=dev), False, lv, noise)
                 losses.append(l[:, -1].float().cpu())
     L = torch.stack(losses)                                              # [windows, levels]
     tok = torch.cat(toks)
     ev = torch.linalg.eigvalsh(torch.cov(tok.T)).clamp(min=0)
     return {"g1": float(L.mean()), "g1_by_level": L.mean(0).tolist(),
-            "levels": (levels.float() / k).tolist() if shortcut else levels.tolist(),
+            "levels": (levels.float() / k).tolist(),
             "periphery_effective_rank": float(ev.sum() ** 2 / (ev ** 2).sum()), "windows": len(L)}
 
 
@@ -300,12 +265,14 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
         raise ValueError("Change targets do not match the configured training split")
     provenance = run_provenance(cfg)
     d, P = cfg["data"], cfg["data"]["context_prefix"]
+    assert max(d["accumulate_at_64"], d["accumulate_at_256"]) <= d["streams"], "a microbatch without streams"
     streams = D.Streams(eps, d["streams"], P, seed=world_seed, targets_offsets=offsets)
     model = M.M0(cfg).to(dev)
     model.denoiser.checkpoint = cfg["p1"]["activation_checkpointing"]
     set_reward_values(model, split["train"])
     o = cfg["optimizer"]
     opt = torch.optim.AdamW(model.param_groups(), lr=o["lr"], betas=tuple(o["betas"]), eps=o["eps"])
+    controller = C.Controller(model, cfg, out_dir, dev)
     W = cfg["belief"]["width"]
     st = {"frames": 0, "update": 0, "next_ckpt": 1}
     carry = model.belief.initial(d["streams"], dev)
@@ -317,21 +284,23 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
         model.load_state_dict(ck["model"]), opt.load_state_dict(ck["opt"]), streams.load_state(ck["streams"])
         carry, cache, st = ck["carry"], ck["cache"], ck["state"]
         torch.set_rng_state(ck["rng"]["cpu"].cpu()), torch.cuda.set_rng_state(ck["rng"]["cuda"].cpu())
+        controller.load_state(ck["fixation_controller"])
         print(f"resumed at update {st['update']}, frames {st['frames']}", flush=True)
     total, every = cfg["p1"]["frames"], cfg["p1"]["frames"] * cfg["p1"]["checkpoint_every_fraction"]
     log = open(out_dir / "log.jsonl", "a")
     t0, u0 = time.time(), st["update"]
     while st["frames"] < total and (updates is None or st["update"] < updates):
         S = steps or (d["chunk_steps"][0] if st["frames"] < total / 2 else d["chunk_steps"][1])
-        micro = d.get("accumulate_at_64", 1) if S == d["chunk_steps"][0] else d["accumulate_at_256"]
+        micro = d["accumulate_at_64"] if S == d["chunk_steps"][0] else d["accumulate_at_256"]
         chunk = streams.next(S)
+        controller.prepare(chunk, streams)
         at_checkpoint = checkpoints and st["frames"] + int(chunk["valid"][:, P:].sum()) >= st["next_ckpt"] * every
         f = lr_factor(st["frames"], cfg)
         for g in opt.param_groups:
             g["lr"] = o["lr"] * g["lr_scale"] * f
         opt.zero_grad(set_to_none=True)
         rows_all = np.array_split(np.arange(d["streams"]), micro)
-        boot = bootstrap_rows(cfg, world_seed, st["update"]) if model.denoiser.shortcut else None
+        boot = bootstrap_rows(cfg, world_seed, st["update"])
         logs = []
         route_norms = None
         if at_checkpoint:
@@ -339,8 +308,8 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
             diagnostic_cache = cache[:1].clone()
         for rows in rows_all:
             terms, c_new, cache_new = p1_losses(model, D.select(chunk, rows), M.carry_rows(carry, rows),
-                                                cache[rows], targets, cfg, None if boot is None else boot[rows], st["update"])
-            ((model.harmoniser(groups(terms)) + terms.get("noise", 0)) / micro).backward()
+                                                cache[rows], targets, cfg, boot[rows], st["update"])
+            ((model.harmoniser(groups(terms)) + terms["noise"]) / micro).backward()
             M.carry_put(carry, rows, c_new)
             cache[rows] = cache_new
             logs.append({k: float(v.detach()) for k, v in terms.items()})
@@ -349,6 +318,7 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
             route_norms = encoder_diagnostics(model, chunk, diagnostic_carry, diagnostic_cache, targets, cfg, boot, st["update"])
         gn = float(torch.nn.utils.clip_grad_norm_(model.parameters(), o["grad_clip"]))
         opt.step()
+        controller.learn(int(chunk["valid"][:, P:].sum()))
         st["frames"] += int(chunk["valid"][:, P:].sum())
         st["update"] += 1
         if st["update"] % log_every == 0 or st["update"] == 1:
@@ -365,6 +335,7 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
                   "cache": cache, "state": dict(st, next_ckpt=st["next_ckpt"] + 1), "cfg": cfg, "world_seed": world_seed,
                   "provenance": provenance,
                   "rng": {"cpu": torch.get_rng_state(), "cuda": torch.cuda.get_rng_state()}}
+            ck["fixation_controller"] = controller.state()
             torch.save(ck, out_dir / f"ckpt_{st['next_ckpt']:02d}.pt")
             torch.save(ck, latest)
             mon = monitor(model, cfg, split["monitor"])
@@ -372,6 +343,7 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
                                   "monitor": mon, "encoder_grad_norms": route_norms}) + "\n"), log.flush()
             print("monitor", json.dumps(mon), flush=True)
             st["next_ckpt"] += 1
+    controller.close()
     return model
 
 

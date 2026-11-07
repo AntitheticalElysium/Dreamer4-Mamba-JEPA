@@ -7,6 +7,18 @@ artifacts/experiments/20261023_system_design/, the S0 results in artifacts/exper
 
 The first build, M0, is defined in STEP_SPEC §7; entries below marked [superseded] are history.
 
+## Canonical recipe (2026-11-07): P1-F4
+User 11-07: "make this canonical" after P1-F4's results (`artifacts/experiments/20261106_p1f4/RESULTS.md`, follow-ups in
+`20261107_f4_followups/RESULTS.md`). `saccade/` now holds exactly P1-F4's system: shortcut forcing (Dreamer 4) with dense
+long-context attention, decision 1's factorised denoiser and cascade, F1.6's joint spatial fusion, the faithful pixel
+decoder, and the learned fixation controller (`saccade/chooser.py`, F2's head and policy moved from the experiment
+folders, its hyperparameters in `m0.yaml`). Removed, with no switch left behind: EDM (preconditioning, loss, sampler, the
+sigma context), per-token time attention, the joint (tied) denoiser, the unfused belief, the NLL decoder mean, the
+uniform training gaze. Verified: the canonical trainer reproduces F4's logged first update, its chooser log and gaze
+trace bitwise; F4's checkpoint gives bitwise identical monitor and S1 one-step samples under the old and new code. The
+earlier recipes and the experiment scripts written against them run from commit fa6edd1a (they import the removed
+functions). The `edm` config section keeps its name so F4's checkpoints' configurations read unchanged.
+
 ## Active experiment ownership (2026-11-02)
 At the user's request, Codex owns the P1-F1.5 readiness and emergent-fovea experiment segment. The living evidence
 map is [P2_READINESS.md](P2_READINESS.md); its bounded diagnostic protocol is

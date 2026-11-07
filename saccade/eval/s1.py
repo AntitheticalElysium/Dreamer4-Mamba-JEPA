@@ -355,17 +355,11 @@ def belief_probe(Xtr, Ytr, ep_tr, Xdv, Ydv, ep_dv, seed, window=None, first_tr=N
 @torch.no_grad()
 def one_step(model, enc, cfg, n_tuples, rng):
     """Sample next percepts (and outcomes) for random (episode, t >= 1) tuples of dev, from their real histories."""
-    e_cfg, s = cfg["edm"], cfg["edm"]["sampler"]
     P = cfg["data"]["context_prefix"]
     lens = np.array([len(r["p"]) for r in enc])
     eps_ = rng.choice(len(enc), n_tuples, p=(lens - 1) / (lens - 1).sum())
     ts = np.array([rng.integers(1, lens[e]) for e in eps_])
     dims = [tuple(enc[0][k].shape[1:]) for k in ("p", "g", "v")]
-    clamp = cfg["perception"]["periphery"]["tanh_clamp"]
-    n = s["steps"]
-    sig = [(s["sigma_max"] ** (1 / s["rho"]) + i / (n - 1) * (s["sigma_min"] ** (1 / s["rho"]) - s["sigma_max"] ** (1 / s["rho"]))) ** s["rho"]
-           for i in range(n)] + [0.0]
-    gamma = min(s["s_churn"] / n, math.sqrt(2) - 1)
     gen = torch.Generator(device=DEV).manual_seed(0)
     out = {k: [] for k in ("p", "g", "v", "r", "term")}
     for chunk in np.array_split(np.arange(n_tuples), max(1, n_tuples // 64)):
@@ -376,33 +370,18 @@ def one_step(model, enc, cfg, n_tuples, rng):
         x0 = [win(k).float() for k in ("p", "g", "v")]
         valid = torch.stack([torch.as_tensor(np.r_[np.zeros(max(0, P - ts[i]), bool), np.ones(min(P, ts[i]) + 1, bool)]) for i in chunk]).to(DEV)
         prev_a, fix, bp = win("prev_action"), win("fix"), win("bp").float()
-        episode = torch.zeros_like(prev_a)
         mem = model.belief.memory(bp)
-        if model.denoiser.factorised:                                    # decision 1: the system's own sampler (cascade):
-            x = [torch.empty((B, 1, *d), device=DEV) for d in dims]     # the real context committed frame by frame,
-            nctx = valid[:, :-1].sum(1)                                  # grouped by its length (no padded frames)
-            for k_ctx in nctx.unique().tolist():
-                r = (nctx == k_ctx).nonzero()[:, 0]
-                cache = model.denoiser.new_cache()
-                with TR.autocast(DEV, cfg):
-                    for dt in range(P - k_ctx, P):
-                        cache = M.context_pass(model.denoiser, tuple(a[r, dt:dt + 1] for a in x0), prev_a[r, dt:dt + 1],
-                                               mem[r, dt:dt + 1], fix[r, dt:dt + 1], cache, cfg, gen)
-                    for a, b in zip(x, M.sample(model.denoiser, dims, prev_a[r, P:], mem[r, P:], fix[r, P:], cache, cfg, gen)):
-                        a[r] = b.float()
-        else:
-            ctx = [a[:, :-1] + e_cfg["inference_context_sigma"] * torch.randn(a[:, :-1].shape, device=DEV, generator=gen) for a in x0]
-            x = [sig[0] * torch.randn((B, 1, *d), device=DEV, generator=gen) for d in dims]
-            for k in range(n):
-                hat = sig[k] * (1 + gamma)
-                x = [a + math.sqrt(hat ** 2 - sig[k] ** 2) * torch.randn(a.shape, device=DEV, generator=gen) for a in x]
-                sg = torch.full((B, P + 1), e_cfg["inference_context_sigma"], device=DEV); sg[:, -1] = hat
-                c_skip, c_out, c_in, c_noise = M.precondition(sg, e_cfg["sigma_data"])
-                seq = [torch.cat([cx, a], 1) for cx, a in zip(ctx, x)]
-                with TR.autocast(DEV, cfg):
-                    Fo = model.denoiser(tuple(M._bcast(c_in, a) * a for a in seq), c_noise, prev_a, mem, fix, episode, valid)
-                Dn = M.clean_estimate(x, tuple(f[:, -1:] for f in Fo), c_skip[:, -1:], c_out[:, -1:], clamp)
-                x = [a + (sig[k + 1] - hat) * (a - d) / hat for a, d in zip(x, Dn)]
+        x = [torch.empty((B, 1, *d), device=DEV) for d in dims]         # the system's own sampler (decision 1's cascade):
+        nctx = valid[:, :-1].sum(1)                                      # the real context committed frame by frame,
+        for k_ctx in nctx.unique().tolist():                             # grouped by its length (no padded frames)
+            r = (nctx == k_ctx).nonzero()[:, 0]
+            cache = model.denoiser.new_cache()
+            with TR.autocast(DEV, cfg):
+                for dt in range(P - k_ctx, P):
+                    cache = M.context_pass(model.denoiser, tuple(a[r, dt:dt + 1] for a in x0), prev_a[r, dt:dt + 1],
+                                           mem[r, dt:dt + 1], fix[r, dt:dt + 1], cache, cfg, gen)
+                for a, b in zip(x, M.sample(model.denoiser, dims, prev_a[r, P:], mem[r, P:], fix[r, P:], cache, cfg, gen)):
+                    a[r] = b.float()
         Pg = M.Percept(x[0][:, 0], x[1][:, 0], x[2][:, 0], fix[:, -1])
         with TR.autocast(DEV, cfg):
             h = model.outcome.features(bp[:, -1], model.belief.percept_embed(Pg))

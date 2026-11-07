@@ -183,12 +183,11 @@ def test_m0_yaml_has_no_duplicate_keys():
 
 
 def test_one_step_factorised_is_the_system_sampler(monkeypatch):
-    """S1.3 for a factorised world (decision 1): one_step's draw for a tuple equals the system's own path for it, the
+    """S1.3 (decision 1's cascade): one_step's draw for a tuple equals the system's own path for it, the
     real context committed frame by frame by context_pass and then M.sample's cascade, from the same generator state."""
     from saccade import model as M
     monkeypatch.setattr(s1, "DEV", torch.device("cpu"))
     cfg = copy.deepcopy(TR.load_cfg())
-    cfg["denoiser"]["factorised"], cfg["edm"]["sampler"]["glimpse_conditioning_sigma"] = True, 0.1
     torch.manual_seed(0)
     model = M.M0(cfg).eval()
     for m in [b.mod for b in model.denoiser.blocks] + [model.denoiser.final_mod, *model.denoiser.out]:
