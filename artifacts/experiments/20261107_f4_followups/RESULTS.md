@@ -17,3 +17,34 @@ Verdict (declared rule): **the trained world** draws danger rarely at any step c
 step-invariant: false wakes 0.008-0.024 per stratum, woken at energy 9 1.00, coal / iron 0 -> 1 0.98 / 0.92,
 increments unchanged, every interface unlock within 0.015 of K = 4 (sapling 0.06 -> 0.07). Woken beside a ready
 zombie 0.54 (damaged 0.13), beside a cooling one 0.18 (truth 0.007): the wake / hit decoupling also persists.
+
+## 2. Memory versus cache routes on F4 (`routes_f4.py`, `readings/routes_f4.json`)
+
+842 pairs (exp 3's bank), 0 excluded; shams within exp 3's tolerances (tokens 0.023 < 0.04, belief 0.016 < 0.02, cache
+0.006 < 0.011, 34 repeated generations bitwise); recorded successors read correctly in 100% of pairs. Cells are
+(denoiser side, memory) from (d0, d1), event rates over K = 8 futures, episode-bootstrap 95%.
+
+| family | 00 | 10 (denoiser side d1) | 01 (memory d1) | 11 | F3 cells 00 / 10 / 01 / 11 | declared reading |
+|---|---|---|---|---|---|---|
+| sleep: awake (d0 asleep, d1 woken) | 0.000 | 0.046 | 0.998 | 1.000 | 0.47 / 0.79 / 1.00 / 1.00 | Mamba CARRIES |
+| energy: awake (d0 8, d1 9) | 0.000 | 0.478 | 0.000 | 0.477 | 0.34 / 0.34 / 0.34 / 0.34 | Mamba BYPASSED |
+| coal: +1 (d0 DO, d1 NOOP) | 0.899 | 0.234 | 0.400 | 0.002 | 0.13 / 0.06 / 0.00 / 0.00 | shared |
+| wood: +1 (d0 DO, d1 NOOP) | 0.994 | 0.153 | 0.448 | 0.000 | 0.86 / 0.52 / 0.00 / 0.00 | shared |
+
+- **Sleep: the memory alone decides it.** Memory sufficiency 0.998 and necessity 0.954 CARRIES (F3: necessity NO
+  EFFECT, 0.21); the cached frame's sufficiency 0.046 NO EFFECT (F3 0.32 UNRESOLVED; night 0.09, day 0.002). With both
+  inputs asleep, 0.000 wake (F3 0.47): predicted, and the leak exp 3 left unresolved is gone. The dense route offers the
+  cached awake frame one step away and the world does not use it.
+- **Energy: only the cache carries it.** The cached energy-9 frame wakes 0.478 whatever the memory says; the memory's 9
+  does nothing (sufficiency and necessity 0.000 / -0.001 NO EFFECT). Predicted: the energy token of frame t - 1 is one
+  dense step away, and the belief recovered energy only partially in F3. Not resolved: with both inputs at 9 the
+  edited pairs wake 0.48, while natural energy-9 rows wake 1.00 (curves): something in natural histories beyond the
+  edited digit contributes.
+- **Counts: the memory gate is gone; both action inputs carry the increment.** Both DO 0.90 / 0.99 (coal / wood); the
+  denoiser's own action alone 0.40 / 0.45; the memory's action alone 0.23 / 0.15; neither 0.00. In F3 a NOOP memory
+  removed every increment (0.000 / 0.003). My prediction "counts keep the memory gate" is REFUTED; "coal now near wood"
+  holds (0.90 vs 0.99; F3 0.13 vs 0.86). The denoiser-side route here is the action conditioning (adaLN), not the dense
+  attention: the cached frames are identical in both members.
+- So the dense path does not supersede Mamba wholesale: it took over the one determinant Mamba never carried (energy),
+  Mamba now carries sleep alone, and counts are shared. Caveats as declared: crossed cells are interventions; one
+  world seed; F4's context is corrupted to signal 7 / 8.
