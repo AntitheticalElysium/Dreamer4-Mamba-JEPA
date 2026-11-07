@@ -487,3 +487,26 @@ Mean |dL/d bp_t| per frame (x 1e-6):
 - What survives from 12: the cause's clues reach the health token's residual; the sampler realises the first
   evaluation's mean. The failure as Codex states it: the learned health prediction has not turned the available clues
   into the correct conditional transition.
+
+## 17. Two data facts for the design discussion (`danger_rule.py`, `innovation.py`; `readings/danger/danger_rule_{dev,train}.json`, `innovation.json`)
+
+**A zombie hit is a deterministic rule within the denoiser's reach.** Source rule (game_logic.py 814-833): a zombie at
+distance 1 from the player's post-move position with cooldown <= 0 attacks (2 awake / 7 asleep), cooldown -> 5, else
+-1 every step. Labels, attack = that zombie's cooldown reset to 5:
+- P(attack | rule) 0.890 dev / 0.873 train, P(attack | not rule) 0.000 / 0.000; 95.5% of the rule's misses are zombies
+  the player killed first with DO (also deterministic). 14.8 / 14.2 attacks per 1,000 transitions.
+- A visible-history observer ("no attack in the last 5 steps") matches the true readiness 97.8% / 97.6%.
+- (A first version scored the recorded health drop; recovery +1 in the same step and damage capped at death made it
+  read 0.81 / 0.50 - corrected before reading.)
+-> Danger is not stochastic for an observer of the last ~6 frames and the action; F4's under-drawing is a failure to
+learn a deterministic, in-reach, conjunctive rule (post-move adjacency, no recent attack, not killed this step).
+
+**Given the full state and action, the next frame's content is nearly deterministic.** 500 dev states replayed exactly
+(max pixel difference 0), each stepped with the recorded action under 16 fresh keys:
+- content (rendered in daylight): a varying map cell in 78% of steps, median 3 of 63 cells (p90 7, max 13): mob moves;
+  HUD body values (health, food, drink, energy, sleep) vary in 0.6% of steps, inventory 3.0% (random collection);
+  terrain never in 500.
+- as seen: night static is drawn from the step's key (renderer.py 414), so at night every map cell varies (p90 63):
+  pixel noise, not content.
+-> The failing consequences (timers, damage) are deterministic given the state; what makes them uncertain to the model
+is hidden state recoverable from history (timers: resets visible 98-100%, RESULTS 14; readiness: 97.7% from 5 steps).
