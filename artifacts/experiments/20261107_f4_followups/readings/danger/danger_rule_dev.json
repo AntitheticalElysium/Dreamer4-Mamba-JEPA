@@ -1,0 +1,42 @@
+{
+ "split": "dev",
+ "eligible rows (a zombie at distance 1 from the post-move player)": 13436,
+ "hits (recorded drop >= zombie damage)": 3888,
+ "P(hit | rule) / P(hit | not rule)": [
+  0.7614552605703048,
+  0.0019159382109926954
+ ],
+ "rule vs recorded, by sleep": {
+  "awake": [
+   0.8120758249473438,
+   0.0021208907741251328,
+   4273,
+   7544
+  ],
+  "asleep": [
+   0.49507389162561577,
+   0.0,
+   812,
+   807
+  ]
+ },
+ "share of eligible rows with > 1 zombie at distance 1": 0.021658231616552545,
+ "P(attack | rule) / P(attack | not rule) (attack = cooldown reset to 5)": [
+  0.8900688298918388,
+  0.0
+ ],
+ "rule rows without an attack: share killed first by the player": 0.9552772808586762,
+ "attacks per 1000 transitions": 14.844308588445973,
+ "visible observer (no hit in the last 5 steps) vs the true rule": {
+  "agreement": 0.9776719261685025,
+  "P(attack | observer ready) / P(attack | observer cooling)": [
+   0.8779938587512794,
+   0.02771605660156707
+  ],
+  "share of eligible rows the observer calls ready": 0.36357546888955045
+ },
+ "fresh arrivals (no zombie at distance 1 one step earlier)": {
+  "share": 0.4083804703780887,
+  "P(hit | fresh)": 0.5830143976672134
+ }
+}
