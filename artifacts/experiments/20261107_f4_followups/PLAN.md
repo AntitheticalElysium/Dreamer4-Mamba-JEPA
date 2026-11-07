@@ -127,3 +127,34 @@ loss weighting starves the noisiest levels, where a token's change-or-not is dec
   value's own exposure (Spearman >= 0.7 over cells with >= 30 futures); flat if not.
 - **D2, tools (CPU):** a held tool's count + 1 (crafting's 'madeN', drawn 0.00-0.06) and its exposure in the train
   labels per tool and starting count, beside the first tool's (drawn 0.81-0.96). Descriptive.
+
+## 8. Danger readings and adversarial checks (`danger_readings.py`; user 11-07: "run those readings... consider that
+this might not be a regression, keep doing adversarial checks"; Codex's danger review taken: see RESULTS 9)
+
+Done on saved data before this plan (CPU, undeclared, reported as such): (a) zombie-hit discrimination (ready minus
+cooling) for fresh arrivals is about equal in F3 and F4 (+0.10 / +0.06 vs +0.07 / +0.07, awake / asleep); F3's higher
+hit rates come with a higher rate of impossible drops (asleep cooling 0.30, truth 0.005); (b) the HUD reader's
+confidence on generated health tokens is ~1 for both (below 0.9 in 0.3-0.4%). So "F4 regressed on hits" is not
+supported as a discrimination claim. The timer table (RESULTS 7) is the remaining regression candidate.
+- **R1, timer phase (adversarial: learning vs base rate).** Each timer's due time is visible in the history (steps
+  since the HUD value last changed the same way; Craftax: food -1 every 26 awake steps, energy +1 every ~11 asleep,
+  health +1 every 26 awake steps while needs are met, energy -1 every 31 awake). Strata: food -1 awake, energy +1
+  asleep, recovery awake, energy -1 awake (C1's quiet rows); rows binned by steps since the last same-direction change
+  (1-5, 6-10, ..., 31+, none in the episode yet), up to 250 rows per bin, the SAME rows for every model: F4 (K = 4), F3
+  at 16 EDM steps, F3 at 3 (adversarial: F3's advantage could be its 16-step stochastic sampler). Truth hazard per bin
+  from the labels. Reading: a model has learned a timer if its drawn rate rises at the bins where the truth is due
+  (due minus early >= half the truth's contrast); a base-rate difference if its profile is flat (< a quarter of it).
+  F4 regression on timers if F3 (16) learned a timer that F4 did not; not a regression if F3 is flat at a higher rate;
+  F3's sampler if F3 at 3 steps loses what F3 at 16 has.
+- **R2, attention of the health token (descriptive; attention mass is not causal).** M2's 232 hit pairs, both members,
+  natural inputs, at the decision level (F4's first evaluation from pure noise; F3's at sigma 5): the attention mass of
+  the health token's queries and, for comparison, of the lighting token's (the wake carrier) over key groups: the 4
+  cells beside the player (current frame; and past frames in F4's dense layers), the query token's own past, the
+  memory tokens, the rest; per layer, averaged over heads. Reading: routing to health is weak if the health queries put
+  less than a quarter of the lighting queries' mass on the zombie cells; and if the mass moves when the zombie is removed.
+- **R3, reliance at each signal level (frozen.py T1's instrument on the health token and the wake).** Same pairs and
+  inputs; the generated frame's input set to the hit successor (own) or the no-hit successor (conflict), noised to each
+  level (F4 signal 0, 2/8, 4/8, 6/8 at the sampler's step code; F3 sigma 5, 2, 1, 0.5, 0.2): the output's projection on
+  the health and wake axes. Reading: where the output starts following its input (own minus conflict >= 0.5), and
+  whether any level overrides a no-hit input toward the hit (conflict projection >= 0.5), as the truth (a certain hit)
+  would require at low signal.
