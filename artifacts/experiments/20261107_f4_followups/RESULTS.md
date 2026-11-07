@@ -85,3 +85,39 @@ checkpointing off (train.p1 turns it on); with it on, the check ran at the train
   bootstrap (~1.1 h, intrinsic) and the dense layers' own compute (~1 h). Flex fits F3's split (4.56 <= 5.0 GiB) but
   buys no speed there. Declared reading: correctness and memory hold; determinism holds for the model, not for the
   optimizer by the strict rule; the gain is ~0.6-0.7 h per run.
+
+## 5. Danger M1: the health token under-responds to every cause (`danger_m.py m1`, `readings/danger/m1.json`)
+
+Sham R0: exp 2's zombie population regenerated under the canonical code equals F4's saved futures bitwise. Drawn vs
+true P(health change) per future, ratio with episode bootstrap 95%:
+
+| stratum (t - 1) | rows / episodes | drop drawn / true (ratio) | rise drawn / true (ratio) |
+|---|---|---|---|
+| arrow adjacent, asleep | 443 / 201 | 0.005 / 0.318 (0.02 [0.01, 0.03]) | 0.027 / 0.027 |
+| arrow adjacent, awake | 1,000 / 337 | 0.009 / 0.069 (0.13 [0.08, 0.20]) | 0.012 / 0.014 |
+| a need at 0, awake | 1,000 / 248 | 0.010 / 0.038 (0.27 [0.16, 0.45]) | 0.011 / 0 (false) |
+| a need at 0, asleep | 1,000 / 131 | 0.009 / 0.008 (1.09 [0.56, 2.60]) | 0.023 / 0 (false) |
+| needs met, health < 9, awake | 1,000 / 389 | 0.006 / 0 (false) | 0.013 / 0.041 (0.31 [0.21, 0.46]) |
+| needs met, health < 9, asleep | 1,000 / 288 | 0.007 / 0 (false) | 0.036 / 0.095 (0.38 [0.30, 0.48]) |
+
+Declared reading: need damage and recovery are both <= 0.5 (awake need damage 0.27, recoveries 0.31 / 0.38; asleep
+need damage, at a true rate of 0.008, is the exception) -> **the health token is weak generally**, arrows worst
+(0.02 / 0.13, below zombies' 0.11-0.26). Drawn changes also run the wrong way at 0.6-2.3% (rises where a need is 0,
+drops where needs are met and nothing hostile is near): the drawn changes are weakly tied to their causes.
+
+## 6. Danger M2: the hit's wake and drop share one route, the cache (`danger_m.py m2build / m2run`, `readings/danger/m2.json`)
+
+232 pairs (232 episodes; 8 excluded: the edited member still lost health or woke); recorded successors read right in
+100%; shams: tokens 0.021, belief 0.009, 10 generation repeats bitwise. Cells = (cache, memory) from (zombie, removed):
+
+| event | both zombie | memory only | cache only | neither | cache-only share | memory-only share |
+|---|---|---|---|---|---|---|
+| woken (truth 1.00 vs 0) | 0.688 | 0.014 | 0.685 | 0.012 | 0.996 [0.989, 1.003] | 0.002 [0.000, 0.006] |
+| health drop (truth 1.00 vs 0) | 0.072 | 0.006 | 0.054 | 0.005 | 0.736 [0.661, 0.810] | 0.016 [0.000, 0.041] |
+
+Fresh arrivals: woken 0.73, drop 0.07; already beside: woken 0.21 (0.10 with the zombie removed at t - 1 only: it is
+still in the earlier cached frames), drop 0.06. Declared reading: **H2 (different routes) refuted** - the wake is carried
+by the cache alone (not the memory, unlike part 2's sleep edit), and so is what little drop the world draws. The same
+cached zombie that wakes the agent in 69% of futures moves the health digit in 7%: the failure sits at the health
+token's response, not at perceiving or routing the cause. (Against the true contrast every drop class is NO EFFECT:
+the world's own effect is 0.07.)
