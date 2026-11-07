@@ -429,3 +429,42 @@ Reading (declared):
   the change map covers map rows only. Dreamer 4, the reference design, attends over 192 frames with no recurrent
   belief (2509.24527), so its timers would sit inside the attention reach; ours must pass through a belief that no loss
   asks to keep them.
+
+## 15. What each loss asks of the belief (`belief_gradient.py`, `readings/danger/belief_gradient_f4.json`)
+
+PLAN 12 (with its amendment): frozen F4, 300 training microbatches (4 streams x 64 steps, P1's stream construction),
+each training loss term backpropagated alone at its harmoniser weight (2.62 / 2.72 / 2.58: equal). Frames: recovery
+1,016, need damage 163, other damage 863, wake 470, sleep onset 491, food -1 1,732, energy +1 asleep 853, ordinary
+41,385 (bootstrap rows excluded).
+
+Mean |dL/d bp_t| per frame (x 1e-6):
+
+| loss | recovery | damage | wake | sleep onset | food -1 | energy +1 asleep | ordinary |
+|---|---|---|---|---|---|---|---|
+| G1, health token | 1.9 | 2.9 | 1.0 | 0.4 | 0.3 | 0.2 | 0.16 |
+| G1, all other tokens | ~5.6 | ~6.6 | ~15.7 | ~10.2 | ~5.6 | ~4.3 | ~5.2 |
+| change map | 25.5 | 78.4 | **314.0** | **257.2** | 25.0 | 23.4 | 19.2 |
+| TSP | 2.5 | 2.6 | 3.6 | 2.5 | 2.3 | 2.7 | 2.2 |
+| reward | 109.2 | 196.7 | 244.3 | 9.0 | 63.8 | 0.1 | 51.1 |
+| continuation | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| all (harmonised) | 135.6 | 255.6 | **518.6** | 268.7 | 90.6 | 25.6 | 72.9 |
+
+- **The belief's teachers.** On ordinary frames the reward head sends ~70% of the gradient norm, the change map ~26%,
+  the next-frame loss (G1, the denoiser) ~7%. The reward and continuation heads read the REAL frame t, the change map
+  both frames: none of them needs the belief to anticipate; only G1 does.
+- **Q1 (sleep), declared rule:** the wake's excess over ordinary frames is 446 vs recovery's 63: 7.1x (>= 5x ->
+  supported), sleep onset 196; it comes through the change map (314 / 257 vs 19), which covers the map rows the sleep
+  render recolours. A large on-screen effect does send the belief a large gradient. (That this is why steps asleep is
+  encoded, RESULTS 14, is consistent, not shown.)
+- **Q2 (same issue as the zombie under-expression?), declared rule:** transmission |dL/d bp| / |dL/d x_hat| of the
+  health token is 0.36 at recovery, 0.36 at need damage, 0.64 at damage (0.27 ordinary), vs the player token at wakes
+  0.15 and the energy token at energy +1 0.13 (food at food -1 0.14): health's is 2.4-4.8x theirs (>= 0.5x ->
+  refuted). The denoiser's health output is not cut off from the memory; its errors reach the belief better than the
+  comparison tokens'. The missing counter is the size of that signal: at recovery frames the health token's G1 error
+  sends 1.9 of the belief's 135.6 (1.4%); the heads that send the rest read the outcome.
+- **Input sensitivity** (|dL/d x_token| entering the belief's input, all frames, x 1e-6): health 274, food 90, drink
+  47, energy 22, player 39, map median 16; the reward loss supplies 270 of health's 274 (G1 all tokens ~1.4). The
+  belief's input depends on health because the reward reads it - measured, matching RESULTS 14's digit pattern
+  (health kept 92%, energy 42%).
+- Limits: a snapshot of the trained model's gradients, not the training history; uniform fixations; transmission
+  compares single tokens, against tokens whose changes F4 draws through the cache.
