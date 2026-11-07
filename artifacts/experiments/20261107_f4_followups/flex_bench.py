@@ -71,10 +71,10 @@ def use(path):
 def correct():
     model, cfg = CV.IF.load(CKPT)
     den, dev, sc = model.denoiser, CV.DEV, cfg["edm"]["shortcut"]
-    L = S.first_episodes(dict(np.load(CV.LABELS / "s0_dev_labels.npz")), 60)
+    L = S.first_episodes(dict(np.load(CV.LABELS / "s0_dev_labels.npz")), 30)
     enc = S.encode(model, L, cfg)
-    eps = [e for e in range(len(enc)) if enc[e]["p"].shape[0] >= 64][:10]
-    rows = [[(eps[0], 0, 32), (eps[1], 0, 32)], [(eps[2], 0, 32), (eps[3], 0, 32)]] + [[(e, 0, 64)] for e in eps[4:10]]
+    eps = [e for e in range(len(enc)) if enc[e]["p"].shape[0] >= 64][:6]
+    rows = [[(eps[0], 0, 32), (eps[1], 0, 32)], [(eps[2], 0, 32), (eps[3], 0, 32)]] + [[(e, 0, 64)] for e in eps[4:6]]
     cat = lambda key, f=lambda z: z: torch.stack([torch.cat([f(enc[e][key][a:a + n].to(dev)) for e, a, n in r]) for r in rows])
     x0 = tuple(cat(k).float() for k in ("p", "g", "v"))
     with torch.no_grad():
@@ -82,10 +82,11 @@ def correct():
     pa, fix = cat("prev_action"), cat("fix")
     episode = torch.stack([torch.cat([torch.full((n,), e, device=dev) for e, a, n in r]) for r in rows])
     valid = torch.ones(episode.shape, dtype=torch.bool, device=dev)
-    boot = torch.zeros(len(rows), dtype=torch.bool, device=dev); boot[[1, 5]] = True
+    boot = torch.zeros(len(rows), dtype=torch.bool, device=dev); boot[[1, 3]] = True
     g = torch.Generator(device=dev).manual_seed(1107)
     levels = [M.shortcut_levels(episode.shape, sc["k_max"], boot, dev, g) for _ in range(2)]
     noise = tuple(torch.randn(x.shape, device=dev, generator=g) for x in x0)
+    del enc; torch.cuda.empty_cache()                                   # 4 rows: the fp32 pass of 8 x 64 frames exceeds 6 GB
     den.train()
     out = {}
     for path in ("sdpa", "flex"):
@@ -94,7 +95,8 @@ def correct():
             with torch.autocast("cuda", torch.bfloat16, enabled=amp):
                 loss = M.shortcut_loss(den, x0, pa, mem, fix, episode, valid, sc, boot, True, levels, noise)
             loss.mean().backward()
-            out[(path, amp)] = (loss.detach().float(), torch.cat([p.grad.flatten().float() for p in den.parameters() if p.grad is not None]))
+            out[(path, amp)] = (loss.detach().float(), torch.cat([p.grad.flatten().float() for p in den.parameters() if p.grad is not None]).cpu())
+            torch.cuda.empty_cache()
     rel = lambda a, b: float((a - b).norm() / b.norm())
     res = {"rows": len(rows), "frames": int(episode.shape[1]), "episode_splices": 2, "bootstrap_rows": int(boot.sum()),
            **{f"{w}_rel": {"flex_vs_sdpa_fp32": rel(out[("flex", False)][i], out[("sdpa", False)][i]),
