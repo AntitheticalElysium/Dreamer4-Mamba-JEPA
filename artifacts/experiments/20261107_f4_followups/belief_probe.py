@@ -63,7 +63,7 @@ def main(ckpt, out):
                                 "profile (bin: true, belief, percept)": {names[b]: [float(y[bins == b].mean()), float(scores["belief_bp"][bins == b].mean()),
                                                                                     float(scores["percept_and_action"][bins == b].mean())]
                                                                          for b in range(len(names)) if (bins == b).sum() >= 50}}
-        print(name, {k: round(v["est"], 3) for k, v in res["targets"][name]["ap"].items()}, "prev", round(y.mean(), 4), flush=True)
+        print(name, {k: round(v["ap"], 3) for k, v in res["targets"][name]["ap"].items()}, "prev", round(y.mean(), 4), flush=True)
     adj = T["adjacent"] & (T["t"] >= CV.P)
     for name, m, ytrue, heur in (("zombie_ready_awake", adj & ~T["asleep"], T["ready"], "ready"),
                                  ("zombie_hit_awake", adj & ~T["asleep"], T["true_body"][:, 0] < body[:, 0], "ready"),
@@ -75,7 +75,7 @@ def main(ckpt, out):
                   "visible_history_heuristic": RT.observable_heuristic(L, T, j, heur)}
         res["targets"][name] = {"rows": int(len(j)), "episodes": int(len(np.unique(ep))), "prevalence": float(y.mean()),
                                 "ap": {k: RT.ap_boot(y, s, ep) for k, s in scores.items()}}
-        print(name, {k: round(v["est"], 3) for k, v in res["targets"][name]["ap"].items()}, "prev", round(y.mean(), 4), flush=True)
+        print(name, {k: round(v["ap"], 3) for k, v in res["targets"][name]["ap"].items()}, "prev", round(y.mean(), 4), flush=True)
     Path(out).parent.mkdir(parents=True, exist_ok=True)
     Path(out).write_text(json.dumps(res, indent=1))
 
