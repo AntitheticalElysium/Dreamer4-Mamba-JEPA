@@ -101,3 +101,29 @@ conditions with common random numbers (K = 8), shams and factorial as in part 2 
   the drop is not (memory-only share <= 1/3, or no drop effect at all: diagonal <= 0.05); the same route if both
   shares point the same way. Caveat as exp 3: the edited history shows a zombie vanishing at t - 1 if it was visible
   before (an intervention).
+
+## 7. Danger, three checks and two data questions (`danger_checks.py`; user 11-07 "run those 3 and report back")
+
+From M1 / M2 (RESULTS 5-6): the health token under-responds to every cause while the same cached zombie wakes the
+agent. Three theories (none tested): (T1) a single token whose cause arrives through attention or a hidden timer, not
+through the action's conditioning, is under-learned (small loss share); (T2) a copy habit on HUD digits; (T3) F4's
+loss weighting starves the noisiest levels, where a token's change-or-not is decided (F3 drew hits 2-3x more).
+- **C1, the other HUD timers (F4):** food -1 (hunger, ~26 steps awake), drink -1 (~21), energy -1 awake (~31), energy
+  +1 asleep (~11); hostile-free rows, no DO (eating / drinking), awake / asleep as the timer runs. Drink gets its HUD
+  reader (cell 65, s_body column 2) by the same protocol. Reading: T1 (single token without an action trigger, not
+  health-specific) if these are drawn <= 0.5 of their true rate; health-specific if >= 0.7.
+- **C2, M1 on F3** (its own code, commit fa6edd1a; exp 2's 16 EDM steps; its own readers and S1 reader), plus C1's
+  strata; sham: exp 2's zombie population regenerated equals exp 2's saved futures. Reading: an F4 regression if F3's
+  ratios exceed F4's by >= 0.2 on need damage, recovery and arrows; long-standing if within 0.1.
+- **C3, the decision level** (M2's 232 hit pairs, natural inputs: cache and memory of the hit member): the generated
+  health token projected on the axis from the no-hit successor's token (0) to the hit successor's (1), and the same
+  for the wake (map + lighting tokens): F4's estimate at pure noise (its first sampler evaluation) and its final
+  sample; F3's denoised estimate at pure noise of sigma 5 (its sampler's start) and 20, and its 16-step sample.
+  K = 8 noise draws per pair. Reading: the decision exists and sampling loses it (T3's side) if F4's pure-noise
+  health projection is >= 0.5 while its samples draw <= 0.15; the conditional itself never leans to the hit (T1 / T2)
+  if the projection is <= 0.2.
+- **D1, data (CPU):** zombie hits in the train labels per (starting health, drop) against F4's drawn success in exp 2's
+  zombie futures per starting health: per-value learning (the counts' non-shared flavour) if success follows each
+  value's own exposure (Spearman >= 0.7 over cells with >= 30 futures); flat if not.
+- **D2, tools (CPU):** a held tool's count + 1 (crafting's 'madeN', drawn 0.00-0.06) and its exposure in the train
+  labels per tool and starting count, beside the first tool's (drawn 0.81-0.96). Descriptive.
