@@ -59,9 +59,14 @@ on the flattened frames, mask = the window rule rebuilt from the existing (index
 `torch._inductor.config.deterministic = True`); the streaming sampler keeps SDPA.
 - Correctness: one real 64-step batch through F4's checkpoint, denoiser outputs and parameter gradients, flex vs SDPA,
   against SDPA's own bf16-vs-fp32 discrepancy as the tolerance scale.
-- Determinism: two fresh processes, 4 updates each from the same init with flex -> checkpoints compared bitwise.
+- Determinism: two fresh processes per path (flex, and SDPA as the control), 4 updates of F4's preflight configuration
+  each -> checkpoints compared within each pair. (Amended before running: F4's SDPA path is itself not bitwise across
+  processes, model 4.7e-18 / optimizer 1.1e-19 in its preflight, so "bitwise" is replaced by "no larger than the SDPA
+  pair's own discrepancy, both within checks.py's 1e-11", logged terms bitwise.)
 - Cost (sec / update, peak GiB, from `train.p1` as F4's checks): F3's recipe at its own split (1 / 4) and at F4's
   (2 / 8): what the smaller microbatches cost; F4 SDPA at 2 / 8 (the run); F4 flex at 2 / 8 and at F3's split 1 / 4;
   64 steps (bootstrap off and on) and 256 steps (on). The projected training hours from them, as checks.py computes.
-- Declared reading: flex is adoptable if it matches SDPA within that tolerance, is bitwise reproducible across
-  processes, and fits F3's split (peak <= 5.0 GiB on the 6 GB card); the hours are reported either way.
+- Declared reading: flex is adoptable if it matches SDPA within that tolerance (flex vs SDPA in bf16 no larger than
+  SDPA's own bf16 vs fp32 discrepancy, and flex vs SDPA in fp32 below 1e-4 relative: the mask exact on the GPU), its
+  cross-process discrepancy is no larger than SDPA's, and it fits F3's split (peak <= 5.0 GiB on the 6 GB card); the
+  hours are reported either way.
