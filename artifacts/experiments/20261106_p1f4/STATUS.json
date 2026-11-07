@@ -1,0 +1,69 @@
+{
+  "phase": "complete",
+  "started_at": "2026-11-06T13:39:15.420668+00:00",
+  "source_pins_sha256": "dafe241854b64b10604f6dc5222e34e4f7f9de5d8a7467cf3108e19a13259efb",
+  "training_completed_at": "2026-11-07T04:02:52.107024+00:00",
+  "selection": {
+    "checkpoint": 10,
+    "monitor_loss": 0.0032332316040992737,
+    "three_increases_triggered": false,
+    "rule": "final unless any three successive strict increases; then global minimum, earliest tie",
+    "monitor_history": [
+      {
+        "checkpoint": 1,
+        "frames": 2560000,
+        "loss": 0.014988628216087818
+      },
+      {
+        "checkpoint": 2,
+        "frames": 5120000,
+        "loss": 0.006735438946634531
+      },
+      {
+        "checkpoint": 3,
+        "frames": 7680000,
+        "loss": 0.006297926418483257
+      },
+      {
+        "checkpoint": 4,
+        "frames": 10240000,
+        "loss": 0.005605030804872513
+      },
+      {
+        "checkpoint": 5,
+        "frames": 12800000,
+        "loss": 0.004507404752075672
+      },
+      {
+        "checkpoint": 6,
+        "frames": 15360000,
+        "loss": 0.0037413027603179216
+      },
+      {
+        "checkpoint": 7,
+        "frames": 17920000,
+        "loss": 0.0034137528855353594
+      },
+      {
+        "checkpoint": 8,
+        "frames": 20480000,
+        "loss": 0.0032925086561590433
+      },
+      {
+        "checkpoint": 9,
+        "frames": 23040000,
+        "loss": 0.003254720475524664
+      },
+      {
+        "checkpoint": 10,
+        "frames": 25600000,
+        "loss": 0.0032332316040992737
+      }
+    ],
+    "checkpoint_path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261106_p1f4/run/ckpt_10.pt",
+    "checkpoint_sha256": "1b70edcc432daf3fb337c37c67af8d709d3728e25d02ac94523f8a7322ba1379",
+    "selected_at": "2026-11-07T04:02:53.396121+00:00"
+  },
+  "evaluation_started_at": "2026-11-07T04:02:53.398384+00:00",
+  "evaluation_completed_at": "2026-11-07T04:37:41.647946+00:00"
+}

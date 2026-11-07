@@ -1,0 +1,1222 @@
+{
+ "curves": {
+  "f3_exp2": {
+   "woken_beside_zombie": {
+    "asleep_ready": {
+     "gen": 0.645,
+     "true": 1.0
+    },
+    "asleep_cooling": {
+     "gen": 0.593,
+     "true": 0.007
+    }
+   },
+   "woken_asleep_by_stratum": {
+    "e6": 0.482,
+    "e7_fresh": 0.49,
+    "e7_stale": 0.513,
+    "e8_fresh": 0.517,
+    "e8_stale": 0.478,
+    "e9": 0.538,
+    "e<=5": 0.424
+   },
+   "transitions": {
+    "coal_0": {
+     "next": 0.28,
+     "copy": 0.719,
+     "futures": 1964
+    },
+    "coal_1": {
+     "next": 0.112,
+     "copy": 0.886,
+     "futures": 1192
+    },
+    "coal_2": {
+     "next": 0.13,
+     "copy": 0.866,
+     "futures": 756
+    },
+    "coal_3": {
+     "next": 0.122,
+     "copy": 0.87,
+     "futures": 400
+    },
+    "coal_4": {
+     "next": 0.035,
+     "copy": 0.96,
+     "futures": 200
+    },
+    "coal_5": {
+     "next": 0.023,
+     "copy": 0.977,
+     "futures": 128
+    },
+    "coal_6": {
+     "next": 0.0,
+     "copy": 0.985,
+     "futures": 68
+    },
+    "coal_7": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 20
+    },
+    "coal_8": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 8
+    },
+    "iron_0": {
+     "next": 0.18,
+     "copy": 0.82,
+     "futures": 1528
+    },
+    "iron_1": {
+     "next": 0.097,
+     "copy": 0.9,
+     "futures": 720
+    },
+    "iron_2": {
+     "next": 0.077,
+     "copy": 0.923,
+     "futures": 272
+    },
+    "iron_3": {
+     "next": 0.087,
+     "copy": 0.904,
+     "futures": 104
+    },
+    "iron_4": {
+     "next": 0.167,
+     "copy": 0.806,
+     "futures": 36
+    },
+    "iron_5": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 12
+    },
+    "wood_0": {
+     "next": 0.782,
+     "copy": 0.218,
+     "futures": 600
+    },
+    "wood_1": {
+     "next": 0.772,
+     "copy": 0.223,
+     "futures": 600
+    },
+    "wood_2": {
+     "next": 0.843,
+     "copy": 0.15,
+     "futures": 600
+    },
+    "wood_3": {
+     "next": 0.835,
+     "copy": 0.15,
+     "futures": 600
+    },
+    "wood_4": {
+     "next": 0.548,
+     "copy": 0.277,
+     "futures": 600
+    },
+    "wood_5": {
+     "next": 0.104,
+     "copy": 0.858,
+     "futures": 472
+    },
+    "wood_6": {
+     "next": 0.052,
+     "copy": 0.531,
+     "futures": 192
+    },
+    "wood_7": {
+     "next": 0.14,
+     "copy": 0.47,
+     "futures": 100
+    },
+    "wood_8": {
+     "next": 0.139,
+     "copy": 0.472,
+     "futures": 36
+    },
+    "stone_0": {
+     "next": 0.875,
+     "copy": 0.125,
+     "futures": 600
+    },
+    "stone_1": {
+     "next": 0.745,
+     "copy": 0.235,
+     "futures": 600
+    },
+    "stone_2": {
+     "next": 0.812,
+     "copy": 0.137,
+     "futures": 600
+    },
+    "stone_3": {
+     "next": 0.722,
+     "copy": 0.247,
+     "futures": 600
+    },
+    "stone_4": {
+     "next": 0.608,
+     "copy": 0.253,
+     "futures": 600
+    },
+    "stone_5": {
+     "next": 0.287,
+     "copy": 0.648,
+     "futures": 600
+    },
+    "stone_6": {
+     "next": 0.45,
+     "copy": 0.45,
+     "futures": 600
+    },
+    "stone_7": {
+     "next": 0.737,
+     "copy": 0.232,
+     "futures": 600
+    },
+    "stone_8": {
+     "next": 0.685,
+     "copy": 0.288,
+     "futures": 600
+    }
+   }
+  },
+  "f3_t2": {
+   "woken_beside_zombie": {
+    "asleep_ready": {
+     "gen": 0.222,
+     "true": 1.0
+    },
+    "asleep_cooling": {
+     "gen": 0.191,
+     "true": 0.007
+    }
+   },
+   "woken_asleep_by_stratum": {
+    "e6": 0.078,
+    "e7_fresh": 0.089,
+    "e7_stale": 0.106,
+    "e8_fresh": 0.108,
+    "e8_stale": 0.112,
+    "e9": 0.148,
+    "e<=5": 0.059
+   },
+   "transitions": {
+    "coal_0": {
+     "next": 0.251,
+     "copy": 0.749,
+     "futures": 1964
+    },
+    "coal_1": {
+     "next": 0.099,
+     "copy": 0.901,
+     "futures": 1192
+    },
+    "coal_2": {
+     "next": 0.122,
+     "copy": 0.877,
+     "futures": 756
+    },
+    "coal_3": {
+     "next": 0.095,
+     "copy": 0.9,
+     "futures": 400
+    },
+    "coal_4": {
+     "next": 0.04,
+     "copy": 0.96,
+     "futures": 200
+    },
+    "coal_5": {
+     "next": 0.023,
+     "copy": 0.977,
+     "futures": 128
+    },
+    "coal_6": {
+     "next": 0.0,
+     "copy": 0.985,
+     "futures": 68
+    },
+    "coal_7": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 20
+    },
+    "coal_8": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 8
+    },
+    "iron_0": {
+     "next": 0.134,
+     "copy": 0.866,
+     "futures": 1528
+    },
+    "iron_1": {
+     "next": 0.085,
+     "copy": 0.915,
+     "futures": 720
+    },
+    "iron_2": {
+     "next": 0.059,
+     "copy": 0.941,
+     "futures": 272
+    },
+    "iron_3": {
+     "next": 0.077,
+     "copy": 0.913,
+     "futures": 104
+    },
+    "iron_4": {
+     "next": 0.167,
+     "copy": 0.806,
+     "futures": 36
+    },
+    "iron_5": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 12
+    },
+    "wood_0": {
+     "next": 0.822,
+     "copy": 0.178,
+     "futures": 600
+    },
+    "wood_1": {
+     "next": 0.812,
+     "copy": 0.185,
+     "futures": 600
+    },
+    "wood_2": {
+     "next": 0.862,
+     "copy": 0.138,
+     "futures": 600
+    },
+    "wood_3": {
+     "next": 0.86,
+     "copy": 0.128,
+     "futures": 600
+    },
+    "wood_4": {
+     "next": 0.568,
+     "copy": 0.262,
+     "futures": 600
+    },
+    "wood_5": {
+     "next": 0.104,
+     "copy": 0.864,
+     "futures": 472
+    },
+    "wood_6": {
+     "next": 0.057,
+     "copy": 0.536,
+     "futures": 192
+    },
+    "wood_7": {
+     "next": 0.17,
+     "copy": 0.44,
+     "futures": 100
+    },
+    "wood_8": {
+     "next": 0.139,
+     "copy": 0.472,
+     "futures": 36
+    },
+    "stone_0": {
+     "next": 0.89,
+     "copy": 0.11,
+     "futures": 600
+    },
+    "stone_1": {
+     "next": 0.778,
+     "copy": 0.207,
+     "futures": 600
+    },
+    "stone_2": {
+     "next": 0.848,
+     "copy": 0.123,
+     "futures": 600
+    },
+    "stone_3": {
+     "next": 0.762,
+     "copy": 0.213,
+     "futures": 600
+    },
+    "stone_4": {
+     "next": 0.632,
+     "copy": 0.233,
+     "futures": 600
+    },
+    "stone_5": {
+     "next": 0.303,
+     "copy": 0.64,
+     "futures": 600
+    },
+    "stone_6": {
+     "next": 0.448,
+     "copy": 0.452,
+     "futures": 600
+    },
+    "stone_7": {
+     "next": 0.75,
+     "copy": 0.217,
+     "futures": 600
+    },
+    "stone_8": {
+     "next": 0.688,
+     "copy": 0.287,
+     "futures": 600
+    }
+   }
+  },
+  "f4": {
+   "woken_beside_zombie": {
+    "asleep_ready": {
+     "gen": 0.56,
+     "true": 1.0
+    },
+    "asleep_cooling": {
+     "gen": 0.177,
+     "true": 0.007
+    }
+   },
+   "woken_asleep_by_stratum": {
+    "e6": 0.012,
+    "e7_fresh": 0.012,
+    "e7_stale": 0.023,
+    "e8_fresh": 0.006,
+    "e8_stale": 0.016,
+    "e9": 1.0,
+    "e<=5": 0.007
+   },
+   "transitions": {
+    "coal_0": {
+     "next": 0.986,
+     "copy": 0.014,
+     "futures": 1964
+    },
+    "coal_1": {
+     "next": 0.945,
+     "copy": 0.053,
+     "futures": 1192
+    },
+    "coal_2": {
+     "next": 0.845,
+     "copy": 0.152,
+     "futures": 756
+    },
+    "coal_3": {
+     "next": 0.943,
+     "copy": 0.048,
+     "futures": 400
+    },
+    "coal_4": {
+     "next": 0.785,
+     "copy": 0.18,
+     "futures": 200
+    },
+    "coal_5": {
+     "next": 0.023,
+     "copy": 0.977,
+     "futures": 128
+    },
+    "coal_6": {
+     "next": 0.0,
+     "copy": 0.941,
+     "futures": 68
+    },
+    "coal_7": {
+     "next": 0.1,
+     "copy": 0.8,
+     "futures": 20
+    },
+    "coal_8": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 8
+    },
+    "iron_0": {
+     "next": 0.923,
+     "copy": 0.077,
+     "futures": 1528
+    },
+    "iron_1": {
+     "next": 0.932,
+     "copy": 0.061,
+     "futures": 720
+    },
+    "iron_2": {
+     "next": 0.86,
+     "copy": 0.14,
+     "futures": 272
+    },
+    "iron_3": {
+     "next": 0.808,
+     "copy": 0.173,
+     "futures": 104
+    },
+    "iron_4": {
+     "next": 0.556,
+     "copy": 0.444,
+     "futures": 36
+    },
+    "iron_5": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 12
+    },
+    "wood_0": {
+     "next": 1.0,
+     "copy": 0.0,
+     "futures": 600
+    },
+    "wood_1": {
+     "next": 1.0,
+     "copy": 0.0,
+     "futures": 600
+    },
+    "wood_2": {
+     "next": 0.993,
+     "copy": 0.007,
+     "futures": 600
+    },
+    "wood_3": {
+     "next": 0.997,
+     "copy": 0.002,
+     "futures": 600
+    },
+    "wood_4": {
+     "next": 0.9,
+     "copy": 0.062,
+     "futures": 600
+    },
+    "wood_5": {
+     "next": 0.004,
+     "copy": 0.996,
+     "futures": 472
+    },
+    "wood_6": {
+     "next": 0.177,
+     "copy": 0.688,
+     "futures": 192
+    },
+    "wood_7": {
+     "next": 0.27,
+     "copy": 0.53,
+     "futures": 100
+    },
+    "wood_8": {
+     "next": 0.083,
+     "copy": 0.917,
+     "futures": 36
+    },
+    "stone_0": {
+     "next": 0.983,
+     "copy": 0.015,
+     "futures": 600
+    },
+    "stone_1": {
+     "next": 0.965,
+     "copy": 0.01,
+     "futures": 600
+    },
+    "stone_2": {
+     "next": 0.967,
+     "copy": 0.023,
+     "futures": 600
+    },
+    "stone_3": {
+     "next": 0.935,
+     "copy": 0.013,
+     "futures": 600
+    },
+    "stone_4": {
+     "next": 0.912,
+     "copy": 0.045,
+     "futures": 600
+    },
+    "stone_5": {
+     "next": 0.332,
+     "copy": 0.608,
+     "futures": 600
+    },
+    "stone_6": {
+     "next": 0.702,
+     "copy": 0.255,
+     "futures": 600
+    },
+    "stone_7": {
+     "next": 0.91,
+     "copy": 0.052,
+     "futures": 600
+    },
+    "stone_8": {
+     "next": 0.915,
+     "copy": 0.078,
+     "futures": 600
+    }
+   }
+  }
+ },
+ "interface": {
+  "random": {
+   "recorded": {
+    "unlock_p": 0.034,
+    "neg_p": 0.02,
+    "term_p": 0.004
+   },
+   "f3_3steps": {
+    "unlock_p": 0.038,
+    "neg_p": 0.009,
+    "term_p": 0.002
+   },
+   "f3_16steps": {
+    "unlock_p": 0.045,
+    "neg_p": 0.026,
+    "term_p": 0.005
+   },
+   "f4_4steps": {
+    "unlock_p": 0.032,
+    "neg_p": 0.011,
+    "term_p": 0.001
+   }
+  },
+  "sapling_context": {
+   "recorded": {
+    "unlock_p": 0.135,
+    "neg_p": 0.029,
+    "term_p": 0.001
+   },
+   "f3_3steps": {
+    "unlock_p": 0.07,
+    "neg_p": 0.008,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.168,
+    "neg_p": 0.024,
+    "term_p": 0.001
+   },
+   "f4_4steps": {
+    "unlock_p": 0.077,
+    "neg_p": 0.017,
+    "term_p": 0.001
+   }
+  },
+  "risky": {
+   "recorded": {
+    "unlock_p": 0.018,
+    "neg_p": 0.127,
+    "term_p": 0.128
+   },
+   "f3_3steps": {
+    "unlock_p": 0.015,
+    "neg_p": 0.057,
+    "term_p": 0.036
+   },
+   "f3_16steps": {
+    "unlock_p": 0.023,
+    "neg_p": 0.11,
+    "term_p": 0.088
+   },
+   "f4_4steps": {
+    "unlock_p": 0.016,
+    "neg_p": 0.042,
+    "term_p": 0.036
+   }
+  },
+  "adjacent": {
+   "recorded": {
+    "unlock_p": 0.03,
+    "neg_p": 0.159,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.024,
+    "neg_p": 0.066,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.04,
+    "neg_p": 0.097,
+    "term_p": 0.002
+   },
+   "f4_4steps": {
+    "unlock_p": 0.026,
+    "neg_p": 0.054,
+    "term_p": 0.0
+   }
+  },
+  "ach_COLLECT_WOOD": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.003
+   },
+   "f3_3steps": {
+    "unlock_p": 0.905,
+    "neg_p": 0.003,
+    "term_p": 0.001
+   },
+   "f3_16steps": {
+    "unlock_p": 0.88,
+    "neg_p": 0.001,
+    "term_p": 0.002
+   },
+   "f4_4steps": {
+    "unlock_p": 0.997,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   }
+  },
+  "ach_PLACE_TABLE": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.977,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.969,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4_4steps": {
+    "unlock_p": 0.987,
+    "neg_p": 0.001,
+    "term_p": 0.001
+   }
+  },
+  "ach_EAT_COW": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.225,
+    "neg_p": 0.017,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.232,
+    "neg_p": 0.047,
+    "term_p": 0.0
+   },
+   "f4_4steps": {
+    "unlock_p": 0.235,
+    "neg_p": 0.024,
+    "term_p": 0.0
+   }
+  },
+  "ach_COLLECT_SAPLING": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.041,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.148,
+    "neg_p": 0.003,
+    "term_p": 0.0
+   },
+   "f4_4steps": {
+    "unlock_p": 0.059,
+    "neg_p": 0.004,
+    "term_p": 0.0
+   }
+  },
+  "ach_COLLECT_DRINK": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.003
+   },
+   "f3_3steps": {
+    "unlock_p": 0.888,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.896,
+    "neg_p": 0.0,
+    "term_p": 0.002
+   },
+   "f4_4steps": {
+    "unlock_p": 0.932,
+    "neg_p": 0.0,
+    "term_p": 0.002
+   }
+  },
+  "ach_MAKE_WOOD_PICKAXE": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.921,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.912,
+    "neg_p": 0.002,
+    "term_p": 0.0
+   },
+   "f4_4steps": {
+    "unlock_p": 0.972,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   }
+  },
+  "ach_MAKE_WOOD_SWORD": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.9,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.91,
+    "neg_p": 0.004,
+    "term_p": 0.002
+   },
+   "f4_4steps": {
+    "unlock_p": 0.914,
+    "neg_p": 0.003,
+    "term_p": 0.002
+   }
+  },
+  "ach_PLACE_PLANT": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.877,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.884,
+    "neg_p": 0.002,
+    "term_p": 0.0
+   },
+   "f4_4steps": {
+    "unlock_p": 0.939,
+    "neg_p": 0.003,
+    "term_p": 0.0
+   }
+  },
+  "ach_DEFEAT_ZOMBIE": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.257,
+    "neg_p": 0.022,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.339,
+    "neg_p": 0.052,
+    "term_p": 0.002
+   },
+   "f4_4steps": {
+    "unlock_p": 0.293,
+    "neg_p": 0.034,
+    "term_p": 0.0
+   }
+  },
+  "ach_COLLECT_STONE": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.945,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.899,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   },
+   "f4_4steps": {
+    "unlock_p": 0.974,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   }
+  },
+  "ach_PLACE_STONE": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.957,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.948,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4_4steps": {
+    "unlock_p": 0.962,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   }
+  },
+  "ach_EAT_PLANT": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.162,
+    "neg_p": 0.009,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.185,
+    "neg_p": 0.018,
+    "term_p": 0.0
+   },
+   "f4_4steps": {
+    "unlock_p": 0.312,
+    "neg_p": 0.01,
+    "term_p": 0.0
+   }
+  },
+  "ach_DEFEAT_SKELETON": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.548,
+    "neg_p": 0.013,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.443,
+    "neg_p": 0.074,
+    "term_p": 0.001
+   },
+   "f4_4steps": {
+    "unlock_p": 0.454,
+    "neg_p": 0.063,
+    "term_p": 0.002
+   }
+  },
+  "ach_MAKE_STONE_PICKAXE": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.864,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.865,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   },
+   "f4_4steps": {
+    "unlock_p": 0.958,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   }
+  },
+  "ach_MAKE_STONE_SWORD": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.805,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.808,
+    "neg_p": 0.002,
+    "term_p": 0.0
+   },
+   "f4_4steps": {
+    "unlock_p": 0.948,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   }
+  },
+  "ach_WAKE_UP": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.077
+   },
+   "f3_3steps": {
+    "unlock_p": 0.352,
+    "neg_p": 0.024,
+    "term_p": 0.017
+   },
+   "f3_16steps": {
+    "unlock_p": 0.439,
+    "neg_p": 0.032,
+    "term_p": 0.019
+   },
+   "f4_4steps": {
+    "unlock_p": 0.882,
+    "neg_p": 0.015,
+    "term_p": 0.016
+   }
+  },
+  "ach_PLACE_FURNACE": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.9,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.904,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   },
+   "f4_4steps": {
+    "unlock_p": 0.914,
+    "neg_p": 0.0,
+    "term_p": 0.001
+   }
+  },
+  "ach_COLLECT_COAL": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.3,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.444,
+    "neg_p": 0.002,
+    "term_p": 0.001
+   },
+   "f4_4steps": {
+    "unlock_p": 0.981,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   }
+  },
+  "ach_COLLECT_IRON": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.109,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.24,
+    "neg_p": 0.005,
+    "term_p": 0.0
+   },
+   "f4_4steps": {
+    "unlock_p": 0.896,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   }
+  },
+  "ach_COLLECT_DIAMOND": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.088,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.105,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4_4steps": {
+    "unlock_p": 0.051,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   }
+  },
+  "ach_MAKE_IRON_PICKAXE": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.906,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.9,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4_4steps": {
+    "unlock_p": 0.9,
+    "neg_p": 0.004,
+    "term_p": 0.0
+   }
+  },
+  "ach_MAKE_IRON_SWORD": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_3steps": {
+    "unlock_p": 0.917,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f3_16steps": {
+    "unlock_p": 0.887,
+    "neg_p": 0.005,
+    "term_p": 0.004
+   },
+   "f4_4steps": {
+    "unlock_p": 0.919,
+    "neg_p": 0.0,
+    "term_p": 0.002
+   }
+  }
+ },
+ "recursion_steps_1_4_8_16": {
+  "f3_3": {
+   "truth": [
+    1.109,
+    1.219,
+    1.328,
+    1.273
+   ],
+   "teacher": [
+    0.797,
+    0.854,
+    0.918,
+    0.939
+   ],
+   "free": [
+    0.797,
+    0.422,
+    0.217,
+    0.131
+   ],
+   "free_terminated_by_16": 0.004,
+   "reward_per_step": {
+    "truth": 0.014,
+    "teacher": 0.039,
+    "free": 0.016
+   }
+  },
+  "f3_16": {
+   "truth": [
+    1.109,
+    1.219,
+    1.328,
+    1.273
+   ],
+   "teacher": [
+    1.127,
+    1.197,
+    1.273,
+    1.34
+   ],
+   "free": [
+    1.127,
+    1.266,
+    1.387,
+    1.633
+   ],
+   "free_terminated_by_16": 0.033,
+   "reward_per_step": {
+    "truth": 0.014,
+    "teacher": 0.05,
+    "free": 0.018
+   }
+  },
+  "f4_4": {
+   "truth": [
+    1.109,
+    1.219,
+    1.328,
+    1.273
+   ],
+   "teacher": [
+    1.02,
+    1.094,
+    1.146,
+    1.203
+   ],
+   "free": [
+    1.02,
+    0.973,
+    0.891,
+    0.861
+   ],
+   "free_terminated_by_16": 0.016,
+   "reward_per_step": {
+    "truth": 0.014,
+    "teacher": 0.015,
+    "free": 0.007
+   }
+  }
+ }
+}
