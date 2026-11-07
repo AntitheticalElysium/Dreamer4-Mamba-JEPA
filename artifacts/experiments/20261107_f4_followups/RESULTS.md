@@ -468,3 +468,22 @@ Mean |dL/d bp_t| per frame (x 1e-6):
   (health kept 92%, energy 42%).
 - Limits: a snapshot of the trained model's gradients, not the training history; uniform fixations; transmission
   compares single tokens, against tokens whose changes F4 draws through the cache.
+
+## 16. Corrections after Codex's readout audit (`20261107_health_readout_audit/REPORT.md`, 11-08)
+- 12's "the output is the culprit" is WITHDRAWN. A refit of the shared output layer (and a health-specific one, on
+  recorded percept targets, held-out episodes, through real generation) leaves damage at 5.4% / 7.6% awake / asleep
+  (recorded 16.1% / 50.4%; health-specific: 6.4% / 9.2%): no readout-only repair.
+- 12's probes overstate usable information: each was fit inside one situation (awake-adjacent, asleep-adjacent), which
+  supplies the situation for free; one natural-frequency probe over all situations on the same final health-token
+  features gets AP 0.59 / 0.57 and predicts 13-15% damage asleep against 50.4% recorded.
+- 12's output AP was confounded as I suspected, and the loss is smaller than reported: the output read together with
+  the current digit gets 0.633 / 0.821 (vs 0.474 / 0.753 alone).
+- 12's "calibrated lean" reference is invalid: it compares P(any drop) with displacement toward one realised token
+  change (a forecast of 50% small hit + 20% large hit moves only 20% toward the large one). "0.20 vs 0.52" and "0.055
+  vs 0.70" are not calibrated deficits; the generation deficit itself (drawn vs recorded) stands.
+- Codex: the finest-step prediction under native history already under-expresses health changes (consistent with K=8
+  in 1); at the frozen checkpoint health and other-location gradients on the shared output have cosine -0.15;
+  sleeping-adjacent damage is 0.059% of the periphery flow loss.
+- What survives from 12: the cause's clues reach the health token's residual; the sampler realises the first
+  evaluation's mean. The failure as Codex states it: the learned health prediction has not turned the available clues
+  into the correct conditional transition.
