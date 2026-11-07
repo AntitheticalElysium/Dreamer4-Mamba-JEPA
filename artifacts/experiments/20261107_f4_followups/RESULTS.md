@@ -304,3 +304,50 @@ Reading (declared rule):
   reward and continuation heads read the REAL next percept, which already shows the change; G1 reaches the belief
   only through the memory tokens, which generation does not use for HUD digits. Linear probes are a lower bound: "no
   linear trace" is not "absent".
+
+## 12. Does the hit reach the health token inside the denoiser? (`denoiser_probe.py`, `readings/danger/denoiser_f4.json`)
+
+PLAN 10's protocol on every adjacent-zombie dev row (awake 22,502 rows / 991 episodes, prevalence 0.161; asleep 1,619 /
+690, 0.504), one production future per row (K = 4 evaluations). AP of the hit, out-of-fold, episode 95% intervals; share
+= (AP - AP(action alone)) / (AP(memory tokens) - AP(action alone)).
+
+Instrument: memory tokens = bp (0.700 / 0.794 vs 0.700 / 0.807: the projection keeps it); the pure-noise input tokens sit
+at the prevalence (0.156, 0.503); hooks change nothing (scratchpad sham, the same 256 rows with and without them:
+generated periphery and lighting bitwise equal, `denoiser_probe_sham.py`; the in-run sham's asleep mismatch is the reader's float P(asleep) across batch sizes, max 1.8e-11, identical above 0.5). Action alone: 0.324 awake, 0.520 asleep.
+
+| place (first evaluation unless stated) | awake AP (share) | asleep AP (share) |
+|---|---|---|
+| health token, input (pure noise) | 0.156 | 0.503 |
+| after block 1 (spatial: memory tokens, action adaLN) | 0.551 (0.61) | 0.649 (0.47) |
+| after block 2 / 3 | 0.623 / 0.625 (0.80) | 0.721 / 0.701 (0.74 / 0.66) |
+| after block 4 (first dense temporal: the cache) | **0.781 (1.22)** | **0.834 (1.15)** |
+| after block 8 (last) | 0.739 (1.10) | 0.832 (1.14) |
+| after block 8, evaluations 2 / 3 / 4 | 0.683 / 0.601 / 0.576 | 0.839 / 0.838 / 0.841 |
+| health x-prediction, evaluations 1 / 2 / 3 / 4 | 0.484 / 0.384 / 0.265 / 0.218 | 0.753 / 0.787 / 0.759 / 0.745 |
+| lighting token after block 8 (control: the wake IS drawn) | 0.548 (0.60) | 0.822 (1.10) |
+
+| hit rows | awake | asleep |
+|---|---|---|
+| lean of the x-prediction toward the hit's token, evaluations 1-4 | 0.20 / 0.20 / 0.18 / 0.17 | 0.055 / 0.11 / 0.09 / 0.08 |
+| calibrated lean from the memory tokens alone (mean out-of-fold P) | 0.52 [0.51, 0.53] | 0.70 [0.68, 0.72] |
+| drawn drop on hit rows / on no-hit rows | 0.184 / 0.028 | 0.083 / 0.046 |
+
+Reading (declared rule):
+- **(a) routing: refuted.** The cause reaches the health token from the first block (memory tokens and the action) and
+  after the first dense temporal block the token holds MORE than the belief (share 1.1-1.2: the cached frames add the
+  zombie's position); it keeps that to the last block, at every evaluation asleep, decaying to 0.67 by the 4th awake.
+- **(b) the output: the culprit.** The last residual holds the hit; the x-prediction moves the health token 0.20 of the
+  way to the hit's token awake and 0.055 asleep, where the calibrated move from the memory tokens alone is 0.52 / 0.70
+  (below half: declared (b)). Asleep the x-prediction stays linearly decodable (0.75-0.79) yet barely moves toward the
+  -7 token: it responds in another direction (11-07 leads: drawn asleep drops are mostly awake-sized -2 / -1; not
+  measured here). Awake the x-prediction's AP (0.48) is partial on the declared criterion; that AP is confounded (the
+  hit's token direction depends on the current digit, one linear probe cannot follow it), the lean is not.
+- **(c) the sampler: refuted.** The drawn rate on hit rows equals the x-prediction's lean (0.18 vs 0.17-0.20 awake;
+  0.08 vs 0.06-0.11 asleep): the sampler realises what the first evaluation decides.
+- The lighting token's residual looks like the health token's (asleep 1.10) and the wake is drawn (0.69): residual
+  content does not separate drawn from undrawn consequences; the readout does.
+- Open (not tested): why the readout under-expresses a feature its last residual holds. The calibrated reference is a
+  probe fit inside the adjacent population; the denoiser's readout serves every row, so full gain on that direction
+  might cost false drops elsewhere (interference) - or the objective gives this rare change too little pull (the
+  first evaluation's level also carries the smallest shortcut weight, w(0) = 0.1, m0.yaml ramp [0.9, 0.1]; the
+  per-level minimiser is still the conditional mean). Linear probes are a lower bound.
