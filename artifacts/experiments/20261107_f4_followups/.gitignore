@@ -3,3 +3,4 @@ readings/**/*.npz
 __pycache__/
 readings/flex/det/
 readings/flex/cost/
+queue.done
