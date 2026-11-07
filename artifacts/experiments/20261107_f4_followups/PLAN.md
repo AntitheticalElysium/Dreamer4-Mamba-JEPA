@@ -158,3 +158,20 @@ supported as a discrimination claim. The timer table (RESULTS 7) is the remainin
   the health and wake axes. Reading: where the output starts following its input (own minus conflict >= 0.5), and
   whether any level overrides a no-hit input toward the hit (conflict projection >= 0.5), as the truth (a certain hit)
   would require at low signal.
+
+## 9. Is the timing information in the belief? (`belief_probe.py`; user 11-07: "run that check... find the cause")
+
+R1 / R2 (RESULTS 10): neither world draws hidden timers or zombie readiness. The phase lies 11-31 steps back, beyond
+the denoiser's 8-frame reach, so only the memory tokens (the predicted belief bp_t, which generation of frame t reads)
+can carry it. Inference failure (the belief lacks it) or use failure (the belief has it, generation ignores it)?
+- Targets (dev, simulator truth at t): food -1, drink -1, energy -1 awake, energy +1 asleep, health +1 (recovery,
+  needs met), health -1 (a need at 0), on C1's quiet rows; zombie readiness (an adjacent ready zombie, awake adjacent
+  rows, exp 3's READY) and the hit itself (awake and asleep adjacent rows). Up to 40k rows per target.
+- Features: bp_t (the denoiser's memory input); controls: the frame t - 1's percept embedding + the action (no
+  history); the visible-history reference: steps since the HUD value last changed the same way, binned (timers), exp 3's
+  observable heuristic (readiness). Linear probes, exp 3's protocol (L2 logistic, 5 episode folds), out-of-fold AP with
+  episode bootstrap, and the out-of-fold predicted hazard per since-bin beside the truth (R1's bins).
+- Reading per target: the belief HAS it if AP(bp) - prevalence >= half of AP(reference) - prevalence; it LACKS it if
+  <= 0.2 of it; in between, partial. Has + flat generation (R1) = use failure; lacks = inference failure. F4 vs F3
+  (fa6edd1a's code): F4-specific if F3's belief has a target F4's lacks (AP difference >= 0.1). Linear probes give a
+  lower bound on what the belief holds (Codex's 11-06 point: reader power); an absent reading is "not linearly present".
