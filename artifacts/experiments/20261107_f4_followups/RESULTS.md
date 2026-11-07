@@ -369,3 +369,63 @@ Reading (declared rule):
 - Sleep delay measured through the full recursive loop (Codex, 32 sources x 8 futures, NOOP, H = 48): awake by step
   16 28.5% vs 100%, median wake 30.5 vs 7.5 steps; energy 9 -> wake applied 160 / 165; the 3.7x figure was an
   inference from one-step rates, not a duration.
+
+## 14. The belief's path for the timers, and the timer data exactly (`counters.py`, `belief_path_probe.py`, `timer_data.py`; `readings/danger/belief_path_f4.json`, `timer_data.json`)
+
+**Exact counters.** Every train (8,069) and dev (1,009) episode replayed through the simulator's step: all 2,566,509 +
+305,907 states equal the labels (health, food, drink, energy, sleep); hunger, thirst, fatigue, recover recorded.
+
+**Data (P1's training episodes: 7,672, 2,432,119 transitions; one pass).**
+
+| timer event | events | gap since the previous reset: mode (share) | previous reset visible | previous visible reset in the same 64 / 256 chunk |
+|---|---|---|---|---|
+| food -1 | 74,118 | 26 (0.57) | 0.98 | 0.55 / 0.89 |
+| drink -1 | 85,720 | 21 (0.60) | 0.99 | 0.64 / 0.91 |
+| energy -1 awake | 52,480 | 31 (0.98) | 1.00 | 0.51 / 0.88 |
+| energy +1 asleep | 36,151 | 11 (0.97) | 1.00 | 0.83 / 0.96 |
+| health +1 recovery | 41,037 | 26 (0.50) | 0.79 | 0.51 / 0.84 |
+| health -1 needs | 7,960 | 16 (0.39) | 0.73 | 0.46 / 0.79 |
+
+Beside: other health drops (damage) 39,331, coal increments 9,727 (drawn by F4 at 0.83-0.94). No timer event has its
+previous visible reset within the denoiser's 8 frames. Rates are similar across behaviour policies (food 30-31, drink
+33-38, energy 20-22 per 1,000 transitions); recovery is policy-dependent (5.5 random to 19.7 at epsilon 0.1).
+Invisible resets: recover 50,221 (health capped at 9) of 99,545; hunger 2,341, thirst 6,648, fatigue 286.
+-> For food, drink and energy the data is plentiful (4-9x coal), deterministic (energy exact to the step 97-98%), its
+resets visible (98-100%) and mostly inside the gradient's reach. Recovery after an invisible cycle (21%) needs counting
+through cycles at 9 - modular counting, which nonnegative-gate SSMs cannot represent at all lengths (Sarrof et al.
+2024 Thm 3.4; Grazzi et al. 2025); the visible-reset cases are threshold counts since a visible event (star-free,
+which Mamba represents and learns, Sarrof et al. 2024).
+
+**Belief path (frozen F4, dev, 40,000 transitions / 1,008 episodes; MLP reader, out-of-fold).**
+
+| target (state t - 1) | HUD tokens | belief input (percept_embed) | b_{t-1} | bp_t |
+|---|---|---|---|---|
+| health: R^2 / exact value | 1.00 / 1.00 | 0.98 / 0.92 | 0.93 / 0.83 | 0.76 / 0.67 |
+| food | 1.00 / 1.00 | 0.62 / 0.42 | 0.44 / 0.34 | 0.34 / 0.28 |
+| drink | 1.00 / 1.00 | 0.86 / 0.52 | 0.80 / 0.42 | 0.70 / 0.34 |
+| energy | 1.00 / 1.00 | 0.40 / 0.42 | 0.66 / 0.47 | 0.53 / 0.41 |
+| hunger (awake), R^2 | 0.12 | 0.00 | 0.00 | -0.01 |
+| thirst (awake) | 0.11 | 0.03 | 0.04 | 0.02 |
+| fatigue (awake / asleep) | 0.10 / 0.06 | 0.01 / -0.01 | 0.06 / 0.19 | 0.03 / 0.14 |
+| recover (awake) | 0.28 | 0.20 | 0.20 | 0.13 |
+| steps asleep (control: a duration of a visible state) | 0.32 | 0.32 | **0.78** | **0.77** |
+
+(Ridge agrees within ~0.1 everywhere except where the MLP finds more; lambda 10 vs 1000 changes little.)
+
+Reading (declared):
+- **Input:** carries health (0.98 >= 0.9 x 1.00); does NOT carry food (0.62), energy (0.40), and drink only partly
+  (0.86, exact value 52%). The HUD tokens hold every digit exactly; the belief's input (one linear map of ~6,600
+  numbers to 256) keeps the exact food / energy value 42% of the time - it cannot see a one-step change.
+- **State:** b keeps less than its input for food and drink, bp less again (the memory's source knows food exactly 28%
+  of the time); energy is the exception (b 0.66 > input 0.40: accumulation over frames).
+- **Counters: absent** (hunger, thirst, fatigue awake <= 0.06 from b / bp; recover 0.20, no more than one frame's HUD
+  tokens give, 0.28) - including health's, whose digit the input DOES carry.
+- **Integration is possible:** steps asleep 0.78 from the belief vs 0.32 from one frame (the sleep render is a fixed
+  transform, renderer.py 441-452; its duration is not visible in a frame).
+- So: not the data, and not a state that cannot integrate. The belief does not receive three of the four digits
+  precisely, and forms no counter even for the one it receives. Configuration facts that fit (checked, not tested as
+  causes): health is the only HUD value a loss reads through the belief (reward = achievements + 0.1 x health change,
+  game_logic.py 1695-1700; continuation: death at 0); the denoiser takes every current digit from its 8-frame cache;
+  the change map covers map rows only. Dreamer 4, the reference design, attends over 192 frames with no recurrent
+  belief (2509.24527), so its timers would sit inside the attention reach; ours must pass through a belief that no loss
+  asks to keep them.
