@@ -266,3 +266,41 @@ later steps follow what the trajectory already holds; the wake is decided at pur
 its sampler); (2) zombie readiness is learned by neither, but F3 has a crude zombie-near-sleeper association at the
 health token that F4 lacks, worth a better proper score on danger; (3) F4's health token commits to copy at its first
 evaluation and needs more signal than the wake to follow its input.
+
+## 11. Is the timing information in the belief? (`belief_probe.py`, `readings/danger/belief_f4.json, belief_f3.json`)
+
+Linear probes on bp_t, the denoiser's memory input (exp 3's protocol: L2 logistic, 5 episode folds, out-of-fold AP,
+episode bootstrap); the same rows for both worlds (identical prevalences). Share = (AP belief - prevalence) /
+(AP visible-history reference - prevalence); declared: >= 0.5 has it, <= 0.2 lacks it.
+
+| target | prevalence | F4 belief AP [95%] | F3 belief | F4 frame + action | visible-history reference | share F4 / F3 |
+|---|---|---|---|---|---|---|
+| food_down_awake | 0.037 | 0.037 [0.035, 0.040] | 0.036 | 0.036 | 0.131 | 0.01 / -0.00 |
+| drink_down_awake | 0.044 | 0.045 [0.043, 0.049] | 0.047 | 0.050 | 0.143 | 0.01 / 0.03 |
+| energy_down_awake | 0.027 | 0.033 [0.031, 0.036] | 0.033 | 0.032 | 0.096 | 0.09 / 0.09 |
+| energy_up_asleep | 0.086 | 0.155 [0.147, 0.163] | 0.157 | 0.090 | 0.157 | 0.96 / 0.99 |
+| recovery_awake | 0.041 | 0.043 [0.041, 0.046] | 0.046 | 0.045 | 0.162 | 0.02 / 0.04 |
+| need_damage_awake | 0.035 | 0.043 [0.038, 0.053] | 0.042 | 0.039 | 0.110 | 0.11 / 0.09 |
+| zombie_ready_awake | 0.502 | 0.872 [0.856, 0.885] | 0.871 | 0.793 | 0.923 | 0.88 / 0.88 |
+| zombie_hit_awake | 0.161 | 0.700 [0.685, 0.714] | 0.710 | 0.471 | 0.285 | 4.35 / 4.43 |
+| zombie_hit_asleep | 0.504 | 0.807 [0.776, 0.835] | 0.823 | 0.634 | 0.961 | 0.66 / 0.70 |
+(References: steps since the last same-direction change, binned, for the timers; exp 3's observable readiness
+heuristic for the zombie rows. For the awake hit the heuristic ignores the action, which decides whether the player
+stays adjacent; bp is computed after the action, so it beats the heuristic there.)
+
+Reading (declared rule):
+- **Hidden timers - an inference failure, in both worlds.** Food, drink, energy -1 awake, recovery and need damage:
+  the belief holds no linear trace of the phase (shares 0.01-0.11), while the visible history predicts each 3-4x above
+  its prevalence. Nothing else in the system could time them (the denoiser sees 8 frames; the phases are 11-31 steps
+  back), so neither world can draw them on time. Not F4-specific (F3 identical).
+- **Energy +1 asleep - in the belief (0.96 / 0.99), used weakly** by F4's generation (R1: 0.051 when due vs 0.016):
+  a partial use failure.
+- **Zombie readiness and the hit - in the belief, unused: a use failure, in both worlds.** Readiness 0.87 (share
+  0.88); the hit itself AP 0.70 awake (prevalence 0.16) and 0.81 asleep (0.50). Generation draws hits at 0.05-0.15
+  with almost no readiness discrimination, and M2 found the memory route carries none of the drop (memory-only share
+  0.016). The information that decides danger is in the memory tokens; the health digit's generation does not use it.
+- Two facts of the configuration fit the timer result (checked, not tested): no loss asks the belief to anticipate a
+  HUD change - the change map's target covers map rows only (m0.yaml `heads.change_map.rows: map_only`), and the
+  reward and continuation heads read the REAL next percept, which already shows the change; G1 reaches the belief
+  only through the memory tokens, which generation does not use for HUD digits. Linear probes are a lower bound: "no
+  linear trace" is not "absent".
