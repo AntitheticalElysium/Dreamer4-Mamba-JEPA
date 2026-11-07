@@ -236,3 +236,26 @@ as well, more precisely?)". Every timer is a belief-inference failure (RESULTS 1
   steps-asleep control says whether it integrates any duration). Counter encoded -> the representation exists and the
   hazard failure lies in its precision or its use. Not a claim about Mamba in general: a claim about this trained
   system and its data; construction and data causes are checked before any capacity explanation.
+
+## 12. What does each loss ask of the belief at health changes? (`belief_gradient.py`; user 11-08: "run that test for health")
+
+User: "Isn't sleep duration tracked because it represents such a large effect on the screen? And is the counter issue
+for health the same issue as the denoiser ignoring the zombie damage?" RESULTS 14: the belief's input carries health
+(exact 92%) yet no recover counter forms; steps asleep are integrated (0.78).
+- Frozen F4 (ckpt_10), training chunks built as P1 builds them (Streams over P1's training split, 64 steps, 8-frame
+  prefix, carried Mamba state, change targets, one bootstrap row in four at an update past bootstrap_start), the
+  training's own loss terms (train.p1_losses), each backpropagated ALONE with its harmoniser weight (1 / sigma of its
+  group, from the checkpoint). G1 split by output token through a gradient mask on the denoiser's x-prediction:
+  health (63), food (64), drink (65), energy (66), the player cell (31), the rest. Fixations: the uniform prior (F4
+  trained under its learned controller; HUD periphery tokens do not depend on it).
+- Per chunk frame: |dL/d bp_t| (the memory's source) per pass, and the incoming error |dL/d x_hat| of the pass's token
+  at that frame. Frames classed from the labels and the replayed counters: recovery (health +1, recover reset), need
+  damage (health -1, recover reset), other damage, wake, sleep onset, food -1, energy +1 asleep, ordinary (no HUD or
+  sleep change). Per loss: the accumulated gradient on percept_in's columns for each HUD digit's token.
+- Readings (declared): (Q1, sleep) the wake's excess gradient into bp over ordinary frames (all passes) >= 5x the
+  recovery's supports "a large screen effect asks the belief"; <= 2x refutes it. (Q2, same issue) transmission = sum
+  |dL/d bp| / sum |dL/d x_hat| of a single token at its own event frames. Health's transmission at recovery and at
+  damage frames <= 0.2x the player token's at wake frames (and energy's at energy +1 frames) -> the health output is
+  insensitive to its memory for any cause, the zombie finding's mechanism, so its errors cannot teach the belief;
+  >= 0.5x -> the health output passes its error back normally and the missing counter is the error's size (one rare
+  token), a different issue. Input columns: which losses ask the input to carry each digit (descriptive).
