@@ -259,3 +259,8 @@ for health the same issue as the denoiser ignoring the zombie damage?" RESULTS 1
   insensitive to its memory for any cause, the zombie finding's mechanism, so its errors cannot teach the belief;
   >= 0.5x -> the health output passes its error back normally and the missing counter is the error's size (one rare
   token), a different issue. Input columns: which losses ask the input to carry each digit (descriptive).
+- Amendment (11-08, before the full run; the 3-microbatch smoke showed it): the input-column reading is replaced. A
+  linear layer's weight gradient is the upstream gradient times each input's activation, so every token's columns
+  received the same gradient (reward: 0.042-0.046 for all) - it cannot say which digit a loss asks for. Instead: the
+  gradient on the belief's input VALUES per periphery token (|dL/d x_token| entering percept_in), per pass, over all
+  frames and at each class's frames (descriptive).
