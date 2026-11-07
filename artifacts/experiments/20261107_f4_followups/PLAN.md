@@ -175,3 +175,33 @@ can carry it. Inference failure (the belief lacks it) or use failure (the belief
   <= 0.2 of it; in between, partial. Has + flat generation (R1) = use failure; lacks = inference failure. F4 vs F3
   (fa6edd1a's code): F4-specific if F3's belief has a target F4's lacks (AP difference >= 0.1). Linear probes give a
   lower bound on what the belief holds (Codex's 11-06 point: reader power); an absent reading is "not linearly present".
+
+## 10. Does the hit reach the health token inside the denoiser? (`denoiser_probe.py`; user 11-07: "run the probe")
+
+Belief probe (RESULTS 11): the memory input predicts the hit (AP 0.70 awake, 0.81 asleep), F4 draws it at 0.05-0.15.
+Between the belief and the drawn digit, three explanations remain (Codex's "objective allocation, output-specific
+routing"; R3's sampler lock-in): (a) routing - the cause never reaches the health token's activations; (b) the output
+- it reaches them and the output (x-prediction) discards it or moves the digit too little; (c) the sampler - the first
+estimate is right and later evaluations lose it. This probe localizes; it does not test why.
+- Rows: every adjacent-zombie dev transition (t >= 8), awake (22,502; 3,613 hits) and asleep (1,619; 816 hits); F4
+  only (the use failure is F4's question; F3's belief = F4's).
+- The production path unchanged: interface.futures through determinant_curves.generate (8 real context frames, the
+  recorded fixation, K = 4 sampler evaluations), ONE future per row (curves.K set to 1); the generated health digit by
+  exp 2's readers. Captured by forward hooks (outputs untouched; sham: the first batch's readings equal a run without
+  them): the health (63) and lighting tokens' residual at the input and after each of the 8 blocks of the first
+  evaluation (pure noise); the health token after the last block and its x-prediction at each of the 4 evaluations.
+- Targets: the hit (health(t) < health(t - 1), simulator truth). Linear probes as belief_probe.py (L2 logistic, 5
+  episode folds, out-of-fold AP, episode bootstrap). Reference: the 4 memory tokens (the denoiser's copy of the belief;
+  instrument check: within 0.05 of bp's AP, else the projection loses it). Baseline: the action alone (17-way one-hot:
+  what adaLN alone could carry). Negative control: the health token at the first evaluation's input (pure noise),
+  expected at the prevalence.
+- Share(token, place) = (AP - AP(action)) / (AP(memory tokens) - AP(action)). Lean of the health x-prediction on hit
+  rows: (x_hat - copy) . (truth - copy) / |truth - copy|^2 (0 = copies the previous digit's token, 1 = the hit's), beside
+  its calibrated value at the first evaluation (the mean out-of-fold memory-token probe probability on hit rows).
+- Reading (declared): (a) routing if the health token's share is <= 0.2 at every block of the first evaluation;
+  (b) output if the share is >= 0.5 at the last block and its x-prediction either loses it (share <= 0.2) or carries it
+  (>= 0.5) with a lean below half its calibrated value; (c) sampler if the first evaluation's lean is >= half its
+  calibrated value and the drawn rate on hit rows is far below it. In between: partial, reported as such. The lighting
+  token on asleep rows (the wake IS drawn, 0.69) is the positive control for a token the cause reaches; where in the
+  blocks the share rises (spatial blocks 1-3 read the memory tokens and the action's adaLN; temporal blocks 4 and 8 the
+  cache) is descriptive. Linear probes are a lower bound.
