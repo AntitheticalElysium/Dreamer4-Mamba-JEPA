@@ -70,3 +70,34 @@ on the flattened frames, mask = the window rule rebuilt from the existing (index
   SDPA's own bf16 vs fp32 discrepancy, and flex vs SDPA in fp32 below 1e-4 relative: the mask exact on the GPU), its
   cross-process discrepancy is no larger than SDPA's, and it fits F3's split (peak <= 5.0 GiB on the 6 GB card); the
   hours are reported either way.
+
+## 5. Danger, M1: health changes by cause (`danger_m.py m1`; user 11-07 "run those two experiments")
+
+`danger_leads.py` (a4c297c2): F4 under-draws zombie hits even where the inputs determine them, and wakes a sleeping
+agent (0.69) without drawing the health drop (0.11). Which part fails: the health token, entity-caused writes, or
+zombies alone? Craftax-Classic game_logic.py: an arrow reaching the player costs 2 and wakes it; the hidden recovery
+counter gives +1 health about every 26 steps awake (13 asleep) while all needs are met, and -1 about every 16 steps
+awake (32 asleep) while a need is 0.
+- Strata on dev (situation at t - 1; hostile-free = no zombie / skeleton within 3, no arrow in view): arrow adjacent
+  (no zombie adjacent), awake and asleep; need damage (a need at 0, hostile-free), awake and asleep; recovery (needs
+  met, health < 9, hostile-free), awake and asleep. Up to 1,000 rows each, K = 4 futures, exp 2's generation and
+  readers (curves.generate, refitted by its protocol), F4's checkpoint under the canonical code (df702338).
+- Sham (R0): 400 rows of exp 2's zombie population regenerated now equal F4's saved futures bitwise.
+- Reading: per stratum, drawn vs true P(health drop) and P(health rise), episode bootstrap 95%.
+  Entity-caused writes weak (H1) if the arrow ratio (drawn / true drop) <= 0.5 while need damage and recovery are
+  within 0.7-1.4. The health token weak generally if need damage and recovery are both <= 0.5. Zombie-specific if
+  arrows >= 0.7. Otherwise reported as mixed.
+
+## 6. Danger, M2: memory versus cache for the hit (`danger_m.py m2build`, `m2run`)
+
+Exp 3's 2 x 2 on hit pairs: a sleeping agent with a ready adjacent zombie at t - 1 (truth: hit, -7, woken) vs the
+same simulator state with the adjacent zombies removed at t - 1 (truth: neither). Both successors simulated from the
+recorded key and action; pairs where the edited member still loses health or wakes are excluded. pair_state, the 4
+conditions with common random numbers (K = 8), shams and factorial as in part 2 (`routes_f4.py`).
+- Read per cell: P(health drop) and P(woken). Besides exp 3's classes (against the true contrast), the share of the
+  world's own effect each route carries: cache-only (E01 - E11) / (E00 - E11), memory-only (E10 - E11) / (E00 - E11),
+  episode bootstrap.
+- Reading: the routes differ (H2) if the wake is memory-carried (memory-only share >= 2/3, cache-only <= 1/3) while
+  the drop is not (memory-only share <= 1/3, or no drop effect at all: diagonal <= 0.05); the same route if both
+  shares point the same way. Caveat as exp 3: the edited history shows a zombie vanishing at t - 1 if it was visible
+  before (an intervention).
