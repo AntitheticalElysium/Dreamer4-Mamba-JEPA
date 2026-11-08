@@ -1,0 +1,25 @@
+{
+ "histories": 300,
+ "futures": 1200,
+ "head_unlock_given_awake_main": 0.3171214461326599,
+ "generated": {
+  "asleep_main": 0.49833333333333335,
+  "asleep_player": 0.5,
+  "asleep_light": 0.3775,
+  "asleep_map": 0.49833333333333335,
+  "agree_main_player": 0.9983333333333333,
+  "agree_main_light": 0.8458333333333333,
+  "agree_main_map": 0.9983333333333333,
+  "all_three_cues_agree": 0.845
+ },
+ "recorded": {
+  "asleep_main": 0.9733333333333334,
+  "asleep_player": 0.9733333333333334,
+  "asleep_light": 0.9666666666666667,
+  "asleep_map": 0.9733333333333334,
+  "agree_main_player": 1.0,
+  "agree_main_light": 0.9933333333333333,
+  "agree_main_map": 1.0,
+  "all_three_cues_agree": 0.9933333333333333
+ }
+}

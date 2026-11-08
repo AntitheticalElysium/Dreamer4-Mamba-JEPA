@@ -1,0 +1,18 @@
+{
+ "rows": 8,
+ "frames": 64,
+ "episode_splices": 2,
+ "bootstrap_rows": 2,
+ "loss_per_frame_rel": {
+  "flex_vs_sdpa_fp32": 6.995754233685147e-07,
+  "flex_vs_sdpa_bf16": 0.0028862077742815018,
+  "sdpa_bf16_vs_fp32 (tolerance scale)": 0.005694271065294743,
+  "flex_bf16_vs_fp32": 0.0054893288761377335
+ },
+ "gradients_rel": {
+  "flex_vs_sdpa_fp32": 1.7947320429811953e-06,
+  "flex_vs_sdpa_bf16": 0.008328370749950409,
+  "sdpa_bf16_vs_fp32 (tolerance scale)": 0.06435556709766388,
+  "flex_bf16_vs_fp32": 0.06374689191579819
+ }
+}

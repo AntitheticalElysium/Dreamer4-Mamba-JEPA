@@ -1,0 +1,18 @@
+{
+  "seconds": 2.623934507369995,
+  "plan_sha256": "09a81d2e786ebdd86f4192a653af5070eb2d00f42ebed29c1cf01531daf9564a",
+  "code_sha256": {
+    "report.py": "77e3d7be77fecb0efa9eeaa76c9a159b63f30a4b7dae87aa508f5a594a8a82ce",
+    "worker.py": "9ceb15d597a16de432615451f83c8bcb743bf0f102af14de5cd0208b82ea800e",
+    "common.py": "3f1c64db53ad96bd5b16e036941a8fde6b9aa874f14a95ddc2c2b182f7078632",
+    "policy.py": "c66ce02359a13dad532cdd68db8695e84af1d43390412d2c2eb74cc0bea9f533",
+    "campaign.py": "6f0505b0f5d9225a3fb107eecb006f630a5f1447c866dfb4c3d785f486e50567",
+    "test_instruments.py": "591c9bf838bfda9b637adb493fe003fd485be28f24cf630ee075353693d13f39"
+  },
+  "input_sha256": {
+    "predictions_611602_saved.npz": "450d9b7ca2ddc1ada4b0b8212bf53bf2b2db477095645a40ebce8aff8fa99c98",
+    "predictions_611602_confirmation.npz": "4699dfe07bef5cfd211d92befe59da810f6362fe0d96fe0c8ff9d0599f49d144",
+    "predictions_611601_confirmation.npz": "b5564f04a140048518071bae5ae9616e228b1f67e6031b5c9e044b3529150fb3",
+    "predictions_611601_saved.npz": "29ac2a72a579c1b11695f903ce615cf444a14d2ffcb31b1bdf8234155703b4c2"
+  }
+}

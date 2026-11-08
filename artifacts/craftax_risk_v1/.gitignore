@@ -1,0 +1,3 @@
+# only the manifest is tracked (as craftax_support_v2); shards (.pt) and per-shard audit sidecars stay local
+*.pt
+audit-*.npz

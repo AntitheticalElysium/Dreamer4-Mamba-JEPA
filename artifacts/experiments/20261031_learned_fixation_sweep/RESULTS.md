@@ -323,3 +323,118 @@ What H establishes: in this data, choosing crops by learnability (current loss m
 makes both look-local predictors learn faster in the coverage regime P1 operates in, never worse at the end, and is
 robust where error-seeking is not; temporal progress in this greedy full-feedback form hurts. What it does not: the
 joint system (representation, belief, denoiser), an online predictor of the score, a matched need prior, one seed.
+
+## H2. Does need-weighting change what learnability buys? (`selection.py --need`, PLAN H2; unit fovea-selection-need, 54 min; `selection_need/summary.json`)
+Reproduction: the re-run uniform and learnability arms equal H's held-out means to every printed digit (both
+learners). Belief replay for the need computation within 1.06% (bar 2%). Need puts 46% of DO-frame looks on the
+faced tile (uniform 18%); need x learnability 36-42%; learnability alone 19-20%. Held-out loss relative to uniform at
+1,000 / 2,000 / 3,000 / 6,000 steps (paired SEs 0.1-2.5% of uniform's loss):
+
+| learner, target | learnability | need | need x learnability |
+|---|---|---|---|
+| sr, random rows | -16 / -43 / -34 / -3 | -3 / -2 / -19 / -3 | -22 / -44 / -35 / -5 |
+| sr, DO consequence windows | -28 / -52 / -41 / -5 | 0 / +2 / -14 / -2 | -31 / -53 / -41 / -6 |
+| sr, need-weighted, all rows | -12 / -42 / -40 / -4 | -6 / -10 / -28 / -9 | -20 / -44 / -41 / -6 |
+| sr, night | -18 / -27 / -10 / -1 | +3 / +8 / +1 / +2 | -22 / -30 / -13 / -2 |
+| fwd, random rows | -6 / -9 / -4 / +2 | +9 / +11 / +12 / +12 | -7 / -9 / -4 / 0 |
+| fwd, DO consequence windows | -6 / -12 / -6 / 0 | +2 / +4 / +4 / 0 | -8 / -11 / -6 / -1 (uniform's final at 5,159) |
+| fwd, need-weighted, all rows | -3 / -12 / -8 / +2 | +2 / +2 / +2 / 0 | -7 / -12 / -8 / -1 |
+
+Declared reading:
+- **Competing (a), need adds little beyond learnability: mostly yes.** The product is ahead of learnability alone by
+  1-6 points (largest early: -22 vs -16 at 1,000 steps on sr random rows) and ends 1-3 points better on the
+  need-weighted and consequence targets, the forward learner no longer behind uniform at the end (0 / -1%).
+- **Competing (c), need alone suffices: no.** Need alone is far behind learnability on super-resolution and WORSE than
+  uniform on the forward learner (+9 to +12% overall, +14% at night): sending 46% of DO-frame looks to the faced tile
+  starves the rest.
+- **The claim (product faster on the need-weighted target and at the loci than learnability alone): only marginally.**
+- Defect (Codex, P1-F2 review section 3, found before this run): need's arg-max takes window 0 when need is flat
+  (frames before the 8-frame context, 2.25%, and some NOOP frames); preserved as this policy's result.
+What H2 establishes: in this harness learnability carries the selection gain; need does not substitute for it and
+adds a small margin on top. What it does not: the realized-crop scores are outcome-dependent (Codex: a curator, not a
+pre-outcome chooser), so neither arm is yet the deployable form (TEACHING 13).
+
+## H3. Can learnability come from the system itself, before the crop? (`selection.py --arms=uniform,excess,priority,priority_raw`, PLAN H3; unit fovea-selection-endo, 20:26-21:37, clean exit; `selection_endo/summary.json`, `dissect.json`)
+Reproduction: uniform equals H's held-out losses bitwise (both learners). Held-out loss relative to uniform at
+1,000 / 2,000 / 3,000 / 6,000 steps (largest paired SE per cell in brackets, % of uniform's loss); H's reference-based
+RHO learnability for comparison (H, identical frames / batches / coin flips):
+
+| learner, target | excess (realized) | priority (pre-crop, predicts excess) | priority_raw (pre-crop, predicts raw error) | H: learnability |
+|---|---|---|---|---|
+| sr, random rows | +55 / +96 / +170 / +68 (3.5) | +5 / +58 / +144 / +75 (2.8) | +13 / -28 / -12 / +6 (1.2) | -16 / -43 / -34 / -3 |
+| sr, DO consequence windows | +73 / +141 / +287 / +160 (10.6) | +7 / +81 / +226 / +148 (7.1) | -8 / -38 / -17 / +2 (1.9) | -28 / -52 / -41 / -5 |
+| sr, need-weighted, all rows | +48 / +73 / +128 / +63 (3.7) | +12 / +55 / +127 / +70 (2.2) | +26 / -25 / -17 / +1 (1.3) | -12 / -42 / -40 / -4 |
+| sr, night | +64 / +127 / +166 / +48 (4.3) | -3 / +62 / +120 / +44 (2.8) | +1 / -20 / 0 / +7 (1.4) | -18 / -27 / -10 / -1 |
+| fwd, random rows | +38 / +41 / +42 / +29 (1.4) | +8 / +17 / +21 / +13 (0.9) | +9 / +5 / +9 / +16 (1.6) | -6 / -9 / -4 / +2 |
+| fwd, DO consequence windows | +49 / +44 / +38 / +26 (1.5) | +4 / +17 / +24 / +13 (0.6) | +3 / -6 / -2 / -2 (0.7) | -6 / -12 / -6 / 0 |
+| fwd, need-weighted, all rows | +42 / +43 / +42 / +30 (1.0) | +10 / +20 / +25 / +13 (0.5) | +13 / -1 / +3 / +8 (0.7) | -3 / -12 / -8 / +2 |
+
+Steps to reach uniform's 2,000-step loss (sr, random rows): learnability 1,515, H's realized error 1,517,
+priority_raw 1,731, priority 3,231, excess 3,399. Looks on HUD windows: uniform 28.5%, excess 7.9 / 7.7% (sr / fwd),
+priority 13.8 / 13.5%, priority_raw 47.2 / 45.9% (H's learnability and error 44-45%). The priority head tracks its
+targets: R^2 = 1 - loss / target variance 0.95-0.99 at the end for excess, 0.46 (sr) / 0.85 (fwd) for raw error;
+held-batch rank correlation 0.64 / 0.65 (excess) and 0.41 / 0.52 (raw). On the evaluation rows its ranking agrees
+with realized excess (rho 0.64 / 0.62) and is ANTI-correlated with realized error (rho -0.57 / -0.41); priority_raw's
+agrees with error (0.38 / 0.56).
+
+Declared reading:
+- **The claim (excess recovers RHO's gain without a reference; priority keeps most of it): rejected.** Both arms
+  that subtract the floor are far worse than uniform on both learners, everywhere, at every step after 500.
+- **Competing (a), the floor too coarse, excess ~ error: no, the opposite.** The floor is not small beside the error;
+  it dominates it (all windows, sr, end: pi^2 s^2 / 3 = 0.21 against an error of 0.0020), so excess ~ minus the floor,
+  a map of position and lighting (which is why it is predictable before the crop, R^2 0.95-0.99) that points AWAY from
+  error. The planned rule-out for (a) ("needs content-aware aleatoric estimation") does not follow: see the
+  dissection, the floor fails for a different reason.
+- **Competing (b), excess unpredictable before the crop: no** (it is very predictable, for the wrong reason). Raw
+  error is partly predictable from the periphery, lighting and belief (R^2 0.46 / 0.85, rank 0.41 / 0.52).
+- **Competing (c), priority works for super-resolution only: for raw error, yes.** priority_raw buys about half of
+  the realized error arm's mid-budget gain on sr (269 of 483 steps at uniform's 2,000-step loss; 222 of 631 at
+  3,000; none by 4,500) and ends +6%; on fwd it hurts (+5 to +16% overall), as the realized error arm did in H
+  (+5 to +17%): error-seeking on the forward view chases what cannot be predicted from the previous frame, which is
+  exactly what a working floor would have had to remove.
+
+**Dissection** (post hoc additions declared at 468c8f89, after sr excess; every arm's final heads on the evaluation
+rows; `dissect.json`). The uniform learner's heads came from a re-run (PLAN item 3). Its first run did NOT reproduce
+H3 bitwise: max 2.6e-5 already at step 0, then within 0.4% of the mean. Traced: the encodings are identical between
+the current and 60b98881's model module and between repeats in one process, so not the decision-1 code; mamba_ssm's
+Triton kernels autotune their block sizes per process unless MAMBA_DETERMINISTIC=1, and with it the step-0 evaluation
+equals H3's exactly. Re-run with MAMBA_DETERMINISTIC=1: uniform equals H3 bitwise on both learners (the sr IL
+learner, unused by H3 and the dissection, differs by 0.07% of its mean; not chased). The dissection ran in the same
+mode. By window type, the uniform learner at the end (error; the decoder's own predicted variance, exactly; pi^2 s^2 / 3;
+share of saturated pixels, 0 or 255):
+
+| sr, uniform | error | exact variance | pi^2 s^2 / 3 | saturated | saturated, mean off by > 1 bin |
+|---|---|---|---|---|---|
+| HUD | 0.00128 | 0.0313 (25x) | 0.49 (385x) | 44% | 12% |
+| DO consequence windows | 0.00130 | 0.0126 (10x) | 0.17 | 24% | 7% |
+| entity | 0.00228 | 0.0056 (2.5x) | 0.077 | 7% | 2% |
+| faced | 0.00122 | 0.00085 (0.7x) | 0.00087 | 0.9% | 0.4% |
+| other map | 0.00109 | 0.00082 (0.8x) | 0.00080 | 0.9% | 0.4% |
+
+- **Where no pixel is saturated the endogenous floor works:** faced and other-map windows, exact variance 0.7-0.8x
+  the realized error on sr (1.2-1.9x on fwd, whose error contains more that cannot be predicted), and pi^2 s^2 / 3
+  equals it there (small interior scales, as Codex said).
+- **Where pixels are saturated it fails, and under uniform looks too: the floor's construction, not the selection.**
+  99.4% of pi^2 s^2 / 3 comes from saturated pixels; the exact bounded variance is 10-25x the error on HUD and
+  DO-consequence windows; with the HUD digits learned as well as the map (0.00128 vs 0.00109), the scale head still
+  calls them noisy. Mechanism (pixel_nll's formula, and the measured condition): an edge bin absorbs everything beyond
+  it, so for a saturated pixel whose mean sits inside the range by more than half a bin, the NLL falls monotonically
+  toward log 2 as s grows, rewarding an unbounded scale; faithful's squared-error mean is pulled to the edge value,
+  not past it, so a saturated pixel's remaining error lands in that regime, and the position-only scale inflates
+  wherever such pixels are common (saturated with the clamped mean off by more than a bin, i.e. inside the range:
+  12% of HUD pixels under uniform, 0.4% on the map). PixelCNN++ trains its mean by the same likelihood, which pushes
+  it past the edge; ours is not. pi^2 s^2 / 3 then amplifies it (unbounded, where the bounded variance stays
+  below 1: at s = 20 it gives 1,327 against 0.98).
+- **Selection then locks it in.** The floor-subtracting arms look at HUD and consequence windows less, so those are
+  learned less (sr excess: HUD error 3.5x uniform's), more saturated pixels stay mispredicted (19% vs 12%) and the
+  floor there doubles (exact HUD 0.064 vs 0.031); floor and error become co-located (rank rho over windows 0.37
+  under uniform, 0.80 under excess). The 20% random looks did not break the loop within 6,000 steps.
+- Under raw-error selection (priority_raw) the logged floor explodes (fwd, end: pi^2 s^2 / 3 = 1,037 on HUD, exact
+  0.18), without consequence for that arm, which ignores it.
+What H3 establishes: the faithful scale head is not a usable noise floor wherever pixels saturate (HUD, sprites'
+outlines, consequence windows), under any looking policy, and a floor-subtracting score then steers looks away from
+exactly the content still to be learned, a self-confirming loop; where nothing saturates, the position-only floor is
+calibrated. A pre-crop predictor of raw error is learnable and buys about half of the realized error's early gain on
+super-resolution, but error-seeking still hurts the forward learner. What it does not establish: whether a
+well-posed floor (one whose noise estimate stays finite at the range's edges, fit from looks the score did not
+choose) recovers RHO's gain; nothing was trained beyond the heads; one seed, frozen P1-F inputs.

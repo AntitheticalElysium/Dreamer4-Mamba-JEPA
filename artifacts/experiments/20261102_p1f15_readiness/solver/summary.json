@@ -1,0 +1,1823 @@
+{
+ "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261101_p1f15/run/ckpt_10.pt",
+ "sha256": "95fa2cc82cb9dc3cae11cbf9f44f880aff17e250de639911f39d159564978128",
+ "draws": 4,
+ "script_sha256": "2a66f335c9c06a76b77d3b07e793dd9f21e13139970ae740ca797f92b17dc2d8",
+ "trace_sha256": "a84390ae62dcb279813fc477c84abffbf19244ddee8d57b95e3d482877426b7b",
+ "plan_sha256": "dbb97cc1c7edce4191b992033cc8d408ea598fa9202ffd6aa6a493d293f5575d",
+ "algorithms": {
+  "e3c1": {
+   "seconds": 26.945506811141968,
+   "checks": {
+    "real_head_repeat_max": 0.0,
+    "marginal_mc": [
+     {
+      "exact": 0.0,
+      "mc": 0.0,
+      "mc_se": 0.0,
+      "absolute_error": 0.0
+     },
+     {
+      "exact": 0.0,
+      "mc": 0.0,
+      "mc_se": 0.0,
+      "absolute_error": 0.0
+     },
+     {
+      "exact": 0.0,
+      "mc": 0.0,
+      "mc_se": 0.0,
+      "absolute_error": 0.0
+     },
+     {
+      "exact": 0.0,
+      "mc": 0.0,
+      "mc_se": 0.0,
+      "absolute_error": 0.0
+     }
+    ]
+   },
+   "classes": {
+    "random": {
+     "real_reward_pos": {
+      "est": 0.04310809854570136,
+      "se": 0.011958358268100334,
+      "n_cond": 256
+     },
+     "real_reward_neg": {
+      "est": 0.011893410859114977,
+      "se": 0.00636337262571937,
+      "n_cond": 256
+     },
+     "real_reward_mean": {
+      "est": 0.04307079322793745,
+      "se": 0.011922519859789768,
+      "n_cond": 256
+     },
+     "real_death_joint": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 256
+     },
+     "real_death_oracle_reward": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 256
+     },
+     "real_reward_true_p": {
+      "est": 0.9995862483046949,
+      "se": 0.00019735845683092372,
+      "n_cond": 256
+     },
+     "gen_reward_pos": {
+      "est": 0.05136464383378533,
+      "se": 0.012506378233418942,
+      "n_cond": 256
+     },
+     "gen_reward_neg": {
+      "est": 0.0019788052723057523,
+      "se": 0.0014131589445599009,
+      "n_cond": 256
+     },
+     "gen_reward_mean": {
+      "est": 0.0510758153041438,
+      "se": 0.012463842926974427,
+      "n_cond": 256
+     },
+     "gen_death_joint": {
+      "est": 0.0009765650611370802,
+      "se": 0.0010314933274543697,
+      "n_cond": 256
+     },
+     "gen_death_oracle_reward": {
+      "est": 0.0009765649447217584,
+      "se": 0.0010314932044911053,
+      "n_cond": 256
+     },
+     "gen_reward_true_p": {
+      "est": 0.9240371923547057,
+      "se": 0.016792249156922845,
+      "n_cond": 256
+     },
+     "histories": 256,
+     "episodes": 109,
+     "recorded_death": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 256
+     },
+     "recorded_positive_reward": {
+      "est": 0.04296875,
+      "se": 0.011976064405155041,
+      "n_cond": 256
+     },
+     "real_reward_brier": {
+      "est": 3.091049675519982e-06,
+      "se": 2.0629713546439937e-06,
+      "n_cond": 256
+     },
+     "real_death_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 256
+     },
+     "real_reward_nll": {
+      "est": 0.00041859080485406874,
+      "se": 0.00020072833204549468,
+      "n_cond": 256
+     },
+     "gen_reward_brier": {
+      "est": 0.03263896745691932,
+      "se": 0.008755192406481233,
+      "n_cond": 256
+     },
+     "gen_death_brier": {
+      "est": 0.0002441419055685401,
+      "se": 0.0002578740081615458,
+      "n_cond": 256
+     },
+     "gen_reward_nll": {
+      "est": 0.6810751407194957,
+      "se": 0.2506791957284671,
+      "n_cond": 256
+     },
+     "gen_reward_pos_fair_brier": {
+      "est": 0.0289299350587783,
+      "se": 0.008306636654652996,
+      "n_cond": 256
+     },
+     "gen_death_joint_fair_brier": {
+      "est": 1.7462298274040222e-09,
+      "se": 1.8444489638731885e-09,
+      "n_cond": 256
+     }
+    },
+    "risky": {
+     "real_reward_pos": {
+      "est": 0.014618314038267705,
+      "se": 0.005860403480305478,
+      "n_cond": 256
+     },
+     "real_reward_neg": {
+      "est": 0.14092592372409624,
+      "se": 0.018006608374891056,
+      "n_cond": 256
+     },
+     "real_reward_mean": {
+      "est": -0.007477188854687301,
+      "se": 0.006350506782721941,
+      "n_cond": 256
+     },
+     "real_death_joint": {
+      "est": 0.14453017339110885,
+      "se": 0.018585771847827597,
+      "n_cond": 256
+     },
+     "real_death_oracle_reward": {
+      "est": 0.14453017222695053,
+      "se": 0.018585771534017227,
+      "n_cond": 256
+     },
+     "real_reward_true_p": {
+      "est": 0.9900475898575678,
+      "se": 0.004467226188124667,
+      "n_cond": 256
+     },
+     "gen_reward_pos": {
+      "est": 0.014770235832607977,
+      "se": 0.00655033659896952,
+      "n_cond": 256
+     },
+     "gen_reward_neg": {
+      "est": 0.042451734863751936,
+      "se": 0.008797094893361921,
+      "n_cond": 256
+     },
+     "gen_reward_mean": {
+      "est": 0.009324446082078917,
+      "se": 0.007017137962400586,
+      "n_cond": 256
+     },
+     "gen_death_joint": {
+      "est": 0.01034458821002518,
+      "se": 0.0032508484470781898,
+      "n_cond": 256
+     },
+     "gen_death_oracle_reward": {
+      "est": 0.010320324043277651,
+      "se": 0.0032385033790767194,
+      "n_cond": 256
+     },
+     "gen_reward_true_p": {
+      "est": 0.7744978534584769,
+      "se": 0.02476389195050567,
+      "n_cond": 256
+     },
+     "histories": 256,
+     "episodes": 107,
+     "recorded_death": {
+      "est": 0.14453125,
+      "se": 0.01858588121336747,
+      "n_cond": 256
+     },
+     "recorded_positive_reward": {
+      "est": 0.01953125,
+      "se": 0.008232172735108538,
+      "n_cond": 256
+     },
+     "real_reward_brier": {
+      "est": 0.00532452054261992,
+      "se": 0.004002038604960263,
+      "n_cond": 256
+     },
+     "real_death_brier": {
+      "est": 3.490682743598286e-11,
+      "se": 1.5940121352597624e-11,
+      "n_cond": 256
+     },
+     "real_reward_nll": {
+      "est": 0.02545758333332554,
+      "se": 0.01900533464671214,
+      "n_cond": 256
+     },
+     "gen_reward_brier": {
+      "est": 0.02111692590275927,
+      "se": 0.00814989570564353,
+      "n_cond": 256
+     },
+     "gen_death_brier": {
+      "est": 0.13947231274742666,
+      "se": 0.01828830914274282,
+      "n_cond": 256
+     },
+     "gen_reward_nll": {
+      "est": 2.1022173503066104,
+      "se": 0.3040648638578194,
+      "n_cond": 256
+     },
+     "gen_reward_pos_fair_brier": {
+      "est": 0.019450783869179016,
+      "se": 0.007654356871031654,
+      "n_cond": 256
+     },
+     "gen_death_joint_fair_brier": {
+      "est": 0.13704572280975502,
+      "se": 0.01826312026480481,
+      "n_cond": 256
+     }
+    },
+    "ach_WAKE_UP": {
+     "real_reward_pos": {
+      "est": 0.8620686829121301,
+      "se": 0.0243533882211497,
+      "n_cond": 196
+     },
+     "real_reward_neg": {
+      "est": 0.016481082154031365,
+      "se": 0.006438629963902763,
+      "n_cond": 196
+     },
+     "real_reward_mean": {
+      "est": 0.8819949199939717,
+      "se": 0.02102672311412808,
+      "n_cond": 196
+     },
+     "real_death_joint": {
+      "est": 0.07142852283278144,
+      "se": 0.01978970139028605,
+      "n_cond": 196
+     },
+     "real_death_oracle_reward": {
+      "est": 0.07142851881834926,
+      "se": 0.019789700161765487,
+      "n_cond": 196
+     },
+     "real_reward_true_p": {
+      "est": 0.9582923152579033,
+      "se": 0.012166876105877761,
+      "n_cond": 196
+     },
+     "gen_reward_pos": {
+      "est": 0.5369246616658487,
+      "se": 0.021841133119564655,
+      "n_cond": 196
+     },
+     "gen_reward_neg": {
+      "est": 0.0024933876708532416,
+      "se": 0.0015380589781340255,
+      "n_cond": 196
+     },
+     "gen_reward_mean": {
+      "est": 0.5372398474070926,
+      "se": 0.021959215567473832,
+      "n_cond": 196
+     },
+     "gen_death_joint": {
+      "est": 0.002388633109529879,
+      "se": 0.0015118063180759901,
+      "n_cond": 196
+     },
+     "gen_death_oracle_reward": {
+      "est": 0.0023383879844023256,
+      "se": 0.0014842813034320133,
+      "n_cond": 196
+     },
+     "gen_reward_true_p": {
+      "est": 0.4867433084300129,
+      "se": 0.023627794551887606,
+      "n_cond": 196
+     },
+     "histories": 196,
+     "episodes": 196,
+     "recorded_death": {
+      "est": 0.07142857142857142,
+      "se": 0.019789720652993864,
+      "n_cond": 196
+     },
+     "recorded_positive_reward": {
+      "est": 0.8775510204081632,
+      "se": 0.023666871001614905,
+      "n_cond": 196
+     },
+     "real_reward_brier": {
+      "est": 0.01762385539535887,
+      "se": 0.008535380519822146,
+      "n_cond": 196
+     },
+     "real_death_brier": {
+      "est": 1.943557375447409e-13,
+      "se": 1.7941435901892183e-13,
+      "n_cond": 196
+     },
+     "real_reward_nll": {
+      "est": 0.10135231807408691,
+      "se": 0.04096070018206457,
+      "n_cond": 196
+     },
+     "gen_reward_brier": {
+      "est": 0.24727389922847798,
+      "se": 0.01860829310154389,
+      "n_cond": 196
+     },
+     "gen_death_brier": {
+      "est": 0.0672126001849468,
+      "se": 0.019129084416190264,
+      "n_cond": 196
+     },
+     "gen_reward_nll": {
+      "est": 2.439158668005357,
+      "se": 0.32237839407867486,
+      "n_cond": 196
+     },
+     "gen_reward_pos_fair_brier": {
+      "est": 0.19511870508322154,
+      "se": 0.018531777701968333,
+      "n_cond": 196
+     },
+     "gen_death_joint_fair_brier": {
+      "est": 0.06665130719846615,
+      "se": 0.019067325487763184,
+      "n_cond": 196
+     }
+    },
+    "ach_COLLECT_COAL": {
+     "real_reward_pos": {
+      "est": 0.997751640837367,
+      "se": 0.0008262801335803848,
+      "n_cond": 82
+     },
+     "real_reward_neg": {
+      "est": 0.00017177122119802713,
+      "se": 0.00014280699617247113,
+      "n_cond": 82
+     },
+     "real_reward_mean": {
+      "est": 0.9989532297704278,
+      "se": 0.0011774259478726616,
+      "n_cond": 82
+     },
+     "real_death_joint": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "real_death_oracle_reward": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "real_reward_true_p": {
+      "est": 0.9974502390477715,
+      "se": 0.0008583854708073795,
+      "n_cond": 82
+     },
+     "gen_reward_pos": {
+      "est": 0.0690032080741897,
+      "se": 0.021127919807708236,
+      "n_cond": 82
+     },
+     "gen_reward_neg": {
+      "est": 6.0315075011520515e-06,
+      "se": 3.910987792856272e-06,
+      "n_cond": 82
+     },
+     "gen_reward_mean": {
+      "est": 0.06900287523045595,
+      "se": 0.021128025449219243,
+      "n_cond": 82
+     },
+     "gen_death_joint": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "gen_death_oracle_reward": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "gen_reward_true_p": {
+      "est": 0.06899100313065548,
+      "se": 0.021127247687046827,
+      "n_cond": 82
+     },
+     "histories": 82,
+     "episodes": 82,
+     "recorded_death": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "recorded_positive_reward": {
+      "est": 1.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "real_reward_brier": {
+      "est": 5.744517095134943e-05,
+      "se": 2.849632473294177e-05,
+      "n_cond": 82
+     },
+     "real_death_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "real_reward_nll": {
+      "est": 0.002582127511409564,
+      "se": 0.0008734578701856735,
+      "n_cond": 82
+     },
+     "gen_reward_brier": {
+      "est": 0.9005004017295878,
+      "se": 0.025868677474985058,
+      "n_cond": 82
+     },
+     "gen_death_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "gen_reward_nll": {
+      "est": 7.0754507801449975,
+      "se": 0.42537229891796713,
+      "n_cond": 82
+     },
+     "gen_reward_pos_fair_brier": {
+      "est": 0.8938726012441728,
+      "se": 0.02720293947028449,
+      "n_cond": 82
+     },
+     "gen_death_joint_fair_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     }
+    },
+    "ach_COLLECT_IRON": {
+     "real_reward_pos": {
+      "est": 0.9942005957875933,
+      "se": 0.0023419035453726813,
+      "n_cond": 70
+     },
+     "real_reward_neg": {
+      "est": 0.00023049941833911243,
+      "se": 0.00013680940098396974,
+      "n_cond": 70
+     },
+     "real_reward_mean": {
+      "est": 0.9956012402262007,
+      "se": 0.002018822263003571,
+      "n_cond": 70
+     },
+     "real_death_joint": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "real_death_oracle_reward": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "real_reward_true_p": {
+      "est": 0.9937684008053371,
+      "se": 0.002362509431477073,
+      "n_cond": 70
+     },
+     "gen_reward_pos": {
+      "est": 0.023335929076375765,
+      "se": 0.010400967059650674,
+      "n_cond": 70
+     },
+     "gen_reward_neg": {
+      "est": 2.0653182613905584e-06,
+      "se": 1.0422485569021207e-06,
+      "n_cond": 70
+     },
+     "gen_reward_mean": {
+      "est": 0.023335960373828138,
+      "se": 0.010401002125470226,
+      "n_cond": 70
+     },
+     "gen_death_joint": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "gen_death_oracle_reward": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "gen_reward_true_p": {
+      "est": 0.02333105269734177,
+      "se": 0.010399095998599355,
+      "n_cond": 70
+     },
+     "histories": 70,
+     "episodes": 70,
+     "recorded_death": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "recorded_positive_reward": {
+      "est": 1.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "real_reward_brier": {
+      "est": 0.0004588780145647421,
+      "se": 0.000294733267229999,
+      "n_cond": 70
+     },
+     "real_death_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "real_reward_nll": {
+      "est": 0.006487293264061529,
+      "se": 0.002520629240580893,
+      "n_cond": 70
+     },
+     "gen_reward_brier": {
+      "est": 0.9616046901260104,
+      "se": 0.016847007656814898,
+      "n_cond": 70
+     },
+     "gen_death_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "gen_reward_nll": {
+      "est": 12.18856293133327,
+      "se": 0.5157923027049552,
+      "n_cond": 70
+     },
+     "gen_reward_pos_fair_brier": {
+      "est": 0.9577000358275005,
+      "se": 0.018518294337394877,
+      "n_cond": 70
+     },
+     "gen_death_joint_fair_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     }
+    }
+   }
+  },
+  "e8c0": {
+   "seconds": 38.99665355682373,
+   "checks": {
+    "real_head_repeat_max": 0.0,
+    "marginal_mc": [
+     {
+      "exact": 0.0,
+      "mc": 0.0,
+      "mc_se": 0.0,
+      "absolute_error": 0.0
+     },
+     {
+      "exact": 0.0,
+      "mc": 0.0,
+      "mc_se": 0.0,
+      "absolute_error": 0.0
+     },
+     {
+      "exact": 0.0,
+      "mc": 0.0,
+      "mc_se": 0.0,
+      "absolute_error": 0.0
+     },
+     {
+      "exact": 0.0,
+      "mc": 0.0,
+      "mc_se": 0.0,
+      "absolute_error": 0.0
+     }
+    ]
+   },
+   "classes": {
+    "random": {
+     "real_reward_pos": {
+      "est": 0.04310809854570136,
+      "se": 0.011958358268100334,
+      "n_cond": 256
+     },
+     "real_reward_neg": {
+      "est": 0.011893410859114977,
+      "se": 0.00636337262571937,
+      "n_cond": 256
+     },
+     "real_reward_mean": {
+      "est": 0.04307079322793745,
+      "se": 0.011922519859789768,
+      "n_cond": 256
+     },
+     "real_death_joint": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 256
+     },
+     "real_death_oracle_reward": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 256
+     },
+     "real_reward_true_p": {
+      "est": 0.9995862483046949,
+      "se": 0.00019735845683092372,
+      "n_cond": 256
+     },
+     "gen_reward_pos": {
+      "est": 0.06721649680462059,
+      "se": 0.01452215072903682,
+      "n_cond": 256
+     },
+     "gen_reward_neg": {
+      "est": 0.014609743735598008,
+      "se": 0.0045296139581273995,
+      "n_cond": 256
+     },
+     "gen_reward_mean": {
+      "est": 0.06612047549752273,
+      "se": 0.014506233048023547,
+      "n_cond": 256
+     },
+     "gen_death_joint": {
+      "est": 0.004882719134911895,
+      "se": 0.0033822235151934215,
+      "n_cond": 256
+     },
+     "gen_death_oracle_reward": {
+      "est": 0.0048827126156538725,
+      "se": 0.0033822213396943776,
+      "n_cond": 256
+     },
+     "gen_reward_true_p": {
+      "est": 0.8868956024524921,
+      "se": 0.017091184267406433,
+      "n_cond": 256
+     },
+     "histories": 256,
+     "episodes": 109,
+     "recorded_death": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 256
+     },
+     "recorded_positive_reward": {
+      "est": 0.04296875,
+      "se": 0.011976064405155041,
+      "n_cond": 256
+     },
+     "real_reward_brier": {
+      "est": 3.091049675519982e-06,
+      "se": 2.0629713546439937e-06,
+      "n_cond": 256
+     },
+     "real_death_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 256
+     },
+     "real_reward_nll": {
+      "est": 0.00041859080485406874,
+      "se": 0.00020072833204549468,
+      "n_cond": 256
+     },
+     "gen_reward_brier": {
+      "est": 0.04077673763661871,
+      "se": 0.0107811520967772,
+      "n_cond": 256
+     },
+     "gen_death_brier": {
+      "est": 0.0026855001924559474,
+      "se": 0.002336896807319966,
+      "n_cond": 256
+     },
+     "gen_reward_nll": {
+      "est": 0.749085812196354,
+      "se": 0.22985250921084402,
+      "n_cond": 256
+     },
+     "gen_reward_pos_fair_brier": {
+      "est": 0.03699892187859649,
+      "se": 0.010627880575538895,
+      "n_cond": 256
+     },
+     "gen_death_joint_fair_brier": {
+      "est": 0.0019531249563442543,
+      "se": 0.002062981246441774,
+      "n_cond": 256
+     }
+    },
+    "risky": {
+     "real_reward_pos": {
+      "est": 0.014618314038267705,
+      "se": 0.005860403480305478,
+      "n_cond": 256
+     },
+     "real_reward_neg": {
+      "est": 0.14092592372409624,
+      "se": 0.018006608374891056,
+      "n_cond": 256
+     },
+     "real_reward_mean": {
+      "est": -0.007477188854687301,
+      "se": 0.006350506782721941,
+      "n_cond": 256
+     },
+     "real_death_joint": {
+      "est": 0.14453017339110885,
+      "se": 0.018585771847827597,
+      "n_cond": 256
+     },
+     "real_death_oracle_reward": {
+      "est": 0.14453017222695053,
+      "se": 0.018585771534017227,
+      "n_cond": 256
+     },
+     "real_reward_true_p": {
+      "est": 0.9900475898575678,
+      "se": 0.004467226188124667,
+      "n_cond": 256
+     },
+     "gen_reward_pos": {
+      "est": 0.014200839598341744,
+      "se": 0.005169425828266778,
+      "n_cond": 256
+     },
+     "gen_reward_neg": {
+      "est": 0.14233515372457783,
+      "se": 0.01435644696989255,
+      "n_cond": 256
+     },
+     "gen_reward_mean": {
+      "est": -0.00055755787203756,
+      "se": 0.007132864389195521,
+      "n_cond": 256
+     },
+     "gen_death_joint": {
+      "est": 0.0760546619487423,
+      "se": 0.008530110125334125,
+      "n_cond": 256
+     },
+     "gen_death_oracle_reward": {
+      "est": 0.07604981557233259,
+      "se": 0.008529440805320542,
+      "n_cond": 256
+     },
+     "gen_reward_true_p": {
+      "est": 0.6694596584666238,
+      "se": 0.025198343137247656,
+      "n_cond": 256
+     },
+     "histories": 256,
+     "episodes": 107,
+     "recorded_death": {
+      "est": 0.14453125,
+      "se": 0.01858588121336747,
+      "n_cond": 256
+     },
+     "recorded_positive_reward": {
+      "est": 0.01953125,
+      "se": 0.008232172735108538,
+      "n_cond": 256
+     },
+     "real_reward_brier": {
+      "est": 0.00532452054261992,
+      "se": 0.004002038604960263,
+      "n_cond": 256
+     },
+     "real_death_brier": {
+      "est": 3.490682743598286e-11,
+      "se": 1.5940121352597624e-11,
+      "n_cond": 256
+     },
+     "real_reward_nll": {
+      "est": 0.02545758333332554,
+      "se": 0.01900533464671214,
+      "n_cond": 256
+     },
+     "gen_reward_brier": {
+      "est": 0.020283597047422726,
+      "se": 0.007670186582462032,
+      "n_cond": 256
+     },
+     "gen_death_brier": {
+      "est": 0.1334962939904875,
+      "se": 0.017193893331854778,
+      "n_cond": 256
+     },
+     "gen_reward_nll": {
+      "est": 1.524067973672027,
+      "se": 0.2260338527882282,
+      "n_cond": 256
+     },
+     "gen_reward_pos_fair_brier": {
+      "est": 0.01833610274382916,
+      "se": 0.007167906220296043,
+      "n_cond": 256
+     },
+     "gen_death_joint_fair_brier": {
+      "est": 0.11755517098936263,
+      "se": 0.016951689620098197,
+      "n_cond": 256
+     }
+    },
+    "ach_WAKE_UP": {
+     "real_reward_pos": {
+      "est": 0.8620686829121301,
+      "se": 0.0243533882211497,
+      "n_cond": 196
+     },
+     "real_reward_neg": {
+      "est": 0.016481082154031365,
+      "se": 0.006438629963902763,
+      "n_cond": 196
+     },
+     "real_reward_mean": {
+      "est": 0.8819949199939717,
+      "se": 0.02102672311412808,
+      "n_cond": 196
+     },
+     "real_death_joint": {
+      "est": 0.07142852283278144,
+      "se": 0.01978970139028605,
+      "n_cond": 196
+     },
+     "real_death_oracle_reward": {
+      "est": 0.07142851881834926,
+      "se": 0.019789700161765487,
+      "n_cond": 196
+     },
+     "real_reward_true_p": {
+      "est": 0.9582923152579033,
+      "se": 0.012166876105877761,
+      "n_cond": 196
+     },
+     "gen_reward_pos": {
+      "est": 0.6057938079500217,
+      "se": 0.02016519362869967,
+      "n_cond": 196
+     },
+     "gen_reward_neg": {
+      "est": 0.0264203786740523,
+      "se": 0.0050475213068096976,
+      "n_cond": 196
+     },
+     "gen_reward_mean": {
+      "est": 0.6046641708439504,
+      "se": 0.020846676361960487,
+      "n_cond": 196
+     },
+     "gen_death_joint": {
+      "est": 0.006380923395441686,
+      "se": 0.002587508871425466,
+      "n_cond": 196
+     },
+     "gen_death_oracle_reward": {
+      "est": 0.006380854136481577,
+      "se": 0.002587493571169889,
+      "n_cond": 196
+     },
+     "gen_reward_true_p": {
+      "est": 0.5412613150764142,
+      "se": 0.022871377472227547,
+      "n_cond": 196
+     },
+     "histories": 196,
+     "episodes": 196,
+     "recorded_death": {
+      "est": 0.07142857142857142,
+      "se": 0.019789720652993864,
+      "n_cond": 196
+     },
+     "recorded_positive_reward": {
+      "est": 0.8775510204081632,
+      "se": 0.023666871001614905,
+      "n_cond": 196
+     },
+     "real_reward_brier": {
+      "est": 0.01762385539535887,
+      "se": 0.008535380519822146,
+      "n_cond": 196
+     },
+     "real_death_brier": {
+      "est": 1.943557375447409e-13,
+      "se": 1.7941435901892183e-13,
+      "n_cond": 196
+     },
+     "real_reward_nll": {
+      "est": 0.10135231807408691,
+      "se": 0.04096070018206457,
+      "n_cond": 196
+     },
+     "gen_reward_brier": {
+      "est": 0.20231667407924728,
+      "se": 0.016672894752243598,
+      "n_cond": 196
+     },
+     "gen_death_brier": {
+      "est": 0.06536294759384274,
+      "se": 0.01835996665074029,
+      "n_cond": 196
+     },
+     "gen_reward_nll": {
+      "est": 1.9322890899997665,
+      "se": 0.27755893931438796,
+      "n_cond": 196
+     },
+     "gen_reward_pos_fair_brier": {
+      "est": 0.15346061483639634,
+      "se": 0.0165096978373469,
+      "n_cond": 196
+     },
+     "gen_death_joint_fair_brier": {
+      "est": 0.06376862949786752,
+      "se": 0.01821996651023642,
+      "n_cond": 196
+     }
+    },
+    "ach_COLLECT_COAL": {
+     "real_reward_pos": {
+      "est": 0.997751640837367,
+      "se": 0.0008262801335803848,
+      "n_cond": 82
+     },
+     "real_reward_neg": {
+      "est": 0.00017177122119802713,
+      "se": 0.00014280699617247113,
+      "n_cond": 82
+     },
+     "real_reward_mean": {
+      "est": 0.9989532297704278,
+      "se": 0.0011774259478726616,
+      "n_cond": 82
+     },
+     "real_death_joint": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "real_death_oracle_reward": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "real_reward_true_p": {
+      "est": 0.9974502390477715,
+      "se": 0.0008583854708073795,
+      "n_cond": 82
+     },
+     "gen_reward_pos": {
+      "est": 0.2142031941811427,
+      "se": 0.024521982104031975,
+      "n_cond": 82
+     },
+     "gen_reward_neg": {
+      "est": 0.007443244285272,
+      "se": 0.004777883567837316,
+      "n_cond": 82
+     },
+     "gen_reward_mean": {
+      "est": 0.2147601377010582,
+      "se": 0.024500003242242455,
+      "n_cond": 82
+     },
+     "gen_death_joint": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "gen_death_oracle_reward": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "gen_reward_true_p": {
+      "est": 0.20677985048839617,
+      "se": 0.024200369263035912,
+      "n_cond": 82
+     },
+     "histories": 82,
+     "episodes": 82,
+     "recorded_death": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "recorded_positive_reward": {
+      "est": 1.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "real_reward_brier": {
+      "est": 5.744517095134943e-05,
+      "se": 2.849632473294177e-05,
+      "n_cond": 82
+     },
+     "real_death_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "real_reward_nll": {
+      "est": 0.002582127511409564,
+      "se": 0.0008734578701856735,
+      "n_cond": 82
+     },
+     "gen_reward_brier": {
+      "est": 0.6706135296163536,
+      "se": 0.03134160744971804,
+      "n_cond": 82
+     },
+     "gen_death_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "gen_reward_nll": {
+      "est": 4.269050529484492,
+      "se": 0.4211341016344281,
+      "n_cond": 82
+     },
+     "gen_reward_pos_fair_brier": {
+      "est": 0.6350837414184922,
+      "se": 0.03397099251538707,
+      "n_cond": 82
+     },
+     "gen_death_joint_fair_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     }
+    },
+    "ach_COLLECT_IRON": {
+     "real_reward_pos": {
+      "est": 0.9942005957875933,
+      "se": 0.0023419035453726813,
+      "n_cond": 70
+     },
+     "real_reward_neg": {
+      "est": 0.00023049941833911243,
+      "se": 0.00013680940098396974,
+      "n_cond": 70
+     },
+     "real_reward_mean": {
+      "est": 0.9956012402262007,
+      "se": 0.002018822263003571,
+      "n_cond": 70
+     },
+     "real_death_joint": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "real_death_oracle_reward": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "real_reward_true_p": {
+      "est": 0.9937684008053371,
+      "se": 0.002362509431477073,
+      "n_cond": 70
+     },
+     "gen_reward_pos": {
+      "est": 0.1699215147405126,
+      "se": 0.02323568627191466,
+      "n_cond": 70
+     },
+     "gen_reward_neg": {
+      "est": 0.013757905663344828,
+      "se": 0.0076627937848628355,
+      "n_cond": 70
+     },
+     "gen_reward_mean": {
+      "est": 0.16863451949657984,
+      "se": 0.023396014009796195,
+      "n_cond": 70
+     },
+     "gen_death_joint": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "gen_death_oracle_reward": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "gen_reward_true_p": {
+      "est": 0.16511749396229544,
+      "se": 0.023502679213830212,
+      "n_cond": 70
+     },
+     "histories": 70,
+     "episodes": 70,
+     "recorded_death": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "recorded_positive_reward": {
+      "est": 1.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "real_reward_brier": {
+      "est": 0.0004588780145647421,
+      "se": 0.000294733267229999,
+      "n_cond": 70
+     },
+     "real_death_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "real_reward_nll": {
+      "est": 0.006487293264061529,
+      "se": 0.002520629240580893,
+      "n_cond": 70
+     },
+     "gen_reward_brier": {
+      "est": 0.726453664366688,
+      "se": 0.03473354780816032,
+      "n_cond": 70
+     },
+     "gen_death_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "gen_reward_nll": {
+      "est": 6.831794328348977,
+      "se": 0.7468551763398183,
+      "n_cond": 70
+     },
+     "gen_reward_pos_fair_brier": {
+      "est": 0.6952810536537851,
+      "se": 0.038387233341138235,
+      "n_cond": 70
+     },
+     "gen_death_joint_fair_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     }
+    }
+   }
+  },
+  "e32c1": {
+   "seconds": 97.76489567756653,
+   "checks": {
+    "real_head_repeat_max": 0.0,
+    "marginal_mc": [
+     {
+      "exact": 0.0,
+      "mc": 0.0,
+      "mc_se": 0.0,
+      "absolute_error": 0.0
+     },
+     {
+      "exact": 0.0,
+      "mc": 0.0,
+      "mc_se": 0.0,
+      "absolute_error": 0.0
+     },
+     {
+      "exact": 0.0,
+      "mc": 0.0,
+      "mc_se": 0.0,
+      "absolute_error": 0.0
+     },
+     {
+      "exact": 0.0,
+      "mc": 0.0,
+      "mc_se": 0.0,
+      "absolute_error": 0.0
+     }
+    ]
+   },
+   "classes": {
+    "random": {
+     "real_reward_pos": {
+      "est": 0.04310809854570136,
+      "se": 0.011958358268100334,
+      "n_cond": 256
+     },
+     "real_reward_neg": {
+      "est": 0.011893410859114977,
+      "se": 0.00636337262571937,
+      "n_cond": 256
+     },
+     "real_reward_mean": {
+      "est": 0.04307079322793745,
+      "se": 0.011922519859789768,
+      "n_cond": 256
+     },
+     "real_death_joint": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 256
+     },
+     "real_death_oracle_reward": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 256
+     },
+     "real_reward_true_p": {
+      "est": 0.9995862483046949,
+      "se": 0.00019735845683092372,
+      "n_cond": 256
+     },
+     "gen_reward_pos": {
+      "est": 0.06220029714752093,
+      "se": 0.013774031973363467,
+      "n_cond": 256
+     },
+     "gen_reward_neg": {
+      "est": 0.025529337375392345,
+      "se": 0.005025913647623951,
+      "n_cond": 256
+     },
+     "gen_reward_mean": {
+      "est": 0.0583400248985346,
+      "se": 0.013700347212665276,
+      "n_cond": 256
+     },
+     "gen_death_joint": {
+      "est": 0.00488281803178614,
+      "se": 0.0026496178079218713,
+      "n_cond": 256
+     },
+     "gen_death_oracle_reward": {
+      "est": 0.00488281698198989,
+      "se": 0.002649617594842281,
+      "n_cond": 256
+     },
+     "gen_reward_true_p": {
+      "est": 0.8866703668840087,
+      "se": 0.015620179888932249,
+      "n_cond": 256
+     },
+     "histories": 256,
+     "episodes": 109,
+     "recorded_death": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 256
+     },
+     "recorded_positive_reward": {
+      "est": 0.04296875,
+      "se": 0.011976064405155041,
+      "n_cond": 256
+     },
+     "real_reward_brier": {
+      "est": 3.091049675519982e-06,
+      "se": 2.0629713546439937e-06,
+      "n_cond": 256
+     },
+     "real_death_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 256
+     },
+     "real_reward_nll": {
+      "est": 0.00041859080485406874,
+      "se": 0.00020072833204549468,
+      "n_cond": 256
+     },
+     "gen_reward_brier": {
+      "est": 0.034452765910429985,
+      "se": 0.008329297994458014,
+      "n_cond": 256
+     },
+     "gen_death_brier": {
+      "est": 0.001708984287696508,
+      "se": 0.0011115274229689458,
+      "n_cond": 256
+     },
+     "gen_reward_nll": {
+      "est": 0.5699838838157214,
+      "se": 0.16764652509547984,
+      "n_cond": 256
+     },
+     "gen_reward_pos_fair_brier": {
+      "est": 0.0294368377123216,
+      "se": 0.00775251245482566,
+      "n_cond": 256
+     },
+     "gen_death_joint_fair_brier": {
+      "est": 0.0006510415842058137,
+      "se": 0.0006876603740803972,
+      "n_cond": 256
+     }
+    },
+    "risky": {
+     "real_reward_pos": {
+      "est": 0.014618314038267705,
+      "se": 0.005860403480305478,
+      "n_cond": 256
+     },
+     "real_reward_neg": {
+      "est": 0.14092592372409624,
+      "se": 0.018006608374891056,
+      "n_cond": 256
+     },
+     "real_reward_mean": {
+      "est": -0.007477188854687301,
+      "se": 0.006350506782721941,
+      "n_cond": 256
+     },
+     "real_death_joint": {
+      "est": 0.14453017339110885,
+      "se": 0.018585771847827597,
+      "n_cond": 256
+     },
+     "real_death_oracle_reward": {
+      "est": 0.14453017222695053,
+      "se": 0.018585771534017227,
+      "n_cond": 256
+     },
+     "real_reward_true_p": {
+      "est": 0.9900475898575678,
+      "se": 0.004467226188124667,
+      "n_cond": 256
+     },
+     "gen_reward_pos": {
+      "est": 0.02328085957521424,
+      "se": 0.008577205061521202,
+      "n_cond": 256
+     },
+     "gen_reward_neg": {
+      "est": 0.14426304783271796,
+      "se": 0.01456856106403734,
+      "n_cond": 256
+     },
+     "gen_reward_mean": {
+      "est": 0.009598117625443518,
+      "se": 0.010119442576160365,
+      "n_cond": 256
+     },
+     "gen_death_joint": {
+      "est": 0.07123060836701203,
+      "se": 0.010128344584565616,
+      "n_cond": 256
+     },
+     "gen_death_oracle_reward": {
+      "est": 0.07122799434000626,
+      "se": 0.0101284066537177,
+      "n_cond": 256
+     },
+     "gen_reward_true_p": {
+      "est": 0.6661102191108044,
+      "se": 0.025728751768283244,
+      "n_cond": 256
+     },
+     "histories": 256,
+     "episodes": 107,
+     "recorded_death": {
+      "est": 0.14453125,
+      "se": 0.01858588121336747,
+      "n_cond": 256
+     },
+     "recorded_positive_reward": {
+      "est": 0.01953125,
+      "se": 0.008232172735108538,
+      "n_cond": 256
+     },
+     "real_reward_brier": {
+      "est": 0.00532452054261992,
+      "se": 0.004002038604960263,
+      "n_cond": 256
+     },
+     "real_death_brier": {
+      "est": 3.490682743598286e-11,
+      "se": 1.5940121352597624e-11,
+      "n_cond": 256
+     },
+     "real_reward_nll": {
+      "est": 0.02545758333332554,
+      "se": 0.01900533464671214,
+      "n_cond": 256
+     },
+     "gen_reward_brier": {
+      "est": 0.022189460840698217,
+      "se": 0.008399341176629943,
+      "n_cond": 256
+     },
+     "gen_death_brier": {
+      "est": 0.12326268288597933,
+      "se": 0.015247122360308734,
+      "n_cond": 256
+     },
+     "gen_reward_nll": {
+      "est": 1.6630913757814751,
+      "se": 0.2935093777999756,
+      "n_cond": 256
+     },
+     "gen_reward_pos_fair_brier": {
+      "est": 0.020414851493502893,
+      "se": 0.008069262769660123,
+      "n_cond": 256
+     },
+     "gen_death_joint_fair_brier": {
+      "est": 0.10872397889033894,
+      "se": 0.015058519258754444,
+      "n_cond": 256
+     }
+    },
+    "ach_WAKE_UP": {
+     "real_reward_pos": {
+      "est": 0.8620686829121301,
+      "se": 0.0243533882211497,
+      "n_cond": 196
+     },
+     "real_reward_neg": {
+      "est": 0.016481082154031365,
+      "se": 0.006438629963902763,
+      "n_cond": 196
+     },
+     "real_reward_mean": {
+      "est": 0.8819949199939717,
+      "se": 0.02102672311412808,
+      "n_cond": 196
+     },
+     "real_death_joint": {
+      "est": 0.07142852283278144,
+      "se": 0.01978970139028605,
+      "n_cond": 196
+     },
+     "real_death_oracle_reward": {
+      "est": 0.07142851881834926,
+      "se": 0.019789700161765487,
+      "n_cond": 196
+     },
+     "real_reward_true_p": {
+      "est": 0.9582923152579033,
+      "se": 0.012166876105877761,
+      "n_cond": 196
+     },
+     "gen_reward_pos": {
+      "est": 0.5826738696622827,
+      "se": 0.020697672636790305,
+      "n_cond": 196
+     },
+     "gen_reward_neg": {
+      "est": 0.04392886846411041,
+      "se": 0.007232243702746016,
+      "n_cond": 196
+     },
+     "gen_reward_mean": {
+      "est": 0.5799500949996502,
+      "se": 0.021237603982725582,
+      "n_cond": 196
+     },
+     "gen_death_joint": {
+      "est": 0.0062506432173196685,
+      "se": 0.0027253311299814797,
+      "n_cond": 196
+     },
+     "gen_death_oracle_reward": {
+      "est": 0.006224936216461415,
+      "se": 0.0027153818513710936,
+      "n_cond": 196
+     },
+     "gen_reward_true_p": {
+      "est": 0.5267673544814866,
+      "se": 0.023270575343531944,
+      "n_cond": 196
+     },
+     "histories": 196,
+     "episodes": 196,
+     "recorded_death": {
+      "est": 0.07142857142857142,
+      "se": 0.019789720652993864,
+      "n_cond": 196
+     },
+     "recorded_positive_reward": {
+      "est": 0.8775510204081632,
+      "se": 0.023666871001614905,
+      "n_cond": 196
+     },
+     "real_reward_brier": {
+      "est": 0.01762385539535887,
+      "se": 0.008535380519822146,
+      "n_cond": 196
+     },
+     "real_death_brier": {
+      "est": 1.943557375447409e-13,
+      "se": 1.7941435901892183e-13,
+      "n_cond": 196
+     },
+     "real_reward_nll": {
+      "est": 0.10135231807408691,
+      "se": 0.04096070018206457,
+      "n_cond": 196
+     },
+     "gen_reward_brier": {
+      "est": 0.213294956862002,
+      "se": 0.015816538565404166,
+      "n_cond": 196
+     },
+     "gen_death_brier": {
+      "est": 0.07066439559721246,
+      "se": 0.019412339073886398,
+      "n_cond": 196
+     },
+     "gen_reward_nll": {
+      "est": 1.853205787092251,
+      "se": 0.23234047565411606,
+      "n_cond": 196
+     },
+     "gen_reward_pos_fair_brier": {
+      "est": 0.1618752567731433,
+      "se": 0.015642105841468693,
+      "n_cond": 196
+     },
+     "gen_death_joint_fair_brier": {
+      "est": 0.06913033774008574,
+      "se": 0.01949893765011876,
+      "n_cond": 196
+     }
+    },
+    "ach_COLLECT_COAL": {
+     "real_reward_pos": {
+      "est": 0.997751640837367,
+      "se": 0.0008262801335803848,
+      "n_cond": 82
+     },
+     "real_reward_neg": {
+      "est": 0.00017177122119802713,
+      "se": 0.00014280699617247113,
+      "n_cond": 82
+     },
+     "real_reward_mean": {
+      "est": 0.9989532297704278,
+      "se": 0.0011774259478726616,
+      "n_cond": 82
+     },
+     "real_death_joint": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "real_death_oracle_reward": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "real_reward_true_p": {
+      "est": 0.9974502390477715,
+      "se": 0.0008583854708073795,
+      "n_cond": 82
+     },
+     "gen_reward_pos": {
+      "est": 0.25876052587355985,
+      "se": 0.03151375215134009,
+      "n_cond": 82
+     },
+     "gen_reward_neg": {
+      "est": 0.000541415599960197,
+      "se": 0.0004944787423367948,
+      "n_cond": 82
+     },
+     "gen_reward_mean": {
+      "est": 0.2604529224736311,
+      "se": 0.03150444530807447,
+      "n_cond": 82
+     },
+     "gen_death_joint": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "gen_death_oracle_reward": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "gen_reward_true_p": {
+      "est": 0.24651042225189648,
+      "se": 0.030597561909291658,
+      "n_cond": 82
+     },
+     "histories": 82,
+     "episodes": 82,
+     "recorded_death": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "recorded_positive_reward": {
+      "est": 1.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "real_reward_brier": {
+      "est": 5.744517095134943e-05,
+      "se": 2.849632473294177e-05,
+      "n_cond": 82
+     },
+     "real_death_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "real_reward_nll": {
+      "est": 0.002582127511409564,
+      "se": 0.0008734578701856735,
+      "n_cond": 82
+     },
+     "gen_reward_brier": {
+      "est": 0.6285805926074717,
+      "se": 0.03820762752800885,
+      "n_cond": 82
+     },
+     "gen_death_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     },
+     "gen_reward_nll": {
+      "est": 4.03494369802504,
+      "se": 0.42671950693731064,
+      "n_cond": 82
+     },
+     "gen_reward_pos_fair_brier": {
+      "est": 0.5947943772260889,
+      "se": 0.040717317690667644,
+      "n_cond": 82
+     },
+     "gen_death_joint_fair_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 82
+     }
+    },
+    "ach_COLLECT_IRON": {
+     "real_reward_pos": {
+      "est": 0.9942005957875933,
+      "se": 0.0023419035453726813,
+      "n_cond": 70
+     },
+     "real_reward_neg": {
+      "est": 0.00023049941833911243,
+      "se": 0.00013680940098396974,
+      "n_cond": 70
+     },
+     "real_reward_mean": {
+      "est": 0.9956012402262007,
+      "se": 0.002018822263003571,
+      "n_cond": 70
+     },
+     "real_death_joint": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "real_death_oracle_reward": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "real_reward_true_p": {
+      "est": 0.9937684008053371,
+      "se": 0.002362509431477073,
+      "n_cond": 70
+     },
+     "gen_reward_pos": {
+      "est": 0.18986795079011756,
+      "se": 0.024364095247257758,
+      "n_cond": 70
+     },
+     "gen_reward_neg": {
+      "est": 0.01334318075223017,
+      "se": 0.006892962328050459,
+      "n_cond": 70
+     },
+     "gen_reward_mean": {
+      "est": 0.19021428248657182,
+      "se": 0.024381341071485832,
+      "n_cond": 70
+     },
+     "gen_death_joint": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "gen_death_oracle_reward": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "gen_reward_true_p": {
+      "est": 0.17682616953445732,
+      "se": 0.022274796881071146,
+      "n_cond": 70
+     },
+     "histories": 70,
+     "episodes": 70,
+     "recorded_death": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "recorded_positive_reward": {
+      "est": 1.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "real_reward_brier": {
+      "est": 0.0004588780145647421,
+      "se": 0.000294733267229999,
+      "n_cond": 70
+     },
+     "real_death_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "real_reward_nll": {
+      "est": 0.006487293264061529,
+      "se": 0.002520629240580893,
+      "n_cond": 70
+     },
+     "gen_reward_brier": {
+      "est": 0.6984393822295325,
+      "se": 0.036552932790262796,
+      "n_cond": 70
+     },
+     "gen_death_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     },
+     "gen_reward_nll": {
+      "est": 6.524073767662048,
+      "se": 0.6548109989637286,
+      "n_cond": 70
+     },
+     "gen_reward_pos_fair_brier": {
+      "est": 0.6656856479389327,
+      "se": 0.04026814925426453,
+      "n_cond": 70
+     },
+     "gen_death_joint_fair_brier": {
+      "est": 0.0,
+      "se": 0.0,
+      "n_cond": 70
+     }
+    }
+   }
+  }
+ },
+ "encode_seconds": 5.034930944442749
+}

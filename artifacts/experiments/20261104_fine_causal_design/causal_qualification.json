@@ -1,0 +1,1917 @@
+{
+  "rows": [
+    {
+      "e": 2,
+      "t": 172,
+      "j": 0,
+      "cohort": "near_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 0,
+      "slot": 18,
+      "cell": 30,
+      "light": 0.21657153964042664,
+      "health": 9.0,
+      "next_health": 7.0,
+      "action": 13,
+      "first_visible": false,
+      "target_cell": 31,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 4,
+      "causal_health_difference": 2.0,
+      "next": [
+        {
+          "health": 7.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 3,
+      "t": 163,
+      "j": 1,
+      "cohort": "near_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 2,
+      "slot": 12,
+      "cell": 32,
+      "light": 0.3154950737953186,
+      "health": 6.0,
+      "next_health": 4.0,
+      "action": 13,
+      "first_visible": false,
+      "target_cell": 31,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 1,
+      "causal_health_difference": 2.0,
+      "next": [
+        {
+          "health": 4.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 6.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 8,
+      "t": 757,
+      "j": 0,
+      "cohort": "near_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 4,
+      "slot": 16,
+      "cell": 30,
+      "light": 0.38610759377479553,
+      "health": 6.0,
+      "next_health": 4.0,
+      "action": 0,
+      "first_visible": false,
+      "target_cell": 31,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 1,
+      "causal_health_difference": 2.0,
+      "next": [
+        {
+          "health": 4.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 6.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 36,
+      "t": 203,
+      "j": 0,
+      "cohort": "near_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 17,
+      "slot": 13,
+      "cell": 40,
+      "light": 0.008034844882786274,
+      "health": 9.0,
+      "next_health": 7.0,
+      "action": 15,
+      "first_visible": false,
+      "target_cell": 31,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 2,
+      "causal_health_difference": 2.0,
+      "next": [
+        {
+          "health": 7.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 43,
+      "t": 266,
+      "j": 0,
+      "cohort": "near_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 21,
+      "slot": 6,
+      "cell": 22,
+      "light": 0.4221547245979309,
+      "health": 9.0,
+      "next_health": 7.0,
+      "action": 2,
+      "first_visible": false,
+      "target_cell": 31,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 1,
+      "causal_health_difference": 2.0,
+      "next": [
+        {
+          "health": 7.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 56,
+      "t": 171,
+      "j": 0,
+      "cohort": "near_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 26,
+      "slot": 7,
+      "cell": 32,
+      "light": 0.22699932754039764,
+      "health": 6.0,
+      "next_health": 4.0,
+      "action": 0,
+      "first_visible": false,
+      "target_cell": 31,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 0,
+      "causal_health_difference": 2.0,
+      "next": [
+        {
+          "health": 4.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 6.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 62,
+      "t": 201,
+      "j": 0,
+      "cohort": "near_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 28,
+      "slot": 21,
+      "cell": 39,
+      "light": 0.013254975900053978,
+      "health": 7.0,
+      "next_health": 5.0,
+      "action": 4,
+      "first_visible": true,
+      "target_cell": 31,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 2,
+      "causal_health_difference": 2.0,
+      "next": [
+        {
+          "health": 5.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 7.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 0,
+      "t": 552,
+      "j": 0,
+      "cohort": "near_zombies",
+      "kind": "zombies",
+      "ky": 1,
+      "shard": 0,
+      "slot": 9,
+      "cell": 30,
+      "light": 0.2592078149318695,
+      "health": 3.0,
+      "next_health": 1.0,
+      "action": 10,
+      "first_visible": false,
+      "target_cell": 30,
+      "coarse_kind": 1,
+      "fine_kind": [
+        1,
+        1
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 1,
+      "causal_health_difference": 2.0,
+      "next": [
+        {
+          "health": 1.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 3.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 1,
+      "t": 203,
+      "j": 1,
+      "cohort": "near_zombies",
+      "kind": "zombies",
+      "ky": 1,
+      "shard": 0,
+      "slot": 16,
+      "cell": 30,
+      "light": 0.008034844882786274,
+      "health": 9.0,
+      "next_health": 7.0,
+      "action": 5,
+      "first_visible": false,
+      "target_cell": 30,
+      "coarse_kind": 1,
+      "fine_kind": [
+        1,
+        1
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 1,
+      "causal_health_difference": 2.0,
+      "next": [
+        {
+          "health": 7.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 2,
+      "t": 204,
+      "j": 0,
+      "cohort": "near_zombies",
+      "kind": "zombies",
+      "ky": 1,
+      "shard": 0,
+      "slot": 18,
+      "cell": 30,
+      "light": 0.005908160004764795,
+      "health": 8.0,
+      "next_health": 6.0,
+      "action": 7,
+      "first_visible": false,
+      "target_cell": 30,
+      "coarse_kind": 1,
+      "fine_kind": [
+        1,
+        1
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 1,
+      "causal_health_difference": 2.0,
+      "next": [
+        {
+          "health": 6.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 8.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 3,
+      "t": 175,
+      "j": 0,
+      "cohort": "near_zombies",
+      "kind": "zombies",
+      "ky": 1,
+      "shard": 2,
+      "slot": 12,
+      "cell": 40,
+      "light": 0.1863168478012085,
+      "health": 4.0,
+      "next_health": 2.0,
+      "action": 11,
+      "first_visible": false,
+      "target_cell": 40,
+      "coarse_kind": 1,
+      "fine_kind": [
+        1,
+        1
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 1,
+      "causal_health_difference": 2.0,
+      "next": [
+        {
+          "health": 2.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 4.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 6,
+      "t": 148,
+      "j": 0,
+      "cohort": "near_zombies",
+      "kind": "zombies",
+      "ky": 1,
+      "shard": 4,
+      "slot": 5,
+      "cell": 30,
+      "light": 0.4946335554122925,
+      "health": 9.0,
+      "next_health": 7.0,
+      "action": 5,
+      "first_visible": false,
+      "target_cell": 30,
+      "coarse_kind": 1,
+      "fine_kind": [
+        1,
+        1
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 1,
+      "causal_health_difference": 2.0,
+      "next": [
+        {
+          "health": 7.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 7,
+      "t": 151,
+      "j": 0,
+      "cohort": "near_zombies",
+      "kind": "zombies",
+      "ky": 1,
+      "shard": 4,
+      "slot": 8,
+      "cell": 30,
+      "light": 0.45840173959732056,
+      "health": 9.0,
+      "next_health": 7.0,
+      "action": 1,
+      "first_visible": false,
+      "target_cell": 30,
+      "coarse_kind": 1,
+      "fine_kind": [
+        1,
+        1
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 1,
+      "causal_health_difference": 2.0,
+      "next": [
+        {
+          "health": 7.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 8,
+      "t": 186,
+      "j": 0,
+      "cohort": "near_zombies",
+      "kind": "zombies",
+      "ky": 1,
+      "shard": 4,
+      "slot": 16,
+      "cell": 40,
+      "light": 0.09132030606269836,
+      "health": 9.0,
+      "next_health": 7.0,
+      "action": 5,
+      "first_visible": false,
+      "target_cell": 40,
+      "coarse_kind": 1,
+      "fine_kind": [
+        1,
+        1
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 1,
+      "causal_health_difference": 2.0,
+      "next": [
+        {
+          "health": 7.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 10,
+      "t": 158,
+      "j": 0,
+      "cohort": "near_zombies",
+      "kind": "zombies",
+      "ky": 1,
+      "shard": 5,
+      "slot": 16,
+      "cell": 22,
+      "light": 0.37417417764663696,
+      "health": 9.0,
+      "next_health": 7.0,
+      "action": 3,
+      "first_visible": false,
+      "target_cell": 22,
+      "coarse_kind": 1,
+      "fine_kind": [
+        1,
+        1
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 1,
+      "causal_health_difference": 2.0,
+      "next": [
+        {
+          "health": 7.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 11,
+      "t": 241,
+      "j": 1,
+      "cohort": "near_zombies",
+      "kind": "zombies",
+      "ky": 1,
+      "shard": 6,
+      "slot": 3,
+      "cell": 32,
+      "light": 0.14865288138389587,
+      "health": 5.0,
+      "next_health": 3.0,
+      "action": 11,
+      "first_visible": false,
+      "target_cell": 32,
+      "coarse_kind": 1,
+      "fine_kind": [
+        1,
+        1
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 1,
+      "causal_health_difference": 2.0,
+      "next": [
+        {
+          "health": 3.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 5.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 14,
+      "t": 163,
+      "j": 1,
+      "cohort": "near_zombies",
+      "kind": "zombies",
+      "ky": 1,
+      "shard": 7,
+      "slot": 3,
+      "cell": 22,
+      "light": 0.3154950737953186,
+      "health": 2.0,
+      "next_health": 0.0,
+      "action": 3,
+      "first_visible": false,
+      "target_cell": 22,
+      "coarse_kind": 1,
+      "fine_kind": [
+        1,
+        1
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 1,
+      "causal_health_difference": 2.0,
+      "next": [
+        {
+          "health": 0.0,
+          "reward": -0.20000000298023224,
+          "terminated": true
+        },
+        {
+          "health": 2.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 17,
+      "t": 187,
+      "j": 1,
+      "cohort": "near_zombies",
+      "kind": "zombies",
+      "ky": 1,
+      "shard": 8,
+      "slot": 1,
+      "cell": 30,
+      "light": 0.0841214656829834,
+      "health": 7.0,
+      "next_health": 5.0,
+      "action": 9,
+      "first_visible": false,
+      "target_cell": 30,
+      "coarse_kind": 1,
+      "fine_kind": [
+        1,
+        1
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 1,
+      "causal_health_difference": 2.0,
+      "next": [
+        {
+          "health": 5.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 7.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 18,
+      "t": 529,
+      "j": 0,
+      "cohort": "near_zombies",
+      "kind": "zombies",
+      "ky": 1,
+      "shard": 8,
+      "slot": 11,
+      "cell": 40,
+      "light": 0.058026526123285294,
+      "health": 9.0,
+      "next_health": 7.0,
+      "action": 5,
+      "first_visible": false,
+      "target_cell": 40,
+      "coarse_kind": 1,
+      "fine_kind": [
+        1,
+        1
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 1,
+      "causal_health_difference": 2.0,
+      "next": [
+        {
+          "health": 7.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 0,
+      "t": 157,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 0,
+      "slot": 9,
+      "cell": 25,
+      "light": 0.38610735535621643,
+      "health": 8.0,
+      "next_health": 8.0,
+      "action": 5,
+      "first_visible": true,
+      "target_cell": 24,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 8.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 8.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 0,
+      "t": 197,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 0,
+      "slot": 9,
+      "cell": 50,
+      "light": 0.027500389143824577,
+      "health": 9.0,
+      "next_health": 9.0,
+      "action": 4,
+      "first_visible": true,
+      "target_cell": 40,
+      "coarse_kind": 0,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": true,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 1,
+      "t": 187,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 0,
+      "slot": 16,
+      "cell": 14,
+      "light": 0.0841214656829834,
+      "health": 9.0,
+      "next_health": 9.0,
+      "action": 5,
+      "first_visible": true,
+      "target_cell": 23,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 2,
+      "t": 170,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 0,
+      "slot": 18,
+      "cell": 37,
+      "light": 0.2375866025686264,
+      "health": 9.0,
+      "next_health": 9.0,
+      "action": 4,
+      "first_visible": true,
+      "target_cell": 29,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 2,
+      "t": 229,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 0,
+      "slot": 18,
+      "cell": 59,
+      "light": 0.05802669748663902,
+      "health": 7.0,
+      "next_health": 7.0,
+      "action": 5,
+      "first_visible": true,
+      "target_cell": 50,
+      "coarse_kind": 0,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": true,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 7.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 7.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 3,
+      "t": 152,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 2,
+      "slot": 12,
+      "cell": 25,
+      "light": 0.44631052017211914,
+      "health": 5.0,
+      "next_health": 5.0,
+      "action": 3,
+      "first_visible": true,
+      "target_cell": 24,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 5.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 5.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 6,
+      "t": 179,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 4,
+      "slot": 5,
+      "cell": 51,
+      "light": 0.14865271747112274,
+      "health": 8.0,
+      "next_health": 8.0,
+      "action": 5,
+      "first_visible": true,
+      "target_cell": 50,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 8.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 8.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 6,
+      "t": 212,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 4,
+      "slot": 5,
+      "cell": 28,
+      "light": 0.0006578794564120471,
+      "health": 8.0,
+      "next_health": 8.0,
+      "action": 5,
+      "first_visible": false,
+      "target_cell": 29,
+      "coarse_kind": 0,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": true,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 8.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 8.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 7,
+      "t": 219,
+      "j": 1,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 4,
+      "slot": 8,
+      "cell": 5,
+      "light": 0.013255152851343155,
+      "health": 9.0,
+      "next_health": 9.0,
+      "action": 10,
+      "first_visible": true,
+      "target_cell": 14,
+      "coarse_kind": 0,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": true,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 7,
+      "t": 220,
+      "j": 1,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 4,
+      "slot": 8,
+      "cell": 14,
+      "light": 0.01634441688656807,
+      "health": 9.0,
+      "next_health": 9.0,
+      "action": 3,
+      "first_visible": false,
+      "target_cell": 32,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 8,
+      "t": 148,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 4,
+      "slot": 16,
+      "cell": 27,
+      "light": 0.4946335554122925,
+      "health": 8.0,
+      "next_health": 8.0,
+      "action": 1,
+      "first_visible": true,
+      "target_cell": 29,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 8.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 8.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 8,
+      "t": 216,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 4,
+      "slot": 16,
+      "cell": 25,
+      "light": 0.005908160004764795,
+      "health": 8.0,
+      "next_health": 8.0,
+      "action": 15,
+      "first_visible": true,
+      "target_cell": 24,
+      "coarse_kind": 0,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": true,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 8.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 8.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 11,
+      "t": 182,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 6,
+      "slot": 3,
+      "cell": 38,
+      "light": 0.12265419960021973,
+      "health": 6.0,
+      "next_health": 6.0,
+      "action": 2,
+      "first_visible": false,
+      "target_cell": 39,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 6.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 6.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 17,
+      "t": 239,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 8,
+      "slot": 1,
+      "cell": 47,
+      "light": 0.13109315931797028,
+      "health": 5.0,
+      "next_health": 5.0,
+      "action": 4,
+      "first_visible": true,
+      "target_cell": 39,
+      "coarse_kind": 0,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": true,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 5.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 5.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 17,
+      "t": 243,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 8,
+      "slot": 1,
+      "cell": 19,
+      "light": 0.16707921028137207,
+      "health": 5.0,
+      "next_health": 5.0,
+      "action": 1,
+      "first_visible": true,
+      "target_cell": 21,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 5.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 5.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 18,
+      "t": 171,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 8,
+      "slot": 11,
+      "cell": 15,
+      "light": 0.22699932754039764,
+      "health": 9.0,
+      "next_health": 9.0,
+      "action": 16,
+      "first_visible": true,
+      "target_cell": 14,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 20,
+      "t": 212,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 9,
+      "slot": 11,
+      "cell": 14,
+      "light": 0.0006578794564120471,
+      "health": 8.0,
+      "next_health": 8.0,
+      "action": 3,
+      "first_visible": false,
+      "target_cell": 32,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 8.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 8.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 24,
+      "t": 156,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 10,
+      "slot": 12,
+      "cell": 35,
+      "light": 0.3980869650840759,
+      "health": 9.0,
+      "next_health": 9.0,
+      "action": 5,
+      "first_visible": true,
+      "target_cell": 34,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 9.0,
+          "reward": 1.0,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 1.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 35,
+      "t": 189,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 17,
+      "slot": 3,
+      "cell": 27,
+      "light": 0.0705237165093422,
+      "health": 4.0,
+      "next_health": 4.0,
+      "action": 5,
+      "first_visible": true,
+      "target_cell": 28,
+      "coarse_kind": 0,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": true,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 4.0,
+          "reward": 1.0,
+          "terminated": false
+        },
+        {
+          "health": 4.0,
+          "reward": 1.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 36,
+      "t": 206,
+      "j": 1,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 17,
+      "slot": 13,
+      "cell": 48,
+      "light": 0.0026291129179298878,
+      "health": 7.0,
+      "next_health": 7.0,
+      "action": 16,
+      "first_visible": true,
+      "target_cell": 39,
+      "coarse_kind": 0,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": true,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 7.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 7.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 40,
+      "t": 218,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 20,
+      "slot": 2,
+      "cell": 27,
+      "light": 0.010484576225280762,
+      "health": 9.0,
+      "next_health": 9.0,
+      "action": 5,
+      "first_visible": true,
+      "target_cell": 28,
+      "coarse_kind": 0,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": true,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 41,
+      "t": 513,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 20,
+      "slot": 8,
+      "cell": 50,
+      "light": 0.0014796752948313951,
+      "health": 9.0,
+      "next_health": 9.0,
+      "action": 12,
+      "first_visible": true,
+      "target_cell": 41,
+      "coarse_kind": 0,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": true,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 42,
+      "t": 225,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 20,
+      "slot": 21,
+      "cell": 28,
+      "light": 0.03648205101490021,
+      "health": 9.0,
+      "next_health": 9.0,
+      "action": 1,
+      "first_visible": false,
+      "target_cell": 30,
+      "coarse_kind": 0,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": true,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 60,
+      "t": 499,
+      "j": 0,
+      "cohort": "distant_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 28,
+      "slot": 13,
+      "cell": 35,
+      "light": 0.01975012943148613,
+      "health": 9.0,
+      "next_health": 9.0,
+      "action": 2,
+      "first_visible": true,
+      "target_cell": 33,
+      "coarse_kind": 0,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": true,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        },
+        {
+          "health": 9.0,
+          "reward": 0.0,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    }
+  ],
+  "rejected": [
+    {
+      "e": 17,
+      "t": 864,
+      "j": 0,
+      "cohort": "near_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 8,
+      "slot": 1,
+      "cell": 13,
+      "light": 0.3980877101421356,
+      "health": 7.0,
+      "next_health": 3.0,
+      "action": 11,
+      "first_visible": false,
+      "target_cell": 12,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 4,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 3.0,
+          "reward": -0.4000000059604645,
+          "terminated": false
+        },
+        {
+          "health": 3.0,
+          "reward": -0.4000000059604645,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 20,
+      "t": 787,
+      "j": 0,
+      "cohort": "near_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 9,
+      "slot": 11,
+      "cell": 29,
+      "light": 0.08412112295627594,
+      "health": 2.0,
+      "next_health": 0.0,
+      "action": 12,
+      "first_visible": false,
+      "target_cell": 30,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 1,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 0.0,
+          "reward": -0.20000000298023224,
+          "terminated": true
+        },
+        {
+          "health": 0.0,
+          "reward": -0.20000000298023224,
+          "terminated": true
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 29,
+      "t": 202,
+      "j": 0,
+      "cohort": "near_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 14,
+      "slot": 13,
+      "cell": 33,
+      "light": 0.010484576225280762,
+      "health": 8.0,
+      "next_health": 6.0,
+      "action": 15,
+      "first_visible": false,
+      "target_cell": 24,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 0,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 6.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 6.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 44,
+      "t": 149,
+      "j": 0,
+      "cohort": "near_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 21,
+      "slot": 7,
+      "cell": 30,
+      "light": 0.48257118463516235,
+      "health": 5.0,
+      "next_health": 3.0,
+      "action": 3,
+      "first_visible": false,
+      "target_cell": 48,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 0,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 3.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 3.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 60,
+      "t": 196,
+      "j": 0,
+      "cohort": "near_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 28,
+      "slot": 13,
+      "cell": 22,
+      "light": 0.031838905066251755,
+      "health": 8.0,
+      "next_health": 6.0,
+      "action": 8,
+      "first_visible": false,
+      "target_cell": 13,
+      "coarse_kind": 4,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": false,
+      "target_reader_kind": 0,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 6.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 6.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    },
+    {
+      "e": 87,
+      "t": 210,
+      "j": 0,
+      "cohort": "near_arrows",
+      "kind": "arrows",
+      "ky": 4,
+      "shard": 38,
+      "slot": 9,
+      "cell": 13,
+      "light": 0.0,
+      "health": 6.0,
+      "next_health": 4.0,
+      "action": 6,
+      "first_visible": false,
+      "target_cell": 14,
+      "coarse_kind": 0,
+      "fine_kind": [
+        4,
+        4
+      ],
+      "fine_qualified": true,
+      "coarse_missed": true,
+      "target_reader_kind": 0,
+      "causal_health_difference": 0.0,
+      "next": [
+        {
+          "health": 4.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        },
+        {
+          "health": 4.0,
+          "reward": -0.20000000298023224,
+          "terminated": false
+        }
+      ],
+      "absent_arrow_at_target": false
+    }
+  ]
+}

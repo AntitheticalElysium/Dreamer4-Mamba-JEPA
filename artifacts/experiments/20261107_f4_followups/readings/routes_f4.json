@@ -1,0 +1,1080 @@
+{
+ "shams": {
+  "tokens_max_abs": 0.022627025842666626,
+  "belief_rel": 0.01555276196449995,
+  "cache_rel": 0.006245613098144531,
+  "generation_repeats_bitwise": 34
+ },
+ "sleep": {
+  "pairs": 240,
+  "episodes": 188,
+  "factorial": {
+   "true_contrast": 1.0,
+   "cells": {
+    "00": {
+     "est": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    },
+    "10": {
+     "est": 0.04583333333333333,
+     "ci95": [
+      0.03165887903386544,
+      0.06065439462952174
+     ]
+    },
+    "01": {
+     "est": 0.9984375,
+     "ci95": [
+      0.9958328974895397,
+      1.0
+     ]
+    },
+    "11": {
+     "est": 1.0,
+     "ci95": [
+      1.0,
+      1.0
+     ]
+    }
+   },
+   "diagonal": {
+    "est": 1.0,
+    "ci95": [
+     1.0,
+     1.0
+    ]
+   },
+   "denoiser_side_sufficiency (10-00)": {
+    "est": 0.04583333333333333,
+    "ci95": [
+     0.03165887903386544,
+     0.06065439462952174
+    ]
+   },
+   "denoiser_side_necessity (11-01)": {
+    "est": 0.0015625,
+    "ci95": [
+     0.0,
+     0.0041671025104602485
+    ]
+   },
+   "memory_sufficiency (01-00)": {
+    "est": 0.9984375,
+    "ci95": [
+     0.9958328974895397,
+     1.0
+    ]
+   },
+   "memory_necessity (11-10)": {
+    "est": 0.9541666666666667,
+    "ci95": [
+     0.9393456053704783,
+     0.9683411209661346
+    ]
+   },
+   "interaction (11-10-01+00)": {
+    "est": -0.044270833333333336,
+    "ci95": [
+     -0.05891466330134613,
+     -0.029737903225806453
+    ]
+   },
+   "classes": {
+    "diagonal": "CARRIES",
+    "denoiser_side_sufficiency (10-00)": "NO EFFECT",
+    "denoiser_side_necessity (11-01)": "NO EFFECT",
+    "memory_sufficiency (01-00)": "CARRIES",
+    "memory_necessity (11-10)": "CARRIES",
+    "interaction": "PRESENT"
+   }
+  },
+  "f3_classes": {
+   "diagonal": "CARRIES",
+   "denoiser_side_sufficiency (10-00)": "UNRESOLVED",
+   "denoiser_side_necessity (11-01)": "NO EFFECT",
+   "memory_sufficiency (01-00)": "CARRIES",
+   "memory_necessity (11-10)": "NO EFFECT",
+   "interaction": "PRESENT"
+  },
+  "f3_cells": {
+   "00": 0.4661458333333333,
+   "10": 0.7895833333333333,
+   "01": 1.0,
+   "11": 1.0
+  },
+  "factorial_day": {
+   "true_contrast": 1.0,
+   "cells": {
+    "00": {
+     "est": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    },
+    "10": {
+     "est": 0.0020833333333333333,
+     "ci95": [
+      0.0,
+      0.00625
+     ]
+    },
+    "01": {
+     "est": 1.0,
+     "ci95": [
+      1.0,
+      1.0
+     ]
+    },
+    "11": {
+     "est": 1.0,
+     "ci95": [
+      1.0,
+      1.0
+     ]
+    }
+   },
+   "diagonal": {
+    "est": 1.0,
+    "ci95": [
+     1.0,
+     1.0
+    ]
+   },
+   "denoiser_side_sufficiency (10-00)": {
+    "est": 0.0020833333333333333,
+    "ci95": [
+     0.0,
+     0.00625
+    ]
+   },
+   "denoiser_side_necessity (11-01)": {
+    "est": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "memory_sufficiency (01-00)": {
+    "est": 1.0,
+    "ci95": [
+     1.0,
+     1.0
+    ]
+   },
+   "memory_necessity (11-10)": {
+    "est": 0.9979166666666667,
+    "ci95": [
+     0.99375,
+     1.0
+    ]
+   },
+   "interaction (11-10-01+00)": {
+    "est": -0.0020833333333333333,
+    "ci95": [
+     -0.00625,
+     0.0
+    ]
+   },
+   "classes": {
+    "diagonal": "CARRIES",
+    "denoiser_side_sufficiency (10-00)": "NO EFFECT",
+    "denoiser_side_necessity (11-01)": "NO EFFECT",
+    "memory_sufficiency (01-00)": "CARRIES",
+    "memory_necessity (11-10)": "CARRIES",
+    "interaction": "NOT DETECTED"
+   }
+  },
+  "factorial_night": {
+   "true_contrast": 1.0,
+   "cells": {
+    "00": {
+     "est": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    },
+    "10": {
+     "est": 0.08958333333333333,
+     "ci95": [
+      0.06354166666666666,
+      0.11669270833333319
+     ]
+    },
+    "01": {
+     "est": 0.996875,
+     "ci95": [
+      0.9916666666666667,
+      1.0
+     ]
+    },
+    "11": {
+     "est": 1.0,
+     "ci95": [
+      1.0,
+      1.0
+     ]
+    }
+   },
+   "diagonal": {
+    "est": 1.0,
+    "ci95": [
+     1.0,
+     1.0
+    ]
+   },
+   "denoiser_side_sufficiency (10-00)": {
+    "est": 0.08958333333333333,
+    "ci95": [
+     0.06354166666666666,
+     0.11669270833333319
+    ]
+   },
+   "denoiser_side_necessity (11-01)": {
+    "est": 0.003125,
+    "ci95": [
+     0.0,
+     0.008333333333333333
+    ]
+   },
+   "memory_sufficiency (01-00)": {
+    "est": 0.996875,
+    "ci95": [
+     0.9916666666666667,
+     1.0
+    ]
+   },
+   "memory_necessity (11-10)": {
+    "est": 0.9104166666666667,
+    "ci95": [
+     0.8833072916666667,
+     0.9364583333333333
+    ]
+   },
+   "interaction (11-10-01+00)": {
+    "est": -0.08645833333333333,
+    "ci95": [
+     -0.114609375,
+     -0.06041666666666667
+    ]
+   },
+   "classes": {
+    "diagonal": "CARRIES",
+    "denoiser_side_sufficiency (10-00)": "NO EFFECT",
+    "denoiser_side_necessity (11-01)": "NO EFFECT",
+    "memory_sufficiency (01-00)": "CARRIES",
+    "memory_necessity (11-10)": "CARRIES",
+    "interaction": "PRESENT"
+   }
+  },
+  "recorded_reader_check": 1.0
+ },
+ "energy": {
+  "pairs": 200,
+  "episodes": 200,
+  "factorial": {
+   "true_contrast": 1.0,
+   "cells": {
+    "00": {
+     "est": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    },
+    "10": {
+     "est": 0.478125,
+     "ci95": [
+      0.4175,
+      0.54125
+     ]
+    },
+    "01": {
+     "est": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    },
+    "11": {
+     "est": 0.476875,
+     "ci95": [
+      0.416859375,
+      0.539390625
+     ]
+    }
+   },
+   "diagonal": {
+    "est": 0.476875,
+    "ci95": [
+     0.416859375,
+     0.539390625
+    ]
+   },
+   "denoiser_side_sufficiency (10-00)": {
+    "est": 0.478125,
+    "ci95": [
+     0.4175,
+     0.54125
+    ]
+   },
+   "denoiser_side_necessity (11-01)": {
+    "est": 0.476875,
+    "ci95": [
+     0.416859375,
+     0.539390625
+    ]
+   },
+   "memory_sufficiency (01-00)": {
+    "est": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "memory_necessity (11-10)": {
+    "est": -0.00125,
+    "ci95": [
+     -0.00375,
+     0.00125
+    ]
+   },
+   "interaction (11-10-01+00)": {
+    "est": -0.00125,
+    "ci95": [
+     -0.00375,
+     0.00125
+    ]
+   },
+   "classes": {
+    "diagonal": "CARRIES",
+    "denoiser_side_sufficiency (10-00)": "CARRIES",
+    "denoiser_side_necessity (11-01)": "CARRIES",
+    "memory_sufficiency (01-00)": "NO EFFECT",
+    "memory_necessity (11-10)": "NO EFFECT",
+    "interaction": "NOT DETECTED"
+   }
+  },
+  "f3_classes": {
+   "diagonal": "NO EFFECT",
+   "denoiser_side_sufficiency (10-00)": "NO EFFECT",
+   "denoiser_side_necessity (11-01)": "NO EFFECT",
+   "memory_sufficiency (01-00)": "NO EFFECT",
+   "memory_necessity (11-10)": "NO EFFECT",
+   "interaction": "NOT DETECTED"
+  },
+  "f3_cells": {
+   "00": 0.34,
+   "10": 0.3425,
+   "01": 0.34375,
+   "11": 0.34375
+  },
+  "recorded_reader_check": 1.0
+ },
+ "coal": {
+  "pairs": 201,
+  "episodes": 107,
+  "factorial": {
+   "true_contrast": 1.0,
+   "cells": {
+    "00": {
+     "est": 0.8986318407960199,
+     "ci95": [
+      0.8792465517643764,
+      0.9183430103887312
+     ]
+    },
+    "10": {
+     "est": 0.23383084577114427,
+     "ci95": [
+      0.19431098120527832,
+      0.27440675625920474
+     ]
+    },
+    "01": {
+     "est": 0.40049751243781095,
+     "ci95": [
+      0.3575852118938984,
+      0.445916581284153
+     ]
+    },
+    "11": {
+     "est": 0.0018656716417910447,
+     "ci95": [
+      0.0,
+      0.004167165071770332
+     ]
+    }
+   },
+   "diagonal": {
+    "est": 0.8967661691542289,
+    "ci95": [
+     0.87752400240024,
+     0.9162305351648945
+    ]
+   },
+   "denoiser_side_sufficiency (10-00)": {
+    "est": 0.6648009950248757,
+    "ci95": [
+     0.6271280904484029,
+     0.699396159446669
+    ]
+   },
+   "denoiser_side_necessity (11-01)": {
+    "est": 0.3986318407960199,
+    "ci95": [
+     0.3558109739978852,
+     0.4444514237855946
+    ]
+   },
+   "memory_sufficiency (01-00)": {
+    "est": 0.498134328358209,
+    "ci95": [
+     0.457476894580321,
+     0.5380190246880087
+    ]
+   },
+   "memory_necessity (11-10)": {
+    "est": 0.23196517412935325,
+    "ci95": [
+     0.19205658401268116,
+     0.2727285353535353
+    ]
+   },
+   "interaction (11-10-01+00)": {
+    "est": -0.26616915422885573,
+    "ci95": [
+     -0.3360635803362362,
+     -0.19581845238095247
+    ]
+   },
+   "classes": {
+    "diagonal": "CARRIES",
+    "denoiser_side_sufficiency (10-00)": "CARRIES",
+    "denoiser_side_necessity (11-01)": "CARRIES",
+    "memory_sufficiency (01-00)": "CARRIES",
+    "memory_necessity (11-10)": "NO EFFECT",
+    "interaction": "PRESENT"
+   }
+  },
+  "f3_classes": {
+   "diagonal": "NO EFFECT",
+   "denoiser_side_sufficiency (10-00)": "NO EFFECT",
+   "denoiser_side_necessity (11-01)": "NO EFFECT",
+   "memory_sufficiency (01-00)": "NO EFFECT",
+   "memory_necessity (11-10)": "NO EFFECT",
+   "interaction": "PRESENT"
+  },
+  "f3_cells": {
+   "00": 0.13370646766169153,
+   "10": 0.055970149253731345,
+   "01": 0.0,
+   "11": 0.0
+  },
+  "factorial_coal_1": {
+   "true_contrast": 1.0,
+   "cells": {
+    "00": {
+     "est": 0.9440298507462687,
+     "ci95": [
+      0.9202898550724637,
+      0.9653846153846154
+     ]
+    },
+    "10": {
+     "est": 0.31716417910447764,
+     "ci95": [
+      0.25,
+      0.3824626865671642
+     ]
+    },
+    "01": {
+     "est": 0.6511194029850746,
+     "ci95": [
+      0.5871212121212122,
+      0.7076930147058824
+     ]
+    },
+    "11": {
+     "est": 0.0018656716417910447,
+     "ci95": [
+      0.0,
+      0.005859375
+     ]
+    }
+   },
+   "diagonal": {
+    "est": 0.9421641791044776,
+    "ci95": [
+     0.9179091151385927,
+     0.9634615384615385
+    ]
+   },
+   "denoiser_side_sufficiency (10-00)": {
+    "est": 0.6268656716417911,
+    "ci95": [
+     0.5625,
+     0.6958955223880597
+    ]
+   },
+   "denoiser_side_necessity (11-01)": {
+    "est": 0.6492537313432836,
+    "ci95": [
+     0.5851449275362319,
+     0.7065217391304348
+    ]
+   },
+   "memory_sufficiency (01-00)": {
+    "est": 0.292910447761194,
+    "ci95": [
+     0.2408053939859526,
+     0.35478089421252373
+    ]
+   },
+   "memory_necessity (11-10)": {
+    "est": 0.31529850746268656,
+    "ci95": [
+     0.24813432835820895,
+     0.3805991350067842
+    ]
+   },
+   "interaction (11-10-01+00)": {
+    "est": 0.022388059701492536,
+    "ci95": [
+     -0.09038949275362318,
+     0.125
+    ]
+   },
+   "classes": {
+    "diagonal": "CARRIES",
+    "denoiser_side_sufficiency (10-00)": "CARRIES",
+    "denoiser_side_necessity (11-01)": "CARRIES",
+    "memory_sufficiency (01-00)": "UNRESOLVED",
+    "memory_necessity (11-10)": "UNRESOLVED",
+    "interaction": "NOT DETECTED"
+   }
+  },
+  "factorial_coal_2": {
+   "true_contrast": 1.0,
+   "cells": {
+    "00": {
+     "est": 0.8227611940298507,
+     "ci95": [
+      0.7746212121212122,
+      0.8679895720476705
+     ]
+    },
+    "10": {
+     "est": 0.1921641791044776,
+     "ci95": [
+      0.14583333333333334,
+      0.24134415064102552
+     ]
+    },
+    "01": {
+     "est": 0.2593283582089552,
+     "ci95": [
+      0.20895455756929637,
+      0.3106630777310924
+     ]
+    },
+    "11": {
+     "est": 0.0018656716417910447,
+     "ci95": [
+      0.0,
+      0.0057692307692307696
+     ]
+    }
+   },
+   "diagonal": {
+    "est": 0.8208955223880597,
+    "ci95": [
+     0.7732108516483517,
+     0.8671875
+    ]
+   },
+   "denoiser_side_sufficiency (10-00)": {
+    "est": 0.6305970149253731,
+    "ci95": [
+     0.5776515151515151,
+     0.683596709280303
+    ]
+   },
+   "denoiser_side_necessity (11-01)": {
+    "est": 0.2574626865671642,
+    "ci95": [
+     0.20643939393939395,
+     0.3088261554621849
+    ]
+   },
+   "memory_sufficiency (01-00)": {
+    "est": 0.5634328358208955,
+    "ci95": [
+     0.5088028169014085,
+     0.6193560606060603
+    ]
+   },
+   "memory_necessity (11-10)": {
+    "est": 0.19029850746268656,
+    "ci95": [
+     0.1434411162005786,
+     0.24023813100961536
+    ]
+   },
+   "interaction (11-10-01+00)": {
+    "est": -0.373134328358209,
+    "ci95": [
+     -0.45238771645021647,
+     -0.294615800865801
+    ]
+   },
+   "classes": {
+    "diagonal": "CARRIES",
+    "denoiser_side_sufficiency (10-00)": "CARRIES",
+    "denoiser_side_necessity (11-01)": "NO EFFECT",
+    "memory_sufficiency (01-00)": "CARRIES",
+    "memory_necessity (11-10)": "NO EFFECT",
+    "interaction": "PRESENT"
+   }
+  },
+  "factorial_coal_3": {
+   "true_contrast": 1.0,
+   "cells": {
+    "00": {
+     "est": 0.9291044776119403,
+     "ci95": [
+      0.9052936939820743,
+      0.9516206575682382
+     ]
+    },
+    "10": {
+     "est": 0.1921641791044776,
+     "ci95": [
+      0.13911290322580644,
+      0.25192460317460313
+     ]
+    },
+    "01": {
+     "est": 0.291044776119403,
+     "ci95": [
+      0.2373141783887468,
+      0.3464285714285714
+     ]
+    },
+    "11": {
+     "est": 0.0018656716417910447,
+     "ci95": [
+      0.0,
+      0.005859375
+     ]
+    }
+   },
+   "diagonal": {
+    "est": 0.9272388059701493,
+    "ci95": [
+     0.90234375,
+     0.9503676470588235
+    ]
+   },
+   "denoiser_side_sufficiency (10-00)": {
+    "est": 0.7369402985074627,
+    "ci95": [
+     0.6762271795827124,
+     0.7950871644095985
+    ]
+   },
+   "denoiser_side_necessity (11-01)": {
+    "est": 0.2891791044776119,
+    "ci95": [
+     0.234609375,
+     0.3451492537313433
+    ]
+   },
+   "memory_sufficiency (01-00)": {
+    "est": 0.6380597014925373,
+    "ci95": [
+     0.5815953351449276,
+     0.6942307692307692
+    ]
+   },
+   "memory_necessity (11-10)": {
+    "est": 0.19029850746268656,
+    "ci95": [
+     0.13785845588235296,
+     0.2518403563348416
+    ]
+   },
+   "interaction (11-10-01+00)": {
+    "est": -0.44776119402985076,
+    "ci95": [
+     -0.5389531290658339,
+     -0.34924520944741544
+    ]
+   },
+   "classes": {
+    "diagonal": "CARRIES",
+    "denoiser_side_sufficiency (10-00)": "CARRIES",
+    "denoiser_side_necessity (11-01)": "UNRESOLVED",
+    "memory_sufficiency (01-00)": "CARRIES",
+    "memory_necessity (11-10)": "NO EFFECT",
+    "interaction": "PRESENT"
+   }
+  },
+  "recorded_reader_check": 1.0
+ },
+ "wood": {
+  "pairs": 201,
+  "episodes": 51,
+  "factorial": {
+   "true_contrast": 1.0,
+   "cells": {
+    "00": {
+     "est": 0.9944029850746269,
+     "ci95": [
+      0.9869788581161137,
+      0.9988533419211596
+     ]
+    },
+    "10": {
+     "est": 0.15298507462686567,
+     "ci95": [
+      0.11838934358465608,
+      0.19005158033362596
+     ]
+    },
+    "01": {
+     "est": 0.44838308457711445,
+     "ci95": [
+      0.3970151565522244,
+      0.5
+     ]
+    },
+    "11": {
+     "est": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "diagonal": {
+    "est": 0.9944029850746269,
+    "ci95": [
+     0.9869788581161137,
+     0.9988533419211596
+    ]
+   },
+   "denoiser_side_sufficiency (10-00)": {
+    "est": 0.8414179104477612,
+    "ci95": [
+     0.8047680412371134,
+     0.8738214340057386
+    ]
+   },
+   "denoiser_side_necessity (11-01)": {
+    "est": 0.44838308457711445,
+    "ci95": [
+     0.3970151565522244,
+     0.5
+    ]
+   },
+   "memory_sufficiency (01-00)": {
+    "est": 0.5460199004975125,
+    "ci95": [
+     0.4945515654254212,
+     0.5967170055821371
+    ]
+   },
+   "memory_necessity (11-10)": {
+    "est": 0.15298507462686567,
+    "ci95": [
+     0.11838934358465608,
+     0.19005158033362596
+    ]
+   },
+   "interaction (11-10-01+00)": {
+    "est": -0.39303482587064675,
+    "ci95": [
+     -0.4677634344901391,
+     -0.31536533816425133
+    ]
+   },
+   "classes": {
+    "diagonal": "CARRIES",
+    "denoiser_side_sufficiency (10-00)": "CARRIES",
+    "denoiser_side_necessity (11-01)": "CARRIES",
+    "memory_sufficiency (01-00)": "CARRIES",
+    "memory_necessity (11-10)": "NO EFFECT",
+    "interaction": "PRESENT"
+   }
+  },
+  "f3_classes": {
+   "diagonal": "CARRIES",
+   "denoiser_side_sufficiency (10-00)": "UNRESOLVED",
+   "denoiser_side_necessity (11-01)": "NO EFFECT",
+   "memory_sufficiency (01-00)": "CARRIES",
+   "memory_necessity (11-10)": "CARRIES",
+   "interaction": "PRESENT"
+  },
+  "f3_cells": {
+   "00": 0.8625621890547264,
+   "10": 0.5223880597014925,
+   "01": 0.003109452736318408,
+   "11": 0.0006218905472636816
+  },
+  "factorial_wood_1": {
+   "true_contrast": 1.0,
+   "cells": {
+    "00": {
+     "est": 0.9981343283582089,
+     "ci95": [
+      0.994140625,
+      1.0
+     ]
+    },
+    "10": {
+     "est": 0.17723880597014927,
+     "ci95": [
+      0.11212755158033363,
+      0.2464674539170505
+     ]
+    },
+    "01": {
+     "est": 0.5746268656716418,
+     "ci95": [
+      0.4941884328358209,
+      0.6535714285714286
+     ]
+    },
+    "11": {
+     "est": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "diagonal": {
+    "est": 0.9981343283582089,
+    "ci95": [
+     0.994140625,
+     1.0
+    ]
+   },
+   "denoiser_side_sufficiency (10-00)": {
+    "est": 0.8208955223880597,
+    "ci95": [
+     0.75,
+     0.8858819169960475
+    ]
+   },
+   "denoiser_side_necessity (11-01)": {
+    "est": 0.5746268656716418,
+    "ci95": [
+     0.4941884328358209,
+     0.6535714285714286
+    ]
+   },
+   "memory_sufficiency (01-00)": {
+    "est": 0.42350746268656714,
+    "ci95": [
+     0.34375,
+     0.5055970149253731
+    ]
+   },
+   "memory_necessity (11-10)": {
+    "est": 0.17723880597014927,
+    "ci95": [
+     0.11212755158033363,
+     0.2464674539170505
+    ]
+   },
+   "interaction (11-10-01+00)": {
+    "est": -0.2462686567164179,
+    "ci95": [
+     -0.371096709280303,
+     -0.11764705882352941
+    ]
+   },
+   "classes": {
+    "diagonal": "CARRIES",
+    "denoiser_side_sufficiency (10-00)": "CARRIES",
+    "denoiser_side_necessity (11-01)": "CARRIES",
+    "memory_sufficiency (01-00)": "CARRIES",
+    "memory_necessity (11-10)": "NO EFFECT",
+    "interaction": "PRESENT"
+   }
+  },
+  "factorial_wood_2": {
+   "true_contrast": 1.0,
+   "cells": {
+    "00": {
+     "est": 0.9850746268656716,
+     "ci95": [
+      0.9669117647058824,
+      0.9981617647058824
+     ]
+    },
+    "10": {
+     "est": 0.125,
+     "ci95": [
+      0.08788552355410448,
+      0.16417910447761194
+     ]
+    },
+    "01": {
+     "est": 0.28171641791044777,
+     "ci95": [
+      0.2220043249660787,
+      0.3414179104477612
+     ]
+    },
+    "11": {
+     "est": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "diagonal": {
+    "est": 0.9850746268656716,
+    "ci95": [
+     0.9669117647058824,
+     0.9981617647058824
+    ]
+   },
+   "denoiser_side_sufficiency (10-00)": {
+    "est": 0.8600746268656716,
+    "ci95": [
+     0.822463768115942,
+     0.8970670544337138
+    ]
+   },
+   "denoiser_side_necessity (11-01)": {
+    "est": 0.28171641791044777,
+    "ci95": [
+     0.2220043249660787,
+     0.3414179104477612
+    ]
+   },
+   "memory_sufficiency (01-00)": {
+    "est": 0.7033582089552238,
+    "ci95": [
+     0.6410484307359308,
+     0.7628724484196663
+    ]
+   },
+   "memory_necessity (11-10)": {
+    "est": 0.125,
+    "ci95": [
+     0.08788552355410448,
+     0.16417910447761194
+    ]
+   },
+   "interaction (11-10-01+00)": {
+    "est": -0.5783582089552238,
+    "ci95": [
+     -0.6547991071428572,
+     -0.5
+    ]
+   },
+   "classes": {
+    "diagonal": "CARRIES",
+    "denoiser_side_sufficiency (10-00)": "CARRIES",
+    "denoiser_side_necessity (11-01)": "UNRESOLVED",
+    "memory_sufficiency (01-00)": "CARRIES",
+    "memory_necessity (11-10)": "NO EFFECT",
+    "interaction": "PRESENT"
+   }
+  },
+  "factorial_wood_3": {
+   "true_contrast": 1.0,
+   "cells": {
+    "00": {
+     "est": 1.0,
+     "ci95": [
+      1.0,
+      1.0
+     ]
+    },
+    "10": {
+     "est": 0.15671641791044777,
+     "ci95": [
+      0.11029411764705882,
+      0.20405665106951865
+     ]
+    },
+    "01": {
+     "est": 0.48880597014925375,
+     "ci95": [
+      0.4143755351027397,
+      0.5644703180017605
+     ]
+    },
+    "11": {
+     "est": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "diagonal": {
+    "est": 1.0,
+    "ci95": [
+     1.0,
+     1.0
+    ]
+   },
+   "denoiser_side_sufficiency (10-00)": {
+    "est": 0.8432835820895522,
+    "ci95": [
+     0.7959433489304812,
+     0.8897058823529411
+    ]
+   },
+   "denoiser_side_necessity (11-01)": {
+    "est": 0.48880597014925375,
+    "ci95": [
+     0.4143755351027397,
+     0.5644703180017605
+    ]
+   },
+   "memory_sufficiency (01-00)": {
+    "est": 0.5111940298507462,
+    "ci95": [
+     0.43552968199823944,
+     0.5856244648972603
+    ]
+   },
+   "memory_necessity (11-10)": {
+    "est": 0.15671641791044777,
+    "ci95": [
+     0.11029411764705882,
+     0.20405665106951865
+    ]
+   },
+   "interaction (11-10-01+00)": {
+    "est": -0.35447761194029853,
+    "ci95": [
+     -0.46731164383561646,
+     -0.24808768656716443
+    ]
+   },
+   "classes": {
+    "diagonal": "CARRIES",
+    "denoiser_side_sufficiency (10-00)": "CARRIES",
+    "denoiser_side_necessity (11-01)": "CARRIES",
+    "memory_sufficiency (01-00)": "CARRIES",
+    "memory_necessity (11-10)": "NO EFFECT",
+    "interaction": "PRESENT"
+   }
+  },
+  "recorded_reader_check": 1.0
+ }
+}

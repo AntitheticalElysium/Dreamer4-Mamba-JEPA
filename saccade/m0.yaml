@@ -4,7 +4,11 @@
 # Source keys: JEDI = arXiv 2605.13013 (vendored LaTeX, Tables "architecture" / "training"); DIAMOND = config/trainer.yaml
 # (github eloialonso/diamond); D4 = Dreamer 4, arXiv 2509.24527 (vendored); DV3 = DreamerV3 configs.yaml (vendored);
 # LeWM = lucas-maes/le-wm (vendored) and d4mj/recipes/lewm_mamba_raw.json; Heo = RoPE for ViT, ECCV 2024; DiT = Peebles
-# & Xie 2023; GameNGen = arXiv 2408.14837; EDA = artifacts/experiments/20261023_system_design (scripts named there).
+# & Xie 2023; GameNGen = arXiv 2408.14837; EDA = artifacts/experiments/20261023_system_design (scripts named there);
+# D4 code = nicklashansen/dreamer4 b8abafbf and edwhu/dreamer4-jax 8144b940 (vendored, third_party/sources).
+# Canonical recipe = P1-F4 (11-07, user: "make this canonical"; artifacts/experiments/20261106_p1f4, results there and in
+# 20261107_f4_followups). The recipes before it (EDM, per-token time attention, the joint denoiser, the unfused belief,
+# the NLL pixel decoder, the uniform training gaze) run from commit fa6edd1a.
 
 seed: {world: [1, 2]}                         # CURRICULUM Budgets: two independently learned worlds
 
@@ -13,7 +17,9 @@ data:
   monitor_fraction: 0.05                      # fixed held-out train episodes, same for every arm (CURRICULUM)
   streams: 16                                 # episodes per optimizer update (E1 / E1d; DRAMA 16 x 128)
   chunk_steps: [64, 256]                      # first / second half of P1's frames (CURRICULUM)
-  accumulate_at_256: 4                        # 4 microbatches x 4 distinct streams per update at 256 steps
+  accumulate_at_64: 2                         # P1-F4: 2 microbatches x 8 streams at 64 steps, 8 x 2 at 256 (6 GB card: the
+  accumulate_at_256: 8                        # dense layers' per-window keys / values add ~0.5 GiB at F3's 1 / 4; the split
+                                              # costs 0.4% / 2%, 20261107_f4_followups RESULTS 4)
   context_prefix: 8                           # = the denoiser's effective temporal reach (denoiser below)
   actions: 17                                 # Craftax-Classic action count
 
@@ -60,6 +66,8 @@ belief:                                       # Mamba-2; LeWM Raw recipe (our pa
   percept_projection: flatten_linear          # flattened periphery + glimpse + fixation + lighting -> width (DRAMA)
   glimpse_placement: canvas_at_fixation_cells # glimpse tokens on a 9 x 9 canvas + mask: per-position weights (the
                                               # denoiser places them the same way)
+  spatial_fusion: {kind: joint_fine, hidden: 128, init_seed: 611901}   # P1-F1.6 (20261102_p1f16): per-cell MLP of the coarse
+                                              # token, the glimpse token and the lighting latent replaces the raw fine path
 
 denoiser:                                     # D4-style factorised space-time transformer
   layers: 8                                   # working (cost: eda notes, READING 10-27)
@@ -73,44 +81,41 @@ denoiser:                                     # D4-style factorised space-time t
   positions: {spatial: rope_2d_axial_plus_absolute, temporal: rope_1d}   # D4 (RoPE); Heo (APE + RoPE at 7 x 7)
   rope_theta_space: 100.0                     # Heo et al. code, compute_axial_cis default (naver-ai/rope-vit)
   rope_theta_time: 10000.0                    # RoPE (Su et al.) standard base
-  cond_channels: 256                          # DIAMOND: Fourier features of c_noise + action embedding, projected
+  cond_channels: 256                          # D4: discrete signal-level and step-size embeddings + the action embedding,
+                                              # projected (DIAMOND's sum-then-project)
   qk_norm: true                               # D4
   conditioning: adaln_zero                    # DiT: noise level and action
   type_embeddings: [periphery, glimpse, lighting, memory]   # D4 modality ids
+  factorised: true                            # decision 1 (TEACHING 10 / 10a, agreed 11-01): physical tokens never attend
+                                              # to glimpse tokens; per-group noise levels and adaLN (UniDiffuser)
+  temporal_attention: dense                   # P1-F4: every token attends every token of its frame and of the window's
+                                              # earlier frames (D4 Table 2, before its "time factorized long context")
 
-edm:
-  prediction: x                               # JEDI / D4 (x-space)
-  sigma_data: 1.0                             # JEDI
-  train_sigma: {lognormal_loc: -0.4, lognormal_scale: 1.2, min: 0.002, max: 20.0}   # DIAMOND
-  training_form: diffusion_forcing            # D4: each frame its own noise level; noisy past = context corruption
-  loss: raw_output_mse                        # DIAMOND code: MSE of F against (x0 - c_skip x) / c_out = EDM lambda = 1/c_out^2
+edm:                                          # section name kept so the P1-F4 checkpoints' configurations read unchanged
+  objective: shortcut_forcing                 # D4 eq. 6-8, as both D4 reimplementations (P1-F4)
+  prediction: x                               # D4 (x-prediction; JEDI)
+  training_form: diffusion_forcing            # D4: each frame its own signal level; noisy past = context corruption
   loss_reduction: mean_over_percept_elements  # 81 x 16 + 9 x 64 + 8 = 1,880 scalars per frame, then mean over frames
-  noise_offset: 0.0                           # DIAMOND's 0.3 shifts image brightness; lighting has its own token
-  sampler:                                    # NVIDIA EDM Algorithm 2 (generate.py), order 1 (STEP_SPEC 7)
-    method: euler
-    steps: 3                                  # JEDI: 3 evaluations, then a final step to sigma 0
-    sigma_max: 5.0                            # DIAMOND
-    sigma_min: 0.002                          # DIAMOND
-    rho: 7                                    # DIAMOND / EDM
-    initial_noise: sigma_max_scaled           # EDM (the published DIAMOND sampler starts from unit noise)
-    s_churn: 1.0                              # JEDI, its stochastic-environment setting
-    s_tmin: 0.0                               # DIAMOND default: churn at every step
-    s_tmax: .inf
-    s_noise: 1.0
-    evaluate_at: sigma_hat                    # EDM; DIAMOND passes sigma (differs only with churn)
-    output_map: range_clamp                   # clip to [-3, 3]; another LN/tanh would change a correct target (audit R1)
-  inference_context_sigma: 0.1                # working; D4 "slightly corrupt" tau_ctx read as noise 0.1; GameNGen: 0 works
-  context_entry: one_extra_pass_per_frame     # one fresh draw at the context sigma, one pass writes the cache (STEP_SPEC 7)
+  shortcut:
+    k_max: 8                                  # D4 code (the paper leaves it open); K = 4 needs >= 4
+    self_fraction: 0.25                       # D4 code: bootstrap (self-consistency) rows per batch
+    bootstrap_start: 5000                     # D4 code: bootstrap rows contribute 0 before this update
+    ramp: [0.9, 0.1]                          # D4: w(tau) = 0.9 tau + 0.1
+    context_signal: 7                         # D4 "slightly corrupt the past inputs"; both codes label the context
+                                              # k_max - 1; corrupted to that level, as its training distribution
+    init_seed: 1106                           # the two embedding tables' own draws (every other parameter as P1-F3)
+  sampler:
+    steps: 4                                  # D4: K = 4 evaluations from pure noise (step-invariant on F4's readings
+                                              # at 8: 20261107_f4_followups RESULTS 1)
+    output_map: range_clamp                   # clip x1_hat to [-3, 3]; another LN/tanh would change a correct target
 
 heads:
   tsp: {likelihood: discretised_logistic, mean_from: [belief, periphery, lighting], scale_from: [lighting, pixel_position]}
   fovea_reconstruction: {likelihood: discretised_logistic, mean_from: [glimpse, lighting], decoder: shared_with_tsp}  # 10-27
   pixel_decoder: {hidden: 256, position_dim: 32, belief_dim: 128, log_scale_floor: -7,   # working; floor: PixelCNN++
-                  mean_loss: nll}   # nll: P1 world 1's recipe. faithful (10-31): mean by squared error in [-1, 1], scale by
-                                    # NLL on the detached mean and detached lighting latent (Stirn et al. 2023; Seitzer et al.
-                                    # 2022; decoder diagnosis 10-30: the NLL's per-position scale starved HUD cells)
-                                    # tsp_mean_loss (absent = faithful's squared error; set by a launcher, 11-01):
-                                    # scale_weighted_nll = stopgrad(scale) x NLL for TSP's mean only (Seitzer et al. 2022)
+                  mean_loss: faithful}   # 10-31: mean by squared error in [-1, 1], scale by NLL on the detached mean and
+                                         # detached lighting latent (Stirn et al. 2023; Seitzer et al. 2022; decoder
+                                         # diagnosis 10-30: the NLL's per-position scale starved HUD cells)
   change_map: {target: a9b_soft_detector, rows: map_only, hidden: 256, position_dim: 32, belief_dim: 128}   # A9b + working widths
   outcome: {hidden: 256}                      # working; DV3 size12m-like heads
   reward: {density: categorical, space: symlog, bins: 256, support: [-0.9, 1.1], support_space: raw,
@@ -147,7 +152,30 @@ p1:                                           # CURRICULUM Budgets
   precision: bf16_autocast                    # RTX 3060; losses and the SSM state in fp32
   activation_checkpointing: true              # per denoiser block (6 GB card)
   out_dir: artifacts/saccade_m0
-  monitor: {windows: 2000, sigma_levels: 8, fixed_noise_seed: 0, fixed_fixation_seed: 0, objective: edm.loss}   # the G1 loss as declared
+  monitor: {windows: 2000, fixed_noise_seed: 0, fixed_fixation_seed: 0, objective: shortcut_flow_term}   # G1's flow term at
+                                              # the k_max finest-grid signal levels, context at its level (P1-F4)
+
+fixation:                                     # learned fixation during P1 (P1-F2, 20261103_p1f2/PLAN.md; saccade/chooser.py)
+  chooser:
+    architecture: original_coarse_only_101584 # the cheap coarse-only head (20261102_direct_chooser): 101,584 parameters
+    history: 8                                # its input frames (the world's context prefix)
+    policy: existing_combined_score_softmax   # TEACHING 9-10: contingency says where, surprise whether
+    uniform_floor: 0.2                        # 0.8 softmax(...) + 0.2 / 49: every window keeps probability
+    contingency_weight: 0.5
+    surprise_weight: 0.5
+    temperature: 1.0
+    head_seed: 611601                         # its own draws, isolated from the world's
+    gaze_seed: 612301
+    batch_seed: 612302
+    learning_rate: 0.001                      # F2 PLAN (the direct-chooser fit), cosine to the minimum by world frames
+    minimum_learning_rate: 0.0001
+    warmup_updates: 100
+    weight_decay: 0.0001
+    grad_clip: 1.0
+    batch_size: 256
+    world_frames_per_head_update: 1024
+    encoding_batch: 512                       # memory only
+    scoring_batch: 256                        # memory only
 
 p2:
   updates: 6000

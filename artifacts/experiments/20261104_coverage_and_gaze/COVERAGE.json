@@ -1,0 +1,2462 @@
+{
+  "labels_sha256": "e244ec87e5e6784dda4ae1747dad9ed9acd1d5b6bf3109002841d2ed418a288c",
+  "script_sha256": "609f39e95ef5c382ec991708bf5ba478ecdf9f7418ada096583e88e4e8d52697",
+  "training_manifest_sha256": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
+  "monitor_episodes": 397,
+  "summary": {
+    "episodes": 7672,
+    "transitions": 2432119,
+    "events": {
+      "damage": {
+        "unique": 47618,
+        "episodes": 7672,
+        "after_prefix": 47618,
+        "night": 21373,
+        "per_million": 19578.81172755116
+      },
+      "death": {
+        "unique": 7621,
+        "episodes": 7621,
+        "after_prefix": 7621,
+        "night": 3843,
+        "per_million": 3133.4815442829895
+      },
+      "terminated": {
+        "unique": 7621,
+        "episodes": 7621,
+        "after_prefix": 7621,
+        "night": 3843,
+        "per_million": 3133.4815442829895
+      },
+      "risk": {
+        "unique": 28891,
+        "episodes": 4934,
+        "after_prefix": 28891,
+        "night": 14975,
+        "per_million": 11878.941778753424
+      },
+      "risk_damage": {
+        "unique": 3827,
+        "episodes": 3732,
+        "after_prefix": 3827,
+        "night": 1996,
+        "per_million": 1573.5249796576566
+      },
+      "risk_death": {
+        "unique": 3701,
+        "episodes": 3701,
+        "after_prefix": 3701,
+        "night": 1918,
+        "per_million": 1521.7183040796936
+      },
+      "risk_ready": {
+        "unique": 9399,
+        "episodes": 4010,
+        "after_prefix": 9399,
+        "night": 5213,
+        "per_million": 3864.531299660913
+      },
+      "adjacent": {
+        "unique": 148938,
+        "episodes": 6877,
+        "after_prefix": 148938,
+        "night": 71155,
+        "per_million": 61237.9575177037
+      },
+      "low_health": {
+        "unique": 101698,
+        "episodes": 5206,
+        "after_prefix": 101698,
+        "night": 47618,
+        "per_million": 41814.565816886425
+      },
+      "positive_reward": {
+        "unique": 121550,
+        "episodes": 7661,
+        "after_prefix": 115946,
+        "night": 27525,
+        "per_million": 49976.99536905883
+      },
+      "drink_attempt": {
+        "unique": 39435,
+        "episodes": 4073,
+        "after_prefix": 39435,
+        "night": 18314,
+        "per_million": 16214.25596362678
+      },
+      "drink_increment": {
+        "unique": 39435,
+        "episodes": 4073,
+        "after_prefix": 39435,
+        "night": 18314,
+        "per_million": 16214.25596362678
+      },
+      "drink_attempt_success": {
+        "unique": 39435,
+        "episodes": 4073,
+        "after_prefix": 39435,
+        "night": 18314,
+        "per_million": 16214.25596362678
+      },
+      "drink_first": {
+        "unique": 4295,
+        "episodes": 1826,
+        "after_prefix": 4295,
+        "night": 2092,
+        "per_million": 1765.9497746615195
+      },
+      "wood_attempt": {
+        "unique": 64952,
+        "episodes": 6671,
+        "after_prefix": 62844,
+        "night": 14074,
+        "per_million": 26705.930096348082
+      },
+      "wood_increment": {
+        "unique": 64952,
+        "episodes": 6671,
+        "after_prefix": 62844,
+        "night": 14074,
+        "per_million": 26705.930096348082
+      },
+      "wood_attempt_success": {
+        "unique": 64952,
+        "episodes": 6671,
+        "after_prefix": 62844,
+        "night": 14074,
+        "per_million": 26705.930096348082
+      },
+      "wood_first": {
+        "unique": 16173,
+        "episodes": 6671,
+        "after_prefix": 14354,
+        "night": 2797,
+        "per_million": 6649.756858114261
+      },
+      "sapling_attempt": {
+        "unique": 101550,
+        "episodes": 7600,
+        "after_prefix": 79692,
+        "night": 16540,
+        "per_million": 41753.713531286914
+      },
+      "sapling_increment": {
+        "unique": 6110,
+        "episodes": 4868,
+        "after_prefix": 3891,
+        "night": 517,
+        "per_million": 2512.212601439321
+      },
+      "sapling_attempt_success": {
+        "unique": 6110,
+        "episodes": 4868,
+        "after_prefix": 3891,
+        "night": 517,
+        "per_million": 2512.212601439321
+      },
+      "sapling_first": {
+        "unique": 5764,
+        "episodes": 4868,
+        "after_prefix": 3575,
+        "night": 470,
+        "per_million": 2369.949825645867
+      },
+      "stone_attempt": {
+        "unique": 88495,
+        "episodes": 4750,
+        "after_prefix": 88495,
+        "night": 31953,
+        "per_million": 36385.966311681295
+      },
+      "stone_increment": {
+        "unique": 88495,
+        "episodes": 4750,
+        "after_prefix": 88495,
+        "night": 31953,
+        "per_million": 36385.966311681295
+      },
+      "stone_attempt_success": {
+        "unique": 88495,
+        "episodes": 4750,
+        "after_prefix": 88495,
+        "night": 31953,
+        "per_million": 36385.966311681295
+      },
+      "stone_first": {
+        "unique": 15565,
+        "episodes": 4750,
+        "after_prefix": 15565,
+        "night": 2400,
+        "per_million": 6399.769090245995
+      },
+      "coal_attempt": {
+        "unique": 9727,
+        "episodes": 3398,
+        "after_prefix": 9727,
+        "night": 3615,
+        "per_million": 3999.3931218003722
+      },
+      "coal_increment": {
+        "unique": 9727,
+        "episodes": 3398,
+        "after_prefix": 9727,
+        "night": 3615,
+        "per_million": 3999.3931218003722
+      },
+      "coal_attempt_success": {
+        "unique": 9727,
+        "episodes": 3398,
+        "after_prefix": 9727,
+        "night": 3615,
+        "per_million": 3999.3931218003722
+      },
+      "coal_first": {
+        "unique": 3861,
+        "episodes": 3398,
+        "after_prefix": 3861,
+        "night": 959,
+        "per_million": 1587.5045587818688
+      },
+      "iron_attempt": {
+        "unique": 5981,
+        "episodes": 2249,
+        "after_prefix": 5981,
+        "night": 2998,
+        "per_million": 2459.172433585692
+      },
+      "iron_increment": {
+        "unique": 5981,
+        "episodes": 2249,
+        "after_prefix": 5981,
+        "night": 2998,
+        "per_million": 2459.172433585692
+      },
+      "iron_attempt_success": {
+        "unique": 5981,
+        "episodes": 2249,
+        "after_prefix": 5981,
+        "night": 2998,
+        "per_million": 2459.172433585692
+      },
+      "iron_first": {
+        "unique": 2993,
+        "episodes": 2249,
+        "after_prefix": 2993,
+        "night": 1400,
+        "per_million": 1230.6141270225676
+      },
+      "unlock_COLLECT_WOOD": {
+        "unique": 6671,
+        "episodes": 6671,
+        "after_prefix": 4852,
+        "night": 72,
+        "per_million": 2742.8756569888233
+      },
+      "unlock_PLACE_TABLE": {
+        "unique": 5804,
+        "episodes": 5804,
+        "after_prefix": 5803,
+        "night": 54,
+        "per_million": 2386.396389321411
+      },
+      "unlock_EAT_COW": {
+        "unique": 4466,
+        "episodes": 4466,
+        "after_prefix": 4466,
+        "night": 707,
+        "per_million": 1836.2588343744694
+      },
+      "unlock_COLLECT_SAPLING": {
+        "unique": 4868,
+        "episodes": 4868,
+        "after_prefix": 2683,
+        "night": 156,
+        "per_million": 2001.546799313685
+      },
+      "unlock_COLLECT_DRINK": {
+        "unique": 4105,
+        "episodes": 4105,
+        "after_prefix": 4103,
+        "night": 1219,
+        "per_million": 1687.8285972026863
+      },
+      "unlock_MAKE_WOOD_PICKAXE": {
+        "unique": 5102,
+        "episodes": 5102,
+        "after_prefix": 5102,
+        "night": 153,
+        "per_million": 2097.759196815616
+      },
+      "unlock_MAKE_WOOD_SWORD": {
+        "unique": 3976,
+        "episodes": 3976,
+        "after_prefix": 3976,
+        "night": 90,
+        "per_million": 1634.7884293490574
+      },
+      "unlock_PLACE_PLANT": {
+        "unique": 4507,
+        "episodes": 4507,
+        "after_prefix": 2910,
+        "night": 189,
+        "per_million": 1853.1165621419018
+      },
+      "unlock_DEFEAT_ZOMBIE": {
+        "unique": 4300,
+        "episodes": 4300,
+        "after_prefix": 4300,
+        "night": 1243,
+        "per_million": 1768.0055951209624
+      },
+      "unlock_COLLECT_STONE": {
+        "unique": 4750,
+        "episodes": 4750,
+        "after_prefix": 4750,
+        "night": 247,
+        "per_million": 1953.0294364708307
+      },
+      "unlock_PLACE_STONE": {
+        "unique": 4466,
+        "episodes": 4466,
+        "after_prefix": 4466,
+        "night": 387,
+        "per_million": 1836.2588343744694
+      },
+      "unlock_EAT_PLANT": {
+        "unique": 184,
+        "episodes": 184,
+        "after_prefix": 184,
+        "night": 57,
+        "per_million": 75.65419290750165
+      },
+      "unlock_DEFEAT_SKELETON": {
+        "unique": 2509,
+        "episodes": 2509,
+        "after_prefix": 2509,
+        "night": 958,
+        "per_million": 1031.610706548487
+      },
+      "unlock_MAKE_STONE_PICKAXE": {
+        "unique": 3047,
+        "episodes": 3047,
+        "after_prefix": 3047,
+        "night": 666,
+        "per_million": 1252.8169879845518
+      },
+      "unlock_MAKE_STONE_SWORD": {
+        "unique": 2986,
+        "episodes": 2986,
+        "after_prefix": 2986,
+        "night": 703,
+        "per_million": 1227.7359783793474
+      },
+      "unlock_WAKE_UP": {
+        "unique": 7416,
+        "episodes": 7416,
+        "after_prefix": 7416,
+        "night": 302,
+        "per_million": 3049.1929054458274
+      },
+      "unlock_PLACE_FURNACE": {
+        "unique": 4169,
+        "episodes": 4169,
+        "after_prefix": 4169,
+        "night": 725,
+        "per_million": 1714.1430990835563
+      },
+      "unlock_COLLECT_COAL": {
+        "unique": 3398,
+        "episodes": 3398,
+        "after_prefix": 3398,
+        "night": 723,
+        "per_million": 1397.135584237449
+      },
+      "unlock_COLLECT_IRON": {
+        "unique": 2249,
+        "episodes": 2249,
+        "after_prefix": 2249,
+        "night": 998,
+        "per_million": 924.7080426574522
+      },
+      "unlock_COLLECT_DIAMOND": {
+        "unique": 187,
+        "episodes": 187,
+        "after_prefix": 187,
+        "night": 77,
+        "per_million": 76.88768518316743
+      },
+      "unlock_MAKE_IRON_PICKAXE": {
+        "unique": 1045,
+        "episodes": 1045,
+        "after_prefix": 1045,
+        "night": 583,
+        "per_million": 429.66647602358273
+      },
+      "unlock_MAKE_IRON_SWORD": {
+        "unique": 1096,
+        "episodes": 1096,
+        "after_prefix": 1096,
+        "night": 670,
+        "per_million": 450.6358447099011
+      }
+    }
+  },
+  "by_epsilon": {
+    "0.1": {
+      "episodes": 1927,
+      "transitions": 1289865,
+      "events": {
+        "damage": {
+          "unique": 19214,
+          "episodes": 1927,
+          "after_prefix": 19214,
+          "night": 8777,
+          "per_million": 14896.132541002353
+        },
+        "death": {
+          "unique": 1876,
+          "episodes": 1876,
+          "after_prefix": 1876,
+          "night": 965,
+          "per_million": 1454.415772193214
+        },
+        "terminated": {
+          "unique": 1876,
+          "episodes": 1876,
+          "after_prefix": 1876,
+          "night": 965,
+          "per_million": 1454.415772193214
+        },
+        "risk": {
+          "unique": 8428,
+          "episodes": 1190,
+          "after_prefix": 8428,
+          "night": 4664,
+          "per_million": 6534.017125823245
+        },
+        "risk_damage": {
+          "unique": 623,
+          "episodes": 596,
+          "after_prefix": 623,
+          "night": 353,
+          "per_million": 482.99628255670166
+        },
+        "risk_death": {
+          "unique": 579,
+          "episodes": 579,
+          "after_prefix": 579,
+          "night": 325,
+          "per_million": 448.8841855543022
+        },
+        "risk_ready": {
+          "unique": 3468,
+          "episodes": 827,
+          "after_prefix": 3468,
+          "night": 2002,
+          "per_million": 2688.6534637345767
+        },
+        "adjacent": {
+          "unique": 77609,
+          "episodes": 1884,
+          "after_prefix": 77609,
+          "night": 40330,
+          "per_million": 60168.31218770957
+        },
+        "low_health": {
+          "unique": 48345,
+          "episodes": 1291,
+          "after_prefix": 48345,
+          "night": 22003,
+          "per_million": 37480.666581386424
+        },
+        "positive_reward": {
+          "unique": 59054,
+          "episodes": 1927,
+          "after_prefix": 56759,
+          "night": 15172,
+          "per_million": 45783.08582681133
+        },
+        "drink_attempt": {
+          "unique": 30897,
+          "episodes": 1755,
+          "after_prefix": 30897,
+          "night": 14213,
+          "per_million": 23953.669570071288
+        },
+        "drink_increment": {
+          "unique": 30897,
+          "episodes": 1755,
+          "after_prefix": 30897,
+          "night": 14213,
+          "per_million": 23953.669570071288
+        },
+        "drink_attempt_success": {
+          "unique": 30897,
+          "episodes": 1755,
+          "after_prefix": 30897,
+          "night": 14213,
+          "per_million": 23953.669570071288
+        },
+        "drink_first": {
+          "unique": 3281,
+          "episodes": 1138,
+          "after_prefix": 3281,
+          "night": 1505,
+          "per_million": 2543.677051474379
+        },
+        "wood_attempt": {
+          "unique": 32046,
+          "episodes": 1925,
+          "after_prefix": 31296,
+          "night": 8768,
+          "per_million": 24844.460466793036
+        },
+        "wood_increment": {
+          "unique": 32046,
+          "episodes": 1925,
+          "after_prefix": 31296,
+          "night": 8768,
+          "per_million": 24844.460466793036
+        },
+        "wood_attempt_success": {
+          "unique": 32046,
+          "episodes": 1925,
+          "after_prefix": 31296,
+          "night": 8768,
+          "per_million": 24844.460466793036
+        },
+        "wood_first": {
+          "unique": 6481,
+          "episodes": 1925,
+          "after_prefix": 5860,
+          "night": 1404,
+          "per_million": 5024.556833467068
+        },
+        "sapling_attempt": {
+          "unique": 40611,
+          "episodes": 1927,
+          "after_prefix": 31613,
+          "night": 7703,
+          "per_million": 31484.690258282844
+        },
+        "sapling_increment": {
+          "unique": 2181,
+          "episodes": 1722,
+          "after_prefix": 1259,
+          "night": 177,
+          "per_million": 1690.8746264143922
+        },
+        "sapling_attempt_success": {
+          "unique": 2181,
+          "episodes": 1722,
+          "after_prefix": 1259,
+          "night": 177,
+          "per_million": 1690.8746264143922
+        },
+        "sapling_first": {
+          "unique": 2102,
+          "episodes": 1722,
+          "after_prefix": 1184,
+          "night": 166,
+          "per_million": 1629.6279067964476
+        },
+        "stone_attempt": {
+          "unique": 60518,
+          "episodes": 1891,
+          "after_prefix": 60518,
+          "night": 22142,
+          "per_million": 46918.08832707299
+        },
+        "stone_increment": {
+          "unique": 60518,
+          "episodes": 1891,
+          "after_prefix": 60518,
+          "night": 22142,
+          "per_million": 46918.08832707299
+        },
+        "stone_attempt_success": {
+          "unique": 60518,
+          "episodes": 1891,
+          "after_prefix": 60518,
+          "night": 22142,
+          "per_million": 46918.08832707299
+        },
+        "stone_first": {
+          "unique": 7657,
+          "episodes": 1891,
+          "after_prefix": 7657,
+          "night": 1091,
+          "per_million": 5936.280153349381
+        },
+        "coal_attempt": {
+          "unique": 6394,
+          "episodes": 1700,
+          "after_prefix": 6394,
+          "night": 2358,
+          "per_million": 4957.107914394142
+        },
+        "coal_increment": {
+          "unique": 6394,
+          "episodes": 1700,
+          "after_prefix": 6394,
+          "night": 2358,
+          "per_million": 4957.107914394142
+        },
+        "coal_attempt_success": {
+          "unique": 6394,
+          "episodes": 1700,
+          "after_prefix": 6394,
+          "night": 2358,
+          "per_million": 4957.107914394142
+        },
+        "coal_first": {
+          "unique": 2129,
+          "episodes": 1700,
+          "after_prefix": 2129,
+          "night": 503,
+          "per_million": 1650.560329957011
+        },
+        "iron_attempt": {
+          "unique": 4699,
+          "episodes": 1485,
+          "after_prefix": 4699,
+          "night": 2282,
+          "per_million": 3643.0169048698895
+        },
+        "iron_increment": {
+          "unique": 4699,
+          "episodes": 1485,
+          "after_prefix": 4699,
+          "night": 2282,
+          "per_million": 3643.0169048698895
+        },
+        "iron_attempt_success": {
+          "unique": 4699,
+          "episodes": 1485,
+          "after_prefix": 4699,
+          "night": 2282,
+          "per_million": 3643.0169048698895
+        },
+        "iron_first": {
+          "unique": 2166,
+          "episodes": 1485,
+          "after_prefix": 2166,
+          "night": 958,
+          "per_million": 1679.2455024363014
+        },
+        "unlock_COLLECT_WOOD": {
+          "unique": 1925,
+          "episodes": 1925,
+          "after_prefix": 1304,
+          "night": 0,
+          "per_million": 1492.404243854977
+        },
+        "unlock_PLACE_TABLE": {
+          "unique": 1919,
+          "episodes": 1919,
+          "after_prefix": 1919,
+          "night": 1,
+          "per_million": 1487.7525942637408
+        },
+        "unlock_EAT_COW": {
+          "unique": 1851,
+          "episodes": 1851,
+          "after_prefix": 1851,
+          "night": 199,
+          "per_million": 1435.033898896396
+        },
+        "unlock_COLLECT_SAPLING": {
+          "unique": 1722,
+          "episodes": 1722,
+          "after_prefix": 805,
+          "night": 14,
+          "per_million": 1335.0234326848158
+        },
+        "unlock_COLLECT_DRINK": {
+          "unique": 1761,
+          "episodes": 1761,
+          "after_prefix": 1761,
+          "night": 447,
+          "per_million": 1365.2591550278516
+        },
+        "unlock_MAKE_WOOD_PICKAXE": {
+          "unique": 1908,
+          "episodes": 1908,
+          "after_prefix": 1908,
+          "night": 17,
+          "per_million": 1479.224570013141
+        },
+        "unlock_MAKE_WOOD_SWORD": {
+          "unique": 1695,
+          "episodes": 1695,
+          "after_prefix": 1695,
+          "night": 25,
+          "per_million": 1314.0910095242525
+        },
+        "unlock_PLACE_PLANT": {
+          "unique": 1699,
+          "episodes": 1699,
+          "after_prefix": 942,
+          "night": 20,
+          "per_million": 1317.1921092517434
+        },
+        "unlock_DEFEAT_ZOMBIE": {
+          "unique": 1803,
+          "episodes": 1803,
+          "after_prefix": 1803,
+          "night": 533,
+          "per_million": 1397.8207021665057
+        },
+        "unlock_COLLECT_STONE": {
+          "unique": 1891,
+          "episodes": 1891,
+          "after_prefix": 1891,
+          "night": 36,
+          "per_million": 1466.0448961713048
+        },
+        "unlock_PLACE_STONE": {
+          "unique": 1866,
+          "episodes": 1866,
+          "after_prefix": 1866,
+          "night": 90,
+          "per_million": 1446.6630228744868
+        },
+        "unlock_EAT_PLANT": {
+          "unique": 177,
+          "episodes": 177,
+          "after_prefix": 177,
+          "night": 56,
+          "per_million": 137.22366294147062
+        },
+        "unlock_DEFEAT_SKELETON": {
+          "unique": 1460,
+          "episodes": 1460,
+          "after_prefix": 1460,
+          "night": 518,
+          "per_million": 1131.9014005341644
+        },
+        "unlock_MAKE_STONE_PICKAXE": {
+          "unique": 1677,
+          "episodes": 1677,
+          "after_prefix": 1677,
+          "night": 224,
+          "per_million": 1300.1360607505437
+        },
+        "unlock_MAKE_STONE_SWORD": {
+          "unique": 1669,
+          "episodes": 1669,
+          "after_prefix": 1669,
+          "night": 280,
+          "per_million": 1293.9338612955619
+        },
+        "unlock_WAKE_UP": {
+          "unique": 1897,
+          "episodes": 1897,
+          "after_prefix": 1897,
+          "night": 124,
+          "per_million": 1470.696545762541
+        },
+        "unlock_PLACE_FURNACE": {
+          "unique": 1824,
+          "episodes": 1824,
+          "after_prefix": 1824,
+          "night": 214,
+          "per_million": 1414.1014757358328
+        },
+        "unlock_COLLECT_COAL": {
+          "unique": 1700,
+          "episodes": 1700,
+          "after_prefix": 1700,
+          "night": 286,
+          "per_million": 1317.967384183616
+        },
+        "unlock_COLLECT_IRON": {
+          "unique": 1485,
+          "episodes": 1485,
+          "after_prefix": 1485,
+          "night": 591,
+          "per_million": 1151.2832738309824
+        },
+        "unlock_COLLECT_DIAMOND": {
+          "unique": 176,
+          "episodes": 176,
+          "after_prefix": 176,
+          "night": 73,
+          "per_million": 136.4483880095979
+        },
+        "unlock_MAKE_IRON_PICKAXE": {
+          "unique": 897,
+          "episodes": 897,
+          "after_prefix": 897,
+          "night": 502,
+          "per_million": 695.4216138898257
+        },
+        "unlock_MAKE_IRON_SWORD": {
+          "unique": 954,
+          "episodes": 954,
+          "after_prefix": 954,
+          "night": 585,
+          "per_million": 739.6122850065705
+        }
+      }
+    },
+    "0.25": {
+      "episodes": 1915,
+      "transitions": 524328,
+      "events": {
+        "damage": {
+          "unique": 11260,
+          "episodes": 1915,
+          "after_prefix": 11260,
+          "night": 5394,
+          "per_million": 21475.10718481561
+        },
+        "death": {
+          "unique": 1915,
+          "episodes": 1915,
+          "after_prefix": 1915,
+          "night": 1062,
+          "per_million": 3652.2939839184633
+        },
+        "terminated": {
+          "unique": 1915,
+          "episodes": 1915,
+          "after_prefix": 1915,
+          "night": 1062,
+          "per_million": 3652.2939839184633
+        },
+        "risk": {
+          "unique": 7185,
+          "episodes": 1181,
+          "after_prefix": 7185,
+          "night": 4087,
+          "per_million": 13703.254451412093
+        },
+        "risk_damage": {
+          "unique": 854,
+          "episodes": 834,
+          "after_prefix": 854,
+          "night": 477,
+          "per_million": 1628.7514685464062
+        },
+        "risk_death": {
+          "unique": 824,
+          "episodes": 824,
+          "after_prefix": 824,
+          "night": 458,
+          "per_million": 1571.5353748035582
+        },
+        "risk_ready": {
+          "unique": 2642,
+          "episodes": 904,
+          "after_prefix": 2642,
+          "night": 1541,
+          "per_million": 5038.830655620146
+        },
+        "adjacent": {
+          "unique": 29812,
+          "episodes": 1766,
+          "after_prefix": 29812,
+          "night": 14843,
+          "per_million": 56857.53955539281
+        },
+        "low_health": {
+          "unique": 27581,
+          "episodes": 1246,
+          "after_prefix": 27581,
+          "night": 13973,
+          "per_million": 52602.56938404968
+        },
+        "positive_reward": {
+          "unique": 35541,
+          "episodes": 1915,
+          "after_prefix": 33694,
+          "night": 7682,
+          "per_million": 67783.90625715202
+        },
+        "drink_attempt": {
+          "unique": 6721,
+          "episodes": 1401,
+          "after_prefix": 6721,
+          "night": 3336,
+          "per_million": 12818.31220152271
+        },
+        "drink_increment": {
+          "unique": 6721,
+          "episodes": 1401,
+          "after_prefix": 6721,
+          "night": 3336,
+          "per_million": 12818.31220152271
+        },
+        "drink_attempt_success": {
+          "unique": 6721,
+          "episodes": 1401,
+          "after_prefix": 6721,
+          "night": 3336,
+          "per_million": 12818.31220152271
+        },
+        "drink_first": {
+          "unique": 792,
+          "episodes": 515,
+          "after_prefix": 792,
+          "night": 455,
+          "per_million": 1510.504874811187
+        },
+        "wood_attempt": {
+          "unique": 19578,
+          "episodes": 1914,
+          "after_prefix": 18885,
+          "night": 3748,
+          "per_million": 37339.222776582596
+        },
+        "wood_increment": {
+          "unique": 19578,
+          "episodes": 1914,
+          "after_prefix": 18885,
+          "night": 3748,
+          "per_million": 37339.222776582596
+        },
+        "wood_attempt_success": {
+          "unique": 19578,
+          "episodes": 1914,
+          "after_prefix": 18885,
+          "night": 3748,
+          "per_million": 37339.222776582596
+        },
+        "wood_first": {
+          "unique": 5013,
+          "episodes": 1914,
+          "after_prefix": 4421,
+          "night": 877,
+          "per_million": 9560.8092644299
+        },
+        "sapling_attempt": {
+          "unique": 29751,
+          "episodes": 1912,
+          "after_prefix": 22385,
+          "night": 4210,
+          "per_million": 56741.20016478235
+        },
+        "sapling_increment": {
+          "unique": 1689,
+          "episodes": 1369,
+          "after_prefix": 955,
+          "night": 108,
+          "per_million": 3221.266077722342
+        },
+        "sapling_attempt_success": {
+          "unique": 1689,
+          "episodes": 1369,
+          "after_prefix": 955,
+          "night": 108,
+          "per_million": 3221.266077722342
+        },
+        "sapling_first": {
+          "unique": 1588,
+          "episodes": 1369,
+          "after_prefix": 869,
+          "night": 94,
+          "per_million": 3028.6385621214204
+        },
+        "stone_attempt": {
+          "unique": 21579,
+          "episodes": 1736,
+          "after_prefix": 21579,
+          "night": 7607,
+          "per_million": 41155.53622923056
+        },
+        "stone_increment": {
+          "unique": 21579,
+          "episodes": 1736,
+          "after_prefix": 21579,
+          "night": 7607,
+          "per_million": 41155.53622923056
+        },
+        "stone_attempt_success": {
+          "unique": 21579,
+          "episodes": 1736,
+          "after_prefix": 21579,
+          "night": 7607,
+          "per_million": 41155.53622923056
+        },
+        "stone_first": {
+          "unique": 5146,
+          "episodes": 1736,
+          "after_prefix": 5146,
+          "night": 675,
+          "per_million": 9814.467280023191
+        },
+        "coal_attempt": {
+          "unique": 2658,
+          "episodes": 1210,
+          "after_prefix": 2658,
+          "night": 1012,
+          "per_million": 5069.345905616332
+        },
+        "coal_increment": {
+          "unique": 2658,
+          "episodes": 1210,
+          "after_prefix": 2658,
+          "night": 1012,
+          "per_million": 5069.345905616332
+        },
+        "coal_attempt_success": {
+          "unique": 2658,
+          "episodes": 1210,
+          "after_prefix": 2658,
+          "night": 1012,
+          "per_million": 5069.345905616332
+        },
+        "coal_first": {
+          "unique": 1244,
+          "episodes": 1210,
+          "after_prefix": 1244,
+          "night": 301,
+          "per_million": 2372.56068720343
+        },
+        "iron_attempt": {
+          "unique": 1214,
+          "episodes": 707,
+          "after_prefix": 1214,
+          "night": 668,
+          "per_million": 2315.344593460582
+        },
+        "iron_increment": {
+          "unique": 1214,
+          "episodes": 707,
+          "after_prefix": 1214,
+          "night": 668,
+          "per_million": 2315.344593460582
+        },
+        "iron_attempt_success": {
+          "unique": 1214,
+          "episodes": 707,
+          "after_prefix": 1214,
+          "night": 668,
+          "per_million": 2315.344593460582
+        },
+        "iron_first": {
+          "unique": 770,
+          "episodes": 707,
+          "after_prefix": 770,
+          "night": 403,
+          "per_million": 1468.5464060664317
+        },
+        "unlock_COLLECT_WOOD": {
+          "unique": 1914,
+          "episodes": 1914,
+          "after_prefix": 1322,
+          "night": 0,
+          "per_million": 3650.3867807937017
+        },
+        "unlock_PLACE_TABLE": {
+          "unique": 1894,
+          "episodes": 1894,
+          "after_prefix": 1894,
+          "night": 0,
+          "per_million": 3612.2427182984698
+        },
+        "unlock_EAT_COW": {
+          "unique": 1631,
+          "episodes": 1631,
+          "after_prefix": 1631,
+          "night": 248,
+          "per_million": 3110.648296486169
+        },
+        "unlock_COLLECT_SAPLING": {
+          "unique": 1369,
+          "episodes": 1369,
+          "after_prefix": 651,
+          "night": 24,
+          "per_million": 2610.96107779863
+        },
+        "unlock_COLLECT_DRINK": {
+          "unique": 1409,
+          "episodes": 1409,
+          "after_prefix": 1408,
+          "night": 464,
+          "per_million": 2687.249202789094
+        },
+        "unlock_MAKE_WOOD_PICKAXE": {
+          "unique": 1801,
+          "episodes": 1801,
+          "after_prefix": 1801,
+          "night": 36,
+          "per_million": 3434.872827695641
+        },
+        "unlock_MAKE_WOOD_SWORD": {
+          "unique": 1381,
+          "episodes": 1381,
+          "after_prefix": 1381,
+          "night": 29,
+          "per_million": 2633.847515295769
+        },
+        "unlock_PLACE_PLANT": {
+          "unique": 1295,
+          "episodes": 1295,
+          "after_prefix": 759,
+          "night": 39,
+          "per_million": 2469.8280465662715
+        },
+        "unlock_DEFEAT_ZOMBIE": {
+          "unique": 1542,
+          "episodes": 1542,
+          "after_prefix": 1542,
+          "night": 426,
+          "per_million": 2940.9072183823864
+        },
+        "unlock_COLLECT_STONE": {
+          "unique": 1736,
+          "episodes": 1736,
+          "after_prefix": 1736,
+          "night": 77,
+          "per_million": 3310.904624586137
+        },
+        "unlock_PLACE_STONE": {
+          "unique": 1656,
+          "episodes": 1656,
+          "after_prefix": 1656,
+          "night": 130,
+          "per_million": 3158.328374605209
+        },
+        "unlock_EAT_PLANT": {
+          "unique": 7,
+          "episodes": 7,
+          "after_prefix": 7,
+          "night": 1,
+          "per_million": 13.350421873331197
+        },
+        "unlock_DEFEAT_SKELETON": {
+          "unique": 865,
+          "episodes": 865,
+          "after_prefix": 865,
+          "night": 357,
+          "per_million": 1649.7307029187837
+        },
+        "unlock_MAKE_STONE_PICKAXE": {
+          "unique": 1120,
+          "episodes": 1120,
+          "after_prefix": 1120,
+          "night": 345,
+          "per_million": 2136.0674997329916
+        },
+        "unlock_MAKE_STONE_SWORD": {
+          "unique": 1065,
+          "episodes": 1065,
+          "after_prefix": 1065,
+          "night": 323,
+          "per_million": 2031.1713278711036
+        },
+        "unlock_WAKE_UP": {
+          "unique": 1868,
+          "episodes": 1868,
+          "after_prefix": 1868,
+          "night": 120,
+          "per_million": 3562.6554370546683
+        },
+        "unlock_PLACE_FURNACE": {
+          "unique": 1506,
+          "episodes": 1506,
+          "after_prefix": 1506,
+          "night": 267,
+          "per_million": 2872.247905890969
+        },
+        "unlock_COLLECT_COAL": {
+          "unique": 1210,
+          "episodes": 1210,
+          "after_prefix": 1210,
+          "night": 282,
+          "per_million": 2307.7157809615355
+        },
+        "unlock_COLLECT_IRON": {
+          "unique": 707,
+          "episodes": 707,
+          "after_prefix": 707,
+          "night": 368,
+          "per_million": 1348.392609206451
+        },
+        "unlock_COLLECT_DIAMOND": {
+          "unique": 11,
+          "episodes": 11,
+          "after_prefix": 11,
+          "night": 4,
+          "per_million": 20.979234372377597
+        },
+        "unlock_MAKE_IRON_PICKAXE": {
+          "unique": 148,
+          "episodes": 148,
+          "after_prefix": 148,
+          "night": 81,
+          "per_million": 282.26606246471675
+        },
+        "unlock_MAKE_IRON_SWORD": {
+          "unique": 142,
+          "episodes": 142,
+          "after_prefix": 142,
+          "night": 85,
+          "per_million": 270.82284371614713
+        }
+      }
+    },
+    "0.5": {
+      "episodes": 1916,
+      "transitions": 345127,
+      "events": {
+        "damage": {
+          "unique": 9329,
+          "episodes": 1916,
+          "after_prefix": 9329,
+          "night": 4357,
+          "per_million": 27030.62930457484
+        },
+        "death": {
+          "unique": 1916,
+          "episodes": 1916,
+          "after_prefix": 1916,
+          "night": 1057,
+          "per_million": 5551.579563465043
+        },
+        "terminated": {
+          "unique": 1916,
+          "episodes": 1916,
+          "after_prefix": 1916,
+          "night": 1057,
+          "per_million": 5551.579563465043
+        },
+        "risk": {
+          "unique": 7038,
+          "episodes": 1288,
+          "after_prefix": 7038,
+          "night": 3782,
+          "per_million": 20392.49319815604
+        },
+        "risk_damage": {
+          "unique": 1134,
+          "episodes": 1109,
+          "after_prefix": 1134,
+          "night": 654,
+          "per_million": 3285.74698589215
+        },
+        "risk_death": {
+          "unique": 1105,
+          "episodes": 1105,
+          "after_prefix": 1105,
+          "night": 633,
+          "per_million": 3201.719946570393
+        },
+        "risk_ready": {
+          "unique": 1985,
+          "episodes": 1114,
+          "after_prefix": 1985,
+          "night": 1136,
+          "per_million": 5751.505967368534
+        },
+        "adjacent": {
+          "unique": 23626,
+          "episodes": 1682,
+          "after_prefix": 23626,
+          "night": 10028,
+          "per_million": 68455.959690201
+        },
+        "low_health": {
+          "unique": 16537,
+          "episodes": 1345,
+          "after_prefix": 16537,
+          "night": 8537,
+          "per_million": 47915.694802203245
+        },
+        "positive_reward": {
+          "unique": 20953,
+          "episodes": 1916,
+          "after_prefix": 19651,
+          "night": 3895,
+          "per_million": 60710.984652026644
+        },
+        "drink_attempt": {
+          "unique": 1381,
+          "episodes": 683,
+          "after_prefix": 1381,
+          "night": 630,
+          "per_million": 4001.4255621843554
+        },
+        "drink_increment": {
+          "unique": 1381,
+          "episodes": 683,
+          "after_prefix": 1381,
+          "night": 630,
+          "per_million": 4001.4255621843554
+        },
+        "drink_attempt_success": {
+          "unique": 1381,
+          "episodes": 683,
+          "after_prefix": 1381,
+          "night": 630,
+          "per_million": 4001.4255621843554
+        },
+        "drink_first": {
+          "unique": 202,
+          "episodes": 155,
+          "after_prefix": 202,
+          "night": 119,
+          "per_million": 585.2917911377551
+        },
+        "wood_attempt": {
+          "unique": 12040,
+          "episodes": 1904,
+          "after_prefix": 11464,
+          "night": 1384,
+          "per_million": 34885.708739101836
+        },
+        "wood_increment": {
+          "unique": 12040,
+          "episodes": 1904,
+          "after_prefix": 11464,
+          "night": 1384,
+          "per_million": 34885.708739101836
+        },
+        "wood_attempt_success": {
+          "unique": 12040,
+          "episodes": 1904,
+          "after_prefix": 11464,
+          "night": 1384,
+          "per_million": 34885.708739101836
+        },
+        "wood_first": {
+          "unique": 3707,
+          "episodes": 1904,
+          "after_prefix": 3190,
+          "night": 426,
+          "per_million": 10740.97361261217
+        },
+        "sapling_attempt": {
+          "unique": 21835,
+          "episodes": 1911,
+          "after_prefix": 17051,
+          "night": 3315,
+          "per_million": 63266.56564105387
+        },
+        "sapling_increment": {
+          "unique": 1355,
+          "episodes": 1075,
+          "after_prefix": 853,
+          "night": 117,
+          "per_million": 3926.0909752062284
+        },
+        "sapling_attempt_success": {
+          "unique": 1355,
+          "episodes": 1075,
+          "after_prefix": 853,
+          "night": 117,
+          "per_million": 3926.0909752062284
+        },
+        "sapling_first": {
+          "unique": 1253,
+          "episodes": 1075,
+          "after_prefix": 761,
+          "night": 102,
+          "per_million": 3630.5475955228076
+        },
+        "stone_attempt": {
+          "unique": 6388,
+          "episodes": 1119,
+          "after_prefix": 6388,
+          "night": 2197,
+          "per_million": 18509.128523702868
+        },
+        "stone_increment": {
+          "unique": 6388,
+          "episodes": 1119,
+          "after_prefix": 6388,
+          "night": 2197,
+          "per_million": 18509.128523702868
+        },
+        "stone_attempt_success": {
+          "unique": 6388,
+          "episodes": 1119,
+          "after_prefix": 6388,
+          "night": 2197,
+          "per_million": 18509.128523702868
+        },
+        "stone_first": {
+          "unique": 2758,
+          "episodes": 1119,
+          "after_prefix": 2758,
+          "night": 631,
+          "per_million": 7991.261187910537
+        },
+        "coal_attempt": {
+          "unique": 675,
+          "episodes": 488,
+          "after_prefix": 675,
+          "night": 245,
+          "per_million": 1955.8017773167558
+        },
+        "coal_increment": {
+          "unique": 675,
+          "episodes": 488,
+          "after_prefix": 675,
+          "night": 245,
+          "per_million": 1955.8017773167558
+        },
+        "coal_attempt_success": {
+          "unique": 675,
+          "episodes": 488,
+          "after_prefix": 675,
+          "night": 245,
+          "per_million": 1955.8017773167558
+        },
+        "coal_first": {
+          "unique": 488,
+          "episodes": 488,
+          "after_prefix": 488,
+          "night": 155,
+          "per_million": 1413.972247897151
+        },
+        "iron_attempt": {
+          "unique": 68,
+          "episodes": 57,
+          "after_prefix": 68,
+          "night": 48,
+          "per_million": 197.02891978894726
+        },
+        "iron_increment": {
+          "unique": 68,
+          "episodes": 57,
+          "after_prefix": 68,
+          "night": 48,
+          "per_million": 197.02891978894726
+        },
+        "iron_attempt_success": {
+          "unique": 68,
+          "episodes": 57,
+          "after_prefix": 68,
+          "night": 48,
+          "per_million": 197.02891978894726
+        },
+        "iron_first": {
+          "unique": 57,
+          "episodes": 57,
+          "after_prefix": 57,
+          "night": 39,
+          "per_million": 165.1565945289705
+        },
+        "unlock_COLLECT_WOOD": {
+          "unique": 1904,
+          "episodes": 1904,
+          "after_prefix": 1387,
+          "night": 0,
+          "per_million": 5516.809754090523
+        },
+        "unlock_PLACE_TABLE": {
+          "unique": 1800,
+          "episodes": 1800,
+          "after_prefix": 1799,
+          "night": 1,
+          "per_million": 5215.471406178016
+        },
+        "unlock_EAT_COW": {
+          "unique": 981,
+          "episodes": 981,
+          "after_prefix": 981,
+          "night": 259,
+          "per_million": 2842.4319163670184
+        },
+        "unlock_COLLECT_SAPLING": {
+          "unique": 1075,
+          "episodes": 1075,
+          "after_prefix": 585,
+          "night": 50,
+          "per_million": 3114.7954231340927
+        },
+        "unlock_COLLECT_DRINK": {
+          "unique": 696,
+          "episodes": 696,
+          "after_prefix": 695,
+          "night": 263,
+          "per_million": 2016.648943722166
+        },
+        "unlock_MAKE_WOOD_PICKAXE": {
+          "unique": 1376,
+          "episodes": 1376,
+          "after_prefix": 1376,
+          "night": 94,
+          "per_million": 3986.9381416116385
+        },
+        "unlock_MAKE_WOOD_SWORD": {
+          "unique": 887,
+          "episodes": 887,
+          "after_prefix": 887,
+          "night": 32,
+          "per_million": 2570.0684095999445
+        },
+        "unlock_PLACE_PLANT": {
+          "unique": 940,
+          "episodes": 940,
+          "after_prefix": 647,
+          "night": 50,
+          "per_million": 2723.6350676707416
+        },
+        "unlock_DEFEAT_ZOMBIE": {
+          "unique": 955,
+          "episodes": 955,
+          "after_prefix": 955,
+          "night": 284,
+          "per_million": 2767.0973293888915
+        },
+        "unlock_COLLECT_STONE": {
+          "unique": 1119,
+          "episodes": 1119,
+          "after_prefix": 1119,
+          "night": 131,
+          "per_million": 3242.2847241739996
+        },
+        "unlock_PLACE_STONE": {
+          "unique": 942,
+          "episodes": 942,
+          "after_prefix": 942,
+          "night": 166,
+          "per_million": 2729.430035899828
+        },
+        "unlock_EAT_PLANT": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "unlock_DEFEAT_SKELETON": {
+          "unique": 184,
+          "episodes": 184,
+          "after_prefix": 184,
+          "night": 83,
+          "per_million": 533.137077075975
+        },
+        "unlock_MAKE_STONE_PICKAXE": {
+          "unique": 250,
+          "episodes": 250,
+          "after_prefix": 250,
+          "night": 97,
+          "per_million": 724.3710286358355
+        },
+        "unlock_MAKE_STONE_SWORD": {
+          "unique": 252,
+          "episodes": 252,
+          "after_prefix": 252,
+          "night": 100,
+          "per_million": 730.1659968649221
+        },
+        "unlock_WAKE_UP": {
+          "unique": 1820,
+          "episodes": 1820,
+          "after_prefix": 1820,
+          "night": 49,
+          "per_million": 5273.421088468883
+        },
+        "unlock_PLACE_FURNACE": {
+          "unique": 835,
+          "episodes": 835,
+          "after_prefix": 835,
+          "night": 242,
+          "per_million": 2419.3992356436906
+        },
+        "unlock_COLLECT_COAL": {
+          "unique": 488,
+          "episodes": 488,
+          "after_prefix": 488,
+          "night": 155,
+          "per_million": 1413.972247897151
+        },
+        "unlock_COLLECT_IRON": {
+          "unique": 57,
+          "episodes": 57,
+          "after_prefix": 57,
+          "night": 39,
+          "per_million": 165.1565945289705
+        },
+        "unlock_COLLECT_DIAMOND": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "unlock_MAKE_IRON_PICKAXE": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "unlock_MAKE_IRON_SWORD": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        }
+      }
+    },
+    "1.0": {
+      "episodes": 1914,
+      "transitions": 272799,
+      "events": {
+        "damage": {
+          "unique": 7815,
+          "episodes": 1914,
+          "after_prefix": 7815,
+          "night": 2845,
+          "per_million": 28647.465716516555
+        },
+        "death": {
+          "unique": 1914,
+          "episodes": 1914,
+          "after_prefix": 1914,
+          "night": 759,
+          "per_million": 7016.154751300408
+        },
+        "terminated": {
+          "unique": 1914,
+          "episodes": 1914,
+          "after_prefix": 1914,
+          "night": 759,
+          "per_million": 7016.154751300408
+        },
+        "risk": {
+          "unique": 6240,
+          "episodes": 1275,
+          "after_prefix": 6240,
+          "night": 2442,
+          "per_million": 22873.984142170608
+        },
+        "risk_damage": {
+          "unique": 1216,
+          "episodes": 1193,
+          "after_prefix": 1216,
+          "night": 512,
+          "per_million": 4457.494345653759
+        },
+        "risk_death": {
+          "unique": 1193,
+          "episodes": 1193,
+          "after_prefix": 1193,
+          "night": 502,
+          "per_million": 4373.183186155375
+        },
+        "risk_ready": {
+          "unique": 1304,
+          "episodes": 1165,
+          "after_prefix": 1304,
+          "night": 534,
+          "per_million": 4780.076173299755
+        },
+        "adjacent": {
+          "unique": 17891,
+          "episodes": 1545,
+          "after_prefix": 17891,
+          "night": 5954,
+          "per_million": 65583.08498198308
+        },
+        "low_health": {
+          "unique": 9235,
+          "episodes": 1324,
+          "after_prefix": 9235,
+          "night": 3105,
+          "per_million": 33852.763389895124
+        },
+        "positive_reward": {
+          "unique": 6002,
+          "episodes": 1903,
+          "after_prefix": 5842,
+          "night": 776,
+          "per_million": 22001.546926491665
+        },
+        "drink_attempt": {
+          "unique": 436,
+          "episodes": 234,
+          "after_prefix": 436,
+          "night": 135,
+          "per_million": 1598.2463278824337
+        },
+        "drink_increment": {
+          "unique": 436,
+          "episodes": 234,
+          "after_prefix": 436,
+          "night": 135,
+          "per_million": 1598.2463278824337
+        },
+        "drink_attempt_success": {
+          "unique": 436,
+          "episodes": 234,
+          "after_prefix": 436,
+          "night": 135,
+          "per_million": 1598.2463278824337
+        },
+        "drink_first": {
+          "unique": 20,
+          "episodes": 18,
+          "after_prefix": 20,
+          "night": 13,
+          "per_million": 73.31405173772632
+        },
+        "wood_attempt": {
+          "unique": 1288,
+          "episodes": 928,
+          "after_prefix": 1199,
+          "night": 174,
+          "per_million": 4721.424931909574
+        },
+        "wood_increment": {
+          "unique": 1288,
+          "episodes": 928,
+          "after_prefix": 1199,
+          "night": 174,
+          "per_million": 4721.424931909574
+        },
+        "wood_attempt_success": {
+          "unique": 1288,
+          "episodes": 928,
+          "after_prefix": 1199,
+          "night": 174,
+          "per_million": 4721.424931909574
+        },
+        "wood_first": {
+          "unique": 972,
+          "episodes": 928,
+          "after_prefix": 883,
+          "night": 90,
+          "per_million": 3563.0629144534987
+        },
+        "sapling_attempt": {
+          "unique": 9353,
+          "episodes": 1850,
+          "after_prefix": 8643,
+          "night": 1312,
+          "per_million": 34285.316295147706
+        },
+        "sapling_increment": {
+          "unique": 885,
+          "episodes": 702,
+          "after_prefix": 824,
+          "night": 115,
+          "per_million": 3244.146789394389
+        },
+        "sapling_attempt_success": {
+          "unique": 885,
+          "episodes": 702,
+          "after_prefix": 824,
+          "night": 115,
+          "per_million": 3244.146789394389
+        },
+        "sapling_first": {
+          "unique": 821,
+          "episodes": 702,
+          "after_prefix": 761,
+          "night": 108,
+          "per_million": 3009.541823833665
+        },
+        "stone_attempt": {
+          "unique": 10,
+          "episodes": 4,
+          "after_prefix": 10,
+          "night": 7,
+          "per_million": 36.65702586886316
+        },
+        "stone_increment": {
+          "unique": 10,
+          "episodes": 4,
+          "after_prefix": 10,
+          "night": 7,
+          "per_million": 36.65702586886316
+        },
+        "stone_attempt_success": {
+          "unique": 10,
+          "episodes": 4,
+          "after_prefix": 10,
+          "night": 7,
+          "per_million": 36.65702586886316
+        },
+        "stone_first": {
+          "unique": 4,
+          "episodes": 4,
+          "after_prefix": 4,
+          "night": 3,
+          "per_million": 14.662810347545262
+        },
+        "coal_attempt": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "coal_increment": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "coal_attempt_success": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "coal_first": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "iron_attempt": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "iron_increment": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "iron_attempt_success": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "iron_first": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "unlock_COLLECT_WOOD": {
+          "unique": 928,
+          "episodes": 928,
+          "after_prefix": 839,
+          "night": 72,
+          "per_million": 3401.7720006305008
+        },
+        "unlock_PLACE_TABLE": {
+          "unique": 191,
+          "episodes": 191,
+          "after_prefix": 191,
+          "night": 52,
+          "per_million": 700.1491940952862
+        },
+        "unlock_EAT_COW": {
+          "unique": 3,
+          "episodes": 3,
+          "after_prefix": 3,
+          "night": 1,
+          "per_million": 10.997107760658947
+        },
+        "unlock_COLLECT_SAPLING": {
+          "unique": 702,
+          "episodes": 702,
+          "after_prefix": 642,
+          "night": 68,
+          "per_million": 2573.3232159941936
+        },
+        "unlock_COLLECT_DRINK": {
+          "unique": 239,
+          "episodes": 239,
+          "after_prefix": 239,
+          "night": 45,
+          "per_million": 876.1029182658294
+        },
+        "unlock_MAKE_WOOD_PICKAXE": {
+          "unique": 17,
+          "episodes": 17,
+          "after_prefix": 17,
+          "night": 6,
+          "per_million": 62.31694397706737
+        },
+        "unlock_MAKE_WOOD_SWORD": {
+          "unique": 13,
+          "episodes": 13,
+          "after_prefix": 13,
+          "night": 4,
+          "per_million": 47.6541336295221
+        },
+        "unlock_PLACE_PLANT": {
+          "unique": 573,
+          "episodes": 573,
+          "after_prefix": 562,
+          "night": 80,
+          "per_million": 2100.447582285859
+        },
+        "unlock_DEFEAT_ZOMBIE": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "unlock_COLLECT_STONE": {
+          "unique": 4,
+          "episodes": 4,
+          "after_prefix": 4,
+          "night": 3,
+          "per_million": 14.662810347545262
+        },
+        "unlock_PLACE_STONE": {
+          "unique": 2,
+          "episodes": 2,
+          "after_prefix": 2,
+          "night": 1,
+          "per_million": 7.331405173772631
+        },
+        "unlock_EAT_PLANT": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "unlock_DEFEAT_SKELETON": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "unlock_MAKE_STONE_PICKAXE": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "unlock_MAKE_STONE_SWORD": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "unlock_WAKE_UP": {
+          "unique": 1831,
+          "episodes": 1831,
+          "after_prefix": 1831,
+          "night": 9,
+          "per_million": 6711.901436588843
+        },
+        "unlock_PLACE_FURNACE": {
+          "unique": 4,
+          "episodes": 4,
+          "after_prefix": 4,
+          "night": 2,
+          "per_million": 14.662810347545262
+        },
+        "unlock_COLLECT_COAL": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "unlock_COLLECT_IRON": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "unlock_COLLECT_DIAMOND": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "unlock_MAKE_IRON_PICKAXE": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        },
+        "unlock_MAKE_IRON_SWORD": {
+          "unique": 0,
+          "episodes": 0,
+          "after_prefix": 0,
+          "night": 0,
+          "per_million": 0.0
+        }
+      }
+    }
+  },
+  "increment_prior_value_counts": {
+    "drink": {
+      "5": 3885,
+      "6": 2746,
+      "3": 6599,
+      "4": 5219,
+      "0": 4295,
+      "1": 6377,
+      "2": 7152,
+      "7": 1906,
+      "8": 1256
+    },
+    "wood": {
+      "0": 16173,
+      "1": 17405,
+      "2": 15084,
+      "3": 11273,
+      "4": 3494,
+      "5": 956,
+      "6": 354,
+      "7": 154,
+      "8": 59
+    },
+    "sapling": {
+      "0": 5764,
+      "1": 330,
+      "2": 15,
+      "3": 1
+    },
+    "stone": {
+      "0": 15565,
+      "1": 9429,
+      "2": 8496,
+      "3": 7661,
+      "4": 7590,
+      "5": 7821,
+      "6": 8777,
+      "7": 9980,
+      "8": 13176
+    },
+    "coal": {
+      "0": 3861,
+      "1": 2555,
+      "2": 1541,
+      "3": 878,
+      "4": 447,
+      "5": 235,
+      "6": 116,
+      "7": 64,
+      "8": 30
+    },
+    "iron": {
+      "0": 2993,
+      "1": 1718,
+      "2": 757,
+      "3": 308,
+      "4": 128,
+      "5": 53,
+      "6": 20,
+      "7": 4
+    }
+  },
+  "transition_alignment": "Every selected label action/reward/termination array equals its raw stored episode array; state T+1 versus transition T lengths asserted. All termination flags equal after-health <= 0.",
+  "trace": {
+    "sha256": "9f8a2adef22f65b3d0fd3b2eec2e88d5c8866224e9afad396382b0d5847191ee",
+    "rows": 25600000,
+    "episode_starts": 80530,
+    "prediction_targets": 25519470,
+    "event_exposure": {
+      "damage": {
+        "repeated_world_targets": 499533,
+        "unique_seen": 47618,
+        "unique_available": 47618,
+        "mean_exposures": 10.490423789323366,
+        "expected_head_samples": 125296.62272884947
+      },
+      "death": {
+        "repeated_world_targets": 79980,
+        "unique_seen": 7621,
+        "unique_available": 7621,
+        "mean_exposures": 10.49468573677995,
+        "expected_head_samples": 20067.86599422458
+      },
+      "terminated": {
+        "repeated_world_targets": 79980,
+        "unique_seen": 7621,
+        "unique_available": 7621,
+        "mean_exposures": 10.49468573677995,
+        "expected_head_samples": 20067.86599422458
+      },
+      "risk": {
+        "repeated_world_targets": 303209,
+        "unique_seen": 28891,
+        "unique_available": 28891,
+        "mean_exposures": 10.494929216711087,
+        "expected_head_samples": 76065.55380299724
+      },
+      "risk_damage": {
+        "repeated_world_targets": 40123,
+        "unique_seen": 3827,
+        "unique_available": 3827,
+        "mean_exposures": 10.484191272537235,
+        "expected_head_samples": 10067.260219478385
+      },
+      "risk_death": {
+        "repeated_world_targets": 38817,
+        "unique_seen": 3701,
+        "unique_available": 3701,
+        "mean_exposures": 10.488246419886517,
+        "expected_head_samples": 9739.614705801283
+      },
+      "risk_ready": {
+        "repeated_world_targets": 98530,
+        "unique_seen": 9399,
+        "unique_available": 9399,
+        "mean_exposures": 10.483030109586126,
+        "expected_head_samples": 24718.567034078067
+      },
+      "adjacent": {
+        "repeated_world_targets": 1562150,
+        "unique_seen": 148938,
+        "unique_available": 148938,
+        "mean_exposures": 10.48859256871987,
+        "expected_head_samples": 391794.01165697334
+      },
+      "low_health": {
+        "repeated_world_targets": 1067916,
+        "unique_seen": 101698,
+        "unique_available": 101698,
+        "mean_exposures": 10.50085547405062,
+        "expected_head_samples": 267862.2265770017
+      },
+      "positive_reward": {
+        "repeated_world_targets": 1275940,
+        "unique_seen": 121550,
+        "unique_available": 121550,
+        "mean_exposures": 10.49724393253805,
+        "expected_head_samples": 320011.19950820284
+      },
+      "drink_attempt": {
+        "repeated_world_targets": 413542,
+        "unique_seen": 39435,
+        "unique_available": 39435,
+        "mean_exposures": 10.486674274121972,
+        "expected_head_samples": 103700.14987280653
+      },
+      "drink_increment": {
+        "repeated_world_targets": 413542,
+        "unique_seen": 39435,
+        "unique_available": 39435,
+        "mean_exposures": 10.486674274121972,
+        "expected_head_samples": 103700.14987280653
+      },
+      "drink_attempt_success": {
+        "repeated_world_targets": 413542,
+        "unique_seen": 39435,
+        "unique_available": 39435,
+        "mean_exposures": 10.486674274121972,
+        "expected_head_samples": 103700.14987280653
+      },
+      "drink_first": {
+        "repeated_world_targets": 45055,
+        "unique_seen": 4295,
+        "unique_available": 4295,
+        "mean_exposures": 10.49010477299185,
+        "expected_head_samples": 11298.157491412596
+      },
+      "wood_attempt": {
+        "repeated_world_targets": 681902,
+        "unique_seen": 64952,
+        "unique_available": 64952,
+        "mean_exposures": 10.498552777435645,
+        "expected_head_samples": 171026.2110880369
+      },
+      "wood_increment": {
+        "repeated_world_targets": 681902,
+        "unique_seen": 64952,
+        "unique_available": 64952,
+        "mean_exposures": 10.498552777435645,
+        "expected_head_samples": 171026.2110880369
+      },
+      "wood_attempt_success": {
+        "repeated_world_targets": 681902,
+        "unique_seen": 64952,
+        "unique_available": 64952,
+        "mean_exposures": 10.498552777435645,
+        "expected_head_samples": 171026.2110880369
+      },
+      "wood_first": {
+        "repeated_world_targets": 169861,
+        "unique_seen": 16173,
+        "unique_available": 16173,
+        "mean_exposures": 10.502751499412602,
+        "expected_head_samples": 42605.339660944446
+      },
+      "sapling_attempt": {
+        "repeated_world_targets": 1065409,
+        "unique_seen": 101550,
+        "unique_available": 101550,
+        "mean_exposures": 10.491472181191531,
+        "expected_head_samples": 267244.11318578426
+      },
+      "sapling_increment": {
+        "repeated_world_targets": 64142,
+        "unique_seen": 6110,
+        "unique_available": 6110,
+        "mean_exposures": 10.497872340425532,
+        "expected_head_samples": 16090.962649385152
+      },
+      "sapling_attempt_success": {
+        "repeated_world_targets": 64142,
+        "unique_seen": 6110,
+        "unique_available": 6110,
+        "mean_exposures": 10.497872340425532,
+        "expected_head_samples": 16090.962649385152
+      },
+      "sapling_first": {
+        "repeated_world_targets": 60509,
+        "unique_seen": 5764,
+        "unique_available": 5764,
+        "mean_exposures": 10.497744621790423,
+        "expected_head_samples": 15179.633346974344
+      },
+      "stone_attempt": {
+        "repeated_world_targets": 928734,
+        "unique_seen": 88495,
+        "unique_available": 88495,
+        "mean_exposures": 10.494762415955703,
+        "expected_head_samples": 232896.27020354796
+      },
+      "stone_increment": {
+        "repeated_world_targets": 928734,
+        "unique_seen": 88495,
+        "unique_available": 88495,
+        "mean_exposures": 10.494762415955703,
+        "expected_head_samples": 232896.27020354796
+      },
+      "stone_attempt_success": {
+        "repeated_world_targets": 928734,
+        "unique_seen": 88495,
+        "unique_available": 88495,
+        "mean_exposures": 10.494762415955703,
+        "expected_head_samples": 232896.27020354796
+      },
+      "stone_first": {
+        "repeated_world_targets": 163411,
+        "unique_seen": 15565,
+        "unique_available": 15565,
+        "mean_exposures": 10.49861869579184,
+        "expected_head_samples": 40982.79007555172
+      },
+      "coal_attempt": {
+        "repeated_world_targets": 102137,
+        "unique_seen": 9727,
+        "unique_available": 9727,
+        "mean_exposures": 10.500359823172612,
+        "expected_head_samples": 25612.702108523765
+      },
+      "coal_increment": {
+        "repeated_world_targets": 102137,
+        "unique_seen": 9727,
+        "unique_available": 9727,
+        "mean_exposures": 10.500359823172612,
+        "expected_head_samples": 25612.702108523765
+      },
+      "coal_attempt_success": {
+        "repeated_world_targets": 102137,
+        "unique_seen": 9727,
+        "unique_available": 9727,
+        "mean_exposures": 10.500359823172612,
+        "expected_head_samples": 25612.702108523765
+      },
+      "coal_first": {
+        "repeated_world_targets": 40537,
+        "unique_seen": 3861,
+        "unique_available": 3861,
+        "mean_exposures": 10.4990934990935,
+        "expected_head_samples": 10165.862045135174
+      },
+      "iron_attempt": {
+        "repeated_world_targets": 62755,
+        "unique_seen": 5981,
+        "unique_available": 5981,
+        "mean_exposures": 10.492392576492225,
+        "expected_head_samples": 15736.426353583467
+      },
+      "iron_increment": {
+        "repeated_world_targets": 62755,
+        "unique_seen": 5981,
+        "unique_available": 5981,
+        "mean_exposures": 10.492392576492225,
+        "expected_head_samples": 15736.426353583467
+      },
+      "iron_attempt_success": {
+        "repeated_world_targets": 62755,
+        "unique_seen": 5981,
+        "unique_available": 5981,
+        "mean_exposures": 10.492392576492225,
+        "expected_head_samples": 15736.426353583467
+      },
+      "iron_first": {
+        "repeated_world_targets": 31433,
+        "unique_seen": 2993,
+        "unique_available": 2993,
+        "mean_exposures": 10.502171734046108,
+        "expected_head_samples": 7882.265859477047
+      },
+      "unlock_COLLECT_WOOD": {
+        "repeated_world_targets": 70027,
+        "unique_seen": 6671,
+        "unique_available": 6671,
+        "mean_exposures": 10.497226802578323,
+        "expected_head_samples": 17568.445885167122
+      },
+      "unlock_PLACE_TABLE": {
+        "repeated_world_targets": 60939,
+        "unique_seen": 5804,
+        "unique_available": 5804,
+        "mean_exposures": 10.499483115093039,
+        "expected_head_samples": 15286.393353295774
+      },
+      "unlock_EAT_COW": {
+        "repeated_world_targets": 46909,
+        "unique_seen": 4466,
+        "unique_available": 4466,
+        "mean_exposures": 10.50358262427228,
+        "expected_head_samples": 11764.377936946083
+      },
+      "unlock_COLLECT_SAPLING": {
+        "repeated_world_targets": 51120,
+        "unique_seen": 4868,
+        "unique_available": 4868,
+        "mean_exposures": 10.501232539030402,
+        "expected_head_samples": 12824.956611636739
+      },
+      "unlock_COLLECT_DRINK": {
+        "repeated_world_targets": 43084,
+        "unique_seen": 4105,
+        "unique_available": 4105,
+        "mean_exposures": 10.495493300852619,
+        "expected_head_samples": 10805.310051177154
+      },
+      "unlock_MAKE_WOOD_PICKAXE": {
+        "repeated_world_targets": 53596,
+        "unique_seen": 5102,
+        "unique_available": 5102,
+        "mean_exposures": 10.504900039200313,
+        "expected_head_samples": 13443.49539517172
+      },
+      "unlock_MAKE_WOOD_SWORD": {
+        "repeated_world_targets": 41759,
+        "unique_seen": 3976,
+        "unique_available": 3976,
+        "mean_exposures": 10.502766599597585,
+        "expected_head_samples": 10474.948588928828
+      },
+      "unlock_PLACE_PLANT": {
+        "repeated_world_targets": 47337,
+        "unique_seen": 4507,
+        "unique_available": 4507,
+        "mean_exposures": 10.502995340581318,
+        "expected_head_samples": 11875.566893424397
+      },
+      "unlock_DEFEAT_ZOMBIE": {
+        "repeated_world_targets": 45154,
+        "unique_seen": 4300,
+        "unique_available": 4300,
+        "mean_exposures": 10.50093023255814,
+        "expected_head_samples": 11324.241245809095
+      },
+      "unlock_COLLECT_STONE": {
+        "repeated_world_targets": 49880,
+        "unique_seen": 4750,
+        "unique_available": 4750,
+        "mean_exposures": 10.501052631578947,
+        "expected_head_samples": 12510.503788086542
+      },
+      "unlock_PLACE_STONE": {
+        "repeated_world_targets": 46904,
+        "unique_seen": 4466,
+        "unique_available": 4466,
+        "mean_exposures": 10.502463054187192,
+        "expected_head_samples": 11763.880827114419
+      },
+      "unlock_EAT_PLANT": {
+        "repeated_world_targets": 1931,
+        "unique_seen": 184,
+        "unique_available": 184,
+        "mean_exposures": 10.494565217391305,
+        "expected_head_samples": 484.18374626259487
+      },
+      "unlock_DEFEAT_SKELETON": {
+        "repeated_world_targets": 26327,
+        "unique_seen": 2509,
+        "unique_available": 2509,
+        "mean_exposures": 10.493025109605421,
+        "expected_head_samples": 6602.141045376002
+      },
+      "unlock_MAKE_STONE_PICKAXE": {
+        "repeated_world_targets": 32010,
+        "unique_seen": 3047,
+        "unique_available": 3047,
+        "mean_exposures": 10.505415162454874,
+        "expected_head_samples": 8027.242799835423
+      },
+      "unlock_MAKE_STONE_SWORD": {
+        "repeated_world_targets": 31379,
+        "unique_seen": 2986,
+        "unique_available": 2986,
+        "mean_exposures": 10.508707300736772,
+        "expected_head_samples": 7869.042658295083
+      },
+      "unlock_WAKE_UP": {
+        "repeated_world_targets": 77836,
+        "unique_seen": 7416,
+        "unique_available": 7416,
+        "mean_exposures": 10.495685005393744,
+        "expected_head_samples": 19522.692942771897
+      },
+      "unlock_PLACE_FURNACE": {
+        "repeated_world_targets": 43777,
+        "unique_seen": 4169,
+        "unique_available": 4169,
+        "mean_exposures": 10.500599664188055,
+        "expected_head_samples": 10979.28389904677
+      },
+      "unlock_COLLECT_COAL": {
+        "repeated_world_targets": 35683,
+        "unique_seen": 3398,
+        "unique_available": 3398,
+        "mean_exposures": 10.501177163037081,
+        "expected_head_samples": 8948.708212182128
+      },
+      "unlock_COLLECT_IRON": {
+        "repeated_world_targets": 23634,
+        "unique_seen": 2249,
+        "unique_available": 2249,
+        "mean_exposures": 10.508670520231213,
+        "expected_head_samples": 5926.644616627671
+      },
+      "unlock_COLLECT_DIAMOND": {
+        "repeated_world_targets": 1953,
+        "unique_seen": 187,
+        "unique_available": 187,
+        "mean_exposures": 10.443850267379679,
+        "expected_head_samples": 489.7298920450021
+      },
+      "unlock_MAKE_IRON_PICKAXE": {
+        "repeated_world_targets": 10960,
+        "unique_seen": 1045,
+        "unique_available": 1045,
+        "mean_exposures": 10.488038277511961,
+        "expected_head_samples": 2748.3133059151755
+      },
+      "unlock_MAKE_IRON_SWORD": {
+        "repeated_world_targets": 11518,
+        "unique_seen": 1096,
+        "unique_available": 1096,
+        "mean_exposures": 10.50912408759124,
+        "expected_head_samples": 2888.2011797225578
+      }
+    }
+  },
+  "head_sampling_note": "Exact conditional expectation from each saved chunk eligible population and logged head-update count, with 256 uniform replacement draws per head update. Actual CUDA RNG not replayed. Repeated world exposures are not independent data."
+}

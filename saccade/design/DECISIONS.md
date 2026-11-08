@@ -7,6 +7,31 @@ artifacts/experiments/20261023_system_design/, the S0 results in artifacts/exper
 
 The first build, M0, is defined in STEP_SPEC §7; entries below marked [superseded] are history.
 
+## Canonical recipe (2026-11-07): P1-F4
+User 11-07: "make this canonical" after P1-F4's results (`artifacts/experiments/20261106_p1f4/RESULTS.md`, follow-ups in
+`20261107_f4_followups/RESULTS.md`). `saccade/` now holds exactly P1-F4's system: shortcut forcing (Dreamer 4) with dense
+long-context attention, decision 1's factorised denoiser and cascade, F1.6's joint spatial fusion, the faithful pixel
+decoder, and the learned fixation controller (`saccade/chooser.py`, F2's head and policy moved from the experiment
+folders, its hyperparameters in `m0.yaml`). Removed, with no switch left behind: EDM (preconditioning, loss, sampler, the
+sigma context), per-token time attention, the joint (tied) denoiser, the unfused belief, the NLL decoder mean, the
+uniform training gaze. Verified: the canonical trainer reproduces F4's logged first update, its chooser log and gaze
+trace bitwise; F4's checkpoint gives bitwise identical monitor and S1 one-step samples under the old and new code. The
+earlier recipes and the experiment scripts written against them run from commit fa6edd1a (they import the removed
+functions). The `edm` config section keeps its name so F4's checkpoints' configurations read unchanged.
+
+## Active experiment ownership (2026-11-02)
+At the user's request, Codex owns the P1-F1.5 readiness and emergent-fovea experiment segment. The living evidence
+map is [P2_READINESS.md](P2_READINESS.md); its bounded diagnostic protocol is
+`artifacts/experiments/20261102_p1f15_readiness/PLAN.md`. This does not authorise a new architecture or loss by itself.
+Decision 2 remains under discussion; the user asked to decide the controller's lasting action-contingency bias
+after the diagnostics. P1-F2 is still intended as the clean architectural baseline plus the agreed chooser.
+The user-approved bounded campaign is now reported in
+`artifacts/experiments/20261102_p1f15_readiness/UPTAKE_RESULTS.md`: weak native evidence use, positive exploratory
+gaze allocation, and a substantial online collection cost. These are discussion inputs, not new gates or a
+controller decision. Self-feeding is P2's training target; outcome/query consistency and sampler tuning are parked.
+P2 must reconcile detached-outcome credit and terminal-inclusive admission before implementation. P1's corpus
+was not exogenous-filtered. No overnight launch or architecture/loss/corpus change was made by the campaign.
+
 ## Agreed
 - Offline only; the actor trains in imagination. (The point of imagination training.)
 - No full-frame pixel reconstruction and no pixel-equivalent persistent state; limited pixel grounding is intended:
@@ -101,6 +126,23 @@ The first build, M0, is defined in STEP_SPEC §7; entries below marked [supersed
   weak exactly where threats matter.
 
 ## Open, in discussion
+- UP FOR DEBATE LATER (user, 11-05; nothing below is decided by a test so far; evidence in
+  artifacts/experiments/20261105_consequence_trace/RESEARCH_N1.md and RESULTS.md):
+  - Glimpse G1 weighting. EDM is kept in P1-F3 for a clean reading of the physical change. The 11-05 glimpse check
+    (glimpse field from near-pure noise beats a coarse-window regressor, F2 and F2.1) shows no conditioning-use
+    deficit; it does NOT establish EDM as optimal, and no frozen measurement can select a weighting (it acts through
+    training). Candidates: EDM (sigma_data 1 or 0.5), x-space, Kingma & Gao's sigmoid (as a total weighting, with
+    1/p under our draws), P2, Min-SNR, EDM2-style learned per-level weighting.
+  - Physical G1 weighting beyond P1-F3's x-space arm: the same candidates, read on the consequence trace.
+    ADOPTED 11-06 (user): P1-F3's physical x-space loss (scale 3.425, glimpse EDM) is canonical, cfg
+    edm.g1_weighting in saccade code (m0.yaml documents it; absent = EDM). Evidence: P1-F3 RESULTS.md (broad lift of
+    the conditional fields, partial on coal / iron). F2.1's evaluation seal broken by this (its uptake not run, user).
+  - Learned / adaptive weightings together: the chooser's surprise / contingency weighting (decision 2's lasting
+    action-contingency bias, still open), EDM2-style per-level uncertainty weighting, the HarmonyDream harmoniser
+    (measured rate-limited, 10-31).
+  - Sampling: the 3-step Euler sampler decodes per-row probabilities by majority vote (RESULTS 5, 7); more steps vs
+    shortcut forcing (Dreamer 4) is a speed / fidelity choice. A sampler fix is necessary, not sufficient (user):
+    P2 is still needed for overall world stability, sampling persistence and identity.
 - Records design v3 (RECORDS.md), AGREED in direction (user, 10-26): one coherent association per step, per-object
   position hypotheses, layered ownership, presence vs visibility (no dormant state), births = inactive records
   activating, amortised correction (observation stage unchanged), imagination samples one world while the actor reads
@@ -158,3 +200,59 @@ M0's architecture, budgets and held-out split remain as declared. Corrections:
 - Correct the launch working directory and the reward-gradient explanation: clipping factor is not Adam update size.
 - Original audit results remain in artifacts/experiments/20261027_m0_implementation_audit; correction protocol/results
   are in artifacts/saccade_m0/checks/review_fixes. P2/P3 and their gradient checks remain deferred.
+
+
+### 2026-11-02 status: conditional fine-evidence follow-up (no new design choice)
+
+See [campaign results](../../artifacts/experiments/20261102_foveal_information/RESULTS.md)
+and P2_READINESS §8. Raw fine tokens add entity information beyond full coarse history,
+prior emitted belief and action. Much less consistent advantage is accessible through
+whole-crop mixing and existing emitted memory; negative carry probing does not prove
+erasure. No unique causal training diagnosis or repair selected. Cheap endogenous
+self-distillation/direct expectation heads are research candidates, with batching and
+proper NOOP-prefix teacher contracts explicit. No P1-F2 launch authorized by these tests.
+
+### 2026-11-02: approved P1-F1.6 spatial fusion experiment
+The user approved a from-scratch F1.5 comparison: every fine-to-belief input passes
+through a shared local88->128->64 GELU joint coarse/fine/light transform. Its output
+uses the existing token out_map; the raw fine bypass is removed, the ordinary coarse
+path and256D projection remain. This supersedes the untrained optional16D residual
+prototype. No new chooser, loss, sampler, corpus or budget. The observation targets,
+TSP timeline and short fine-context cache are unchanged; this is a belief-interface
+experiment, not a demonstrated global architectural repair. Protocol, papers,
+pre-launch proof and one-shot training/evaluation orchestration:
+`artifacts/experiments/20261102_p1f16/`. Seed1 only; matched F1.5 battery follows
+automatically on the checkpoint selected by the existing monitor rule.
+
+### 2026-11-03: F1.6 evaluated; no new architecture selected
+Training25.6M frames and the full matched battery completed; checkpoint10 by the
+original monitor rule. All48 pinned sources match; F1.5's repeated actor-interface
+readings reproduce exactly. Fusion improves several consequences and real-pixel
+reconstruction but worsens risky generated damage/death and cows. The intended
+useful-look repair is not demonstrated: the original whole-map reading and a
+matched58-scene source-local/native-TSP follow-up remain negligible, including
+the40-scene common fine-readable subset. Connected sensitivity is not semantic
+retention. Detailed evidence and limits:
+[review](../../artifacts/experiments/20261103_p1f16_review/RESULTS.md).
+No automatic adoption as a global upgrade, no new repair or P2/actor launch.
+
+
+### 2026-11-03 — P1-F2 single-change preparation
+
+User specifies F1.6 base, changing only fixation policy; explicitly retains the
+original combined-score softmax with equal normalized C/S weights and20% uniform
+exploration. Original8-frame101584-param coarse-only Head, not E3's matched
+ablation architecture. No belief-conditioned chooser, new world loss, corpus
+change or foveal-route repair. Experiment contract, online-clock working choice,
+isolation/resume checks and paired automatic evaluation:
+`artifacts/experiments/20261103_p1f2/PLAN.md`. Preparation/smokes authorized;
+overnight training remains unlaunched until requested. This is a first online
+acquisition test, not an adopted proven replacement for P2/P3 VoI.
+
+### 2026-11-03 — P1-F2 launch authorized
+
+User authorized the prepared P1-F2 and its automatic post-training evaluation;
+mixer diagnosis is on hold pending those results. Launched22:38AEDT,
+`saccade-p1f2.service`, invocation`08ad625927a347fd927753069220097f`.
+No recipe amendment. Frozen pre-launch PLAN remains historical; launch identity,
+source archive and live status reside in`artifacts/experiments/20261103_p1f2/`.

@@ -1,0 +1,30 @@
+{
+ "samples": 500,
+ "keys": 16,
+ "render_check_max_abs_pixel_diff": 0,
+ "share of steps with any varying cell": 0.816,
+ "varying cells per step (of 81): mean, median, p90, max": [
+  17.084,
+  4.0,
+  63.0,
+  64
+ ],
+ "CONTENT (daylight render): share of steps with a varying map cell": 0.78,
+ "CONTENT: varying map cells per step (of 63): mean, median, p90, max": [
+  3.182,
+  3.0,
+  7.0,
+  13
+ ],
+ "CONTENT: share of steps with a varying HUD cell": 0.036,
+ "share of steps where this part varies across keys": {
+  "hud_body": 0.006,
+  "inventory": 0.03,
+  "zombies": 0.998,
+  "cows": 1.0,
+  "skeletons": 0.992,
+  "arrows": 0.014,
+  "map": 0.0
+ },
+ "share of steps whose recorded HUD pixels equal key 0's": 0.998
+}

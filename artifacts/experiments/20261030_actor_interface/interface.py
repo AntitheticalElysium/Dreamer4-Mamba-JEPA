@@ -82,8 +82,10 @@ def classes(L, rng):
 
 
 @torch.no_grad()
-def futures(model, enc, L, tuples, K, cfg, gen):
-    """K production futures per history; the outcome heads on the generated and on the recorded successor."""
+def futures(model, enc, L, tuples, K, cfg, gen, choose=None):
+    """K production futures per history; the outcome heads on the generated and on the recorded successor. `choose`
+    (optional, closed-loop gaze): the batch's (episode, t) rows -> the cascade's hook (p, v) -> fixation, which sets the
+    generated frame's window from its own physical stage; the generated percept is then read at that window."""
     den, ob = model.denoiser, model.outcome
     v = ob.bin_value
     s_off = np.r_[0, np.cumsum(L["ep_T"] + 1)]
@@ -102,12 +104,15 @@ def futures(model, enc, L, tuples, K, cfg, gen):
                                        model.belief.memory(take("bp", dt).float())[:, None], take("fix", dt)[:, None],
                                        cache, cfg, gen)
             shapes = [tuple(enc[0][k].shape[1:]) for k in ("p", "g", "v")]
-            bp = take("bp", 0).float()
+            bp, fix = take("bp", 0).float(), take("fix", 0)[:, None]
             xg = M.sample(den, shapes, take("prev_action", 0)[:, None], model.belief.memory(bp)[:, None],
-                          take("fix", 0)[:, None], cache, cfg, gen)
-            for name, parts, r_in in (("gen", tuple(a[:, 0] for a in xg), None),
-                                      ("rec_head", tuple(take(k, 0).float() for k in ("p", "g", "v")), take("reward", 0).float())):
-                h = ob.features(bp, model.belief.percept_embed(M.Percept(*parts, take("fix", 0)))).float()
+                          fix, cache, cfg, gen, choose=None if choose is None else choose([batch[i] for i in rows]))
+            if choose is not None:
+                xg, fix = xg
+            for name, parts, fx, r_in in (("gen", tuple(a[:, 0] for a in xg), fix[:, 0], None),
+                                          ("rec_head", tuple(take(k, 0).float() for k in ("p", "g", "v")), take("fix", 0),
+                                           take("reward", 0).float())):
+                h = ob.features(bp, model.belief.percept_embed(M.Percept(*parts, fx))).float()
                 p = ob.bin_logp(h).exp()
                 r = ob.sample_reward(h, gen) if r_in is None else r_in
                 for q, val in (("unlock_p", (p * (v > 0.5)).sum(-1)), ("exp_reward", (p * v).sum(-1)),

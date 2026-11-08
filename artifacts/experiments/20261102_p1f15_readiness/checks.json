@@ -1,0 +1,22 @@
+{
+ "training_source_hashes_unchanged": {
+  "saccade/model.py": true,
+  "saccade/train.py": true,
+  "saccade/data.py": true,
+  "saccade/m0.yaml": true
+ },
+ "checkpoint_sha256": "95fa2cc82cb9dc3cae11cbf9f44f880aff17e250de639911f39d159564978128",
+ "all_evidence_json_parses": true,
+ "broken_markdown_file_links": [],
+ "diagnostic_files": {
+  "gradients.py": "9c4031ab26f79fbea591b49ef56721fd81cec6e27bc787a5e30ed60cbbfdc079",
+  "solver.py": "2a66f335c9c06a76b77d3b07e793dd9f21e13139970ae740ca797f92b17dc2d8",
+  "geometry.py": "63b2085e5b6a87fbd05bc74766112cbc768086097162f7add6e4aa8d247e72d3",
+  "coverage.py": "738b41a8375fc6fb04ad7b58b8b8d98fad93c7c3ee87355a0575d4c798c790b6",
+  "analyze.py": "a3fc03b0bb4985184770373f6bb6cc62c9fdf1edb7f72d3fe2320373724b0dd8",
+  "recursion.py": "c7c95cffa65ce590c001d562fb9afc8e915f094d79ff8b59e6a69a9a38eca238"
+ },
+ "independent_terminal_counts_agree": true,
+ "current_plan_sha256": "61949988ebf6f6869fdf7caf36740e90d286a35ddd35c1c34356544eb16554b1",
+ "note": "Plan extended with declared follow-ups; original protocol hashes remain in each raw run identity."
+}

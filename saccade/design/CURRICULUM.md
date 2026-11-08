@@ -3,6 +3,23 @@
 Three different clocks: (1) how far back the belief must remember (memory), (2) how robust the world is to reading its
 own generated percepts (self-feeding), (3) how far imagination runs for the actor (horizon). Working numbers.
 
+Status 2026-11-02: P1-F1.5 is complete; P2/P3 are not implemented. The bounded native rollout diagnosis and
+training-support count are in [P2_READINESS.md](P2_READINESS.md). In particular, the detached reward/termination
+draws below do not provide their probability-gradient terms, and the long exogenous windows barely cover mining
+or combat achievements. Reusing the complete-window bank would also select on future survival: real terminations
+occur only at the last position, despite the absorbing convention below. Admission, terminal padding and the
+exogenous action schedule must be reconciled before P2 implementation. The contract remains recorded below;
+resolving those limits requires discussion, not an automatic loss/curriculum amendment.
+
+Discussion status 2026-11-02: poor self-feeding in P1 is a measured starting condition for P2,
+not by itself evidence against the architecture: P1 never updates its belief from generated
+percepts. Outcome/query consistency is parked for now. Extra sampling partially improves
+generated consequences but does not repair them; retain that limitation without adding a
+sampler change to F2. P2's objective must explicitly address the detached-outcome credit
+limitation above before implementation; merely including sampled rewards/deaths in an
+energy-score vector supplies no gradient for their probabilities. The precise estimator
+or forecast-space objective remains a design discussion, not an adopted repair.
+
 ## Facts
 - Episode lengths (train): eps 0.1 median 478 (p90 1,530, max 2,500); eps 0.25 median 240; eps 0.5 median 184;
   eps 1.0 median 135 (p90 235, max 444). Long histories come from expert-heavy episodes; fully random episodes
@@ -85,7 +102,7 @@ recorded future is only valid one step after a real history (DaD, Venkatraman et
   m = 2 independent rollouts). Gradient contract (agreed 10-27): a truncated PATHWISE gradient through the continuous
   sampling and the belief update of the last 2 generated steps; reward and termination draws are DETACHED (their heads
   train only by the one-step likelihood losses, G3); fixations come from the random prior, independent of the
-  recorded future, and are shared by the samples and the recording. The implementation check confirms nonzero
+  recorded future, and are shared by the samples and the recording. The P2 implementation check must confirm nonzero
   gradients into the denoiser and the update, none into the encoder or the outcome heads.
   Termination in these samples is SAMPLED with an explicit terminal convention (after termination: absorbing state,
   percepts masked, reward 0, termination = 1), the same convention applied to recorded trajectories; survival-weighted

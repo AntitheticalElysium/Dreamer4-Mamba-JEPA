@@ -1,0 +1,6 @@
+smoke/
+readings/*.pt
+readings/*.npz
+finetune/
+*.log
+__pycache__/

@@ -1,0 +1,8 @@
+{
+  "future_fine_excluded": true,
+  "future_coarse_excluded_from_physical": true,
+  "future_coarse_supplied_to_fine": true,
+  "independent_query_support": true,
+  "world_frozen": true,
+  "side_gradient_nonzero": true
+}

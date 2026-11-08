@@ -1,0 +1,68 @@
+{
+ "labels_rule": {
+  "p_wake_asleep_energy9": 1.0,
+  "p_wake_asleep_energy_below9": 0.017943653573824252
+ },
+ "f2": {
+  "mean_positive": 0.06489872932434082,
+  "truth_positive": 0.01708984375,
+  "false_mass_share_asleep": 0.899808406829834,
+  "positive_truth_negative_asleep": 0.21958313882350922,
+  "positive_truth_negative_awake": 0.007079712580889463,
+  "asleep_stays_asleep": {
+   "n": 1748,
+   "wake_up_not_yet": 0.49874022603034973,
+   "wake_up_done": 9.430184036318678e-06,
+   "by_energy": {
+    "6": [
+     32,
+     1.7732700143824331e-06
+    ],
+    "7": [
+     252,
+     0.1867598593235016
+    ],
+    "8": [
+     1464,
+     0.2390318512916565
+    ]
+   }
+  },
+  "true_wake_steps": {
+   "n": 124,
+   "positive": 0.31435757875442505,
+   "truth_rewarded": 0.5161290322580645
+  }
+ },
+ "f3": {
+  "mean_positive": 0.0571671724319458,
+  "truth_positive": 0.01708984375,
+  "false_mass_share_asleep": 0.8740310668945312,
+  "positive_truth_negative_asleep": 0.1856565624475479,
+  "positive_truth_negative_awake": 0.00774787412956357,
+  "asleep_stays_asleep": {
+   "n": 1748,
+   "wake_up_not_yet": 0.4216802418231964,
+   "wake_up_done": 1.004902514978312e-05,
+   "by_energy": {
+    "6": [
+     32,
+     5.730843213314074e-07
+    ],
+    "7": [
+     252,
+     0.15760011970996857
+    ],
+    "8": [
+     1464,
+     0.20215286314487457
+    ]
+   }
+  },
+  "true_wake_steps": {
+   "n": 124,
+   "positive": 0.258110374212265,
+   "truth_rewarded": 0.5161290322580645
+  }
+ }
+}

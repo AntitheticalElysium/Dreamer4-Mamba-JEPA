@@ -1,0 +1,40 @@
+{
+  "snapshot_rounds": 116,
+  "random_flags_checked_transitions": 670941,
+  "random_actions_exact": true,
+  "actual_post_switch_replays": [
+    {
+      "shard": "shard-000008.pt",
+      "round": 8,
+      "slot": 1,
+      "T": 603,
+      "prefix": 512,
+      "every_retained_frame_exact": false,
+      "maximum_pixel_difference": 1,
+      "different_pixel_channels": 134,
+      "total_pixel_channels": 7179921,
+      "different_frames": 8,
+      "first_different_frame": 110,
+      "every_reward_exact": true,
+      "every_termination_exact": true
+    },
+    {
+      "shard": "shard-000008.pt",
+      "round": 8,
+      "slot": 2,
+      "T": 567,
+      "prefix": 512,
+      "every_retained_frame_exact": false,
+      "maximum_pixel_difference": 1,
+      "different_pixel_channels": 396,
+      "total_pixel_channels": 6751269,
+      "different_frames": 17,
+      "first_different_frame": 60,
+      "every_reward_exact": true,
+      "every_termination_exact": true
+    }
+  ],
+  "backend": "cpu",
+  "original_all_frames_exact_gate_passed": false,
+  "interpretation": "Original CPU cross-backend pixel-exact assertion failed; this rerun quantifies the failure without relaxing that gate. Native GPU parity and within-GPU replay are separate checks."
+}

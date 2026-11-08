@@ -1,0 +1,527 @@
+{
+  "mob/cows": {
+    "present_correct": {
+      "mean": 0.4140625,
+      "case_bootstrap_95": [
+        0.3020833333333333,
+        0.5338541666666666
+      ],
+      "cases": 12
+    },
+    "absent_correct": {
+      "mean": 1.0,
+      "case_bootstrap_95": [
+        1.0,
+        1.0
+      ],
+      "cases": 12
+    },
+    "pass": false,
+    "cases": [
+      {
+        "index": 11,
+        "episode": 2,
+        "previous8_visible": 0,
+        "present_correct": 0.40625,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 20,
+        "episode": 8,
+        "previous8_visible": 0,
+        "present_correct": 0.375,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 29,
+        "episode": 11,
+        "previous8_visible": 0,
+        "present_correct": 0.15625,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 40,
+        "episode": 20,
+        "previous8_visible": 0,
+        "present_correct": 0.28125,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 50,
+        "episode": 41,
+        "previous8_visible": 0,
+        "present_correct": 0.5,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 53,
+        "episode": 42,
+        "previous8_visible": 0,
+        "present_correct": 0.84375,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 59,
+        "episode": 53,
+        "previous8_visible": 0,
+        "present_correct": 0.3125,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 61,
+        "episode": 60,
+        "previous8_visible": 0,
+        "present_correct": 0.46875,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 63,
+        "episode": 62,
+        "previous8_visible": 0,
+        "present_correct": 0.53125,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 65,
+        "episode": 65,
+        "previous8_visible": 0,
+        "present_correct": 0.375,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 66,
+        "episode": 70,
+        "previous8_visible": 0,
+        "present_correct": 0.0625,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 67,
+        "episode": 71,
+        "previous8_visible": 0,
+        "present_correct": 0.65625,
+        "absent_correct": 1.0
+      }
+    ]
+  },
+  "mob/skeletons": {
+    "present_correct": {
+      "mean": 0.1640625,
+      "case_bootstrap_95": [
+        0.09114583333333333,
+        0.2421875
+      ],
+      "cases": 12
+    },
+    "absent_correct": {
+      "mean": 1.0,
+      "case_bootstrap_95": [
+        1.0,
+        1.0
+      ],
+      "cases": 12
+    },
+    "pass": false,
+    "cases": [
+      {
+        "index": 56,
+        "episode": 46,
+        "previous8_visible": 0,
+        "present_correct": 0.25,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 69,
+        "episode": 95,
+        "previous8_visible": 0,
+        "present_correct": 0.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 71,
+        "episode": 98,
+        "previous8_visible": 0,
+        "present_correct": 0.28125,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 73,
+        "episode": 100,
+        "previous8_visible": 0,
+        "present_correct": 0.1875,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 78,
+        "episode": 166,
+        "previous8_visible": 0,
+        "present_correct": 0.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 80,
+        "episode": 243,
+        "previous8_visible": 0,
+        "present_correct": 0.125,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 81,
+        "episode": 281,
+        "previous8_visible": 0,
+        "present_correct": 0.0625,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 86,
+        "episode": 387,
+        "previous8_visible": 0,
+        "present_correct": 0.1875,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 87,
+        "episode": 0,
+        "previous8_visible": 6,
+        "present_correct": 0.46875,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 89,
+        "episode": 1,
+        "previous8_visible": 6,
+        "present_correct": 0.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 90,
+        "episode": 2,
+        "previous8_visible": 1,
+        "present_correct": 0.15625,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 91,
+        "episode": 6,
+        "previous8_visible": 2,
+        "present_correct": 0.25,
+        "absent_correct": 1.0
+      }
+    ]
+  },
+  "mob/zombies": {
+    "present_correct": {
+      "mean": 0.14322916666666666,
+      "case_bootstrap_95": [
+        0.0859375,
+        0.203125
+      ],
+      "cases": 12
+    },
+    "absent_correct": {
+      "mean": 1.0,
+      "case_bootstrap_95": [
+        1.0,
+        1.0
+      ],
+      "cases": 12
+    },
+    "pass": false,
+    "cases": [
+      {
+        "index": 2,
+        "episode": 0,
+        "previous8_visible": 0,
+        "present_correct": 0.25,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 45,
+        "episode": 32,
+        "previous8_visible": 0,
+        "present_correct": 0.28125,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 49,
+        "episode": 36,
+        "previous8_visible": 0,
+        "present_correct": 0.03125,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 54,
+        "episode": 44,
+        "previous8_visible": 0,
+        "present_correct": 0.0625,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 60,
+        "episode": 53,
+        "previous8_visible": 0,
+        "present_correct": 0.09375,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 64,
+        "episode": 63,
+        "previous8_visible": 0,
+        "present_correct": 0.0625,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 68,
+        "episode": 73,
+        "previous8_visible": 0,
+        "present_correct": 0.03125,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 70,
+        "episode": 96,
+        "previous8_visible": 0,
+        "present_correct": 0.1875,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 72,
+        "episode": 99,
+        "previous8_visible": 0,
+        "present_correct": 0.28125,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 74,
+        "episode": 116,
+        "previous8_visible": 0,
+        "present_correct": 0.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 76,
+        "episode": 121,
+        "previous8_visible": 0,
+        "present_correct": 0.15625,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 77,
+        "episode": 139,
+        "previous8_visible": 0,
+        "present_correct": 0.28125,
+        "absent_correct": 1.0
+      }
+    ]
+  },
+  "terrain/stone": {
+    "present_correct": {
+      "mean": 0.90625,
+      "case_bootstrap_95": [
+        0.7473958333333334,
+        1.0
+      ],
+      "cases": 12
+    },
+    "absent_correct": {
+      "mean": 1.0,
+      "case_bootstrap_95": [
+        1.0,
+        1.0
+      ],
+      "cases": 12
+    },
+    "pass": true,
+    "cases": [
+      {
+        "index": 0,
+        "episode": 0,
+        "previous8_visible": 0,
+        "present_correct": 1.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 5,
+        "episode": 1,
+        "previous8_visible": 0,
+        "present_correct": 0.96875,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 9,
+        "episode": 2,
+        "previous8_visible": 0,
+        "present_correct": 1.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 12,
+        "episode": 3,
+        "previous8_visible": 0,
+        "present_correct": 1.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 15,
+        "episode": 6,
+        "previous8_visible": 0,
+        "present_correct": 1.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 18,
+        "episode": 7,
+        "previous8_visible": 0,
+        "present_correct": 0.84375,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 19,
+        "episode": 8,
+        "previous8_visible": 0,
+        "present_correct": 1.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 24,
+        "episode": 10,
+        "previous8_visible": 0,
+        "present_correct": 1.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 30,
+        "episode": 11,
+        "previous8_visible": 0,
+        "present_correct": 0.0625,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 31,
+        "episode": 17,
+        "previous8_visible": 0,
+        "present_correct": 1.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 34,
+        "episode": 18,
+        "previous8_visible": 0,
+        "present_correct": 1.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 39,
+        "episode": 20,
+        "previous8_visible": 0,
+        "present_correct": 1.0,
+        "absent_correct": 1.0
+      }
+    ]
+  },
+  "terrain/tree": {
+    "present_correct": {
+      "mean": 0.9765625,
+      "case_bootstrap_95": [
+        0.9322916666666666,
+        1.0
+      ],
+      "cases": 12
+    },
+    "absent_correct": {
+      "mean": 1.0,
+      "case_bootstrap_95": [
+        1.0,
+        1.0
+      ],
+      "cases": 12
+    },
+    "pass": true,
+    "cases": [
+      {
+        "index": 1,
+        "episode": 0,
+        "previous8_visible": 0,
+        "present_correct": 1.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 7,
+        "episode": 1,
+        "previous8_visible": 0,
+        "present_correct": 0.75,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 8,
+        "episode": 2,
+        "previous8_visible": 0,
+        "present_correct": 1.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 13,
+        "episode": 3,
+        "previous8_visible": 0,
+        "present_correct": 1.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 14,
+        "episode": 6,
+        "previous8_visible": 0,
+        "present_correct": 1.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 17,
+        "episode": 7,
+        "previous8_visible": 0,
+        "present_correct": 1.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 21,
+        "episode": 8,
+        "previous8_visible": 0,
+        "present_correct": 1.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 25,
+        "episode": 10,
+        "previous8_visible": 0,
+        "present_correct": 0.96875,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 28,
+        "episode": 11,
+        "previous8_visible": 0,
+        "present_correct": 1.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 32,
+        "episode": 17,
+        "previous8_visible": 0,
+        "present_correct": 1.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 35,
+        "episode": 18,
+        "previous8_visible": 0,
+        "present_correct": 1.0,
+        "absent_correct": 1.0
+      },
+      {
+        "index": 38,
+        "episode": 20,
+        "previous8_visible": 0,
+        "present_correct": 1.0,
+        "absent_correct": 1.0
+      }
+    ]
+  }
+}

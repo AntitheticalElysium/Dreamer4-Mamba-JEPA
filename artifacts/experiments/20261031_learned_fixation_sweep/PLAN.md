@@ -332,3 +332,61 @@ learnability alone did not move looks toward the action's locus (faced tile on D
   (c): learnability is not worth its reference model (contingency + floor); claim: keep the product.
 - **Limits.** As H (frozen P1-F inputs, heads only, full feedback, one seed); the need is computed from the frozen
   world, not the world being trained; the base is untuned.
+
+## H3. Can learnability come from the system itself, before the crop? (`selection.py --arms=uniform,excess,priority`, GPU; TEACHING 13; proposed, awaiting the user's go-ahead)
+User 11-01: a separately pretrained reference is an artificial dependency for an autonomous learner. Codex (P1-F2
+review section 2): selecting a crop by its realized score is outcome-dependent (a curator, not a chooser).
+- **Arms** (H's harness, same frames / batches / coin flips / budget / learners; uniform re-run as the reproduction
+  check; RHO learnability and need x learnability compared from H / H2's identical-code runs):
+  - excess (realized, the oracle form of the endogenous score): the learner's MSE at each window minus its OWN scale
+    head's predicted noise (logistic variance pi^2 s^2 / 3, the head reading only lighting and position: AMA's
+    error-minus-aleatoric, DEUP's excess risk); outcome-dependent, like H's arms.
+  - priority (the deployable, pre-crop form): a small head reading frame t's periphery tokens at the window's cells,
+    the lighting latent and the predicted belief — what a same-frame periphery-then-fovea timeline has before the
+    crop — regressed each step on the CURRENT learner's realized excess error at all 49 windows of a batch from the
+    OTHER half of the episodes (out-of-sample errors, DEUP's prescription; it never sees the realized scores of the
+    frames it selects), arg-max of its prediction with epsilon 0.2. Widths PixelDecoder's; targets x 100.
+- **Readings** as H / H2 (random rows, DO consequence windows, need-weighted, night; selections), plus the priority
+  head's per-row rank correlation with the realized excess on the evaluation rows at the end.
+- **Claim.** excess recovers RHO's gain without a reference (sr: 14-24% fewer steps mid-budget), and priority keeps
+  most of it from pre-crop inputs.
+- **Competing.** (a) The scale head's noise floor is too coarse: excess ~ error, so it inherits error's failure on the
+  forward target (H: +17%); (b) the excess error cannot be predicted from the periphery before the crop: priority ~
+  uniform; (c) priority works for super-resolution only (its periphery inputs predict super-resolution error, not the
+  forward view's).
+- **Rules out.** (a): the endogenous floor needs content-aware aleatoric estimation (the generator's spread) before it
+  can replace the reference; (b): a pre-crop chooser cannot buy the selection gain in this form (the gain then needs
+  the realized crop, i.e. a curator with its selection bias); claim: the reference model is not needed.
+- **Limits.** As H (frozen P1-F inputs, heads only, one seed); the timeline is simulated (the priority head reads the
+  current periphery the learner also reads for super-resolution, not for the forward view); the priority head trains
+  while the learner changes (DEUP's non-stationarity; no stationarizing features).
+- **Amendments before launch (Codex's H3 review, `../20261101_h3_design_review/REVIEW.md`; user 11-01: launch).**
+  (1) Crash fixed: the priority head is taken out of the stats once, not per evaluation batch; the smoke now
+  evaluates 477 rows (two batches). (2) Tie-aware (average) ranks for every rank correlation; NaN on constant rows.
+  (3) A fourth arm, priority_raw: the same head and training predicting RAW error, so the floor subtraction's own
+  contribution is measured. (4) Logged: error and floor at the chosen window and over all windows (run means and
+  every 250 steps); the priority head's regression loss, target variance and held-batch rank correlation every 250
+  steps; final rank correlation with realized excess and with raw error on the evaluation rows; learner and priority
+  weights saved. (5) Interpretation narrowed (Codex, conceded): the scale head pools residuals by lighting and
+  position, so it absorbs position-wide LEARNABLE error too (a deterministic, mispredicted target gets a negative
+  excess with the native likelihood); the score is error above the position's typical error, not a separation of
+  ignorance from noise; pi^2 s^2 / 3 is the continuous logistic's variance, close to the discretised bounded
+  likelihood's only at small interior scales (at initialisation, s ~ 1, it is 3.29 against ~0.68: the floor dominates
+  until the scale head learns, a transient the 250-step log shows). (6) The forward arm's chooser sees the current
+  periphery, its learner the previous one: a selection experiment, not evidence for a leak-free forward conditional.
+  A negative rejects this score / predictor setup, not reference-free foveation; a positive shows useful selection,
+  not that the scale measures irreducible noise.
+- **Dissection additions (11-01 20:50, written AFTER seeing sr excess's selection, evaluation curve and score-parts
+  log, before the other arms finished; post hoc, labelled so in RESULTS).** sr excess ends +62% above uniform (+159%
+  at step 3000), HUD windows chosen 7.9% of the time (uniform 28.5%), final HUD error 3.5x uniform's; its floor
+  (pi^2 s^2 / 3, all windows) rises from 0.055 at step 1250 to 0.23 at 5750 while the error falls to 0.0022 (~100x).
+  Suspected mechanism, to be measured, not assumed: pixel_nll's absorbing edge bins (PixelCNN++) give a saturated
+  pixel (0 / 255) whose mean sits on the wrong side an NLL that falls monotonically to log 2 as s grows, so the
+  position-only scale inflates wherever saturated content is still mispredicted (the 10-30 "NLL scale trap", now in
+  the scale alone), and pi^2 s^2 / 3 is unbounded where the bounded distribution's variance is not. Added, for every
+  arm's final heads, by window type and light: (1) the decoder's own predicted variance, exactly (the discretised,
+  bounded logistic of pixel_nll over its 256 values) beside pi^2 s^2 / 3; (2) the share of saturated pixels, the share
+  of saturated pixels mispredicted by more than one bin, and the approximate floor's part from saturated pixels;
+  (3) the uniform learner's heads, re-run (deterministic; its evaluation curve must equal this run's bitwise), as the
+  floor under uniform looks: inflation there too = the floor's construction; only under selection = a self-confirming
+  loop (a window deemed noisy is not looked at, so it is not learned, so it stays "noisy").

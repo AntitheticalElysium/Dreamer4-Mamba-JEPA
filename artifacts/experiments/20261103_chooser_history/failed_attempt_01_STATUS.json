@@ -1,0 +1,9 @@
+{
+  "phase": "failed",
+  "started_at": "2026-11-03T05:07:44.569018+00:00",
+  "events": [],
+  "phase_started_at": "2026-11-03T05:07:45.389032+00:00",
+  "failed_phase": "smoke",
+  "error": "CalledProcessError(1, ['/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/bin/python', '-u', '-m', 'artifacts.experiments.20261103_chooser_history.run', 'smoke'])",
+  "failed_at": "2026-11-03T05:07:47.808477+00:00"
+}

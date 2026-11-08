@@ -1,0 +1,9 @@
+{
+  "checkpoint_sha256": "95fa2cc82cb9dc3cae11cbf9f44f880aff17e250de639911f39d159564978128",
+  "paired": {
+    "queries": 71,
+    "scenes": 58,
+    "prefix_rms_max": 0.007665735669434071
+  },
+  "seconds": 314.3109610080719
+}

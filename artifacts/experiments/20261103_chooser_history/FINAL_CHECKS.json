@@ -1,0 +1,37 @@
+{
+  "checked": 74,
+  "mismatches": {},
+  "all_arms_complete": true,
+  "world_weights_unchanged": true,
+  "optimizer_steps": {
+    "1C_611601": [
+      12000
+    ],
+    "1C_611602": [
+      12000
+    ],
+    "1B_611601": [
+      12000
+    ],
+    "1B_611602": [
+      12000
+    ],
+    "8C_611601": [
+      12000
+    ],
+    "8C_611602": [
+      12000
+    ],
+    "8B_611601": [
+      12000
+    ],
+    "8B_611602": [
+      12000
+    ]
+  },
+  "extra_runtime_source_sha256": {
+    "bench_v2.py": "75a4dc8a0fae695c20de2468ced79c5d776f716917320fd5d02bd581ca66a170",
+    "bench_full_compile.py": "76d627b9708b4fa7be78431d259c7fff1570df3c95e4ab2a7d0f17c3ceeae771",
+    "plot.py": "afba951cc5886256a9720f1de4450b5ad1f4a198708411a9da709033041d150c"
+  }
+}

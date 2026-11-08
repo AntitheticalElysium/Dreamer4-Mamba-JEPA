@@ -1,0 +1,216 @@
+{
+ "exposure_per_pass (train labels: ready zombie hits by state and starting health)": {
+  "awake_h1": 1031,
+  "awake_h2": 1984,
+  "awake_h3": 1612,
+  "awake_h4": 1965,
+  "awake_h5": 2383,
+  "awake_h6": 2739,
+  "awake_h7": 4824,
+  "awake_h8": 2969,
+  "awake_h9": 9033,
+  "asleep_h1": 281,
+  "asleep_h2": 558,
+  "asleep_h3": 474,
+  "asleep_h4": 616,
+  "asleep_h5": 593,
+  "asleep_h6": 724,
+  "asleep_h7": 836,
+  "asleep_h8": 676,
+  "asleep_h9": 1900
+ },
+ "success": {
+  "f4_k4": {
+   "cells": {
+    "awake_h1": {
+     "futures": 460,
+     "drawn_drop": 0.1
+    },
+    "awake_h2": {
+     "futures": 896,
+     "drawn_drop": 0.11495535714285714
+    },
+    "awake_h3": {
+     "futures": 56,
+     "drawn_drop": 0.05357142857142857
+    },
+    "awake_h4": {
+     "futures": 96,
+     "drawn_drop": 0.10416666666666667
+    },
+    "awake_h5": {
+     "futures": 120,
+     "drawn_drop": 0.1
+    },
+    "awake_h6": {
+     "futures": 156,
+     "drawn_drop": 0.07051282051282051
+    },
+    "awake_h7": {
+     "futures": 244,
+     "drawn_drop": 0.11065573770491803
+    },
+    "awake_h8": {
+     "futures": 168,
+     "drawn_drop": 0.23214285714285715
+    },
+    "awake_h9": {
+     "futures": 444,
+     "drawn_drop": 0.38513513513513514
+    },
+    "asleep_h1": {
+     "futures": 144,
+     "drawn_drop": 0.14583333333333334
+    },
+    "asleep_h2": {
+     "futures": 232,
+     "drawn_drop": 0.10775862068965517
+    },
+    "asleep_h3": {
+     "futures": 236,
+     "drawn_drop": 0.08898305084745763
+    },
+    "asleep_h4": {
+     "futures": 332,
+     "drawn_drop": 0.1355421686746988
+    },
+    "asleep_h5": {
+     "futures": 296,
+     "drawn_drop": 0.12837837837837837
+    },
+    "asleep_h6": {
+     "futures": 344,
+     "drawn_drop": 0.14825581395348839
+    },
+    "asleep_h7": {
+     "futures": 428,
+     "drawn_drop": 0.0911214953271028
+    },
+    "asleep_h8": {
+     "futures": 340,
+     "drawn_drop": 0.052941176470588235
+    },
+    "asleep_h9": {
+     "futures": 896,
+     "drawn_drop": 0.06919642857142858
+    }
+   },
+   "spearman_exposure_vs_success": 0.10531751532562267
+  },
+  "f3_16": {
+   "cells": {
+    "awake_h1": {
+     "futures": 460,
+     "drawn_drop": 0.2326086956521739
+    },
+    "awake_h2": {
+     "futures": 896,
+     "drawn_drop": 0.296875
+    },
+    "awake_h3": {
+     "futures": 56,
+     "drawn_drop": 0.26785714285714285
+    },
+    "awake_h4": {
+     "futures": 96,
+     "drawn_drop": 0.3333333333333333
+    },
+    "awake_h5": {
+     "futures": 120,
+     "drawn_drop": 0.3333333333333333
+    },
+    "awake_h6": {
+     "futures": 156,
+     "drawn_drop": 0.24358974358974358
+    },
+    "awake_h7": {
+     "futures": 244,
+     "drawn_drop": 0.20081967213114754
+    },
+    "awake_h8": {
+     "futures": 168,
+     "drawn_drop": 0.31547619047619047
+    },
+    "awake_h9": {
+     "futures": 444,
+     "drawn_drop": 0.48873873873873874
+    },
+    "asleep_h1": {
+     "futures": 144,
+     "drawn_drop": 0.375
+    },
+    "asleep_h2": {
+     "futures": 232,
+     "drawn_drop": 0.4525862068965517
+    },
+    "asleep_h3": {
+     "futures": 236,
+     "drawn_drop": 0.2754237288135593
+    },
+    "asleep_h4": {
+     "futures": 332,
+     "drawn_drop": 0.5301204819277109
+    },
+    "asleep_h5": {
+     "futures": 296,
+     "drawn_drop": 0.43243243243243246
+    },
+    "asleep_h6": {
+     "futures": 344,
+     "drawn_drop": 0.45348837209302323
+    },
+    "asleep_h7": {
+     "futures": 428,
+     "drawn_drop": 0.40654205607476634
+    },
+    "asleep_h8": {
+     "futures": 340,
+     "drawn_drop": 0.35
+    },
+    "asleep_h9": {
+     "futures": 896,
+     "drawn_drop": 0.29129464285714285
+    }
+   },
+   "spearman_exposure_vs_success": -0.3541559583989076
+  }
+ },
+ "tools_made_per_pass (train labels)": {
+  "11": {
+   "first (0 -> 1)": 5368,
+   "1 -> 2": 1296,
+   "2 -> 3": 219,
+   "3 -> 4": 33
+  },
+  "12": {
+   "first (0 -> 1)": 3214,
+   "1 -> 2": 593,
+   "2 -> 3": 92,
+   "3 -> 4": 15
+  },
+  "13": {
+   "first (0 -> 1)": 1103,
+   "1 -> 2": 310,
+   "2 -> 3": 31,
+   "3 -> 4": 0
+  },
+  "14": {
+   "first (0 -> 1)": 4182,
+   "1 -> 2": 733,
+   "2 -> 3": 112,
+   "3 -> 4": 18
+  },
+  "15": {
+   "first (0 -> 1)": 3148,
+   "1 -> 2": 947,
+   "2 -> 3": 192,
+   "3 -> 4": 28
+  },
+  "16": {
+   "first (0 -> 1)": 1145,
+   "1 -> 2": 208,
+   "2 -> 3": 10,
+   "3 -> 4": 0
+  }
+ }
+}

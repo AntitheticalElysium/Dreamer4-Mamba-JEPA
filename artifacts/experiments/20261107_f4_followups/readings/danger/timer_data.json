@@ -1,0 +1,185 @@
+{
+ "episodes": 7672,
+ "episodes_in_labels": 8069,
+ "transitions": 2432119,
+ "counter_resets": {
+  "hunger": {
+   "visible": 86201,
+   "invisible": 2341
+  },
+  "thirst": {
+   "visible": 124383,
+   "invisible": 6648
+  },
+  "fatigue": {
+   "visible": 109223,
+   "invisible": 286
+  },
+  "recover": {
+   "visible": 49324,
+   "invisible": 50221
+  }
+ },
+ "events": {
+  "food_down": {
+   "count": 74118,
+   "per_1000_transitions": 30.47466016259895,
+   "gap since previous reset: mode, share at mode, median": [
+    26,
+    0.5693758601149518,
+    26.0
+   ],
+   "share whose previous reset was invisible": 0.01660865106991554,
+   "gap since previous VISIBLE reset: median, p90": [
+    26.0,
+    36.0
+   ],
+   "share with previous visible reset <= 8 steps back": 0.0,
+   "chance the previous visible reset is in the same chunk (64 / 256)": [
+    0.5517302224156075,
+    0.8878968228871529
+   ],
+   "per 1000 transitions by policy epsilon": {
+    "0.1": 30.196958596442265,
+    "0.25": 30.38174577745228,
+    "0.5": 30.97700266858287,
+    "1.0": 31.330760010117338
+   }
+  },
+  "drink_down": {
+   "count": 85720,
+   "per_1000_transitions": 35.24498595669044,
+   "gap since previous reset: mode, share at mode, median": [
+    21,
+    0.5983084461035931,
+    21.0
+   ],
+   "share whose previous reset was invisible": 0.00622958469435371,
+   "gap since previous VISIBLE reset: median, p90": [
+    21.0,
+    27.0
+   ],
+   "share with previous visible reset <= 8 steps back": 0.0,
+   "chance the previous visible reset is in the same chunk (64 / 256)": [
+    0.6410311187587494,
+    0.9102508986380075
+   ],
+   "per 1000 transitions by policy epsilon": {
+    "0.1": 33.427529237555866,
+    "0.25": 36.397064432950366,
+    "0.5": 38.09032616978678,
+    "1.0": 38.02433293377175
+   }
+  },
+  "energy_down_awake": {
+   "count": 52480,
+   "per_1000_transitions": 21.577891542313512,
+   "gap since previous reset: mode, share at mode, median": [
+    31,
+    0.9787728658536585,
+    31.0
+   ],
+   "share whose previous reset was invisible": 0.0,
+   "gap since previous VISIBLE reset: median, p90": [
+    31.0,
+    31.0
+   ],
+   "share with previous visible reset <= 8 steps back": 0.0,
+   "chance the previous visible reset is in the same chunk (64 / 256)": [
+    0.5122769983803354,
+    0.8780691751619665
+   ],
+   "per 1000 transitions by policy epsilon": {
+    "0.1": 22.151930628399096,
+    "0.25": 21.766909262904136,
+    "0.5": 20.438852943988735,
+    "1.0": 19.941422072661556
+   }
+  },
+  "energy_up_asleep": {
+   "count": 36151,
+   "per_1000_transitions": 14.863993085864632,
+   "gap since previous reset: mode, share at mode, median": [
+    11,
+    0.9726148654255761,
+    11.0
+   ],
+   "share whose previous reset was invisible": 0.000497911537716799,
+   "gap since previous VISIBLE reset: median, p90": [
+    11.0,
+    11.0
+   ],
+   "share with previous visible reset <= 8 steps back": 0.0,
+   "chance the previous visible reset is in the same chunk (64 / 256)": [
+    0.8266373163951205,
+    0.9566540344665431
+   ],
+   "per 1000 transitions by policy epsilon": {
+    "0.1": 16.958363859783777,
+    "0.25": 12.60279824842465,
+    "0.5": 12.140458439936603,
+    "1.0": 12.752979299777492
+   }
+  },
+  "health_up_recovery": {
+   "count": 41037,
+   "per_1000_transitions": 16.87294083883231,
+   "gap since previous reset: mode, share at mode, median": [
+    26,
+    0.49643005092964887,
+    26.0
+   ],
+   "share whose previous reset was invisible": 0.21390452518458952,
+   "gap since previous VISIBLE reset: median, p90": [
+    26.0,
+    100.0
+   ],
+   "share with previous visible reset <= 8 steps back": 0.0,
+   "chance the previous visible reset is in the same chunk (64 / 256)": [
+    0.5110616638643176,
+    0.8367644023990545
+   ],
+   "per 1000 transitions by policy epsilon": {
+    "0.1": 19.71989316711439,
+    "0.25": 18.234769075845655,
+    "0.5": 13.119808070652253,
+    "1.0": 5.5425423113721095
+   }
+  },
+  "health_down_needs": {
+   "count": 7960,
+   "per_1000_transitions": 3.2728661714332237,
+   "gap since previous reset: mode, share at mode, median": [
+    16,
+    0.38944723618090454,
+    22.0
+   ],
+   "share whose previous reset was invisible": 0.26834170854271355,
+   "gap since previous VISIBLE reset: median, p90": [
+    26.0,
+    143.0
+   ],
+   "share with previous visible reset <= 8 steps back": 0.0,
+   "chance the previous visible reset is in the same chunk (64 / 256)": [
+    0.46277481155778893,
+    0.7918749018530151
+   ],
+   "per 1000 transitions by policy epsilon": {
+    "0.1": 3.775588918220124,
+    "0.25": 2.923742390259532,
+    "0.5": 2.4454765926745807,
+    "1.0": 2.613645944449943
+   }
+  }
+ },
+ "comparison": {
+  "health_down_other": {
+   "count": 39331,
+   "per_1000_transitions": 16.171494898070367
+  },
+  "coal_up": {
+   "count": 9727,
+   "per_1000_transitions": 3.9993931218003724
+  }
+ }
+}

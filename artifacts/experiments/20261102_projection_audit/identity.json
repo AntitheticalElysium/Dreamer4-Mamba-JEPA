@@ -1,0 +1,17 @@
+{
+  "checkpoint_sha256": "95fa2cc82cb9dc3cae11cbf9f44f880aff17e250de639911f39d159564978128",
+  "script_sha256": "3a7b2b417852e36971dd514a4a920c3bc6f1d1a398c2f3cdf1738ca88192ec36",
+  "plan_sha256": "0874b5dadb7078a36ab0d27970b641a4afd6143913dec2af8178e5cd55b43293",
+  "seconds": 262.56337571144104,
+  "peak_GiB": 2.8900675773620605,
+  "files": {
+    "artifacts/experiments/20261101_p1f15/run/ckpt_10.pt": "95fa2cc82cb9dc3cae11cbf9f44f880aff17e250de639911f39d159564978128",
+    "artifacts/experiments/20261102_foveal_prediction/predict.py": "0324e1774c032b93c509254ced628cb0d7619ef61b54e2d0cb274ab3b96eb759",
+    "artifacts/experiments/20261102_foveal_prediction/train_400_future.pt": "55166d1286275533ae7f9fe1217889a626e04daebca5eb7be498a81e030c0f41",
+    "artifacts/experiments/20261102_foveal_prediction/dev_400_future.pt": "e66a47fdd3f9997f49fc884ab924deaf948dc5485c8041101d667df1d47e6d03",
+    "artifacts/experiments/20261102_foveal_prediction/dev_400.pt": "cd095258dc31da7867efba5e5e79be6ec628601eca7ea2a249cc0026f439a39c",
+    "artifacts/experiments/20261102_foveal_information/train_400.pt": "4cf955ece4ec38e07a55f63b225d414274fd72b61fabcab706237d9c61474eed",
+    "saccade/model.py": "94ccc8ec06fc66aa03851bc3df9d24500f19dcf5bc13296bf2c01cfb6d6475dc",
+    "saccade/train.py": "3eeda34a11c2c56209a3285c4c42c555a5a5a2eac4fbe5dcaedca7a9c506c850"
+  }
+}

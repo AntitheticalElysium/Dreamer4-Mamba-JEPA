@@ -1,0 +1,10 @@
+run/
+checks/
+*.pt
+*.npz
+*.log
+__pycache__/
+STATUS.json
+readings/
+eval_smoke/
+LAUNCH.json

@@ -1,0 +1,9 @@
+{
+  "physical_episode_time_gaze_parity": true,
+  "future_target_excluded": true,
+  "world_frozen": true,
+  "actual_complete_mixed_input": true,
+  "outside_crop_fine_zero": true,
+  "diagnostic_gradient_connected": true,
+  "baseline_dimension": 14310
+}

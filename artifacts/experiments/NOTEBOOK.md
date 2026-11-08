@@ -61,6 +61,632 @@ deleted; each names the claim it retires.
 
 ---
 
+## 2026-10-19 — Scalar retention: matched comparison complete; no REGRET win; native reward assay fails controls
+
+**Final corrected result:** [`20261019_scalar_retention/CORRECTED_REPORT.md`](20261019_scalar_retention/CORRECTED_REPORT.md).
+The user's correction was right: R54b/E17/independent PI localization already show some useful information in trained
+beliefs. The failed average-history reference gate did not test scalar regret. The explicitly prospective exploratory
+followthrough is now complete: exactly1000 valid updates/arm×2 original PI seeds, matched initialization/batches/
+optimizer/context, frozen Raw/no projector, fixed generic19440-function bank and corrected7379-function support.
+Fresh FIT-only common readers use disjoint AUDIT115roots/111episodes and opened DEV200roots/200episodes. No sealed set,
+new learned reference fit, native training labels, encoder/actor/PI_ENTER, original checkpoint edits or automation.
+
+**Measured negative for this recipe, not a universal regret verdict:** final fixed FIT-monitor maximum regret is
+SIMPLE1.49650/1.58829 versus REGRET1.79310/1.68144 (identical starts3.92834/3.89398). REGRET does not even beat SIMPLE
+on this finite training-monitor criterion. DEV fresh linear generic-future proper risk is SIMPLE.52159/.52664 versus
+REGRET.60401/.60660; paired seed-mean REGRET excess.081196 [.070886,.090880]. Raw-copy baseline.43035 beats all.
+Native primary MLP action gain SIMPLE−REGRET+.000477 [−.000383,.001421], history gain−.004011 [−.023756,.014821],
+full-history reward-risk gain−.059343 [−.085787,−.034527]. Registered retention support fails; AUDIT agrees.
+Do not automatically extend budgets or add matrix machinery. Optimization-gap causes remain hypotheses.
+
+**Important assay limitation, no promotion of SIMPLE as a useful world model:** DEV action-only MSE.01856 beats all
+adapted MLP points (.02067/.01972 SIMPLE;.01943/.02001 REGRET). Zero-reward H4 MSE.06418 beats all primary readers.
+Post-score no-fit decomposition shows parent action prediction variance.02883/.03130 shrinking to.00386/.00382 SIMPLE
+and.00271/.00308 REGRET, with real-effect covariance also falling. Lower action error is not demonstrated better action
+reasoning. True realized key0 current+H1/H4 Raw reward control fails: MLP.27102/ridge.38206 versus zero.06675 on identical
+key0 labels. Continuation's ridge control succeeds (.000693 versus constant.002353), validating neither reward nor all
+other endpoints. Fresh parent H1 health decrement AUROC.94563/.97463 reconfirms some accessibility; only14 positive
+episodes and no claim of complete information. Full nonlinear retention and useful imagination remain unestablished.
+
+**Genuinely new native falsifier:** source audit verifies reward=new-achievement count+.1×health change; saved DEV
+quadratic terms.061912 achievement+.004469 health−.002206 cross=.064175, identity max error5.96e-8. One predeclared
+CPU intervention on actual FIT root train_0001 (episode support-v2:20270731:395:15,t159,actions[5,6,16,3]) marks only
+new achievement bit4 already earned. Current RGB, H1/H4 RGB and physical statistics maximum differences are exactly0;
+termination identical; cumulative reward **1 versus0**. `corrected_followthrough/native_reward_alias.json`.
+Image-only future tests and a single-frame encoder cannot distinguish that pair's reward novelty. This confirms a
+generic output-channel coverage limitation; it does not explain all reader excess error or justify Craftax-specific
+training labels. No synthetic learning task, refit, replacement panel or changed primary follows from the falsifier.
+
+**Cost/integrity:** valid optimizer+monitor SIMPLE326.03/325.08s; REGRET325.37/331.96s (ratios.998/1.021), shared
+head warmup32.96s total. Frozen reference295.13s plus corrected algebra4.91s make charged per-seed ratios1.447/1.471.
+Extraction575.96s, fixed common readers61.48s. Invalid uncentered saved1950updates plus possible0–49unsaved, its
+634.52s saved optimizer/monitor and16.18s warmup, and disposable checks are additional debugging cost, not valid arms.
+All source/parent hashes, disjoint episodes, paired sampler states0/500/1000 and unchanged unused emissions pass.
+There are no remaining study jobs. No world/decision improvement is claimed.
+
+**Decision:** continue the loss-design problem; do not treat an encoder swap as its substitute. This scalar optimizer/
+test-bank recipe earns no larger run. Ordinary normalized prediction remains a cheap predictive baseline only. One
+next measurement is a separately registered readout-only repair using R54b's already successful anchored multihorizon
+assay on saved models, with explicit state-blind/true-future controls and observable consequences separated from reward
+novelty. It is not launched/queued and must not replace these failed primaries retroactively. WHITEBOARD§8/§9(1,3)
+remain the focus; chance support, sampled persistence, spatial addressing and actual decisions are not resolved here.
+
+**Preserved chronology of the original gate, invalid attempt and prospective correction follows.**
+
+**Subsequent user correction / prospective exploratory followthrough:** the user correctly points to R54b and prior
+belief-localization/E17 information-accessibility evidence. Parking scalar regret before its direct comparison was too
+strong: the failed average reference-history gate is not a measured failure of regret. The original stopped protocol and
+all its results remain unchanged. [`20261019_scalar_retention/FOLLOWTHROUGH_PROTOCOL.md`](20261019_scalar_retention/FOLLOWTHROUGH_PROTOCOL.md)
+prospectively authorizes the already requested1000updates/arm×2parents, unchanged frozen7488-function support/reference,
+all19440-function SIMPLE control, same inputs/batches/optimizer/budget and fresh native/common-reader endpoints.
+Independent outputs: `scalar_retention_v1/followthrough`. No new reference fit, encoder training, architecture, actor,
+PI_ENTER or automation. Standalone disposable-copy checks pass: dummy-future influence0, nonzero input/Mamba gradients,
+resumed next-update parameter difference0 and optimizer-state difference1.46e-11. This paragraph described the launch;
+the final corrected outcome is above. The old reference's unresolved historical benefit remains an interpretation
+limit; a positive head-only score is not success. Evaluation details fixed before fitting in FOLLOWTHROUGH_EVAL_DETAILS.md.
+
+**Confirmed calibration implementation correction, before interpreting new model scores:**
+[`20261019_scalar_retention/CORRECTION_03.md`](20261019_scalar_retention/CORRECTION_03.md). Initial raw-head production
+traces repeatedly selected low-variance functions with preclip norms7197–44651. The action-only ridge penalized its
+intercept, shrinking nonzero unconditional RFF means. Actual function7773 had apparent skill.00014567 but the fixed FIT
+mean already beat its learned reference (CAL MSE.00007884 versus.00008689). Centered action-ridge algebra with an
+unpenalized mean, same folds/ridge and fixed qualification, changes its skill to−.00000830 and excludes it. Function3872
+is also excluded. Corrected support7379 (2863/363/2952/258/943 by type), versus7488. No learned reference was refit;
+algebra/qualification correction4.91CPU seconds. This defect does not explain the old full-vs-latest history gate.
+The initial attempt is preserved/interrupted only its own process; valid saved progress: S1SIMPLE1000, S1REGRET950,
+up to49 additional unsaved REGRET updates possible. Those uncentered runs are not valid corrected comparison arms.
+New `corrected_followthrough/` starts both original parents with physical predictionsmu_FIT+sqrt(V)*head, identical fixed
+centering/scaling in both arms, same1000 valid updates/arm×2seeds and no native/Raw shortcut. No architecture or learned
+capacity added; fixed prediction coordinate preconditioning is disclosed. Original scales/data/reference predictions
+remain unchanged. New corrected source names, optimizer/RNG checkpoints and evaluations; no automatic budget extension.
+
+**Later bounded no-fit diagnosis:**
+[`20261019_scalar_retention/DECISION_AFTER_DIAGNOSIS.md`](20261019_scalar_retention/DECISION_AFTER_DIAGNOSIS.md).
+Fresh frozen inference for all89 CAL roots,2 PI parents×2 conditions, plus applying saved heads takes62.81s.
+Saved heads on original caches reproduce saved predictions exactly. Refreshing features changes the history gain
+from−.0000742983 [−.02045646,.01922789] to−.0000742330 [−.02045407,.01921940]: observed numerical differences do
+not explain gate failure. A single FIT-OOF-selected top10percent H4/temporal function subset (1,166/11,664)
+has FIT gain.088355, CAL.016580 [−.031367,.067815] over86 episodes: transferable sparse history skill unresolved.
+This post hoc check does not reverse the original gate. No new fitting/DEV/AUDIT scoring/world updates.
+Cause remains target coverage versus finite-reference learnability/interface, not established scalar-regret failure.
+The original recommendation (superseded by the prospective followthrough) parked regret/reference complexity and kept
+reference-free scale-normalized prediction as an unvalidated
+baseline, and identifies the already specified frozen native common-reader history assay as the single useful next
+measurement. That assay is neither run nor queued; no automation. Original reference/data/checkpoint pins unchanged.
+
+**Original gated attempt only, before the followthrough above:** user authorized SIMPLE scale-normalized prediction
+versus scalar predictive REGRET, with bounded reference validation
+and explicit separation of common-readout retention from world-model quality. Independent source/data destination:
+[`20261019_scalar_retention/PROTOCOL.md`](20261019_scalar_retention/PROTOCOL.md),
+`artifacts/eda/scalar_retention_v1`. No original checkpoint/source changes, automation, actor, PI_ENTER or sealed sets.
+
+Exact original selected512 TRAIN roots are reused; episode-hash splits308 FIT/89 CAL/115 AUDIT roots, plus already-open
+200 native DEV episodes. New exact simulator forks:17 initial actions×2 independent key sequences×H4, one fixed
+blind three-action continuation per root, terminal absorption. Native outcomes are evaluation-only. Replay sentinel
+checks and frozen Raw/extra-LN context parity passed (DEV maxabs .001953125<=.002). Recorded RGB contexts are used.
+New simulator collection97.41s CPU, shared Raw encoding/target preparation34.75s host GPU.
+
+**Bounded reference stage complete; no continuation:** exactly2,400 small-head updates,295.13s including frozen
+original PI s1/s2 feature extraction, under the20min cap. On89 CAL roots/86 independent episodes, full-reference
+action-contrast risk improves over copy by .022591 [.018370,.026805] atH1 and .007114 [.000914,.013263] atH4
+(variance-normalized squared-risk units, episode-bootstrap95%). But full-history versus separately fitted latest-only
+H4/temporal gain is −.000074 [−.020456,.019228]: registered history gate fails.7,488/19,440 scalar functions qualify
+against history-blind reference, but predictability qualification does not establish historical/consequential relevance.
+Post-gate, no-refit comparisons find H4 action gain over the stronger action-only baseline unresolved:
+.004359 [−.000499,.008986]. The latest-only reference has lower action-contrast risk than full history atH1/H4.
+
+Replay, Raw cache parity, source/checkpoint hashes, causal dummy-future check and zero PI-backbone BN pass. A separate
+fresh-process exact frozen-feature reproduction check does **not** pass: matched-batch rounded maxima .011719–.022461;
+within-process repeat maxima0. One fixed batch has BF16/cache RMS .001505, unchanged by disabling autocast caching;
+FP32/cache RMS .004348. Execution cause remains unresolved; preserve failed checks rather than relax/promote them.
+
+[`20261019_scalar_retention/REPORT.md`](20261019_scalar_retention/REPORT.md) records protocol, conditional fixed-cache
+results, post-gate audits and limitations. World/encoder/recurrent continuation updates0; native common readers not fit;
+no SIMPLE-versus-REGRET cost/retention result. The prepared continuation script is unrun/empirically unvalidated and
+guarded by the failed gate. No new reference family/budget, matrix escalation, services, automation or queued work.
+This is a calibration/measurement no-go for this recipe, not evidence against scalar regret, useful long memory or
+world-model quality. The user's requested retention comparison remains unanswered. WHITEBOARD§8/§9(1,3) require
+history/consequential retention, which reference-head action skill alone cannot establish.
+
+## 2026-10-19 — Objective A reassessed: spectral protection is real; first training recommendation changes
+
+**User request:** independently evaluate full versus scalar normalized regret, relevance, costs, robustness and actual
+D4MJ support. [`20261019_objective_a_reassessment/REPORT.md`](20261019_objective_a_reassessment/REPORT.md) supersedes
+the prior recommendation to start with full matrix regret; preserves its derivation and all evidence. No world/encoder
+training, simulator collection, checkpoint edits, GPU use, synthetic experiment, sealed-set access or automation.
+
+**Theoretical distinction:** full known-positive skill matrix protects every linear test-error direction; coordinate
+scalar regret protects only selected scalar functions. One ratio per large vector block is weaker again. Joint future
+functions can be scalar: dependence coverage comes from the functions, not from the residual-error covariance alone.
+Finite RFF profiles and full error matrices do not certify coherent sampled futures. Empirical eigen-truncation can
+also remove the ideal full method's directional protection. Neither formulation protects arbitrary rare conditional
+histories or resolves predictable nuisance. Worst test risk remains an average over histories.
+
+**New TRAIN-only calibration/cost audit:**285 four-frame windows/279episodes, future3 from0–2,81positions×192RFFs,
+same frozen TRAIN-calibrated bank. Fixed .01 kernel ridge,3episode folds; no semantic labels or DEV use. History-blind
+MSE.00333771; full-history reference.00324048(2.91%gain); copy.00113079(66.12%gain). A documented single post hoc
+sensitivity fits corrections to copy with the same kernel/folds/ridge: .00147743(55.74%gain), still worse than copy
+at every position. These are limited three-frame factual references, not an information ceiling or evidence against A.
+
+The risk-difference skill matrix has median99/192negative eigenvalues for pure ridge,60/192for copy-residual.
+At8fixed positions,32episode bootstraps with fixed OOF predictions retain2–4/2–5full directions under a spectral-noise
+guard, versus9–39/61–130scalar coordinates under a within-position simultaneous diagonal-noise guard. Correlated
+coordinates are not independent bits; neither guard accounts for all-group multiplicity or reference-refitting
+uncertainty. Worst-direction transfer is unstable: pure-ridge matrix71.57→−2.57 across episode halves at1e-4floor;
+coordinate2.66loses a positive denominator. Copy-residual matrix1.54→.782at .01floor, but8.39→.022at1e-4. Floors are
+sensitivities, not significance qualification. Do not promote a large in-sample eigen-regret into a semantic finding.
+
+**Measured CPU costs (2threads):** all285×81×192outputs,3fold reference fitting.514s; correction reference.312s;
+diagonal statistics1.80ms; full81×192×192risk matrices11.09ms; full eigendecomposition85.88ms; actual existing
+direction component32.42mswith smaller timing-only subspaces. Three FP32 matrices34.17MiB. Shared256→192head,
+16roots×81positions, forward/backward1.73ms;256→256→192MLP5.02ms. This is not full Mamba/world/GPU throughput.
+GPU driver access failed in this execution context. Scalarization saves spectral statistics, not the test bank,
+reliable references, heads, data replay or action coverage. Full A is not disqualified by arithmetic alone.
+
+**Recommendation:** first treatment is scalar normalized regret over individual fixed generic functions, including
+joint space/time functions; compare with a reference-free scale-normalized proper-mean predictive loss on the same
+bank/capacity. Qualify reference action/history skill beyond copy before a world continuation; the timed reference
+does not establish that. Do not use a minibatch maximum, average whole blocks, silently delete unsupported facts,
+or assume smoothing is free. Keep full-matrix TRAIN-selected/independent-episode contrast audits offline; use matrix
+training only if its added, reproducible directions matter downstream. No D4MJ result currently selects full A over
+these simpler alternatives. This changes a proposed recipe, not an empirical success claim or active experiment.
+
+**WHITEBOARD:** target retention/relevance remains distinct from coherent chance, sampled-content persistence,
+spatial retrieval and decision value. Current PI stochastic support and emission/readout compatibility limits remain.
+Artifacts include fixed plans, both negative reference results, raw predictions, source hashes and timing logs.
+
+---
+
+## 2026-10-19 — D4MJ objective design: real-data geometry rejects two shortcuts; predictive retention criterion proposed
+
+**User correction:** stop synthetic proofs; return to WHITEBOARD and actual D4MJ, define retention without Craftax
+event labels, compare objective families, and propose the smallest meaningful real-model test. Independent report
+[`20261019_d4mj_objective_design/REPORT.md`](20261019_d4mj_objective_design/REPORT.md), primary-source ledger `SOURCES.md`.
+No training, synthetic experiment, simulator collection, architecture/checkpoint change, sealed-set access or automation.
+The proposed losses are not a selected/validated D4MJ recipe.
+
+**New real-data falsification:** fixed plan reuses first32 distinct episode seeds in R55's already-open selection,
+17 actions×4 keys/root. Canonical frozen Raw backbone + extra affine-free token LN + FP16 rounding, CPU inference.
+Bounded Gaussian RFFs (64 per scale, three scales) use TRAIN-only bandwidth l=16.41332, at l/8,l/2,2l. The2,048
+calibration pairs have zero same-episode pairs; source285 TRAINwindows/279episodes, joined against original IDs.
+Persisting-content cells account for58.31% of scroll-aligned Raw copy-change energy and65.99% with bounded kernels.
+For action-centered successor features at fixed screen coordinates, shares are87.68%/80.89%; camera/view effects remain.
+Thus bounded kernels alone and action centering alone are not demonstrated allocation fixes. These are target-geometry
+fractions, not gradients, learned scores or certified irrelevant energy. HUD strata retain R55's coarse whole-frame
+any-displayed-counter-change rule. No stratum defines a training weight. `geometry_results.json`;29.51seconds.
+
+**New temporal abstraction check:** existing opened native200roots/143episodes yield82 observed H1 reward/termination
+profiles.494 cross-episode root pairs share one;190/348/429 have at least one action's H4/H8/H16 death probability
+different by≥.25. Reward has one branch/action; death uses existing32-key fans. These are not proven identical H1 laws,
+independent pair counts, or labels for fitting. Immediate outcomes alone do not specify a sufficient abstraction.
+`native_aliases.json`. Integrity passes40 source/input checks; checkpoint and cached-input hashes remain unchanged.
+
+**Design conclusion:** PSRs define observable future equivalence; bisimulation defines task-relative controlled
+equivalence; information bottlenecks require a relevance/distortion choice; JEPA noncollapse does not choose it.
+R2's predictable lighting/position drift, R55's target allocation, corrected Part B's local SIGReg/transport conflict,
+R68's downstream negative, and PI's belief/emission/support distinctions constrain the design. No BN→LN inference.
+
+**Recommended hypothesis A:** freeze generic local/joint/temporal Raw-evidence tests. With TRAIN episode-cross-fitted
+history-blind and full-history predictors, normalize each reliably predictable direction by demonstrated skill, then
+minimize the worst fractional predictive regret at matched width/context. Actual futures remain targets; reference
+predictions set a comparator/scale. Do not use copy as the history-blind baseline: it would exempt persistent facts.
+This avoids Raw amplitude/count defining the loss budget; it does not identify all predictable nuisance or protect
+unresolved rare facts. Fixed width is not measured bits or proof that capacity binds. Conditional mean profiles are
+not concrete imagined states. `objective_functions.py` implements components, including an unbiased two-sample profile
+score, but no integrated trainer; only syntax compilation has been run.
+
+**Alternative B:** all-action joint-law history bisimulation grounded in native reward/continuation/successor beliefs.
+It can discard rendering-only differences relative to that task, but may also discard unrewarded world detail. H1
+heads alone, on-policy equivalence and a swap-only PI transition law are not substitutes for the stated objective.
+
+**Smallest proposed real-model comparison, not launched:** qualify the generic test/reference bank on TRAIN first;
+replay existing512 TRAINroots/497episodes (old cache is CLS, not spatial), add only the missing H4 blind-tape TRAIN
+continuations, then compare uniform versus normalized-worst generic future-test risk with both actual PI backbone
+seeds, frozen Raw, matched trainable input projection/Mamba/heads and1k continuation updates. Belief-only heads
+prevent Raw-copy bypass. Episode-held-out future-law/action/history tests, followed by identical fresh readers,
+test retention rather than a supervised consequence classifier. A short negative is not a Long Mamba verdict.
+Changing belief then scoring a frozen old PI emitter would confound representation with readout compatibility;
+retaining PI's old Raw-space posterior targets also prevents a clean whole-objective replacement.
+
+**WHITEBOARD §§8–9:** A targets generic predictive retention under a fixed resource budget. Compact chance, sampled
+unknown-content persistence, spatial addressing and actual decision improvement remain separate obligations. PI's
+stochastic support restriction is unchanged. No new full training, encoder replacement, actor pilot or automation follows.
+
+---
+
+## 2026-10-19 — Consequence retention: learned delayed queries succeed; strict compressed training remains unresolved
+
+**Direct user request:** develop a precise consequence-aware objective, justify its targets with minimum existing-data
+EDA, and demonstrate a learned neural distinction before changing Raw/LeWM/PI. Separate study
+[`20261019_consequence_retention/REPORT.md`](20261019_consequence_retention/REPORT.md). CPU only; no prior source,
+checkpoint, sealed evaluation set, actor, full world training or automation changed.24 small fits, each4,000 updates;
+summed individual fit wall time220.96seconds. Source/data, optimizer/RNG and episode checks in `integrity.json`.
+
+**Specification, not a selected universal loss:** protect proper action-conditioned future-query risk relative to a
+learned training-only reference while reducing state cost. A fact must survive while it changes a protected law.
+Native rewards/continuation avoid Craftax object labels but do not define every fact a general world must preserve.
+See `OBJECTIVE.md`. Existing canonical code confirms joint prediction+SIGReg and frozen encoder during bridge;
+TC subtracts temporal means before SIGReg, regularizing temporal variation rather than explicitly retaining constants.
+
+**Minimum existing-data EDA:** opened200 roots/143 episodes,17 H1 actions, no fitting. Reward matches achievement
+delta+.1health delta (max float error2.24e-8);1,782/3,400 branches have nonzero reward. Reward varies with action at all
+roots, so blanket immediate-reward-sparsity claims are inappropriate for this panel. Existing P32 action-dependent death
+probabilities vary at22/77/174/200 roots at H1/4/8/16.20,512/27,200 action pairs share immediate reward/continuation;
+9,279 of those differ in successor pixels. Different pixels need not be consequential; immediate outcomes do not
+specify all dynamics. These evaluation forks remain evaluation-only.
+
+**Exact controlled result:** rare persistent bit S (prior.1), two static appearance bits, eight transient bits; S visible
+only at observation0, independently randomized query action after16 observations, native reward Bernoulli(.9/.1)
+depending on action/S match. Endpoint positives are not rare; S=1 is. Enumerating256 one-bit encodings gives four
+equal-weight prediction+outcome optima, all retaining appearance and choosing correctly90%; encoding S chooses100%
+but has worse sum score1.71138 versus1.16454 nats (constant transient entropy omitted). A tight native outcome constraint
+requires S. Under this family, mean regret <=2.173534×native outcome excess log loss. This is an optimum/coverage
+statement, not SGD convergence or a Craftax theorem (`PROOF.md`, `exact_results.json`).
+
+**Preserved negative feasibility findings:** two-state recurrent, GRU32+one-bit-output, and history-attention+one-bit-output
+references each collapse in all three seeds. TRAIN-CAL risk.4685–.4693 fails the predeclared<.36 gate. Main compressed
+arms are not run against an inadequate reference. All nine negative fits and pre-TEST amendments remain. A privileged
+parameter assignment verifies a successful code is representable; fresh gradients are nonzero. Neither establishes
+the unique cause of collapse or counts as learned success.
+
+**Learned separating diagnostic:** ordinary attention-pooled continuous32-state native predictor succeeds. Matched
+observation-only/sum/constrained controls share initialization, batches, head fitting and4k budget. Native readers train
+in all arms; observation-only stops their encoder gradient. Three seeds,65,536 TRAIN,16,384 TRAIN-CAL,8,192 DEV,
+32,768 independent TEST roots at each16/32-observation length; no hidden labels used for fitting/calibration. No BN/LN.
+
+| TEST16 mean | Native log loss | Correct choices | Correct rare-state choices |
+|---|---:|---:|---:|
+| Prediction only + trained native reader | .472259 | 89.938% | 0% |
+| Prediction + native outcome, coefficient1 | .326621 | 100% | 100% |
+| Prediction + learned native constraint | .326535 | 100% | 100% |
+| Native profile only | .326125 | 100% | 100% |
+| No history | .473108 | 89.938% | 0% |
+
+All3,297 rare TEST16 roots are correct in every successful fit; at twice the distractor/history length, all3,268 rare
+roots remain correct. This is buffer retrieval, not online recurrent persistence or self-fed imagination. Erasing the
+cue removes the gain; nuisance swaps change zero decisions, although probability RMS changes.019–.024: not exact
+nuisance-free state. The tiny constraint-versus-sum score difference changes direction across fitted seeds and gives no
+decision benefit; no superior generic loss is selected. Hidden32 may retain appearance; native/readout failure is not
+an information-absence proof. All constraints pass held-out empirical thresholds calibrated on TRAIN only.
+
+**New scaling counterexample:** when S has prior.001, complete forgetting loses every rare decision but costs only
+.001754 nats, passing the toy's.01 allowance. Proper scoring/average-risk constraints alone do not protect arbitrarily
+rare facts. Query coverage, horizon, exposure and tolerances remain essential (`mechanics.json`).
+
+**WHITEBOARD §§8–9:** anchored delayed native predictions teach a consequential historical distinction without semantic
+state supervision; persistent nuisance can still dominate compressed prediction. The positive result does not establish
+joint spatial chance, unknown-content persistence, spatial addressing, recursive generation or actor readiness. Reward-only
+state cannot cover arbitrary future tasks. Keep successful continuous learning, failed compressed optimization, exact
+conditional guarantee and untested D4MJ transfer separate. No encoder or PI change follows from this study.
+
+---
+
+## 2026-10-19 — Objective scaling control: learned scalar success does not ensure retention with distractors
+
+**Direct user question:** does the proposed encoder/view-consistency plus predictive-history objective follow from the
+scalar experiment, and does that result survive scale? Independent `20261019_objective_scaling/`; no Craftax data,
+checkpoints, active sources, GPU, actor, PI_ENTER or automation. `PROTOCOL.md` precedes generation/fitting.18 fixed CPU
+fits: six conditions×three seeds, identical12576-parameter GRU32/MLP, initialization, batch order and signal data;
+4000 Adam updates, batch128. Fresh independent TRAIN/DEV/TEST131072/8192/32768 episodes. Runs67–72s each, three workers.
+
+**Measured native TEST means, signal Brier / ambiguous-event forecast AUROC:** no distractors .101716/.7553;
++15 persistent .106662/.5212; +63 persistent .250123/.5208; +63 iid .108704/.5184;
+same63 persistent inputs with valid independent-appearance future targets .106132/.5652;
+same inputs with PRIVILEGED signal-only target .105482/.6344. Exact64-history reference Brier.101096.
+2464 independent ambiguous episodes(1233 changes/1231 outliers). Static63 minus baseline Brier+.148408
+[+.145854,+.150874], paired95% episode CI conditional on three fits. Cross-view minus static63
+−.143991[−.146410,−.141504]. Recovery is incomplete: privileged signal-only remains+.003766
+[+.003258,+.004263] above baseline; contextual event discrimination remains much weaker. Fixed hidden-next-bit guessing
+accuracy falls92.01%→50.82% in static63, recovers90.73%/91.11% in view/privileged controls; this is not an actor/control task.
+
+**Localization:** final weighted shared-GRU nuisance/signal gradient-norm ratios37.6/42.6/51.8 in static63, about1.04–1.26
+with cross-view targets, on four registered TRAIN batches. Near-orthogonal cosines do not establish gradient conflict.
+Post hoc matched frozen linear readers do not recover static63 future prediction(Brier.24997–.25031); regime accuracy
+49.85–50.05% versus85.64–87.49% without distractors. Current-bit linear accuracy50.91–51.50% is below random initial
+static63 features(69.24–78.71%). This localizes reduced LINEAR accessibility, not irreversible information loss. Cross-view
+regime readability54.71–55.33% also remains weak. Native view sensitivity is not invariance: cross-view signal probability
+RMSE.0645–.0676 under a valid appearance swap. Constant bad forecasts can appear more invariant. Reader labels never
+update the world. Primary scores, frozen secondary summaries and post hoc localization are separately marked.
+
+**Exact counterexample:** enumerate all256 deterministic one-bit encoders of one useful bit plus two static distractors.
+All6 joint-score and4 marginal-score global optima retain nuisance and yield50% decision success; retaining the useful
+bit yields90% but worse predictive entropy(2.468996 vs2bits). Proper-score consistency is dimension-independent;
+preference for consequential information under compression is not guaranteed. A tenfold rare-probability error(.01→.001)
+can cost only.000219789 dimension-averaged KL at64 dimensions; this is an exact illustration, not a D4MJ measurement.
+
+`REPORT.md`, `EXACT_ARGUMENT.md`, `OBJECTIVE_REFINEMENT.md` and `SOURCES.md` distinguish perceptual equivalence,
+predictive-history equivalence and task-specific decision equivalence. DBC already grounds encoder geometry behaviourally;
+SODA also has RL gradients; Denoised MDPs discards exogenous factors under specific independence/additive-reward structure.
+No paper or scalar theorem chooses which neural module must learn everything. Raw's.987 zombie AP is static readability,
+not all-history sufficiency; R68 remains a bounded negative patch-training recipe. R55 target energy is not current PI
+gradient allocation, and phase/context drift is not automatically disposable. WHITEBOARD9 questions1/3 are better bounded;
+compact chance, spatial addressing and actor/sample-cost questions remain open. No new architecture/projection replacement
+or subsequent training is launched. Hashes, episode split streams, input indices, fixed checkpoints and metric reproduction
+are verified; the earlier scalar source pins remain intact.
+
+## 2026-10-19 — Learned delayed prediction: persistent changes versus transient noise, controlled CPU study
+
+**Direct user request:** replace the earlier oracle-only demonstration with a learned-model test and a precise proof.
+Separate work in `20261019_learned_delayed_prediction/`; no Craftax data/checkpoints, actor, PI_ENTER, active sources or
+sealed panels used. `PROTOCOL.md` precedes fitting; three matched seeds compare GRU32 multiple-delay64-context,
+next-step64-context and current-only controls.4577 parameters,4000 Adam updates, batch128, one observed future-bit target
+per example. TRAIN/DEV/TEST131072/8192/32768 independent synthetic episodes. Each recurrent fit took60–64CPU seconds;
+three seed jobs ran concurrently. Hidden labels, regime/rates and exact filtering never enter world optimization.
+
+**Proof scope:** strictly proper delayed forecast loss penalizes merging histories with different queried future laws.
+Under symmetric stationary Markov dynamics and iid observation corruption, lagged correlations identify transition/noise
+rates. `PROOF_EXTENSION.md` treats the actual known-equal-weight two-regime mixture using four moments; independent
+transition-matrix algebra validates it. This is population identification/predictive sufficiency, not guaranteed SGD,
+perfect realized-cause classification, vector invariance or semantic separation under arbitrary correlated nuisance.
+
+**Measured final TEST:** mean H1 Brier current-only .120688, learned multiple-delay .104725, learned next-step .104464,
+exact64-context reference .104018. Multiple-delay minus current-only -.0159635[-.0172354,-.0147059], paired episode95%CI
+conditional on these three fits.2534 independent ambiguous-event episodes(1265 hidden changes/1269 outliers): native
+future-forecast cause AUROC .4997/.7717/.7775, exact forecast reference .7855. That reference is not a universal
+hidden-cause classification ceiling. Learned regime accessibility~87.3% versus current-only50.3%. H8 normalized
+autoregressive observation-law log loss3.23156/2.88883/2.88516, exact2.87119; no hidden-state/control success inferred.
+
+**Falsified/limited claims:** extra delays have not earned preference: multiple-delay minus next-step H1 Brier
++.0002611[+.0000757,+.0004427], BCE difference interval includes0; fixed budget allocates fewer lag1 targets to multi.
+Post hoc random-GRU readers already have hidden-state AUROC~.993, so high probe scores alone are weak evidence;
+random native Brier .2395–.2481 and regime accuracy54.6–55.6% contrast with the trained native forecasts/history use.
+Results survive31884 TEST histories absent from TRAIN;884 matching observation strings are legitimate finite-alphabet
+collisions, not shared episode RNG identities. Finite TRAIN moment inversion estimates physical parameters poorly despite
+exact population recovery; no physical-parameter identification claim for the GRU. Supplemental checks are marked post hoc.
+
+`REPORT.md`/`SOURCES.md` connect five primary precedents(PSD/PSRNN, spectral HMM, Noise2Noise/Noise2Self) and explicit
+assumptions to WHITEBOARD8–9. This supports a generic predictive-sufficiency criterion for question1 and limited history
+retention evidence for3; it does not answer compact chance, spatial addressing or decision cost. Predictable nuisance
+remains a counterexample to delay-only semantic filtering. No PI loss swap, architecture modification or further training
+follows automatically. Original sources/checkpoints, independent metric reproduction and artifact hashes are verified.
+
+## 2026-10-19 — Brain-informed objective research: sensory tolerance, contextual updating and later predictive use
+
+**Scope:** direct user request to examine biological principles for general retention and nuisance handling. Separate work
+in `20261019_brain_informed_objective/`; no world/actor/generator training, sealed-data access, or active-source changes.
+27 distinct primary papers screened;15 manuscripts archived with hashes and relevant sections examined. `SOURCES.md`
+distinguishes locally archived reading, substantive primary web reading and limited excerpts, and separates measurements
+from computational theories. `REPORT.md` and `OBJECTIVE_REFINEMENT.md` relate the evidence to WHITEBOARD8–9.
+
+**Evidence-based assessment:** sensory tolerance under tested unsupervised visual contingencies can be learned separately
+from current reward relevance; incorrect correspondences can teach incorrect equivalences. Context changes whether
+surprise should revise a persistent estimate. Episodic binding and later retrieval protect more than immediately attended
+or rewarded information. Replay/neuronal decoding is not itself proof of decision benefit. Brain-inspired computational
+models were checked for scope: TEM's reported experiments use noiseless inputs/deterministic means and exclude unseen
+vertices from its training loss; it does not establish our stochastic-generation requirement. No universal brain loss,
+new architecture requirement or best D4MJ objective was established.
+
+**New registered CPU control, not a D4MJ or neural result:** `PLAN.md` fixed two binary hidden-state processes before
+`surprise_context_cpu.py` ran. Flip/noise rates .08/.02 versus .02/.08 give identical surprise probability.0968 given a
+known prior state, but posterior state1 probabilities.809917/.190083 and next-observation probabilities.749917/.250083.
+Surprise magnitude/current symbol alone cannot select the correct update. Exact Bayesian filtering with supplied
+parameters on8,192 independent160-observation episodes gives unknown-regime accuracy49.50/69.43/88.79/97.45% for1/15/63/159
+observations, and future-observation Brier.120508/.106228/.103389/.102775. Context63−1 Brier difference−.017118
+[−.019861,−.014274],2,000 paired episode bootstraps. Independent hidden-path enumeration agrees to1.67e−16.
+No parameter fitting or future leakage; this is not evidence that Mamba learns the filter or that our continuation budget
+is sufficient. It separates transient observation corruption from persistent-state uncertainty without Craftax labels.
+
+**Implication:** retain grounded future-query capability through delays, changed views and recursive updates; distinguish
+current-event importance, persistent-state revision and cross-episode learning. Encoder/data improvements remain an open
+route for appearance tolerance, with validated correspondences. A factorial delayed-retrieval/forecast comparison is
+specified as a narrow next test, not launched as another model-training campaign. Existing matched PI memory evaluation
+continues at its original budget; the held generator study remains held.
+
+## 2026-10-19 — Independent primary-source research: defining predictive retention before choosing another loss
+
+**User scope:** research what information a reconstruction-free world must retain, how an objective identifies it, and how
+it persists through imagination, before further objective guesses/training. No new model/actor/generator training, no
+PI_ENTER, active-source changes or sealed-panel access. Separate research in `20261019_persistence_objective_research/`.
+`REPORT.md` gives the synthesis, `OBJECTIVE_CONTRACT.md` the conservative reference definition and explicit remaining
+choices, `SOURCES.md` the checked assumptions/implementations.19 primary papers/20 PDF versions archived with retrieval
+URLs/times and PDF/text hashes. Relevant definitions/methods/proofs were read; not a claim to read every appendix.
+
+**Conclusion:** controlled predictive sufficiency is the appropriate retention criterion. Histories may be merged only
+when the required future laws under actions agree. Preserve predictive capabilities and correlated uncertainty, rather than
+requiring unchanged vectors. A newly realized unpredictable variable can be predictive of later consequences; a slow,
+predictable distractor can be irrelevant. Observation-private nuisance assumptions do not automatically cover lighting
+that also reveals a physical phase. Non-collapse, MI, sparse gates and posterior/prior KL each require separate grounding.
+
+**New logical checks, not new D4MJ results** (`counterexamples_cpu.py`, standard-library CPU, no model/data fitting):
+
+- A static distractor alone attains the full next-state MI1bit and remains non-collapsed while losing a1-unit optimal
+  action-value distinction carried by an independently refreshed current bit. This rejects an unqualified arbitrary-reward
+  interpretation of future-state MI alone. TACO's camera-ready theorem/AppendixH were checked; its actual implementation
+  also has reward/CURL and critic gradients, so this is not a refutation of the complete method.
+- A perfect fair-bit predictive mixture has KL0, while its informative realized posteriors pay mean KLlog2=.693147nats.
+  Joint encoder collapse can remove that cost. This distinguishes prediction calibration from information-rate pressure;
+  it is not a measured cause of PI's deficits or a direct aleatoric-entropy estimate.
+- A persistent versus independently refreshed bit has identical marginal probability.5/Brier.25, but change probability
+  0 versus.5. Exact joint energy scores.353553/.426777 distinguish them. A logical illustration, not another empirical
+  shuffle experiment.
+- Two worlds can give identical behaviour records with both actions represented globally and still disagree on the
+  within-history alternative. Constant reward prediction has observed MSE0 versus interventional MSE.5 in the example.
+  No passive objective identifies missing alternatives without coverage/assumptions. Existing forks remain evaluation-only.
+
+**Reference contract:** joint future fixed observation evidence plus native reward/continuation, recurrent predictive
+compatibility, correct stochastic coupling, and compression subject to capability constraints. Existing Raw patches are a
+conservative evidence reference, not a proposed new training run or a nuisance-free target. Exact query encoding/nuisance
+relations, practical scoring/optimization, coverage and costs remain explicit design decisions. No best loss or numerical
+weights have been established. RP/ZP theory, VSG, RPC/ALM, PBL, R2-Dreamer and JEDI were distinguished from their practical
+teaching paths and assumptions; no paper was taken as a drop-in fix. WHITEBOARD§9 traceability is in the report.
+
+**Execution context,10:19 AEDT:** all four existing memory continuations completed3000; first parent native evaluation
+finished and seed1short evaluation is running. Frozen belief evaluation/scoring remains queued. Both memory services active,
+generator service inactive; all29 original queued source hashes match. CPU used for source audits and exact checks; GPU
+continues the previously registered frozen evaluations. This is progress, not a memory/dynamics success claim.
+
+## 2026-10-19 — Independent PI failure localization: diagnostics and frozen followups complete; matched history-training control prepared
+
+**Latest user scope, 09:40 AEDT (supersedes the generation queue below):** discuss cheap, general objective selection,
+without spending hours training a new model. The unstarted `codex-pi-generation-20261019` waiting service was stopped;
+no generator mechanics/extraction/training child had started. Its original pinned protocol/source/queue contract remain
+unchanged historical records. Finish the already-running fixed memory comparison and frozen evaluations only. New separate
+`20261019_pi_memory/finish_only.py` verifies all29 existing source hashes, waits for the original schedule, and invokes
+unchanged frozen belief extraction/diagnostic reader fitting/scoring, then the registered secondary CPU summaries. The
+immediate `codex-pi-memory-finish-20261019` service is waiting; hourly follow-up scope was updated to prevent restarting
+generator training. See `OBJECTIVE_SCOPE_CHANGE.md`. No actor, PI_ENTER, new world/head-training sweep or budget extension.
+
+**11:27–11:29 AEDT independent host check:**4/6 native model outputs complete (both parents, both seed1 continuations).
+Seed2short evaluation active; seed2long and frozen belief/secondary measurements follow. Both memory services active,
+generator inactive. All29 queue source hashes and27 unique source-file hashes embedded in saved evaluations match;
+weights unchanged, BN0, dummy-future effect0 for all four. CPU validation confirms145 independent DEV episodes with zero
+overlap against continuation FIT/CAL/AUDIT (6,241/744/770 episodes), also pairwise disjoint. Length15 reader episodes
+2,720/353/329 are inside those partitions. AUDIT remains previously seen by the original world. Existing FIT successor
+drink control AUROC.999893/AP.997001,88 positive episodes. See `20261019_pi_memory/verification_20261019_1130.json`.
+No comparative verdict, restart, source repair, new training or budget extension; native/belief/secondary completion pending.
+
+**10:26–10:32 AEDT independent host check:** all four fixed memory continuations and final TRAIN-AUDIT checks completed3000.
+One of six native outputs is saved (seed1parent); seed1short evaluation is active, with progress after allocator warnings.
+Both memory services are active, generator inactive; all29 pinned source hashes match. Saved parent evaluation verifies145
+distinct episodes, both history conditions, teacher/recursive samples, unchanged weights, BN0 and dummy-future effect0.
+The existing pre-evaluation `scores.json` remains explicitly incomplete; belief/secondary measurements are pending.
+No comparative memory result, new training, restart, budget extension or active-source change. Full status in
+`20261019_pi_memory/REPORT.md`; existing frozen completion watcher remains responsible for the queued measurements.
+
+**Historical/objective assessment, no new model results:** `20261019_pi_objective_assessment/DISCUSSION.md`. E1/E17 support
+narrow interpretation of a3k PI continuation, explicitly not a published LongMamba method. E17 same-slot gains24.7/27.9pp
+coexist with moved-slot gains~1pp and unresolved decision improvements. R55's energy split is not current PI update
+allocation; October10 already measured loss swaps/AdamW projections/learning curves. E21's73.3% teacher versus6.0% aligned
+self-fed damage warns against a one-step objective gate. Distributional prediction addresses averaging, not relevance or
+missing output support. Generic learning signals can use observations/actions/reward/termination/temporal relationships;
+Craftax semantic labels remain evaluation only. Proposed next screen tests candidate incentives and, only afterward,
+bounded matched update utility; no such screen has been launched and no best objective has been established.
+
+**User scope.** Finish the two diagnostics requested after the D/plain-PI dynamics evaluation, then investigate memory and
+stochastic generation autonomously according to their results. Further CPU/GPU research and training are authorized; the
+actor pilot remains on hold and PI_ENTER is excluded. The two diagnostics themselves use frozen worlds only.
+
+**Fixed before fitting/evaluation:** `20261019_pi_failure_localization/PROTOCOL.md`. D parent and both plain PI u3000 seeds;
+separate outputs in `artifacts/eda/pi_failure_localization_v1`. No original checkpoint, cache, registered protocol or sealed
+evaluation set is modified.
+
+- Anchored consequence probes reuse the existing TRAIN tape's native 15-observation histories: FIT 4,141 draws / 2,720
+  episodes; CAL 539 / 353 (unused); AUDIT 513 / 329. The 200 evaluation episodes have zero overlap with all 7,490 TRAIN-tape
+  episodes. Shared per-HUD-cell ridge predicts the real next Raw HUD token, without output LN; current-token/action anchors
+  are matched. Belief+action features use FIT-only PCA-192, with an uncompressed sensitivity. Emitted, anchor-only and real
+  successor controls are fixed. CPU fitting only; frozen GPU extraction checks exact cached-belief parity in every batch.
+- At each rollout depth, compare the original native prefix, that same prefix with only its last frame replaced by the
+  matched real frame, and the all-real history. Intervention outputs are not fed into subsequent interventions. Identical
+  actions/noise, original batch shapes and FP32 native feedback; require native FP16 trajectory parity at **every** depth,
+  all-real semantic parity to the prior matched evaluation, H1 arm identity, dummy-future causality, zero world BN and
+  unchanged parameter/checkpoint digests. Later arms are local forecasts against factual successors, not joint H16 samples.
+- Metrics: exact counter changes and graded errors/discrimination, mob occupancy energy score under both frozen readers,
+  adjacency and camera movement. Fixed 4,000 episode bootstrap draws. Positive accessibility does not establish a calibrated
+  stochastic world; a failed local ridge does not establish information destruction or a memory bottleneck.
+
+**Execution note, retained negative attempts.** A combined backbone/output autocast pass failed cached-feature parity
+(D: mean absolute difference 0.00129, maximum 0.0392) and was rejected before fitting. A separate backbone stage with an
+explicit synchronization/check reproduces all 5,193 cached TRAIN beliefs for every world exactly. The corresponding
+feedback pass is accepted only if the stronger all-depth historical parity checks also pass. The execution sensitivity's
+cause is not established; it is not attributed to BN or promoted to a scientific model defect. Original failed logs and the
+independent parity diagnostic are retained beside the scripts. Accepted feedback results pass all-depth historical parity.
+
+**Results** (`20261019_pi_failure_localization/REPORT.md`; `pi_failure_localization_v1/{scores,rank_intervals,increments}.json`):
+
+- PI full-belief health-decrement AUROC .915/.904 versus native emission-reader .800/.861; differences +.115
+  [.051,.178] / +.043 [−.014,.103]. Health AP improvement is not resolved. Drink AUROC .635/.645 versus .546/.561,
+  differences +.088 [.022,.155] / +.084 [.021,.145]; AP .097/.079 versus .050/.053, at .040 prevalence. Food AUROC stays
+  .542/.576. These are on-policy local events, not within-root counterfactual decisions. Full belief has greater dimension;
+  the capacity-matched PCA probe discards consequence cues (health .744/.835). Neither proves information destruction.
+- Fitting a readout on emitted states improves their calibration. Full-belief heads do not beat the fitted emission heads
+  on overall health/food/drink squared error at both seeds. The result supports partial accessibility, not a blanket claim
+  that all consequences are known and lost only at the gate. Real-successor decrement AUROC/AP is 1.0 throughout.
+- At depth 16, health MAE native → latest-real → all-real: D 1.146 → .292 → .264; PI s1 .942 → .234 → .230;
+  PI s2 .922 → .223 → .219. Bank-mob ES: PI .0642 → .0444 → .0458 / .0631 → .0443 → .0462. The latest-frame
+  improvements versus native are resolved. The intervention supplies new observations, so this is not proof of exposure
+  bias as the sole cause. Correcting current HUD values also directly fixes inherited offsets.
+- A fixed post-hoc increment control separates that offset. PI health increment MSE .140/.145 → .092/.103 under
+  latest-real; drink .065/.066 → .066/.061. All-real drink increment MSE .063/.060 is worse than zero change .0528
+  at both seeds. Endpoint recovery is not recovered resource dynamics, and MAE alone favors the rare-event median.
+
+**Genuinely new supplemental findings** (read-only CPU, amendments saved before each supplemental analysis):
+
+- Checked hunger/thirst equations reproduce all replay phases exactly, with zero true-phase eliminations. Even with
+  privileged past-reset annotations, no ordinary awake decrement has uniquely determined timing from the native
+  15-observation counter history: food 0/70; drink 0/91. Across all actions: 0/89 and 0/127. This is ambiguity in the
+  counter-history summary, not a ceiling over all RGB correlations (`phase_identifiability.json`).
+- First future visibility of entities whose type was absent at root: 41 zombies /36 episodes, 68 cows /54, 34 skeletons
+  /30. Already active at root: 26/50/28; of those seen in native context: 2/16/10. Activated later: 15/18/6. So most
+  missing arrivals cannot be supplied by merely recalling an entity visible in that native window (`arrival_provenance.json`).
+- The installed simulator's DO action resets mob masks from health>0, reactivating positive-health inactive slots. With
+  fresh spawning disabled, a paired CPU control gives NOOP health 9 with zombie absent versus DO health 7 with it active.
+  Of post-root activations leading to the above first arrivals, DO reactivation accounts for 8 zombies /0 cows /4 skeletons;
+  fresh spawning accounts for 7/18/2. Full recorded future-slot reactivations: 37/34/53. This is confirmed simulator
+  implementation behavior, not a PI defect or a proposed Craftax-specific repair (`simulator_mask.json`). It changes
+  the taxonomy of some arrivals without invalidating comparison to the simulator actually used.
+
+**Completed frozen longer-history control** (`LONG_HISTORY_PROTOCOL.md` plus matched-FP32 execution amendment): exact native
+interface/causality/unchanged-weight checks pass. Same FIT/DEV endpoints, full-belief ridge, length covariates and repeated
+prefix control. PI drink AUROC short15→long31 .635→.626 / .646→.622; changes −.0097 [−.0287,.0078] / −.0245 [−.0449,−.0056].
+Long minus repeated-prefix −.0178 [−.0360,−.0015] / −.0318 [−.0521,−.0128]; no AP gain. Additional counter history identifies
+56/91 ordinary drink drops and 17/70 food drops versus zero with 15 observations. Thus available evidence does not imply
+linear accessibility in this existing checkpoint. This does not refute trained longer history or nonlinear accessibility.
+
+**Completed stochastic-access control** (`STOCHASTIC_ACCESS_PROTOCOL.md` plus FP32 amendment): diagnostic TRAIN-label ridge,
+3,669 FIT draws/2,549 episodes, exact layout/cache provenance. Current-patch/action anchor AP → PI belief AP on 3,200 DEV
+local forecasts: zombie .290→.509/.490; cow .204→.370/.375; skeleton .109→.219/.219. Proper Brier improves over the anchor,
+but belief does not generally beat native samples under the stronger real-fit reader (zombie .00389/.00396 versus
+.00370/.00379). Marginal probability accessibility is not coherent joint sampling. For type-currently-absent zombie cells,
+AP only .00066/.00077 at .00033 prevalence; no strong new-zombie location readout. A supplemental sum-of-clipped-marginals
+count control fails calibration **even with the real successor** (predicted .566 vs actual .0206 absent-type zombies), so its
+negative is inconclusive about presence information. Native chance's count/HUD conservation remains a distinct support limit.
+`followup_integrity.json` verifies 17 artifacts and 67 unique source/input hashes; all match. Rejected BF16 attempts retained.
+
+**Next, authorized and separately registered before updates:** `20261019_pi_memory/PROTOCOL.md` and target-sampling amendment.
+Continue each plain PI seed in short15 versus mixed older-real histories up to63, same target windows/data/objective/noise/
+optimizer/budget, with same-weights history-reset evaluation. Four B4 microbatches, 3,000 updates, snapshots500/1500/3000.
+Full 36.7-GiB TRAIN cache hash verified; paired 48,000-row tapes each supply720,000 targets. The retired fixed-suffix sampler
+would overexpose terminal targets; the corrected uniform-start tape gives final-position terminal exposure .81%/.75%.
+Extended145-root DEV replay and pre-training mechanics pass. Existing label overlaps are exact. Scan rendering differs at
+15 roots; independent rendering removes all but one channel at an exact half-integer (103.5, stored103/recomputed104).
+This rounding equivalence is explicitly amended; every model uses the recorded RGB. Raw overlap maxabs .001953125,
+mean5.27e-7, within the historical .002 bound; encoder digest unchanged. World BN0; original short loss/stats exact,
+gradient maxdiff3.06e-10; oldest-prefix gradient norm .001015; dummy-future effect0; two-update resume parameters/RNG exact.
+The separate four-arm continuation schedule has now launched, with TRAIN-AUDIT diagnostics at500/1500/3000 and frozen
+u0/u3000 DEV evaluations. Launch is not a scientific result; no actor pilot is authorized by it. Original files untouched.
+
+**Execution continuation:** the attached process was interrupted after s1short/s1long500 and s2short150. Host correlation
+confirmed no surviving training PID; every saved contract/source hash still matched. Resume uses the original complete
+optimizer/RNG states and paired tapes in a detached immediate user service (`codex-pi-memory-20261019`), without changing
+training code or protocol. The 145-root history audit finds all ordinary food49/49 and drink65/65 drops identifiable from
+63 observed frames versus zero from15 (privileged past-reset tracker; not a deployable oracle).
+
+**Stochastic next separating control registered, not yet trained:** `20261019_pi_stochastic/PROTOCOL.md`. Freeze each
+original PI belief/afterstate and compare matched new conditional-mean versus joint continuous residual-denoising heads.
+This tests richer stochastic generation without retraining the encoder/belief or repeating R29's local categorical head.
+CPU scalar loss identity passes (~9e-15 relative error); an analytic Gaussian sampler check exposed18step std.528 versus
+.5, so the pre-data solver amendment uses32steps (std.508). No DEV-guided change. Actual head mechanics/extraction/training
+remain pending behind the memory schedule; a registered proper-score/persistence gate bounds subsequent recursive evaluation.
+
+**Existing-cache count-support falsification** (`COUNT_SUPPORT_PROTOCOL.md`, `count_support_cpu.py`): eight freshFP32 native
+samples at each of3,200 fixed real histories, both seeds/readers, have max type-count span0. Exact32-key simulator H1
+forks have count variability at19/200 zombie roots,87/200 cow roots,14/200 skeleton roots. AtH16 simulator roots161/193/94
+vary. H1 confirms missing conditional support; later fan variability is not compared to teacher-conditioned forecasts or
+misreported as zero recursive PI count variance. The frame-level pooled presence control is inconclusive: absent-zombie
+belief AP .034/.035 vs anchor .030, probabilities .190/.202 vs observed .0206; even real-successor pooling AP .092 and
+probability .196. No DEV calibration or further search follows from that failed positive-control quality.
+
+**Current continuation checkpoint (timestamped, not final):** all four memory arms completed500; s1short proceeded toward
+1500. Reused FIT-fitted real-successor probe on the new145-root cache: drink AUROC.999893/AP.997001; health/food/energy
+AUROC1.0. Drink delta MSE copy.05560 vs fitted successor.00408. Source identities of all29 queued files match the host.
+The generation service waits for the memory native evaluation, then completes memory belief localization before its own
+head-only study. Hourly thread follow-up `finish-pi-memory-and-generation-investigation` is active to inspect failures,
+finish analysis/reporting and then stop. See `20261019_pi_memory/REPORT.md` for interim evidence and exact limits.
+
+**09:24 host follow-up:** detached services healthy; GPU84%, no conflicting research job. All29 queued source identities
+match. All four arms passed1500; s1short complete3000; s1long saved2525; both s2 arms saved1500. This is execution progress,
+not memory success. Completed1500 TRAIN-AUDIT long-trained/long-input point loss .04455/.04490 versus short-trained/short
+.04699/.04547, without a semantic interpretation or budget change. Original failures and full optimizer/RNG states kept.
+
+**Registered scoring completion, no training/source mutation:** `20261019_pi_memory/SECONDARY_SCORING_NOTE.md` and separate
+`secondary_cpu.py` implement the protocol's remaining CPU summaries: full recursive path ES, cumulative danger/health-risk
+finite-M-corrected Brier, root-copy baseline, bright/readerTEST sensitivities, paired world-addressed retrieval on common
+camera-correct cells, and paired phase-stratified belief-reader intervals. Teacher outputs afterH1 are not scored as joint
+root paths. No metric/gate/data is replaced. After `scores.json` **and** `belief_scores.json` are complete, the follow-up
+must run `secondary_cpu.py` before the final memory interpretation. It is outside the active/pinned training queue, so
+no active file is modified. Existing full-state fans have absorbing terminal states; all-forks-alive sensitivities are
+reported, retaining the earlier diagnosis's caution about survival-selected factual windows and fixed action plans.
+
 ## 2026-10-15 (afternoon) — WHITEBOARD PROGRAM (lead, Opus, autonomous mandate): recursion, representation, inferred chance
 
 **User mandate (10-15):**
@@ -13527,3 +14153,969 @@ but its continuous-control objective omits SIGReg and is not a Craftax threshold
 - Superseded by the diagnosis above:
   - "tail learned last" was retracted (ridge oracle).
   - The isotropy/Lemma-1 mechanism for W is not supported (`headonly.json`).
+
+### 2026-10-31 — Independent frozen-checkpoint test of foveal fixation shortcuts
+
+Protocol, raw arrays, hashes and report: `20261031_fovea_shortcut_review/REPORT.md` and `PLAN.md`.
+192 input-selected wood/drink prefixes, exact simulator DO/NOOP branches (all recorded DO renders pixel-identical),
+18,432 generated successors across original P1/P1-F, guided/random prefixes, actions and three next fixations.
+With history/action fixed, P1-F's verified periphery +1 under DO changes with current fixation: wood 83.6% at the
+rule crop versus 7.3% at another crop fully containing the counter; drink 64.6% versus 12.0%; map fixation 0% both.
+Both real covering crops decode the actual counter perfectly in P1-F. Original P1 is weak but largely gaze-invariant.
+Action is not ignored: zero verified +1 in 4,608 P1-F NOOP samples (98 unreadable). Pattern: view-specific gating of
+an action-conditioned consequence, not fixation alone inventing an event. Exact internal pathway and training cause
+remain unseparated. User clarified P1-F2 is a learning-progress-fixation concept, not a canonized implementation;
+self-choice alone does not guarantee view/action consistency. No training or canonical-source change in this test.
+
+### 2026-10-31 — Grounding-loss and sensor-noise diagnostic (frozen checkpoints)
+
+`20261031_grounding_loss_review/REPORT.md` and predeclared `PLAN.md`: four fixed simulator scenes, two controlled
+light levels, 16 renderer-noise keys, original P1 and P1-F. No optimizer updates. At identical P1-F weights, TSP's
+night/day mean-head gradient ratio is 0.33-0.62 under NLL versus 2.87-5.34 under MSE: relative nuisance pressure
+changes directly with the objective. Across fixed-world night renders, periphery token variance is 0.00617 in P1
+versus 0.04361 in P1-F (7.07x variance / 2.66x RMS); fovea variance changes only 1.08x. Day controls have zero pixel
+and token variation. This supports investigating nuisance-sensitive periphery representations and TSP supervision;
+it does not isolate the historical training cause of map regression or explain the separately measured fixation gate.
+Module gradients cover direct current-frame encoder routes only, with TSP belief held fixed; raw norms are not
+Adam update shares. Both TSP and reconstruction losses changed in P1-F. No new training or recipe fix launched.
+
+
+### 2026-10-31 — Bounded causal follow-up on TSP, reconstruction and peripheral nuisance
+
+`20261031_grounding_loss_review/followup/REPORT.md`, `PLAN.md`, `summary.json`, `manifest.json`.
+32 exact-replayed dev states, eight renderer-noise draws per state: P1-F checkpoint-10 peripheral noise variance
+is 6.69x original P1's under natural dark lighting; bright controls have zero fresh-static variance. Six matched
+full-M0 continuations from P1-F checkpoint 5, 256 updates / 262,144 frames each, identical batches, fixations,
+Adam/carry/cache/RNG starts, all losses/modules train; canonical-MM loss and all 217 gradients match exactly.
+Against unchanged faithful continuation: TSP NLL reduces peripheral noise 15.9%, reconstruction NLL alone 1.5%,
+both 15.6%, beta-weighted TSP + faithful reconstruction 13.8%, stronger-MSE diagnostic 5.6%. Beta's night sigma-5
+latent loss falls 22.4%, but its generated movement does not improve and its counter gaze gate persists. All tested
+real counter crops remain correctly decoded/supported; beta has zero verified false NOOP increases in 256 outputs
+(three unknown). Smaller latent error is not a semantic-generation win because each encoder defines its targets.
+Counter gains versus the starting checkpoint also occur in the unchanged control; no additional beta consequence
+benefit established. The dose control matches initial total norm within 0.003%, not the whole optimizer trajectory;
+clipping/moment changes substantially alter actual module updates. Native route snapshots do not support universal
+fovea reward-domination. Independent-process counter repeats change one of 256 DO labels, so tiny differences are
+not overinterpreted. Two zero-update runtime failures retained; all final fixed budgets complete. No canonical edits,
+full P1 launch or production loss decision. Evidence is local to one shared checkpoint/suffix, not a historical
+from-scratch causal decomposition or proof the remaining gaze/rare-event problems are solved.
+
+
+### 2026-10-31 — Grounding-loss causal verdict and frozen sampler factorial
+
+Read-only follow-up: `20261031_grounding_loss_review/sampler_followup/REPORT.md`, with 256 count and 128 movement contexts, two samples each, both checkpoint-10 models, Euler {3,8,32} x churn {0,1} plus Heun-32. Completed in 160 seconds; production parity exact. P1-F skeleton counts rise 0.051 -> 0.107 with steps alone (3 -> 8, churn=1), and 0.162 with Euler-8/no churn, versus real reader 0.133 (simulator 0.152); longer integration overshoots. Counts are not complete scene validity. Movement raw cross-model differences require the REAL reference: original generated/real 0.925/0.941 versus P1-F 0.865/0.862; these projections are not success probabilities. This panel does not reproduce a reference-adjusted movement deficit. TSP locally controls noise sensitivity, but historical semantic regression causality remains unresolved. Proposed matched beta-TSP/faithful-reconstruction run is documented, not launched; canonical code unchanged. `20261031_grounding_loss_review/CAUSAL_VERDICT.md` consolidates the limits. B review distinguishes corrected Adam/SE bugs from remaining first-order and target-drift interpretation limits: `20261031_learning_foveation_review/REVIEW.md`.
+
+
+### 2026-11-01 — Independent full beta-TSP result and learned-fovea review
+
+`20261101_beta_results_review/REPORT.md`, `audit.py`, `audit.json`, `FOVEA_REVIEW.md`, `g_checks.json`, and `evidence.png`.
+The completed 25.6M-frame beta-TSP/faithful-reconstruction run and all declared readings exited successfully.
+Independent checkpoint 1/5/10 audit: same configs minus the teacher key, stream/RNG/optimizer schedules, corpus and
+change targets; code difference is the four-line teacher plus YAML comments. S1 readers bound to the correct hashes.
+Night renderer-induced periphery token variance falls 16.7% (ratio 0.833, panel interval [0.820,0.845]) but remains
+5.57x the historical pre-F reference. HUD digit grounding survives; rare pixel appearances worsen, while S1 probes
+still retain entity information (modest night point-estimate declines). Production zombie counts improve, cows/arrows
+worsen, skeleton deficit persists. Visual table placement and guided drink increments improve; reward/death diagnostics
+remain poor or regress. Table reward under random gaze already drops 0.794 -> 0.329 on REAL successor inputs; wake-up
+real-input reward stays 0.869 -> 0.859 while generated drops 0.783 -> 0.448. Guided risky death drops 0.079 -> 0.050
+(recorded 0.128); real/generated continuation comparisons also change recorded versus sampled reward input, so they
+do not isolate percept-only causality. Counter crop dependence persists. Source counter-panel unit corrected: 32
+physical prefixes / 29 episodes, not 64 independent contexts / 16 episodes. No adoption of beta as a repair; partial
+noise reduction plus changed optimization does not disprove noise mediation or identify the whole historical F loss
+regression. No actual actor returns measured. No learner edits/new training launched by this review.
+Learned-fovea decision 1 revisions improve the contract but belief uptake remains a bet. Decision 2's EMA error head
+can report its own learning or representation drift as world progress; G's class-mean flatness/error-correlation
+rule-outs are invalid for a contextual chooser/noise identification. G completed during review: P1-F forward-view
+maps for drink/wood/sapling exceed split-half rho .5 in 8/8 later intervals, so spatial structure is present; no
+chooser effect or monotonic curriculum is established. G measures one high-sigma estimate and signed checkpoint
+error change, not the complete production distribution or the proposed absolute-progress reward. Tie-ranking edge
+case confirmed, but zero final saved-map structure flags changed by tie-aware computation. Primary papers checked:
+MAGELLAN snapshots complete estimator adapters+head on raw goals; Kim compares world predictors with an oracle
+encoder; Ten's 64/35 mastery comparison is between fitted behavioral groups, not a randomized algorithm trial.
+
+
+### 2026-11-01 — Independent regression localization after full beta-TSP run
+
+`20261101_regression_localization/REPORT.md`, `evidence.png/pdf`, `SAMPLER_RESULTS.md`, native arrays and predeclared
+sequential protocols. No canonical learner changes or new full training run. Complete checkpoint 1/3/5/10 F/beta
+(and descriptive original 1/5/10) native histories, exact reward-marginal death, both gaze policies, first 200 dev
+episodes. Mature exact-marginal vs oracle-reward death differences are under ~3e-7 on the panels, so the death
+deficit is not explained by the earlier reward-conditioning qualification. Beta wake recall drops 5->10 by .079
+[-.116,-.042] while real-input recognition improves .061 [.033,.092]; noise/loss are not sufficient success gates.
+A matched frozen-native-head refit (natural 300 fit/100 validation train episodes, 600 updates, two seeds, uniform
+vs guided input histories; no event rebalancing) recovers beta random-gaze table reward: real .310 -> .952/.964,
+generated .159 -> .886/.904. On pre-outcome table attempts, fair Brier .0675 -> .0203/.0207; paired improvements
+exclude zero. Guided-only refits fail to recover it, while uniform refits worsen guided table scoring and leave
+post-unlock false generated rewards ~2%. This is retained joint-input accessibility and a partial readout repair,
+not a globally repaired scene or imagination. Wake/death do not recover with this refit.
+Input-defined sleeping controls change the story: recorded positive reward 5.08%, generated F 40.7-42.0%, beta
+38.7-38.8%; both often wake too early. In 160 bright pre-state energy-9 must-wake cases, native real heads ~.994-.997
+but generated F .852-.858 vs beta .471. Immediate night static is absent, though training-time interference remains
+possible. Native TSP reads prior energy 8/9 at 100%. Independent linear awake readers qualify at 1.0 held-out
+balanced accuracy; their scores are evidence coordinates, not probabilities. At identical histories/actions/noise,
+beta first denoising at sigma_hat=6.667 on real future+noise gives wake/stay scores .830/-.021, versus .531/.488 on
+pure noise. Thus a substantial gap exists at the first production input, before later integration. Real-noised
+future input is an instrument containing future information, never an admissible generative repair.
+All 30 declared sampler cells completed. Euler-8/no churn improves beta random risky death .0059 -> .0576
+(recorded .1445), fair Brier -.0189 [-.0348,-.0046]; F guided death mean approaches .1445 but its random reward
+Brier worsens. Step/churn changes do not repair table readout or wake timing. Separate frozen beta sigma_max=20
+8/32-step tests reduce false wakes but suppress must-wakes (.47 -> .19); more integration is not a blanket fix.
+Native P1 autograd confirms only G1 directly reaches the denoiser (93 connected nonzero parameter tensors);
+reward, continuation, TSP and reconstruction have zero connections. Outcome heads learn on real successors.
+Teacher audit keeps the logistic-vs-Gaussian distinction, reports correct absorbing-edge overshoot separately,
+and shows detached loss-floor centering changes the harmonizer gradient while leaving mean gradients unchanged;
+this is not proof of harmonizer-mediated historical regression. Matched beta intervention identifies a total teacher
+effect for this seed, not unique noise mediation, original faithful attribution, or a validated P2 repair.
+Integrity passes on 96 prediction files and five unchanged source pins. All review diagnostics finished; no other
+agent's process killed, no paused review job left behind, no actor-return claim.
+
+
+### 2026-11-01 evening — P1-F2 design review and regression-repair contracts
+
+`20261101_p1f2_design_review/REVIEW.md`, `REPAIRS.md`, pinned manifest/closure and CPU checks. Reviewed TEACHING
+10a/12/12b, H/H2 plans, completed H and exact chooser AST at source e7a28c04 (closure HEAD 2ae6b340). No Claude
+source changed, no GPU work or job interruption. Factorization is a sensible physical-query independence bias;
+its belief-only past-evidence route and generated-conditioning regime remain empirical obligations. Full-feedback
+retrospective crop curation is not a pre-outcome policy; the distinction matters for view/outcome calibration even
+with a floor. Exact population example: 20% uniform floor still permits logged q(Y=1|query1)=.9 while passive truth
+is .5 when the curator uses Y. This is a logical counterexample, not an observed H2 failure. Exact AST checks find
+flat need selects window 0 with probability .8041, and negative learner-reference gaps can reverse a raw need
+product's preference. H fit corpus: NOOP 3.02%, pre-8-context 2.25% (overlap, not summed). Saved H dev score gaps
+negative at endpoint: SR 64.5%, forward 45.9%; all-negative rows 7.0%/1.1%, not H2 training frequencies. H shows
+mid-budget data efficiency on frozen features, misses its final target, and records major scoring overhead; no
+full-system/actor or wall-time gain established. Reference task/information, sign/tie policy and full-loop cost
+need explicit contracts. H2's neutral controls should not be interpreted through accidental crop-order bias.
+Repairs distinguished: broad gaze coverage partially repairs the native outcome readout; sampler changes partially
+repair death forecasts; planned P2 sampled-percept proper scoring is the existing route for training generation.
+A new generated-outcome probability quadratic score is a proposed amendment, not a demonstrated repair or part of
+tonight's F2. Exact two-sample proper-score identity checked to 2.3e-16; independent-sample point matching favors
+the mode in the toy, which is not an indictment of EDM's correlated denoising objective. Existing P2 detaches
+outcome samples, so their values do not add the proposed head-input derivative. Keep actual gradient checks,
+physical coherence and actor validation separate from the mathematical scoring result. Core architecture, current
+losses and F2 experiment unchanged by this review.
+
+
+### 2026-11-01 evening — H3 preflight and endogenous-floor review
+
+`20261101_h3_design_review/REVIEW.md`, `checks.py/json`, `h2_checks.json`, source manifest at 1596e112. Other
+regression-repair work on hold at user request. No H3 launch, GPU work or Claude-source/process changes. Definite
+launch blocker: `stats.pop("priority")` inside the evaluation-batch list comprehension raises KeyError on batch 2;
+exact AST CPU reproduction on 300 rows, and pop-once correction returns (300,49). Smoke was too small to cover it.
+Own scale is not established as irreducible noise: on actual native pixel_nll with deterministic target .2 and
+fixed wrong mean 0, NLL-optimal scale .12958 yields parent variance .05524 against MSE .04000, excess -.01524 despite
+zero true noise. This is a mathematical counterexample to identifying scale with aleatoric risk, not a measured H3
+failure. Parent logistic variance also differs from bounded 256-bin observed variance (mu0,s1: 3.28987 vs .68223).
+AMA explicitly qualifies exact separation; DEUP estimates aleatoric separately/with replicates or uses stated
+fallbacks, and treats error-predictor nonstationarity. H3 priority reads X_t in both modes, while forward learner
+reads X_(t-1): same-frame SR aligns, forward remains outcome-informed curation/proxy, not proof of leak-free future
+conditioning. Support periphery -> fixation -> glimpse -> belief -> next-action timeline with exact conditioning
+versions, one recurrent/environment update and matched actor/BC interface. Fix/noise-calibrate or explicitly scope
+heuristic, save floor/error/priority diagnostics and final weights, correct double-argsort rank ties (flat maps yield
+false rho1), and do not treat a negative result as ruling out endogenous fixation. H3 also retains unused IL fitting
+and duplicate excess scoring. H2's sr/fwd uniform+learnability arrays reproduce H bitwise; early+NOOP flat-need
+opportunities are 3246/62113=5.23%, not just the 2.25% early subset. Preserve this policy's result; no attribution
+of its full forward deficit to ties. No other research task resumed by this review.
+
+
+### 2026-11-01 — Factorized-denoiser preflight and uniform overnight baseline review
+
+Independent source/CPU audit: `20261101_factorised_review/REVIEW.md`, `checks.json` and `h3_snapshot.json`. Reviewed 8facf375 / d90330a6 / 9dbf248f and H3 through 5e61b0e0; exact source hashes saved. CPU suite 51 passed, 5 GPU skips. Disabled denoising loss/gradients equal 60b98881 (max diff 0); physical gradient to glimpse exactly 0, memory nonzero; independent-sigma checkpointed/eager gradients equal; complete cascade p/v identical over all 49 fixations with nonempty context; no cache mutation. Actual S1 one_step bypasses cascade (0 cascade calls): new-world eval routing required. Adaptive choose callback sees clean p/v whereas conditional reads augmented inputs (trace max differences .31548/.16150), contradicting TEACHING14; uniform fixation unaffected, adaptive input versions must match in real and imagined sensing. GPU results not present at audit closure; no takeover of Claude jobs. Support from-scratch uniform factorized architecture baseline with fixed pixel recipe, explicit launcher/resume identity and cascade readings, then later matched learned-chooser run; comparison to historical guided P1-F moves two axes. H3 all arms saved, uniform reproduces H bitwise. Natural-random-window final SR excess +67.9%, predicted excess +75.1%, predicted raw error +6.3% (but -28.1% at 2k); forward +29.4/+13.2/+16.5%. These reject this excess-score setup, not endogenous fixation. Native saturated deterministic-pixel counterexample confirms NLL can improve as scale grows while mean remains wrong; not attribution of whole run. Claude exact bounded-variance diagnostic agrees with native 256-bin enumeration to 5.87e-8 across eight cases; does not identify irreducible noise. No canonical source edits, no launch, no GPU compute/stop; generation-regression repair work stays on hold.
+
+
+### 2026-11-01 night — P1-F1.5 launcher and stage-2 cache review
+
+Independent audit: `20261101_p1f15_review/REVIEW.md`, CPU `checks.json`, full checkpoint `state_checks.json`, final `closure.json`. Through 7d14957f; exact source hashes unchanged at closure. CPU suite 52 pass, 5 GPU skips. Full 256-wide/8-layer cached vs exact uncached a4f2c2a2 cascades (nonzero heads), empty/full histories: sampled outputs equal, parameter-gradient max diff 4.66e-10, memory-gradient diff <1.5e-12; physical-conditioning and memory gradients retained. Successive frames and reset preserve one commit, no stale local keys. Saved real-weight GPU cache evidence: training terms/gradients/Adam step unchanged; p/v bitwise, g differs .00555-.01047 under bf16 (FP32 ~7e-7); sampling 192.06->139.18 ms at 64 streams, 27.5% less time, still ~1.6x joint. This speeds generation, not P1 training. Launcher config/identity checked against actual original checkpoint; native p1, fresh seed1, uniform Streams, faithful TSP/rec, no beta/guide/chooser, required Mamba deterministic mode and expandable allocator. New GPU preflight completed while reviewing: 25 finite updates; 3x256-step updates with full checkpoint diagnostics and 2000-window monitors; peak allocated4.2331/reserved4.6406 GiB; mismatched resumes refused; exact tested hashes match. Independent complete checkpoint comparison: 888 tensor/8813 other leaves, weights/carry/cache/streams/RNG/counters exact; strict full-state equality fails in four moments for pixels.cell and tsp.cell (max avg2.27e-13, sq2.71e-20), also between uninterrupted repeats, so do not claim all optimizer state bitwise. No training-code blocker found. Freeze required S1/consequence/query-consistency/useful-glimpse-memory panels before launch; PLAN currently defers them. Cascade evaluator still needs routing before readings; adaptive hook mismatch can wait for chooser. No canonical edits, no GPU takeover, no overnight launch; other research stays on hold.
+
+
+### 2026-11-02 — P1-F1.5 results and emergent-fovea TEACHING15 review
+
+Read-only completed-run analysis: `20261102_p1f15_review/REVIEW.md`, `readout.json`, `interface_table.json`, `closure.json`; snapshot5d84c53b, sources unchanged. Checkpoint95fa2cc8 matches readings, full25.6M/15625 updates, all10 monitors fall; core training hashes match. CPU53passed/5GPUskips. Significant useful gains under random gaze (wood .038->.842, drink .238->.874, table .672->.912), but wake .783->.489, zombie .301->.200, coal .159->.103, iron .029, death .0175 vs .1277; real-successor head controls retained. Unknown generated digits29-46% must remain in denominators. Two changes/one world seed, no attribution to factorization vs coverage separately, no actor result. Corrections: locus.py HUD mask counts only centre row7 (7/49 windows) but report references any HUD overlap14/49; actual any-HUD contingency20.33% and surprise21.17%, not10%/4%; old shares are bottom-row-only. Per-query integrated reward still varies: 15rewarding contexts, median range .0566/max .2308; example e79t14 .6654-.8962, largest per-f SE .01194. Physical current-query invariant by mask, not entire world under arbitrary gaze. Uptake one-step map MSE benefit not detectable on59qualifiednight frames (delta-2.12e-5,SE2.06e-5); test does not verify fine evidence readable nor measure proposed pure-noise6.67 first-call surprise habituation (it scores noisy-real-target levels.106-4.225). IOR is a plausible design choice, not implied/proven by null; does not repair memory uptake. Emergent controller promising as model-driven curriculum with native action-sensitivity and residual, no reference. Primary papers Barto/Itti/NGU/Klein checked: raw squared residual differs from Bayesian belief-change surprise; full-frame competition does not eliminate stochastic variance, floor does not bound dwell, TSP still makes periphery learning gaze-dependent, contingency need not decline for mastered effects. Need compact controller/input/state/RNG/cost contract and actual full-loop comparison to this baseline, measuring unresolved natural failures, useful evidence uptake and conditional outcome consistency. No source edits, new training/GPU job or interventions; other repair work remains held.
+
+
+### 2026-11-02 — P1-F1.5 readiness ownership and native bounded diagnosis
+
+User asked Codex to own this segment and update the docs. Protocol/raw evidence: `20261102_p1f15_readiness/`; living synthesis: `saccade/design/P2_READINESS.md`. No learner/recipe changes or training. Matched scenes at native checkpoint5/10, 8x2x64 frames per case: instrumentation equals native full losses/gradients; separately summed bf16 route gradients have up to2.30% residual. Checkpoint10 weighted glimpse-G1 shared gradient .1728->.1530, reconstruction/fovea .0550->.0510, TSP/periphery .4583->.2811, physical-G1/past-fovea .00470->.00263. Frozen Adam differentials retain moments/decay/clipping; fine-term removal changes shared update20.4%->14.9%, not a causal benefit share. Expected target-crop coverage95.19%->11.19%; curriculum and architecture still confounded. Native full-outcome solver test, first200dev, K4: risky death .0103 production->.0761 e8c0 versus .1445real; coal .0690->.2142 and iron .0233->.1699 versus real-head .998/.994. Thirty-two steps remain far short. Episode-paired intervals and fair Brier retained; no sampler setting selected. Probe-independent inverse-tanh mean mismatch exists, but a unit-moment threshold rejects about half real periphery tokens (LayerNorm epsilon), so not a valid absolute periphery gate. Glimpse threshold failure0%real/37.8%production,28.1%e8c0, descriptive not semantic. Native free-running128exogenous windows/93episodes/K4: total entity readouts at steps1/4/8/16 .803/.350/.125/.051, versus real-history .803/.873/.910/.955 and real-reader1.086/1.195/1.281/1.242. Same-stepwise real-percept replay stays close to real-history (maxbeliefRMS .0108), firstforecastexact, absorption .2%; rules out a large implementation-loop discrepancy, not generated-domain probe failure. No deaths in pilot, not fullS2. All sliding exogenous train windows atH16 have one distinct coal unlock, zero iron/zombie defeats; H2uniform24000windows expect2.98coal/.72iron exposures. Canonical and sliding counts both retained to avoid stride-created coverage claims. P2 reward/termination draws are detached: their inclusion in energy distance supplies no probability-gradient term, while G3 sees real evidence. Correct mathematical score does not validate this truncated/detached gradient. Primary JEDI/DIAMOND/Dreamer4/SelfForcing/Pacchiardi/NeuralGCM sources checked; proposal boundaries recorded. STEP_SPEC/GENERATOR/CURRICULUM/TEST_SPEC/DECISIONS and TEACHING/RESULTS updated with current status and corrections; no controller, loss amendment, P2 or overnight launch chosen.
+
+Follow-up window-admission audit (same turn): independently enumerate terminal positions, then reproduce in coverage.py. All244096 complete sliding H16 train windows have zero terminations at positions1-15,1915 at16 (canonical16171:125 at16). Complete-window admission conditions on future episode length; absorbing padding alone cannot repair exclusion of early-terminal targets. The128-window free-run pilot is therefore a response-to-own-input/readout diagnostic, not an unbiased terminal/whole-future calibration test. P2 not implemented: decide admission/padding/counterfactual exogenous-action contract before building it. This is not an explanation for the existing P1 regression. Preserved terminal_censoring.json and explicit limits in P2_READINESS/CURRICULUM.
+
+### 2026-11-02 — bounded fine-evidence uptake and four chooser prelaunch checks
+
+User explicitly authorized the bounded campaign, asked to park P1 self-feeding/outcome-consistency/sampler issues,
+and requested discussion before further experiments or fixes. Protocol/results/raw artifacts:
+`20261102_p1f15_readiness/UPTAKE_PROTOCOL.md`, `UPTAKE_RESULTS.md`. Native frozen F1.5 ck10, unchanged canonical
+model/data/train/YAML. Two fine readers trained as instruments (360 train episodes, 40 held out, 1,200 fixed
+updates each) retain kind recall .94–.997, with all confusion matrices reported. 595 fixed real dev scenes,
+49 legitimate crop alternatives, all eight monitor levels, two CRN sets, full native real prefixes. 58 night
+scenes/48episodes: native periphery reader misses a mob, both fine readers recover it. Row-matched empty-crop
+controls and source-defined local regions. Local fractional G1 change +.00003%, 95% interval −.00480% to +.00533%;
+highest two levels −.00598%, interval −.02136% to +.00791%. A stronger periphery-only reader recovers many cases;
+25 stricter scenes still near-null. Genuine crop values affect input more than the gaze mask; corrected emitted
+belief RMS contrast .069, after-action .0226, projected memory .0133, first-call physical prediction .00237.
+These are sensitivity measurements, not proof of irreversible information loss. Native future-TSP consumer
+control, declared after the primary null, gives −.02364% MSE, interval −.06615% to +.01523%; no direct past-glimpse
+context path, but it sees next real periphery. No full sampled-distribution/actor conclusion. Auxiliary probe
+nulls are limited by shortcutting through their periphery input. Conditional fine information given full history
+and periphery remains the missing discriminant; no repair adopted. Posthoc exogenous-action subset18 has tiny
+benefit −.0071%, so do not claim literally zero influence.
+
+Chooser reliability ck1/5/10: paired actual/NOOP beliefs from identical pre-action carry, full prefixes; heldout
+ck10 C/S ranks .909/.925 across initial-noise draws, mixture TV .149. Eight exact replays/re-renders, original
+pixels exact, light0; static changes mixture TV .0457, S rank .752; C static invariance is structural, not learned.
+Sequential real replay12episodes up to256frames, own history per policy; 4heldout episodes/909frames: mob-covered
+crop uniform12.2%, equal-normalized C/S+.2floor29.4%, recency-half-life4 26.8%; repeats2.43/2.43/1.88%, mean largest
+streak2.25/2.25/2.0. Behavior, not a teaching success or policy selection. Full-objective prototype2streams,
+2updates each at64/256steps: physical records/order unchanged, actual selected prefix fixations kept, independent
+RNG, pre-collection carry replay, all named modules get gradients, BF16 final-bp RMS error .006–.0075. Initial
+boundary failure preserved: mixing native cached actual bp and separately computed NOOP bp invented C for NOOP.
+Corrected prototype saves pre-action carry and recomputes both; scoring/training-cache boundary RMS .009–.014
+remains explicit. Fresh optimizer on checkpoint is mechanical only, not P1 stability/learning evidence.
+Generated chooser callback clean p/v identity passes; selection versus augmented glimpse input remains a contract.
+Reset-free batched16x64 collection3.245s/1024frames, versus uniform collection2.210s; extrapolation22.5extra GPUh
+at25.6Mframes before~11htraining, not a measured run ETA. No production launcher or overnight claim qualified.
+
+P2 data audit: P1 trained full corpus, no exogenous filter. Original collector's full2500-step key tree matches
+705646/705646 random actions and all2432119 training flags. Prospective terminal-inclusive H16 bank272809starts
+(was244096), early-terminal additions28713; independently enumerated terminal positions1914–1915each,30628
+terminal-containing windows. Saved bank/loader contract in P2_DATA.md; no raw corpus or canonical loader changed.
+Advanced event coverage still coal/iron/zombie1/0/0 atH16. New collection remains a separate discussion. LOSSES/
+CURRICULUM record agreed P2 consequence-credit requirement; no estimator selected. Bounded campaign ends here.
+
+
+### 2026-11-02 — Conditional fine information and cheap chooser research (Codex)
+Frozen F1.5 ck10; campaign `20261102_foveal_information/RESULTS.md`, PLAN/AUDIT, raw logits,
+queries and identities preserved. 24 matched 2,400-update readers on train360/val40,
+dev250: full coarse/current/history/prior/action baseline versus fine and intermediate
+representations. Fine raises night macro recall +3.31/+6.98/+8.90/+6.87 points (all four
+episode-bootstrap intervals positive). Not universally better CE, and arrow effects vary
+by reader; no blanket success. Paired 595 scenes/49 actual crops: 955 current entity
+queries, eight strict conditional-useful cases, smaller/inconsistent emitted-memory
+gains. Some uptake exists; no erasure claim. Whole-map native loss for eight cases
++.0492% [−.0224,+.1576]; saved old local masks do not match new sources, so new local
+claim omitted. Existing 58-scene local null remains a separate cohort.
+Predeclared carry query, 6k/1k labelled instrument pool, two seeds: raw-fine controls
+68.0→83.2 /67.6→82.0% inside-crop macro recall; ordinary emission68.8/61.8, querycarry66/65.
+Carry query fits train CE<.00025 but generalizes poorly; null inconclusive about hidden
+information. Native prefix error max.00791, queryweights demonstrably changed. No world
+parameter updates, architecture repair, corpus change or overnight launch. Native tests
+18passed with GPU. Source-first research: online self-distillation, direct expected-coarse
+head, native-loss head, acquisition policies, inverse dynamics, ensemble disagreement.
+H3 target prediction accuracy does not imply learning benefit. Native prototype cost
+22.5extraGPUh decomposes7.2forecast/15.3sequentialcollection; main-belief-dependent head
+does not remove the latter. Full references/limits in CHOOSER_RESEARCH.md. Next: user
+discussion of interface versus predictive learning pressure and cheap-head comparison;
+no automatic follow-up ladder.
+
+
+### 2026-11-02 — Direct spatial chooser feasibility (Codex)
+User-authorized, protocol before fits: `20261102_direct_chooser/PLAN.md`; completed
+results in `RESULTS.md`. Frozen F1.5ck10, two101k-parameter heads,4k updates x256,
+natural frequencies,107,091 fitting transitions. Random factual MSE70–73% below copy;
+remote contingency drink77.3->3.3/1.3%, stone39.3->4.7/0%. Coal/iron surprise mostly
+retained but actual mixed-policy counter mass falls12–26pp; all four mass gates fail
+in both seeds, also on978 disjoint dev400:600 contexts. Native noise repeat does not
+reproduce the loss. Low forecast loss does not qualify gaze. No world/route/corpus
+change, no automatic distillation or longer fit. Less head data/memory/capacity and
+different estimator remain confounded; negative bounded recipe, not a universal
+impossibility. Primary failure stops adoption checks; return for discussion.
+
+
+### 2026-11-02 — Fine evidence predicts future content (Codex)
+User-authorized F1 predictive-value stage: `20261102_foveal_prediction/PLAN.md`,
+`RESULTS.md`. Frozen F1.5ck10, five supplements x two seeds with independent
+coarse/fine256-256 predictors,2400updates,batch512. Primary night/entity/no-scroll
+stratum:2628frames/164diagnosis episodes and1824/102confirmation. Raw fine improves
+future same-query fine error39–44%; secondary current-entity-cell26%, mixed input2–3%,
+projected memory about0%. Raw vs memory differences positive in all4readings.
+Coarse-target raw-fine gains small/seed-dependent; native memory helps coarse4–6%.
+The coarse predictor is only slightly above copying on this stratum. Strengthens
+future-useful fine accessibility gap; not erasure or unique Mamba blame. Native glimpse
+stage additionally conditions on next coarse percept, unlike this history-only fine
+forecast: no guaranteed G1 benefit inferred. No route repair/world update launched.
+
+
+### 2026-11-02 — Projection survival and geometry audit (Codex)
+User authorized Test2 only; future-periphery conditioning deferred. Protocol and
+complete results: `20261102_projection_audit/PLAN.md`, `RESULTS.md`. Frozen F1.5ck10,
+eight supplements x two seeds,2400updates,batch512, exact F1 fine-head initialization
+and batches. Original base/raw error arrays reproduce bit for bit for both seeds.
+All49 fine projection slices rank256, condition12.92–14.55. Recode projected fine
+with its per-fixation pseudoinverse into576 crop coordinates; NO discarded null
+directions restored. Confirmation entity-cell future-fine improvement versus base:
+raw26.4/25.9%, native vector2.7/2.8%, recoded retained19.0/22.0%, actual BF16 mixed
+.8/−.9%, known-coarse-subtracted/decoded BF16 mixture18.5/22.3%. All main recoding
+effects confirm in disjoint cohorts; whole-crop primary33.2/38.5% retained versus
+38.9/42.2% raw. Raw retains a smaller significant residual advantage; not all
+information shown preserved. Null alone predictive but may be redundant. Random
+rank256 projection also useful. Exact subtraction works conditional on separately
+known coarse inputs; native Mamba has only the sum. BF16 changes retained values
+~5.3% RMS, but recovered forecasting remains strong; not the dominant measured
+input-stage gap, not an exact no-effect claim. Largest apparent input loss is
+reversible accessibility in these instruments, not wholesale erasure. Learning
+an inverse, joint compression and future-loss pressure remain unresolved in the
+native recurrent system. No production pseudoinverse, route repair or world run
+launched.262.6s complete GPU process,2.89GiB peak; raw fits/intervals/identity saved.
+
+
+### 2026-11-02 — Approved P1-F1.6 from-scratch joint fusion launched (Codex)
+After discussion, the user approved replacing the raw fine-to-belief route with
+shared88->128->64 GELU fusion of corresponding coarse/fine/light evidence; coarse
+path and256D projection retained. Existing per-token out_map keeps initial RMS
+comparable (.9285 raw versus .9234 joint).19,648 new parameters; original model
+weights/RNG/streams matched to F1.5, losses/recipe/corpus/sampler/budget unchanged.
+Earlier optional16D residual prototype rejected before training. This arm is
+from scratch, not a checkpoint continuation; one seed limits generalization.
+Protocol/research/checks in `20261102_p1f16/`.63 regression+3 queue tests passed;
+200 actual64-step updates, full2000-window monitor, actual cascade,256-step
+accumulation/checkpoint diagnostics and strict CPU reload passed. Resume has0.0
+weights/carry/cache difference and equal RNG/state. Peak4.25GiB allocated; full
+check450s. Initial future-G1 gradients reach all fusion parameters after warmup.
+Started unit`saccade-p1f16`, invocation`bbfeabb74895465a986d3d92ef328471`; source
+pins/archive preserve48 files.25.6M-frame P1 budget;10 numbered checkpoints+latest.
+One-shot worker automatically selects by existing monitor rule then runs the same
+F1.5 full evaluation battery against F1.5, with own readers/new output paths.
+No learned chooser, scientific retry/extension, P2/actor job or recurring monitor.
+STATUS.json and training/evaluation logs report progress/failures; no results yet.
+
+
+### 2026-11-03 — Cheap chooser policy and development campaign (Codex)
+User authorized cached policy ablation followed by all three head experiments
+regardless of that result. Protocol/code/evidence: `20261103_chooser_development/`.
+P0 reuses both trained heads and saved/fresh cohorts, eight fixed policies,20%
+exploration, paired episode-bootstrap intervals. No refit or policy selection.
+On fresh data surprise-only remote coverage mass: drink43.4–44.1%, stone41.5–43.5%,
+coal48.1–49.1%, iron44.8–46.7%. Existing mixed policy29.2–29.4/19.1–21.6/21.0–24.5/
+24.8–26.5%; separate-softmax probability mixture25.6–26.2/23.7–24.3/25.2–25.9/
+23.2–24.5%. Removing softmax does not generally recover remote coverage. Contact
+allocation trades off (fresh head1 coal C-only70.0% versus S-only10.4%).
+These are allocations on identical histories, not learning gains or own-history
+policy behavior. CPU instrument tests7passed; P0 exact deterministic repeat.
+One-shot unit`saccade-chooser-development` waits for the full F1.6 evaluation
+completion and a free GPU, then actual GPU smoke, E1 unchanged4k learning curves,
+E2 carried1->5->10 snapshots with cumulative-budget-matched fresh controls,
+E3 matched extra-input heads (coarse sketch versus native pre-action belief).
+Two head seeds throughout, same world seed; no world training.67 source/input
+pins;45min bounded worker after predecessor, infrastructure failure stops visibly.
+Richer belief can improve representation accessibility as well as information:
+E3 cannot uniquely attribute a positive to additional fine/long-history content.
+No final policy, MSE change, fine-history production dependency or P1-F2 launch
+follows automatically. Stop for discussion after full readings.
+
+
+### 2026-11-03 — Chooser E1–E3 dissected; delayed C/S acquisition demonstrated
+All original experiments completed (~22min worker). Full interpretation and plot:
+`20261103_chooser_development/DISSECTION.md`. F1.6 performance remains unreviewed.
+E1 reproduces archived head weights exactly;4k global prediction improves while
+most remote counter effects remain near-copy. E2 coarse-only MSE heads acquire
+drink/stone/wood associations in some fits; head seed includes init AND minibatch
+order. Carrying helps B but hurts A; no general warm-start superiority. Fresh
+12k recipes differ from E1's4k LR decay, so extra updates are not an isolated fix.
+One bounded exact replay of completed fresh fits adds learning curves: both
+endpoints match C/S/forecasts/errors exactly,335.8s. With a fixed encoder, head A
+drink C-only coverage7.0->49.5->55.5% at4k/8k/12k, S43.8->27.4->33.0%, mixed
+25.6->40.0->49.6%, counter error.884->.271->.248 of copy. B remains weak (.794).
+Same underlying method supports the user's handover hypothesis at head level,
+not a chooser-driven world-learning feedback loop. E3 native belief gives small
+paired gains (drink+1.3–1.7pp) without rescuing C under its4k recipe. Successful
+coarse-only fits show full native history is not necessary for those associations.
+Positive drink/stone learning extends beyond first units; own counter accounts
+for98.6–99.3% of remote-window C energy in strong fits. Wood also learned strongly.
+Coal/iron remain93–99% of copy despite all qualified fresh attempts incrementing;
+their apparent remote C mostly comes from neighboring HUD cells. Surprise still
+finds them. Sapling is different:6/128 drops; S covers62–63% of drops vs9.4% of
+non-drops in strong fits (small-n descriptive result; not anticipation).
+Metadata/action/reset equality across checkpoints and saved Adam4000/8000/12000
+steps verified. All source/input pins unchanged. No new model recipe, learned
+policy, loss, memory route or world-training job selected. Next discussion is
+reliable online acquisition/combined allocation and eventual teaching benefit.
+
+### 2026-11-03 — Whole-screen chooser gaze and granular belief-arm dissection
+
+User requested where the cheap head looks beyond counters and whether E3 hides
+rare-subset gains. Bounded inference/archival analysis, no refit or world training:
+`20261103_gaze_belief/RESULTS.md` (protocol, full JSON, figure and checks alongside).
+Natural cohorts600/128 frames,330 disjoint episodes total. On saved random frames
+with entities, cheap carriedA/B coverage48.2/49.0%, native44.1%, uniform21.5%; fresh
+49.3/49.7%, native45.2%, uniform20.1%. Original4k and fresh12k heads agree broadly.
+HUD centers only~10–12%, so counter focus was a benchmark emphasis, not an overall
+gaze collapse. S drives most entity targeting; arrows and night remain weaker.
+Eight exact-state night scenes/four renderer draws: finite-repeat noise accounts
+for43–47% of cheap surprise energy,51% native, while mixed-policy TV is only~4%.
+These selected scenes do not give population noise/wasted-gaze rates.
+E3 fresh whole-grid MSE improves2.17% A/0.12% B; movement frames5.19/4.85% (51 unique
+frames), replicating earlier4.44/3.35% (288 frames). Entity-cell benefit absent or
+negative; edited-terrain improvement+34.4% A versus-14.4% B. Actual coal/iron counter
+error changes <0.3% fresh. Gains decompose mostly into terrain/inventory, not a
+robust rare-event memory rescue. Route is a global256->64 auxiliary broadcast,
+not a general test of belief usefulness. All67 original pins match; full-precision
+errors reproduce archived means within5.96e-8. Discuss architecture next; no new
+policy or automated follow-up selected. F1.6 performance remains out of scope.
+
+### 2026-11-03 — One/eight-frame x coarse/native-belief head ablation and cost
+
+User approved `20261103_chooser_history/PLAN.md` and required actual1B cost. Eight
+fits completed:4 capacity-matched E3 arms x2 head seeds x12k updates, same weights/
+batch streams at initialization and fixed world/cache. Old4k files lacked optimizer
+states and used a different LR clock; all new controls refit, old results preserved.
+Paired full fresh MSE belief benefit:1-frameA+2.93%[1.97,3.87],B-1.18%[-2.20,-0.10];
+8-frameA+0.01%,B+0.17%. Hypothesis supported in one fit, not reliably replicated.
+Near-equal global1B/8C error hides gaze/target differences: stoneA mixed coverage
+-5.26pp[-8.42,-2.20]; woodA+2.41pp[0.26,4.62] despite higher factual counter error.
+No rule requiring perfect C; combined gaze stays primary. New118032-param8C is a
+capacity control, not the original101584-param head. All original fresh/carried
+references are retained, with no seed selection or universal success claim.
+
+Measured actual fresh fine-belief loop with own crops/cache/resets/native replay.
+Optimizing the same arithmetic reduced added collection extrapolation8.45h eager
+->3.42h compiled Mamba->2.87h compiled scorer+Mamba. Per1024 frames:1C0.041/0.040s
+vs1B0.205/0.702s (16x64/4x256); ordinary P1 forward/backward/clip included in separate
+pipeline timing gives+10%/+44%, excluding Adam/IO/monitor. Eight-state reading is
+256D Mamba output projected64D, not its full internal carry. No categorical belief
+utility verdict or optimization lower-bound claim. Raw coordinate gate failures
+preserved, float64 equivalence/policy TV/native replay/weight checks all documented.
+Evidence/figure: `20261103_chooser_history/SYNTHESIS.md`. All74 pinned source/input
+checks pass; world weights unchanged; no world run or automatic follow-up launched.
+
+### 2026-11-03 — P1-F1.6 complete result review; frozen local uptake follow-up
+
+User reopened F1.6 after shelving belief-conditioned chooser. Read original
+fusion PLAN/RESEARCH, STEP_SPEC/TEST_SPEC and information/projection diagnosis;
+checked actual configs (only new19648-param joint local fusion), actual selected
+checkpoint SHA, all48 source pins, full-budget completion, evaluator identities
+and F1.5 repeated interface (max numerical difference0). No recipe intervention.
+
+F1.6 improves generated firstwood84.2→88.4%, stone82.2→90.5%, observed-success
+zombiedefeat20.0→29.5%, coal10.3→17.5%, iron2.85→5.46%; cow-eating20.96→17.22%,
+furnace86.8→81.9% regress. Context-defined risky damage5.35→2.93%, death1.75→1.09%,
+beside recorded12.75/12.77%, despite real-successor head calibration. This locates
+a generated-percept/outcome-interface failure, not uniquely denoiser vs head
+generalization. Random expected reward stays~24% optimistic. Periphery wood
+increment success33.6→29.0% accompanies unknown45.8→55.2%; do not call all
+unreadable latents wrong arithmetic. Fine increments improve but remain far from
+solved, with drink2→3~9%,5→6~1%, wood5→6 zero in the small exposed cohort.
+
+Original uptake remains negligible. New predeclared fixed58-night-scene(48ep)
+comparison replays both full-prefix worlds, same49 genuine crops/row-matched
+controls/source regions/eight levels/two draws. F1.6 local future loss effect
+−0.00217%[−0.00770,+0.00381%], high levels+0.00736%[−0.01278,+0.03089%]; native
+next-TSP+0.01712%[−0.01551,+0.04669%]. On40scenes(35ep) where both worlds' fine
+readers retain all source controls, local effect also negligible. No native
+fine-to-future repair demonstrated. This is not proof of erasure or a verdict
+on all spatial fusion. Input/corrected/predicted/memory crop sensitivity remains
+connected, modestly smaller; RMS scales are not information-retention ratios.
+
+Real-input fine reconstruction improves widely; generated-latent C2ST0.946→0.920
+still separates domains. Near-player night perception retained. Mamba HUD78.68→
+78.75% masks food44.8/drink47.2/energy53.3%. Fine-token error given real coarse
+rises2.2x while decoded pixel error improves35%; changed token geometry makes
+raw cross-world MSE misleading. Primary3-step sampler cow/skeleton counts remain
+low, higher-step samples recover many counts, not proven coherent consequences.
+P1 was not self-feeding-trained; no full F1.6 S2/P2/actor result is manufactured.
+
+History1/2/4/8 shape timing nearly identical; skip2C/4C fits for speed per user
+discretion. Eight-minus-one extrapolates~17s over25.6M frames, no quality claim.
+Report/protocol/raw arrays/instrument weights/source hashes:
+`20261103_p1f16_review/RESULTS.md`, `ANALYSIS.json`, `local_summary.json`.
+Updated DECISIONS/P2_READINESS/TEACHING and F1.6 README with measured status.
+No new repair, learned-fixation or world-training job launched. Return to discussion.
+
+### 2026-11-03 — Authorized F1.5/F1.6 frozen retention audit launched
+
+User asked whether F1.6 preserved the previously inaccessible fine information
+despite weak native use, and raised insufficient learning pressure. Approved
+`20261103_fusion_retention/PLAN.md` now runs under one-shot unit
+`saccade-fusion-retention-audit`, invocation53c699c0daf4487c8993c305ace1b6f6.
+Two worlds/two reader seeds;22 matched future-fine fits plus22 conditional current-
+entity fits,2400 steps each. Compare raw/local joint/full actual mixed embedding/
+post-action emission/projected memory against full-coarse/history/prior baseline.
+F1.5 local=raw aliases exactly. Primary task reuses previous forecast/cohorts;
+secondary genuine49-crop comparisons use query-aware semantic instruments because
+the forecast's future query is tied to its observed fixation. No incompatible
+crop substitution into that predictor. Target labels train diagnostic readers,
+never the frozen world. No gradient/pressure or fixation intervention in this run.
+
+Both-world/native-look smokes passed, cached source/time/gaze parity checked,
+future targets excluded, unavailable fine zero, weights frozen. Initial allocator
+warning preserved; removed duplicate immutable GPU history before final smoke.
+CPU known-effect reporting checks pass;92 sources/inputs pinned. Full worker
+confirmed active at100% GPU/~3.9GB, first declared fits complete. Automatic CPU
+report queued; no automatic world job/extension. Learning pressure remains a
+hypothesis: the diagnostic forecast lacks the native glimpse stage's future
+coarse conditioning, and positive access alone would not identify training cause.
+
+
+### 2026-11-03 — frozen F1.6 global-projection/readout ablation
+
+User requested source/design provenance and a separating test of projection loss
+versus probe failure. Completed14 bounded frozen-reader fits (two seeds),251s,
+2.83GiB; all112 pins match and joint/mixed controls reproduce bit for bit.
+Re-expressing exactly the retained projected joint information improves whole-
+crop future-fine prediction from about2% to4.82/7.24%; recovery from actual BF16
+mixed input gives4.16/6.48%. Thus some useful information demonstrably survives.
+It does NOT rescue entity cells (retained −4.45/−1.55% versus joint11.45/11.71%).
+Do not extend the earlier F1.5 entity-recovery conclusion to F1.6 or interpret
+finite-reader failure as proof of erasure. Global adapter originates in original
+M0 (DRAMA-inspired frame interface), not spatial fusion. The trained256->1024
+memory expansion has full column rank; native Mamba carry/emission and denoiser
+use remain separate unknowns. No new architecture/world/chooser/P2 run. Protocol,
+all-arm intervals, mechanics and primary-source review:
+`20261103_fusion_projection/{PLAN,RESULTS,PROVENANCE}.md`.
+
+
+### 2026-11-03 — bounded fine-evidence / belief / consumer diagnosis launched
+
+User authorized launch and explicitly warned against entity-only optimization
+and endless diagnostic followups. Protocol is
+`20261103_belief_information/PLAN.md`:12 fixed2400-update disposable readers,
+two seeds, whole physical and independently queried fine targets, native
+conditioning sets separated; zero/raw/joint/mixed/recovered/emitted supplements.
+Then64 fixed day/night/map/HUD-query scenes x49 genuine looks, consistent full
+real prefixes/caches and fixed future query, followed by an automatic report.
+Entities are secondary masks; no world/chooser/architecture update. Both GPU
+smokes and known-gain/failed-control reporting checks pass. Initial source-frame
+batching mismatch was caught before fits, preserved, and corrected to bitwise
+future-coarse cache parity without tolerance changes.121 source/input pins.
+Service`saccade-belief-information-audit.service`, invocation
+`ca7ca3c1b71a44119a6bfbbf6cc34ce0`,24G host-memory limit,40-minute cap.
+Positive controls qualify each target/cohort before downstream nulls may be
+interpreted. No successor job or experiment ladder; stop for discussion.
+
+
+### 2026-11-03 — P1-F2 prepared on the F1.6 world
+
+User requested unchanged F1.6 architecture/training, only learned gaze, and then
+confirmed original combined-score softmax. `20261103_p1f2/PLAN.md` records the
+original101584-param8-frame Head, detached online learning clock, strict RNG/data/
+history isolation, source/config identity, full paired evaluation and extra
+genuine-look/frozen-online-head reads. No full run launched. Mechanical checks
+are in that directory; they are not a scientific efficacy gate. Initial strict
+optimizer-moment equality failed at~1.1e-13 while all world weights/losses/carry/
+cache/data/RNG matched; a repeat of canonical P1 alone reproduces that scale.
+Negative check/logs retained. Subsequent checks distinguish bitwise world-state
+parity from this measured numerical optimizer tolerance. No canonical model or
+trainer edit, new loss, data repair, or diagnostic successor.
+
+### 2026-11-03 — completed mixer/belief diagnosis: target-dependent positive controls
+
+`20261103_belief_information/RESULTS.md` is the final interpretation. All121 pins
+match.12 frozen reader fits,150 confirmation episodes/51,923 rows and64 genuine
+49-look scenes. Raw fine improves next-fine prediction8.69/9.87% even with future
+coarse conditioning; local joint8.51/8.84%, global mixed3.87/4.05%, native belief
+no overall gain. Genuine-look controls qualify the fine target overall, and
+direct joint-minus-mixed contrasts have positive95% intervals in both seeds.
+Native fine benefit is−0.0022% with interval[−0.0221,0.0163]% on this panel.
+This establishes practical accessibility deterioration, not unique layer failure
+or irreversible erasure. HUD retains aggregate benefits; night-only look controls
+are inconclusive. For next peripheral tokens raw fine adds only0.016/0.030%,
+controls fail: no memory-failure diagnosis is permitted from that null. This
+partially supports user's redundancy concern and corrects overbroad reading of
+coarse-target deficits. Stop for discussion, no new experiment/repair. P1-F2 tests
+acquisition/teaching; its existing paired uptake reads must establish fine use
+separately. It cannot by itself uniquely test fine-versus-coarse information need.
+
+### 2026-11-03 — user-approved P1-F2 overnight run launched
+
+User parked mixer diagnosis pending F2 and explicitly authorized launch plus the
+agreed automatic evaluation. Started22:38AEDT as`saccade-p1f2.service`, invocation
+`08ad625927a347fd927753069220097f`, one-shot workerPID579880;24GiB host cap.
+GPU free beforehand;802GiB disk available.95 source/input/qualification pins
+validate;68 runtime code files plus config/protocol/checks archived in
+`20261103_p1f2/LAUNCH_SOURCES.tar.gz`. Initial actual update matches all nine
+loss/gradient/sigma fields of the reviewed learned-gaze launcher smoke exactly.
+Full unchanged F1.6 world recipe/budget, original online8-frame coarse-only
+combined-score softmax chooser, no additional architecture/data/loss changes.
+The SAME worker validates completion, applies the existing uniform-monitor
+checkpoint rule, then runs the standard F1.6 paired battery and declared genuine-
+look/online-head/gaze readouts. Ten numbered checkpoints plus latest. No P2/P3
+successor; evaluation runs regardless of scientific quality. Live state:
+`20261103_p1f2/STATUS.json`; immutable launch evidence:`LAUNCH.json`.
+
+### 2026-11-04 — consequence-specific fine-evidence test discussed, not launched
+
+User requests one decisive cue/consequence test and exact mixer-collision logic;
+F2 evaluation is out of scope. Source review shows the preceding64-scene test
+selected future-query overlap, not fine-only causal consequences. Linear mixing
+acts on576D nonlinear joint tokens at fixed gaze; exact equality is sufficient
+for pair-specific memory-route indistinguishability with all other inputs equal,
+not evidence the whole network loses the cue (recent fine cache is another path).
+New discussion and complete outcome table:
+`20261104_fine_causal_design/DISCUSSION.md`. No new GPU/fit/ablation launched.
+Arrow direction is a source-verified visible causal candidate omitted by old
+presence/kind labels. A tiny CPU renderer-input check finds all orientations
+still differ at3x3 in a clean sprite example; fine-only visibility must NOT be
+assumed. Qualification must establish incremental consequence information and
+native output competence before a routing null is interpreted. Primary causal-
+patching literature reviewed; no claim those papers prove this Saccade mechanism.
+
+### 2026-11-04 — consequence-specific fine-evidence test completed; no repair chosen
+
+User authorized the paired semantic test and a fallback if coarse information
+made the first case unsuitable. Frozen F1.6ck10; F2 science left untouched.
+`20261104_fine_causal_design/RESULTS.md` contains the full source/causal/reader
+qualification,67-case native comparison, same-gaze12-case content control and
+all negative results.40,448 one-step futures, no fitting/model updates.
+Heading changes cause exactly2 health difference but also change coarse inputs;
+existing reconstruction decoder resolves heading only27/48. Nearby damaged-frame
+survey finds coarse recognition74/75 arrows,256/256 zombies. Six selected nearby
+arrow examples fail the simulator causality check and are excluded, retained.
+Distant night-arrow fallback gives12 coarse-missed cases; only5 pass BOTH fine
+readers on BOTH present/removed alternatives (7 retain false positives). All5
+start a new visibility interval, but only3 lack visibility throughout prior8.
+On those5, real destination readings5/5 versus0/5 removed; native generation
+0/320 with3 steps,1/320 with8, identical for focused/disjoint gaze. Same-gaze
+fine swaps change zero of640 paired arrow classifications per sampler, with
+small/inconclusive continuous-score effects. Fine-content changes nevertheless
+reach projected input and full Mamba carry/emissions: no exact collision in67
+pairs. This is sensitivity, not proof semantic retention is usable.
+Coarse-clear arrow controls ALSO generate only1.04%/3.39% destination detections
+(3/8 steps); native damage heads miss causally verified events despite99.8%+
+real-successor readings. Thus a projection-only account cannot explain the full
+failure. Missing events versus generated-space readout failure, Mamba semantics,
+consumer training and sampler contributions remain unseparated. No architecture
+patch or further experiment automatically launched. GPU released, F2 CPU job
+undisturbed. The bounded campaign stops for user discussion.
+
+Correction to the preceding2026-11-04 consequence-test interpretation: the
+coarse-clear arrow control qualifies PRESENCE, not heading or a complete
+predictive state. Therefore it does not exclude a fine-route-only cause or
+exonerate the mixer. Distinct projected/Mamba vectors also do not establish
+usable semantic retention. Bad measured generation is established; its cause
+remains unresolved. Real-successor arrow recognition100% qualifies the reader,
+not the model's predictive probability of that exact destination. RESULTS.md
+corrected; raw data/selection/code unchanged. P1 trains one denoiser evaluation
+at sampled continuous noise levels, not a three-step chain;3 is an inference
+setting. The tested3/churn1 versus8/churn0 recipes also do not isolate step count.
+
+### 2026-11-04 — learned fine-cue candidate search completed; no clean conjunction
+
+User requests a learned capability with genuinely incremental fine evidence,
+not another unqualified arrow null. Frozen F1.6ck10; no world/probe training;
+F2 scientific results untouched. Report and all sources:
+`20261104_learned_fine_candidates/RESULTS.md`.
+17,518 local resource/blockage frames have zero task-relevant coarse-reader
+misses. Native renderer/codebook audit recovers70,208/70,208 actual HUD values
+(4,388frames ×16fields) from frozen coarse tokens, no fitted reader. These are
+not demonstrated fine-required cues. Distant-night source search retains120
+paired simulator-verified source/successor worlds. Native clear-reference
+competence gate (12cases ×32draws ×2branches per family) fails for creature
+preservation (cows41.4%,zombies14.3%,skeletons16.4% present) and passes for
+stone90.6%,tree97.7%,with100% absent correctness. These are one-step semantic
+persistence measurements, not actor/action-consequence validation.
+9stone/3tree cases pass fresh coarse-miss, fine-acquisition and future-reader
+checks.64paired native futures per condition, focused/disjoint and same-gaze
+semantic swaps,6,144 futures. Stone present55.03% focused/55.21% disjoint;
+tree3.125% both. Same-gaze fine-content balanced effect+0.087pp stone,0tree.
+No exact projected/full-SSM collisions. Sensitivity is not semantic retention.
+Two post-result validity checks change the interpretation: real night-noise
+resampling recognizes hard-case true stone93.9%,tree67.2%,so generation deficits
+are not simply a perfect-reader assumption. More decisively, native PRE-glimpse
+TSP already distinguishes BOTH source alternatives in10/12 cases; external
+coarse-reader errors overstated incremental fine information. The2 TSP mistakes
+also do not supply a fine-required generator case: the relevant stone-present
+outcome is95.31% correct without cue fixation; tree-absent96.875%. Therefore no
+clean conjunction of learned native skill plus demonstrated fine necessity was
+found in this bounded search. Do not infer mixer destruction, Mamba failure or
+denoiser-only causation from the null. Supports concern about redundant cues in
+our selected diagnostics. No new training/repair/follow-up queued; stop for
+user discussion. Primary raw selection and results retained unchanged.
+
+### 2026-11-04 — task-relevant fine information: narrow witness, robust prerequisite unsettled
+
+Requested prerequisite search completed, frozen F1.6ck10; no world/chooser/
+architecture updates or F2 science. Full report:
+`20261104_task_information/RESULTS.md`; raw aggregate `SUMMARY.json`.
+First400 train/dev episodes, full coarse/raw-eight-frame/native-prior/TSP
+baseline, two reader forms x two seeds. Confirmation/night kind NLL benefit
+0.002216 from0.049547, Brier0.000887 from0.020282. Crucial falsification:
+existing S1 LOCAL coarse reader recognizes ALL24 original source threats,
+so these larger-reader gains/examples do not prove fine necessity.
+Targeted genuine focused crops:2,000 source frames; zero all-four wide fine
+wins;356 existing local-fine wins against five coarse controls,144 after adding
+matched class-balanced p_0. Final23 sources (12 discovery/11 confirmation),
+all six coarse readers wrong, both fine scores>=0.9. Matched threat-removal
+checks leave ONLY4/23, all discovery;0/11 confirmation. One also has a causal
+six-step damage effect: episode7,t221 skeleton. All six coarse readers call
+background; both fine readers call skeleton and background correctly in the
+paired source. NOOP6:5/32 paired keys incur2 damage with skeleton, zero without
+(mean0.3125/0); UP6:6/32, mean0.375/0. Native pre-glimpse TSP chooses absence
+for both alternatives. No actor/action-value or native-uptake claim.
+Validity limit: independent64 night-static draws of that scene give coarse
+S1/p_0 present recall87.5/75%, fine g_0/g_1 68.75/89.06%; fine absent correctness
+85.94/75%. Thus source is a real task-relevant correction, not a robust
+independently confirmed fine-only task. Episode62 shows repeated fine recall
+benefit but no damage/reward difference under any declared six-step plan.
+Exact coarse-alias search:0/1,000 natural newly exposed night ore sources.
+Conclusion: finite-observer useful fine witness exists; strong prerequisite
+remains unsettled. Do not diagnose mixer/Mamba/denoiser or launch a repair from
+this. All exclusions and original negative results retained. Campaign stops
+for discussion; no further jobs queued.
+
+
+### 2026-11-04 — P1-F2 completed review: online acquisition works, world teaching mixed
+
+User priority: completed F2, especially where the chooser actually looked and
+whether surprise→contingency emerges. Prior fine-route proposals set aside.
+Report: `20261104_p1f2_review/RESULTS.md`; scripts, summaries, figures, QA and
+source/artifact hashes retained. No model/head refit, training ablation, P2/actor
+or new launch.95 original pins unchanged; actual F2 cfg/shapes equal F1.6,
+worldseed1,25.6Mframes,25k detached head updates. ck10 selected by original rule.
+Both fixed-gaze F1.6 interface references reproduce all prior numeric fields.
+
+Actual25.6M-gaze trace; labelled training subset1,296,145 occurrences/123,494
+unique frames/383 source episodes, repeated passes clustered by physical source
+episode. Crop coverage: entities48.72% vs20.73% paired uniform; zombie35.29/16.71,
+cow40.23/14.64,skeleton36.80/12.53,arrow29.34/16.43; enteringterrain35.80/21.68,
+changedHUD31.69/11.42. Heldout natural confirmation48.9/20.1% entities,86exposed
+frames; gain+28.88pp[24.18,33.91]. Not HUD fixation collapse; night weaker.
+
+Ten SAVED ONLINE heads replayed with OWN encoders on IDENTICAL physical cohorts,
+no refit. Final predictions/C/S/probabilities reproduce queued endpoints exactly;
+cohorts source-episode-disjoint. Confirmation counter error/copy ck1→10:
+drink.938→.130,wood.935→.026,stone.908→.078; counterC/actualchange rises to
+.699/.885/.829. Final C-peak counter coverage93.0/54.7/72.7%. Actual counter
+step energy grows and NOOP branch stays near copying; counter-only C excludes
+neighbor-HUD-only explanation. Coal/iron error/copy.973/.980 and C≈0, but combined
+remote coverage32.1/34.1% vs8.2/4.1% uniform through surprise. Later increments
+also learned for drink/wood/stone. Actual sapling drops receive62.6% counter
+coverage vs12.6uniform, no-drop10.8vs12.1; reactive to current coarse, not random-
+outcome anticipation. Equal normalized C/S weights unchanged: selective handover
+is observed, automatic learning-progress/habituation is not established.
+
+Existing16dark×8-render bank:58.0% of S energy is fresh-render variance; combined
+policy TV4.55%. Not58% wasted gazes. No new noise campaign.
+
+World remains mixed under SAME fixed evaluation gaze. Generated reward>0.5
+mass on realized achievement slices improves coal17.5→24.4%,iron5.5→9.2%,cow
+17.2→20.7%,skeleton52.4→56.5; declines wood88.5→82.3,stone90.5→83.3,zombie
+29.5→23.3,wake49.5→39.7. Those outcome-selected slices are recall diagnostics,
+not unconditional calibration. Fine wood later increments68.2→72.3%; fine table
+placement45.0→36.9 withUNKNOWN≈.1%; failed-drink falsechanges5.5→22.5%. Risky
+death1.09→1.27% vs12.77% head-on-real: no repair. Native58-scene past-fine local
+loss effect+.00223%[-.00503,+.00975], no demonstrated useful uptake; those scenes
+are not proven fine-required. Current fine/TSP HUD digit rendering remains good.
+Chooser predicts only to aim gaze; its forecast is not given to main generator.
+Useful acquisition does not prove incremental fine information or actor benefit.
+One trained seed. No new mechanism attribution or automatic follow-up.
+
+Instrument notes preserved: one train entity/player overlap required renderer
+foreground precedence in semantic partition; original trace rates reproduce
+exactly. New granular counter parser corrected use→qualified eligibility before
+reporting; original evaluator/UNKNOWN partition parity passes. Failed logs and
+pre-correction output retained. All QA checks pass. Return for discussion.
+
+
+### 2026-11-04 — limits of identifying the fine-route cause; no further frozen ablation proposed
+
+Research/discussion follow-up: `20261104_p1f2_review/DIAGNOSTIC_BOUNDARY.md`.
+Reread all main fine-path, task-information and F2 reports plus current route/code.
+Four explanations (redundancy, integration loss, non-use, generation failure)
+are overlapping and target-dependent. No newly identified cheap frozen test
+cleanly distinguishes them; conditional readers, genuine looks, same-gaze
+fine swaps, full-carry traces and retained recoding already ran. Conditional
+probing / activation-patching reliability / modality-competition primary papers
+reviewed; their limitations and architecture-specific scope recorded. A trained
+native fine-required sensing task is genuinely different but changes the question;
+its success proves end-to-end capability there, its bounded failure does not
+prove impossibility or uniquely identify mixer/Mamba. Not built or launched.
+2x2 remains a possible design trial, not a diagnosis; prior EDA still reads HUD
+exactly at2x2, so it would not force fine use on counter tasks.
+
+CPU-only saved-data semantic check: exact overlapping existing head forecasts /
+native-eval contexts, unchanged readers/support, no inference/fitting/new futures.
+Confirmation guided-overlap drink31/wood14 contexts: nearest-value point forecasts
+27/31 and14/14 correct, but empirical real-token support rejects30/31 and13/14.
+Different conditional means versus native sampled futures / conditioning noise;
+not a calibrated generative-quality comparison or sufficient-state positive
+control. All original support endpoints and UNKNOWN retained; nearest-value
+accuracy separately labeled post-result diagnostic. Outputs and hashes retained.
+No architecture/model/source change, GPU job, automatic followup or overnight run.
+
+
+## 2026-11-04 — F2 gaze qualification and complete P1 coverage census
+
+CPU-only read-only-model audit in `20261104_coverage_and_gaze/RESULTS.md`.
+Distinguished current-query physical/reward consistency from past-glimpse uptake.
+Both F1.5 tests were already repeated for F2. Original58-scene uptake qualified
+local coarse-reader misses/fine readability, not incremental information beyond
+full coarse/history or task consequences. F2 local loss +.00223% with interval
+crossing zero therefore does not locate a broken fine route. Query reward
+inconsistency remains: among12 rewarding F2 contexts, median query range .10124,
+maximum .27928 (K8; selected extrema and different rewarding subsets retained).
+
+Full actual P1 train:7,672 episodes/2,432,119 transitions,397 monitor excluded.
+All saved label action/reward/termination arrays match raw stored episodes;
+terminal flags equal next-health<=0. Coal9,727/iron5,981 increments, damage47,618,
+deaths7,621, low-health-adjacent-zombie risk28,891/deaths3,701. Actual25.6M-row F2
+trace shows every counted event, about10.5 exposures each. P1 includes terminal
+frames and uses no exogenous-window filter. Pure-random episodes have zero
+coal/iron increments; iron7->8 only4 and8->9 zero, while first unlocks have
+3,398/2,249 source episodes. Counts establish rarity/support, not a causal cure.
+
+Archived identical-cohort guided danger: P1-F death7.900%, F2 1.221%, recorded
+12.773%; random gaze P1-F1.221%, F2 1.266%. Same corpus, so corpus change cannot
+explain the between-recipe difference; acquisition/architecture/loss/optimization
+are not separately isolated. F2 coal/iron unlock generation improves versus F1.6.
+No extra GPU probes, new training or automatic followups. Fine-required native
+training remains a sensing-change capability proposal: raw train data/replay
+exist, qualified paired TRAIN corpus does not; existing DEV pairs stay out.
+
+
+## 2026-11-04 — Authorized broad collection and additional risk/death coverage
+
+User explicitly requested more rare data before tonight, beyond coal/iron, then
+reinforced enough risk/death coverage. Protocols `20261104_rare_collection/PLAN.md`
+and `RISK_PLAN.md`; no model training or acuity change launched.
+
+Advanced collection `saccade-coverage-v1.service` completed cleanly:128x24 fresh
+worlds,3,880,121 retained transitions. Fixed-monitor-excluded TRAIN:2,932 episodes,
+3,711,420 transitions;778 eat-plant,626 diamond,2,802 coal,2,696 iron unlocks;
+14,923 coal and12,150 iron increments;2,311 deaths,12,194 low-health-adjacent-zombie
+risk transitions,759 risk deaths. Every outcome retained, full first-done/cap
+histories; .0/.02/.05/.1 competent episodes plus fixed16-action random bursts
+following512/1024-step prefixes. Full transition epsilon, actual random flag,
+action probability and all-state diagnostic sidecars retained. Source/reset-key
+pins and independent replay match every frame/reward/done on selected full paths.
+
+This addition alone is LESS danger-dense; explicitly do not silently concatenate
+and call that increased death supervision. Added bounded independent collector
+`saccade-risk-v1.service`, invocation3bb1436305fa468f869e9e132deef273:512x24 maximum,
+2h cap, fresh seed202611500, same frozen expert/environment. Eight short natural
+exploration batches (.5,1,.5,1,.5,1,.25,1;1024 cap) per one competent-prefix ->
+fully-random-tail batch (512/1024 prefix,2500 cap). Complete survivors/failures
+retained; no outcome filtering/edited states/copied prefixes. New keys disjoint
+from all10,080 old support-v2 and3,072 advanced-collection reset keys. Nine CPU
+contract tests pass; GPU legacy parity and first reset-component full replay
+pass. First late-component replay is enforced before committing its first batch.
+
+Both stores are separate and all new sources TRAIN with fixed monitor hash;
+old dev/final and canonical code remain unchanged. `COVERAGE.md` reports ALL22
+achievements and danger counts/rates, not just chosen examples. Mixture and
+fixed-frame-budget dilution must be reviewed before model training. A data-only
+3x3 run is the clean comparison; adding2x2 remains a separate user discussion.
+Gaze shortcut removal is plausible, not isolated by the old two-change comparison;
+chooser progression is not by itself native fine-information uptake.
+
+Additional collection QA: both risk acquisition components passed independent
+within-GPU replay on selected complete retained paths. An independent CPU audit
+reconstructed670,941 recorded random flags and random actions exactly, including
+actual fully-random tails after512. Cross-backend CPU pixel replay was NOT
+bit-exact:530 of13,931,190 channels differed, max1/255, across25 of1,170 retained
+successor frames; all rewards/terminations match. Original failed pixel-exact
+assertion/log retained; quantified result in RANDOM_TAIL_CHECK.json explicitly
+keeps that gate failed, not silently relaxed. Stored GPU observations/sidecar
+states remain authoritative; do not silently replace them with CPU re-renders.
+Danger-context census includes sleep, empty food/drink, visible projectiles,
+night and iron-equipment states; these are overlapping contexts, not attributed
+causes. Advanced addition alone includes1,890 deaths with iron equipment.
+
+## 2026-11-04 — Final full dataset EDA: coverage versus fixed-budget exposure
+
+User requested the entire candidate dataset, not only rare unlock summaries.
+Both authorized collections completed cleanly (coverage128x24, danger512x24).
+Final TRAIN census, fixed5% monitor excluded:22,267 independent episode ids,
+8,914,902 transitions,21,579 true deaths and688 cap-truncated survivors.
+Original7,672/2,432,119; advanced2,932/3,711,420; danger11,663/2,771,363.
+Old dev/final unchanged. New765 monitor episodes excluded throughout.
+Full report/figures/CSV/source pins: `20261104_dataset_eda/RESULTS.md`,
+`CENSUS.json`, `SUMMARY.json`, `VALIDATION.json`, `all_metrics.csv`.
+
+All22 unlock totals and source manifests reconcile; sidecar hashes verified;
+actual-train ids unique. Three CPU checks cover exact camera-scroll exclusion,
+terminal absorbing suffixes, and truncation exclusion. Action/age/outcome/risk/
+night/inventory-histogram/exogenous-window mass balances pass for every pool.
+No model fit, GPU inference, architecture change or training launch in this EDA.
+
+Key unique-event gains: plant eating184->1,081; diamond187->993; coal first
+unlock3,398->9,281; iron2,249->6,804. Coal repeated increments9,727->33,681;
+iron5,981->23,657. Risk28,891->81,813, risk deaths3,701->11,097, health-loss
+transitions47,618->149,639. Deaths after step1023:352->1,799. Frames at age>=1024
+250,266->1,694,708 (10.3%->19.0% of transitions). Actual scheduled late-failure
+phase reached by1,016 fresh TRAIN episodes,90,432 random post-prefix actions;
+policy-assigned-but-early-dead episodes not miscounted as late exploration.
+
+Critical interpretation: full union is3.66x as many emitted frames, so fixed
+25.6M training budget drops10.49->2.86 corpus passes. Approx expected exposure
+relative to old: plant1.60x, diamond1.45x, iron increments1.08x, drink1.19x,
+coal increments0.95x, coal FIRST unlock0.75x, iron FIRST unlock0.83x,
+damage0.86x, death0.77x, risk0.77x, risk death0.82x. More independent data is
+not automatically more optimization on every failure. No mixture/weight or
+longer budget silently adopted; final training recipe needs this discussion.
+Long histories especially add plant maturation and late-state support; first
+coal/iron already mostly occur before256, so length alone is not their diagnosis.
+
+Remaining holes: iron8->9only20 events; diamond2->3only10, higher increments0;
+sapling3->4only2, higher0. Qualified diamond NOOP6, actual randomized successful
+DO2. ExogenousH16 support now1,127,420 overlapping windows (987,882 full live
+horizons,139,538 absorbing suffixes);15,261 unique deaths and9,443 risk deaths,
+but only2 coal unlocks,0 iron/diamond unlocks. Repeated exogenous increments
+coal23,iron11,diamond0. This is support accounting, not P2 objective adoption.
+
+Likely beneficiaries and readouts predeclared in report: plant/diamond,
+advanced counters, late-state/danger generalization, with real-target heads
+separated from generated periphery/glimpse and event recall from false positives.
+No claim that new data repairs native fine use, sampler, or P2 self-feeding.
+Recommend data-only3x3 comparison preserving F2 recipe;2x2 remains separate.
+Original monitor/evaluation should remain visible; new heldout strata reported
+separately rather than silently changing checkpoint selection.
+
+## 2026-11-04 — F2.1 diversity / F2.2 acuity preparation review
+
+User requested both arms reviewed and interpretation of train/dev diagnosis.
+Snapshot review in `20261104_p1f21_22_review/RESULTS.md`; CPU tests57passed,
+6CUDA-skipped. No arm/shared code edited; Claude's GPU and CPU jobs untouched.
+Independent CPU checks verify config deltas and the1,060-shard union's order,
+paths and declared source hashes. Original monitor retained by code; new monitors
+held out; frozen change teacher and bitwise old-target preservation reviewed.
+Runtime full union/target/GPU gates still required while build continues.
+
+Concrete2x2 findings: smaller first-layer draw shifts149 common-shape tensors,
+11,106,248 initial values, and post-init RNG; avoidable confound for one seed.
+Generated101-file source seal omits imported F2.1 run/checks/pin_sources helpers.
+Both workers stop after training/selection; automatic evaluation still unbuilt.
+
+Scientific qualification:2x2 classifier recall drop is not universal coarse/
+history information absence. Old58-scene panel remains descriptive unless
+fine cue, baseline miss, acquisition and native prediction prerequisites are
+qualified. Current-query gaze sensitivity alone is not a fine-use criterion:
+physical outcome marginals should be invariant to sensor choice for fixed prior
+belief/action; useful past real glimpses can change later belief/forecasts.
+Do not count a new query shortcut as repair or a null as architectural impossibility.
+
+Train/dev raw values verified: coal22.41/24.37%,iron7.23/9.18%,riskdeath1.00/1.27%,
+adjacentdamage1.05/1.23%. Shows generation deficiency on seen physical histories,
+not just held-out failure, but is not a measurement of native training-objective
+fit or a mixer/Mamba/sampler localization. Random-gaze training-history caveat
+retained. Closure1/3 is an operational large-train-advantage threshold; ratio CI
+propagation incomplete, but conservative local sensitivity stillupper<.063 for
+all4 primaries. More distinct data helping would NOT contradict these readings;
+the diversity plan's exclusion of those four classes is unsupported. Learning
+pressure/exposure, missing contexts and generalization are not exhaustive disjoint
+causes. Report all classes; no training launch or repair follows this audit.
+
+## 2026-11-04 — P1-F2.1 diversity arm authorized; launch repairs and qualification
+
+User selected the diversity arm, explicitly deferred 2x2, and authorized fixes,
+commit, watching data completion, launch and automatic evaluation. Architecture,
+3x3 acuity, faithful losses, original learned-gaze policy, optimizer, seed1,
+25.6M-frame budget and checkpoint rule remain F2's. Raw union increases distinct
+instances, not fixed-budget exposure to every rare failure.
+
+Adopted and inspected Claude's completed union assembly/verification and single
+GPU preflight (f21-checks); redundant/obsolete supervisors stopped, required
+workers preserved. All1060 shard hashes passed, original targets copied bitwise,
+12/12 teacher reproduction episodes exact. New teacher targets cover8937169
+emitted frames. Union train22267episodes/8914902transitions; original monitor
+unchanged. GPU actual-path resume exact except optimizer1.42e-14;200 short-chunk
+updates plus3 long-chunk updates, full2000-window monitor finite; peak4.296GiB.
+
+Fixed selected arm's missing post-training evaluation: explicit selected path,
+per-stage logs/failure status, output-isolated usual F2 battery, own closed-loop
+query-gaze interfaces on olddev and newheldout coverage/risk separately. New
+sidecar labels140coverage/625risk episodes built before launch, training exclusion
+and sampled actions/rewards/terminations verified. Closed-loop uses generated
+coarse evidence, not recorded successor outcomes. Same-F2-vs-itself GPU smoke on
+all3 distributions gives zero paired differences; actualunion checkpoint also
+passes new-heldout smoke. CPU suite61passed/6CUDA-skipped;4new launch/split tests.
+Sources/inputs sealed including shared helpers and immutable baseline inputs.
+Corrected PLAN's unsupported claim that diversity helping four primaries would
+contradict train/dev evidence. No claim that this run repairs fine-information
+use, and no P2/P3 launch. See20261104_p1f21/CHECKS.md and raw JSON gates.

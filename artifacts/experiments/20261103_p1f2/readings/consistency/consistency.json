@@ -1,0 +1,184 @@
+{
+ "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261103_p1f2/run/ckpt_10.pt",
+ "sha256": "e0f6a24ec51d2bf021ca88ba8080f804595800dc9295aecf0e37c7da7d7e1234",
+ "script_sha256": "485b2a5fdcf2fe7cc1fdc7e6d94076b19aa66f40231cef26a0d99eb102f66175",
+ "contexts": {
+  "random": 128,
+  "do": 128
+ },
+ "K": 8,
+ "glimpse_stage_equal_to_M_sample": true,
+ "batches_checked": 32,
+ "random": {
+  "er": {
+   "spread_over_se_median": 21.596713085906693,
+   "spread_median": 2.2533055592890325e-09,
+   "se_rms_median": 9.955227206548445e-11,
+   "mean_over_fixations": 0.008185141196177147
+  },
+  "pc": {
+   "spread_over_se_median": 0.0,
+   "spread_median": 0.0,
+   "se_rms_median": 0.0,
+   "mean_over_fixations": 1.0
+  },
+  "coherence": {
+   "hud": {
+    "gen": {
+     "est": 0.0010229807515023432,
+     "se": 0.0001017671382278934,
+     "n_cond": 128
+    },
+    "real": {
+     "est": 0.0005266550236098868,
+     "se": 3.089871291221757e-05,
+     "n_cond": 128
+    },
+    "gen_minus_real": {
+     "est": 0.0004963257278924564,
+     "se": 9.036484117549642e-05,
+     "n_cond": 128
+    }
+   },
+   "map": {
+    "gen": {
+     "est": 0.0008189600431511021,
+     "se": 4.140187264300157e-05,
+     "n_cond": 128
+    },
+    "real": {
+     "est": 0.0004243335087388849,
+     "se": 2.335749593041616e-05,
+     "n_cond": 128
+    },
+    "gen_minus_real": {
+     "est": 0.0003946265344122172,
+     "se": 4.469028572764292e-05,
+     "n_cond": 128
+    }
+   }
+  },
+  "conditioning_gap": {
+   "tok": {
+    "real_cond": {
+     "est": 0.002619776012352304,
+     "se": 0.00021147609776210084,
+     "n_cond": 128
+    },
+    "gen_cond": {
+     "est": 0.018521563480589975,
+     "se": 0.004892637133800484,
+     "n_cond": 128
+    },
+    "gen_minus_real": {
+     "est": 0.015901787419579705,
+     "se": 0.004851278700037459,
+     "n_cond": 128
+    }
+   },
+   "pix": {
+    "real_cond": {
+     "est": 0.001156711450619241,
+     "se": 0.0001775619068629347,
+     "n_cond": 128
+    },
+    "gen_cond": {
+     "est": 0.01129469857443155,
+     "se": 0.003988544252364366,
+     "n_cond": 128
+    },
+    "gen_minus_real": {
+     "est": 0.010137987241819246,
+     "se": 0.003933398614229123,
+     "n_cond": 128
+    }
+   }
+  }
+ },
+ "do": {
+  "er": {
+   "spread_over_se_median": 21.010594084980873,
+   "spread_median": 7.259559820111769e-07,
+   "se_rms_median": 3.767229441630878e-08,
+   "mean_over_fixations": 0.05762382685484978
+  },
+  "pc": {
+   "spread_over_se_median": 0.0,
+   "spread_median": 0.0,
+   "se_rms_median": 0.0,
+   "mean_over_fixations": 1.0
+  },
+  "coherence": {
+   "hud": {
+    "gen": {
+     "est": 0.001026281511014661,
+     "se": 7.346160863673722e-05,
+     "n_cond": 128
+    },
+    "real": {
+     "est": 0.0005530566046831252,
+     "se": 3.6386078688326776e-05,
+     "n_cond": 128
+    },
+    "gen_minus_real": {
+     "est": 0.0004732249063315358,
+     "se": 6.286055064275405e-05,
+     "n_cond": 128
+    }
+   },
+   "map": {
+    "gen": {
+     "est": 0.0007450373112549511,
+     "se": 4.135558371445433e-05,
+     "n_cond": 128
+    },
+    "real": {
+     "est": 0.0004545256079300738,
+     "se": 2.5515327833255526e-05,
+     "n_cond": 128
+    },
+    "gen_minus_real": {
+     "est": 0.00029051170332487737,
+     "se": 3.420148963533961e-05,
+     "n_cond": 128
+    }
+   }
+  },
+  "conditioning_gap": {
+   "tok": {
+    "real_cond": {
+     "est": 0.002646784083253806,
+     "se": 0.00021268398246100358,
+     "n_cond": 128
+    },
+    "gen_cond": {
+     "est": 0.014392369388360748,
+     "se": 0.003381582658895356,
+     "n_cond": 128
+    },
+    "gen_minus_real": {
+     "est": 0.011745585357857635,
+     "se": 0.003383743693464822,
+     "n_cond": 128
+    }
+   },
+   "pix": {
+    "real_cond": {
+     "est": 0.0012018844309977794,
+     "se": 0.0001467787168603619,
+     "n_cond": 128
+    },
+    "gen_cond": {
+     "est": 0.009216774820401952,
+     "se": 0.0024536428042419936,
+     "n_cond": 128
+    },
+    "gen_minus_real": {
+     "est": 0.008014890389290485,
+     "se": 0.0024504339842171246,
+     "n_cond": 128
+    }
+   }
+  }
+ }
+}

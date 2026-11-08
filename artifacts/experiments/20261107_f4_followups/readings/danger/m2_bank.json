@@ -1,0 +1,131 @@
+{
+ "pairs": 232,
+ "episodes": 232,
+ "strata": {
+  "fresh": 215,
+  "beside": 17
+ },
+ "excluded": [
+  {
+   "e": 222,
+   "t": 49,
+   "truth": {
+    "health": [
+     9,
+     2,
+     9
+    ],
+    "asleep": [
+     false,
+     false
+    ]
+   }
+  },
+  {
+   "e": 300,
+   "t": 109,
+   "truth": {
+    "health": [
+     8,
+     1,
+     8
+    ],
+    "asleep": [
+     false,
+     false
+    ]
+   }
+  },
+  {
+   "e": 345,
+   "t": 49,
+   "truth": {
+    "health": [
+     9,
+     2,
+     9
+    ],
+    "asleep": [
+     false,
+     false
+    ]
+   }
+  },
+  {
+   "e": 349,
+   "t": 68,
+   "truth": {
+    "health": [
+     9,
+     2,
+     9
+    ],
+    "asleep": [
+     false,
+     false
+    ]
+   }
+  },
+  {
+   "e": 466,
+   "t": 85,
+   "truth": {
+    "health": [
+     9,
+     2,
+     9
+    ],
+    "asleep": [
+     false,
+     false
+    ]
+   }
+  },
+  {
+   "e": 534,
+   "t": 216,
+   "truth": {
+    "health": [
+     9,
+     2,
+     9
+    ],
+    "asleep": [
+     false,
+     false
+    ]
+   }
+  },
+  {
+   "e": 549,
+   "t": 70,
+   "truth": {
+    "health": [
+     9,
+     2,
+     9
+    ],
+    "asleep": [
+     false,
+     false
+    ]
+   }
+  },
+  {
+   "e": 794,
+   "t": 46,
+   "truth": {
+    "health": [
+     9,
+     2,
+     9
+    ],
+    "asleep": [
+     false,
+     false
+    ]
+   }
+  }
+ ],
+ "bank_sha256": "1666d22a839c1168a1b11d0fca9f664dd92d4dc9181928c5cc7ef604e6a98a4d"
+}

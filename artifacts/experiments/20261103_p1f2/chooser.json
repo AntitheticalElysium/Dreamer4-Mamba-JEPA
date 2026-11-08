@@ -1,0 +1,21 @@
+{
+  "architecture": "original_coarse_only_101584",
+  "history": 8,
+  "policy": "existing_combined_score_softmax",
+  "uniform_floor": 0.2,
+  "contingency_weight": 0.5,
+  "surprise_weight": 0.5,
+  "temperature": 1.0,
+  "head_seed": 611601,
+  "gaze_seed": 612301,
+  "batch_seed": 612302,
+  "learning_rate": 0.001,
+  "minimum_learning_rate": 0.0001,
+  "warmup_updates": 100,
+  "weight_decay": 0.0001,
+  "grad_clip": 1.0,
+  "batch_size": 256,
+  "world_frames_per_head_update": 1024,
+  "encoding_batch": 512,
+  "scoring_batch": 256
+}

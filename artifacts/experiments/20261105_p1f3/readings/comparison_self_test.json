@@ -1,0 +1,237 @@
+{
+ "self_test": true,
+ "references": {
+  "trace": "artifacts/experiments/20261105_consequence_trace/readings/f2/results.json",
+  "stone": "artifacts/experiments/20261105_consequence_trace/readings/stone/f2/results.json",
+  "interface": "artifacts/experiments/20261105_consequence_trace/readings/evening/interface_f2_steps.json",
+  "recursion16": "artifacts/experiments/20261105_consequence_trace/readings/recursion/f2_steps16/raw.npz",
+  "s1": "artifacts/experiments/20261103_p1f2/run/s1/results.json"
+ },
+ "primary": {
+  "field_sigma20_hud": {
+   "coal": {
+    "diff": 0.0,
+    "se": 0.007082510649036773,
+    "f2": 0.12444533754539104,
+    "f3": 0.12444533754539104
+   },
+   "iron": {
+    "diff": 0.0,
+    "se": 0.005319560632921698,
+    "f2": 0.04647718162364386,
+    "f3": 0.04647718162364386
+   },
+   "wood": {
+    "diff": 0.0,
+    "se": 0.010469759370318136,
+    "f2": 0.703846787917156,
+    "f3": 0.703846787917156
+   },
+   "stone": {
+    "diff": 0.0,
+    "se": 0.010358588258128196,
+    "f2": 0.6323209211328334,
+    "f3": 0.6323209211328334
+   },
+   "drink": {
+    "diff": 0.0,
+    "se": 0.011317328144051772,
+    "f2": 0.445987170772433,
+    "f3": 0.445987170772433
+   }
+  },
+  "lever": "no measurable lever",
+  "plateau": "not signal-limited"
+ },
+ "actor_16_steps": {
+  "first_coal": {
+   "f2": 0.3643089646566929,
+   "f3": 0.3643089646566929,
+   "diff": 0.0,
+   "se": 0.0244467616070373,
+   "improved": false
+  },
+  "first_iron": {
+   "f2": 0.19284643579674152,
+   "f3": 0.19284643579674152,
+   "diff": 0.0,
+   "se": 0.017860462918081223,
+   "improved": false
+  },
+  "risky_death": {
+   "f2": 0.06200591657462477,
+   "f3": 0.06200591657462477,
+   "diff": 0.0,
+   "se": 0.004054508208422077,
+   "improved": false
+  },
+  "adjacent_damage": {
+   "f2": 0.05628902423771474,
+   "f3": 0.05628902423771474,
+   "diff": 0.0,
+   "se": 0.003754137136181607,
+   "improved": false
+  },
+  "risky_damage": {
+   "f2": 0.11484782255311808,
+   "f3": 0.11484782255311808,
+   "diff": 0.0,
+   "se": 0.00596741826873216,
+   "improved": false
+  },
+  "sapling_calibrated": {
+   "f3_minus_recorded": 0.006764325695593404,
+   "ok": true
+  }
+ },
+ "guards": {
+  "low_noise_bias": {
+   "max_abs": 0.0018154892474412918,
+   "ok": true
+  },
+  "s1_presence": {
+   "worst_f3_minus_f2": 0.0,
+   "ok": true
+  },
+  "s1_tsp": {
+   "f2": 2.209240534977528,
+   "f3": 2.209240534977528,
+   "ok": true
+  },
+  "common_classes_16": {
+   "classes": {
+    "ach_COLLECT_WOOD": {
+     "diff": 0.0,
+     "se": 0.022673048461722585,
+     "breach": false
+    },
+    "ach_COLLECT_STONE": {
+     "diff": 0.0,
+     "se": 0.022000508275718898,
+     "breach": false
+    },
+    "ach_PLACE_TABLE": {
+     "diff": 0.0,
+     "se": 0.013093474698838637,
+     "breach": false
+    },
+    "ach_PLACE_STONE": {
+     "diff": 0.0,
+     "se": 0.015942234834770246,
+     "breach": false
+    },
+    "ach_COLLECT_DRINK": {
+     "diff": 0.0,
+     "se": 0.02273287333587126,
+     "breach": false
+    },
+    "ach_MAKE_WOOD_PICKAXE": {
+     "diff": 0.0,
+     "se": 0.01894881254188388,
+     "breach": false
+    },
+    "ach_MAKE_WOOD_SWORD": {
+     "diff": 0.0,
+     "se": 0.02312837171697929,
+     "breach": false
+    },
+    "ach_MAKE_STONE_PICKAXE": {
+     "diff": 0.0,
+     "se": 0.02418992478518663,
+     "breach": false
+    },
+    "ach_MAKE_STONE_SWORD": {
+     "diff": 0.0,
+     "se": 0.024194453075100972,
+     "breach": false
+    }
+   },
+   "ok": true
+  },
+  "false_rewards_16": {
+   "f2": 0.048470164721480746,
+   "f3": 0.048470164721480746,
+   "diff": 0.0,
+   "se": 0.003774180984959932,
+   "ok": true
+  },
+  "own_history_count_gate_16": {
+   "fires": 2,
+   "checks": {
+    "zombies/teacher": {
+     "ratio": 1.099129557609558,
+     "diff": {
+      "est": 0.0250244140625,
+      "se": 0.008309434364388864,
+      "n_cond": 512
+     },
+     "fires": false
+    },
+    "zombies/free": {
+     "ratio": 1.3394584655761719,
+     "diff": {
+      "est": 0.085693359375,
+      "se": 0.027012767126890862,
+      "n_cond": 512
+     },
+     "fires": true
+    },
+    "cows/teacher": {
+     "ratio": 1.007908582687378,
+     "diff": {
+      "est": 0.006591796875,
+      "se": 0.015526221549399621,
+      "n_cond": 512
+     },
+     "fires": false
+    },
+    "cows/free": {
+     "ratio": 0.985061526298523,
+     "diff": {
+      "est": -0.012451171875,
+      "se": 0.056659669963319156,
+      "n_cond": 512
+     },
+     "fires": false
+    },
+    "skeletons/teacher": {
+     "ratio": 0.9826388955116272,
+     "diff": {
+      "est": -0.0018310546875,
+      "se": 0.009489880756250095,
+      "n_cond": 512
+     },
+     "fires": false
+    },
+    "skeletons/free": {
+     "ratio": 1.1875,
+     "diff": {
+      "est": 0.019775390625,
+      "se": 0.023622358620887636,
+      "n_cond": 512
+     },
+     "fires": false
+    },
+    "arrows/teacher": {
+     "ratio": 1.8833333253860474,
+     "diff": {
+      "est": 0.0323486328125,
+      "se": 0.00961719277430222,
+      "n_cond": 512
+     },
+     "fires": true
+    },
+    "arrows/free": {
+     "ratio": 1.506666660308838,
+     "diff": {
+      "est": 0.0185546875,
+      "se": 0.012538720013717577,
+      "n_cond": 512
+     },
+     "fires": false
+    }
+   },
+   "ok": true
+  }
+ }
+}

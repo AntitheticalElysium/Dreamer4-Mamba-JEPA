@@ -5,6 +5,17 @@ generation, (2) places and resources through revisits, (3) uncertainty through w
 information decisions need. A downstream failure does not identify its component (perception, memory, generation or
 decision); probes locate it.
 
+2026-11-02 status: [P2_READINESS.md](P2_READINESS.md) records a 128-window native recursion pilot and its real-percept
+replay control, native outcome/sampler checks and reader limitations. This is a diagnostic, not completion of the
+full S2 gate below. The pilot contains no recorded deaths; it cannot establish mortality calibration. No new
+post-result passing threshold is introduced here.
+
+2026-11-03: F1.6's S1 and matched diagnosis battery completed. Its perception
+blocker passes, but that is not an S2 bookkeeping pass or an outcome-fidelity
+claim. The [review](../../artifacts/experiments/20261103_p1f16_review/RESULTS.md)
+retains worse generated risky damage/death and negligible local useful-look
+benefit beside selective gains. No new post-result threshold or automatic launch.
+
 Rules
 - Readings, budgets (updates, seeds) and probe definitions fixed before each stage; simulator state for EVALUATION
   only; dev split for readings, final split untouched until the end.

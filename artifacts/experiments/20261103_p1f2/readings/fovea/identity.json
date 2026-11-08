@@ -1,0 +1,16 @@
+{
+  "control": {
+    "checkpoint_sha256": "34bda77fe5ec5226c4f003301c972d918e2d4a4a554a5a6f279fcabbe922b045",
+    "reader_sha256": "604837306f3f664f20c190adcfa9ca3a5ded3a3bf54efd5b2613621e6e084103",
+    "prefix_rms_max": 0.008435209281742573,
+    "scenes": 58
+  },
+  "candidate": {
+    "checkpoint_sha256": "e0f6a24ec51d2bf021ca88ba8080f804595800dc9295aecf0e37c7da7d7e1234",
+    "reader_sha256": "8b0cc23b89697afe0b295d5ca7ef4fe27823093727fdc3a494c5c3e8684e691f",
+    "prefix_rms_max": 0.01003901194781065,
+    "scenes": 58
+  },
+  "baseline_npz_sha256": "17da2a1f70b0211b46be09c241ae96064920973d6c6e9a546faf1e641074b78f",
+  "fixed_source_sha256": "5f0062c8e84161268cbc69be1c9d0f30ae7102ae8d8aad902ff02042c5e176dd"
+}

@@ -1,0 +1,20 @@
+{
+ "episodes": 400,
+ "contexts": {
+  "drink": 300,
+  "wood": 300,
+  "sapling": 300,
+  "stone": 300,
+  "coal": 300,
+  "iron": 300,
+  "stone_no_tool": 217,
+  "random": 600
+ },
+ "checkpoints": {
+  "p1f2": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261103_p1f2/run/ckpt_10.pt",
+   "sha256": "e0f6a24ec51d2bf021ca88ba8080f804595800dc9295aecf0e37c7da7d7e1234",
+   "belief_replay_worst_rel_l2": 0.008742480538785458
+  }
+ }
+}

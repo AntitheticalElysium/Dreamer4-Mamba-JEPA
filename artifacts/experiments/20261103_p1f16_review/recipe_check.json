@@ -1,0 +1,16 @@
+{
+  "only_config_difference": {
+    "kind": "joint_fine",
+    "hidden": 128,
+    "init_seed": 611901
+  },
+  "frames": 25600000,
+  "world_seed": 1,
+  "new_parameters": {
+    "belief.spatial_fusion.net.0.weight": 11264,
+    "belief.spatial_fusion.net.0.bias": 128,
+    "belief.spatial_fusion.net.2.weight": 8192,
+    "belief.spatial_fusion.net.2.bias": 64
+  },
+  "new_parameter_count": 19648
+}

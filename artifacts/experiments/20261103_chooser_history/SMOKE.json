@@ -1,0 +1,9 @@
+{
+  "masked_history_excluded": true,
+  "all_context_channels_masked": true,
+  "nonzero_head_compact_max_abs_ieee": 2.384185791015625e-07,
+  "compact_tf32_shape_rounding_max_abs": 4.26173210144043e-05,
+  "identical_initialization_and_sampling": true,
+  "current_target_excluded": true,
+  "parameter_count": 118032
+}

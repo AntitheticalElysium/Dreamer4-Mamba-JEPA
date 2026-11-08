@@ -1,0 +1,27 @@
+{
+  "encoded_episodes": 2,
+  "cascade_shapes": [
+    [
+      1,
+      1,
+      81,
+      16
+    ],
+    [
+      1,
+      1,
+      9,
+      64
+    ],
+    [
+      1,
+      1,
+      8
+    ]
+  ],
+  "cascade_finite": true,
+  "cuda_coarse_bitwise_equal": true,
+  "online_head_updates": 200,
+  "heldout_policy_rows": 2,
+  "checkpoint_sha256": "a1f6b2e16eb3c777a18cfe50f1148ff612aeb7901b057a3f3a2f658d898dd663"
+}

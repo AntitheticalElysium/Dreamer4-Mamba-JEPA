@@ -1,0 +1,10 @@
+readings/**/*.npz
+*.log
+__pycache__/
+readings/flex/det/
+readings/flex/cost/
+queue.done
+danger.done
+checks.done
+readings.done
+probe.done

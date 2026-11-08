@@ -1,0 +1,6 @@
+{
+  "exact_optimizer_continuation": true,
+  "actual_native_prefix_capture": true,
+  "auxiliary_training": true,
+  "peak_GiB": 0.8763823509216309
+}

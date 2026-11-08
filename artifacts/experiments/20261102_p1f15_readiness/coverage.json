@@ -1,0 +1,35 @@
+{
+ "scope": "Expected event-crop coverage from saved training corpus/rule, not Adam impact",
+ "attempt_frames_fraction": 0.13130278576007176,
+ "classes": {
+  "drink_up": {
+   "uniform_coverage": 0.12244897959183672,
+   "guided_q1_expected": 1.0000000000000002,
+   "target_frames": 39435
+  },
+  "wood_up": {
+   "uniform_coverage": 0.12257780313751312,
+   "guided_q1_expected": 1.0000000000000002,
+   "target_frames": 64952
+  },
+  "sapling_up": {
+   "uniform_coverage": 0.12294331808009619,
+   "guided_q1_expected": 0.984124386252046,
+   "target_frames": 6110
+  },
+  "table_placed": {
+   "uniform_coverage": 0.184347211139197,
+   "guided_q1_expected": 0.9880219706707316,
+   "target_frames": 17084
+  },
+  "zombie_hit": {
+   "uniform_coverage": 0.04348216204218586,
+   "guided_q1_expected": 0.7837869267804307,
+   "target_frames": 34572
+  },
+  "all_targets": {
+   "uniform_coverage": 0.11191536720188458,
+   "guided_q1_expected": 0.951852751303845
+  }
+ }
+}

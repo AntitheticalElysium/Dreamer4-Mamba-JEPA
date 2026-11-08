@@ -1,0 +1,17 @@
+{
+ "pairs": 64,
+ "episodes": 64,
+ "K": 16,
+ "moved (member 0 = move, member 1 = NOOP)": [
+  1.0,
+  0.0
+ ],
+ "pairs with every move future moved / every NOOP future still": [
+  64,
+  64
+ ],
+ "f_mean (0 = move successor, 1 = NOOP successor)": [
+  0.09700000286102295,
+  0.9789999723434448
+ ]
+}

@@ -1,0 +1,5 @@
+*.npz
+*.pt
+__pycache__/
+*.log
+smoke/

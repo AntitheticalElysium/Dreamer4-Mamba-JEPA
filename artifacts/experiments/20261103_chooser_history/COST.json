@@ -1,0 +1,11 @@
+{
+  "eager": {
+    "error": "CalledProcessError(1, ['/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/bin/python', '-u', '-m', 'artifacts.experiments.20261103_chooser_history.bench', '--core'])",
+    "limitation": "Failure is not evidence that optimization is impossible."
+  },
+  "compiled": {
+    "error": "CalledProcessError(1, ['/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/bin/python', '-u', '-m', 'artifacts.experiments.20261103_chooser_history.bench', '--compiled'])",
+    "limitation": "Failure is not evidence that optimization is impossible."
+  },
+  "seconds": 14.210294961929321
+}

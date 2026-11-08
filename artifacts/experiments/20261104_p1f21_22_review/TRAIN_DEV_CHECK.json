@@ -1,0 +1,54 @@
+{
+  "ach_COLLECT_COAL": {
+    "train_generated": 0.22407486875304206,
+    "dev_generated": 0.24374350069138903,
+    "train_recorded": 1.0,
+    "dev_recorded": 1.0,
+    "closure": -0.026007884833159838,
+    "reported_ci": [
+      -0.08799718895460654,
+      0.03598141928828686
+    ],
+    "conservative_first_order_upper_sensitivity": 0.06276425557778288,
+    "interpretation": "First-order sensitivity check, not an exact bootstrap interval. Main no-large-train-advantage reading is robust."
+  },
+  "ach_COLLECT_IRON": {
+    "train_generated": 0.07228394000349858,
+    "dev_generated": 0.09176291586198591,
+    "train_recorded": 1.0,
+    "dev_recorded": 1.0,
+    "closure": -0.021447016642107672,
+    "reported_ci": [
+      -0.05284244523295135,
+      0.009948411948736005
+    ],
+    "conservative_first_order_upper_sensitivity": 0.023189541011840634,
+    "interpretation": "First-order sensitivity check, not an exact bootstrap interval. Main no-large-train-advantage reading is robust."
+  },
+  "risky": {
+    "train_generated": 0.010026871056887572,
+    "dev_generated": 0.012655924622865293,
+    "train_recorded": 0.12024048096192384,
+    "dev_recorded": 0.12772667542706964,
+    "closure": -0.017422139990717782,
+    "reported_ci": [
+      -0.04532673282491689,
+      0.010482452843481331
+    ],
+    "conservative_first_order_upper_sensitivity": 0.033954478509452816,
+    "interpretation": "First-order sensitivity check, not an exact bootstrap interval. Main no-large-train-advantage reading is robust."
+  },
+  "adjacent": {
+    "train_generated": 0.010538250380156065,
+    "dev_generated": 0.012344462760819089,
+    "train_recorded": 0.14433333333333334,
+    "dev_recorded": 0.159,
+    "closure": -0.005014136690678714,
+    "reported_ci": [
+      -0.029899109898499535,
+      0.0198708365171421
+    ],
+    "conservative_first_order_upper_sensitivity": 0.04344522578823167,
+    "interpretation": "First-order sensitivity check, not an exact bootstrap interval. Main no-large-train-advantage reading is robust."
+  }
+}

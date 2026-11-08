@@ -1,0 +1,18 @@
+{
+ "head_parameters": 46978,
+ "head_only": {
+  "median_seconds_per_1024": 0.0013705009996556328,
+  "min": 0.0013614209983643377,
+  "max": 0.0019153339999320451,
+  "repetitions": 30
+ },
+ "extra_native_perception_and_head": {
+  "median_seconds_per_1024": 0.015441758499946445,
+  "min": 0.0144994560014311,
+  "max": 0.016496783999173203,
+  "repetitions": 30
+ },
+ "scope": "Untrained shape/compute benchmark; no selector accuracy, sparse teacher cost, head training or production collection ETA. Native full perception includes an unused dummy glimpse, giving one concrete extra-pass scenario.",
+ "script_sha256": "c3365e88c36b75440289ac6dc08f75dce6abf79401a7226b2e38a2724ed5f01a",
+ "checkpoint_sha256": "95fa2cc82cb9dc3cae11cbf9f44f880aff17e250de639911f39d159564978128"
+}

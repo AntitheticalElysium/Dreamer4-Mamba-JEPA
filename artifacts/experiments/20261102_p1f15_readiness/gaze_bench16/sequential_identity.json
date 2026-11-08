@@ -1,0 +1,132 @@
+{
+ "sha256": "95fa2cc82cb9dc3cae11cbf9f44f880aff17e250de639911f39d159564978128",
+ "timings": {
+  "uniform": 2.2099156379699707,
+  "mix": 3.2453691959381104,
+  "mix_recency": 3.231236219406128
+ },
+ "policy": "equal mean-normalized C/S; softmax T1; uniform .2; recency window-mean trace half-life4",
+ "rows": 3072,
+ "finite_checks": [
+  {
+   "policy": "uniform",
+   "t": 0,
+   "actual_fork_rms_error": 0.00625491701066494
+  },
+  {
+   "policy": "uniform",
+   "t": 1,
+   "actual_fork_rms_error": 0.005313755013048649
+  },
+  {
+   "policy": "uniform",
+   "t": 2,
+   "actual_fork_rms_error": 0.005352360662072897
+  },
+  {
+   "policy": "uniform",
+   "t": 3,
+   "actual_fork_rms_error": 0.005542513448745012
+  },
+  {
+   "policy": "uniform",
+   "t": 4,
+   "actual_fork_rms_error": 0.005985867697745562
+  },
+  {
+   "policy": "uniform",
+   "t": 5,
+   "actual_fork_rms_error": 0.006073620170354843
+  },
+  {
+   "policy": "uniform",
+   "t": 6,
+   "actual_fork_rms_error": 0.006072108633816242
+  },
+  {
+   "policy": "uniform",
+   "t": 7,
+   "actual_fork_rms_error": 0.006281822454184294
+  },
+  {
+   "policy": "mix",
+   "t": 0,
+   "actual_fork_rms_error": 0.005690483376383781
+  },
+  {
+   "policy": "mix",
+   "t": 1,
+   "actual_fork_rms_error": 0.005313755013048649
+  },
+  {
+   "policy": "mix",
+   "t": 2,
+   "actual_fork_rms_error": 0.005309901665896177
+  },
+  {
+   "policy": "mix",
+   "t": 3,
+   "actual_fork_rms_error": 0.005960395094007254
+  },
+  {
+   "policy": "mix",
+   "t": 4,
+   "actual_fork_rms_error": 0.005535147152841091
+  },
+  {
+   "policy": "mix",
+   "t": 5,
+   "actual_fork_rms_error": 0.006153011228889227
+  },
+  {
+   "policy": "mix",
+   "t": 6,
+   "actual_fork_rms_error": 0.0058579836040735245
+  },
+  {
+   "policy": "mix",
+   "t": 7,
+   "actual_fork_rms_error": 0.005738517735153437
+  },
+  {
+   "policy": "mix_recency",
+   "t": 0,
+   "actual_fork_rms_error": 0.005690483376383781
+  },
+  {
+   "policy": "mix_recency",
+   "t": 1,
+   "actual_fork_rms_error": 0.005313755013048649
+  },
+  {
+   "policy": "mix_recency",
+   "t": 2,
+   "actual_fork_rms_error": 0.005309901665896177
+  },
+  {
+   "policy": "mix_recency",
+   "t": 3,
+   "actual_fork_rms_error": 0.005960395094007254
+  },
+  {
+   "policy": "mix_recency",
+   "t": 4,
+   "actual_fork_rms_error": 0.005518149584531784
+  },
+  {
+   "policy": "mix_recency",
+   "t": 5,
+   "actual_fork_rms_error": 0.006153011228889227
+  },
+  {
+   "policy": "mix_recency",
+   "t": 6,
+   "actual_fork_rms_error": 0.0058579836040735245
+  },
+  {
+   "policy": "mix_recency",
+   "t": 7,
+   "actual_fork_rms_error": 0.006156967021524906
+  }
+ ]
+}

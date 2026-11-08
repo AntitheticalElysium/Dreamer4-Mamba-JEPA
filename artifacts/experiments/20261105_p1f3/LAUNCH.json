@@ -1,0 +1,18 @@
+{
+  "authorized_by": "User 11-05: 'Here's Codex's review, please look through it and launch the overnight run.'",
+  "review": "artifacts/experiments/20261105_p1f3_review/REVIEW.md (Codex): training change sound; 4 readout fixes applied before launch (f78f6d99)",
+  "unit": "saccade-p1f3.service",
+  "invocation": "2e153b89ce414601aff60d723f2add13",
+  "started_at": "2026-11-05T11:41:52.529185+00:00",
+  "memory_max_GiB": 24,
+  "world_seed": 1,
+  "source_pins_sha256": "4db64ff00bccdac943c2245f729b2941d014d221b2b71dc0f5a504311f4856a7",
+  "update1_matches_preflight": {
+    "g1": 1.1324598789215088,
+    "change": 0.6846442222595215,
+    "tsp": 0.4889675974845886
+  },
+  "evaluation_automatic": "readout.py (S1, trace, sampler steps, interface 3/16, recursion 3/16, glimpse, CPU readings, f3_allocation, compare)",
+  "checkpoint_rule": "F2's: final unless three successive monitor increases (EDM-unit monitor, unchanged)",
+  "verified_at": "2026-11-05T11:42:47.743028+00:00"
+}

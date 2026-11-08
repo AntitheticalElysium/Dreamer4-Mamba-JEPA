@@ -1,0 +1,15 @@
+{
+ "checkpoint_sha256": "9695c6d65b1b5a50d32460f18b9ca4a2d683da7e50745a7e8122b6cb1744d544",
+ "s1": "complete",
+ "trace": "complete",
+ "sampler_steps": "complete",
+ "interface_steps": "complete",
+ "recursion_3": "complete",
+ "recursion_16": "complete",
+ "glimpse": "complete",
+ "readings": "complete",
+ "posthoc": "complete",
+ "allocation": "complete",
+ "f3_allocation": "complete",
+ "compare": "complete"
+}

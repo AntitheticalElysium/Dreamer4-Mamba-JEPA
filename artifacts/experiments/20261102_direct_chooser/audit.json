@@ -1,0 +1,7 @@
+{
+  "coarse_replay_abs_error_max": 0.0,
+  "action_alignment_exact": true,
+  "train_transitions": 107091,
+  "validation_transitions": 16403,
+  "initial_check_issue": "CPU import of historical gaze_checks allocated CUDA; check now executes its unchanged priorities function AST without module side effects."
+}

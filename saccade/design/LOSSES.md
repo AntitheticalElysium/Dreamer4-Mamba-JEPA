@@ -73,6 +73,15 @@ separate (no gradient into the world).
 | G1 (shared) | own-sample unrolls | the G1 term at each unrolled step while the update reads the generator's own percepts (context corruption via diffusion forcing; switching dropped for M0), truncated gradients | mean over steps | G1's sigma |
 | G4 sampled rollouts | free-running sampled unrolls on exogenous windows | PATCHED + GLOBAL joint-trajectory energy score (agreed 10-27; beta = 1, fair pairwise term, m = 2 independent rollouts with independent noise and termination draws; Y = the recorded window through the frozen encoder). Patched: zero-padded 3x3 windows of periphery tokens centred on every position of the 11 x 11 grid that extends the 9 x 9 screen by one cell (121 windows), so every token, HUD and view edges included, lies in exactly 9 windows (Codex: windows centred only on the 81 tokens covered corners 4 times and edges 6); padding is identical in samples and recording, so it adds no distance. Stacked over the h steps. Global: the full flattened trajectory (all periphery tokens, lighting latent, glimpse tokens, symlog reward, termination); a pooled global would miss distant dependencies (Codex's corner counterexample). Every component scaled once by its std over 10,000 recorded windows at the start of P2; absorbing terminal convention; weights: the patch sum 1, the global set once at the start of P2 to equal mean magnitude (Pacchiardi et al., E.4.2; their patches are spatial at one lead time, stacking over time is ours). Gradient: CURRICULUM §2 contract. Distinct from the S0 evaluation summary (simulator labels via the reader) | per trajectory | harmonised |
 
+P2 discussion requirement (2026-11-02, agreed with the user): the trajectory objective
+must actually give consequence forecasts learning credit. Including detached reward and
+termination samples in G4's distance does not differentiate their probabilities. G3 on
+real evidence remains useful but is not a generated-forecast calibration objective.
+The G4 row is therefore not implementation-ready until a justified probability-gradient
+or forecast-space proper-score construction is specified and checked. This records the
+required correction; no particular estimator, extra loss weight or new training run was
+selected. Details and data-admission constraints are in P2_READINESS.md and CURRICULUM.md.
+
 ## Facts used
 Change-map positives 1.7% (day) / 2.9% (night) of cells (A9b); reward non-zero on 6.7% of steps, termination 0.3%
 (corpus); exogenous windows from A8. (Free bits left with generator v2; they were never an entropy budget, and the

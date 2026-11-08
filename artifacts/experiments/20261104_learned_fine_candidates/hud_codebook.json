@@ -1,0 +1,242 @@
+{
+  "frames": 4388,
+  "rows": 70208,
+  "method": "Enumerated native renderer glyphs -> frozen periphery given actual lighting -> nearest exact token code. No fitted weights.",
+  "fields": {
+    "health": {
+      "pixel_atlas_matches": 4388,
+      "latent_correct": 4388,
+      "rows": 4388,
+      "min_runnerup_squared_distance_gap": 0.3553733229637146,
+      "values": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "food": {
+      "pixel_atlas_matches": 4388,
+      "latent_correct": 4388,
+      "rows": 4388,
+      "min_runnerup_squared_distance_gap": 0.14755232632160187,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "drink": {
+      "pixel_atlas_matches": 4388,
+      "latent_correct": 4388,
+      "rows": 4388,
+      "min_runnerup_squared_distance_gap": 0.17495305836200714,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "energy": {
+      "pixel_atlas_matches": 4388,
+      "latent_correct": 4388,
+      "rows": 4388,
+      "min_runnerup_squared_distance_gap": 0.10219819098711014,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "sapling": {
+      "pixel_atlas_matches": 4388,
+      "latent_correct": 4388,
+      "rows": 4388,
+      "min_runnerup_squared_distance_gap": 0.10807906836271286,
+      "values": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    "wood": {
+      "pixel_atlas_matches": 4388,
+      "latent_correct": 4388,
+      "rows": 4388,
+      "min_runnerup_squared_distance_gap": 0.15314286947250366,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "stone": {
+      "pixel_atlas_matches": 4388,
+      "latent_correct": 4388,
+      "rows": 4388,
+      "min_runnerup_squared_distance_gap": 0.055453039705753326,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "coal": {
+      "pixel_atlas_matches": 4388,
+      "latent_correct": 4388,
+      "rows": 4388,
+      "min_runnerup_squared_distance_gap": 0.052378930151462555,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "iron": {
+      "pixel_atlas_matches": 4388,
+      "latent_correct": 4388,
+      "rows": 4388,
+      "min_runnerup_squared_distance_gap": 0.04600635915994644,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    "diamond": {
+      "pixel_atlas_matches": 4388,
+      "latent_correct": 4388,
+      "rows": 4388,
+      "min_runnerup_squared_distance_gap": 0.5194607377052307,
+      "values": [
+        0,
+        1
+      ]
+    },
+    "wood_pickaxe": {
+      "pixel_atlas_matches": 4388,
+      "latent_correct": 4388,
+      "rows": 4388,
+      "min_runnerup_squared_distance_gap": 0.10016435384750366,
+      "values": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    "stone_pickaxe": {
+      "pixel_atlas_matches": 4388,
+      "latent_correct": 4388,
+      "rows": 4388,
+      "min_runnerup_squared_distance_gap": 0.09374560415744781,
+      "values": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    "iron_pickaxe": {
+      "pixel_atlas_matches": 4388,
+      "latent_correct": 4388,
+      "rows": 4388,
+      "min_runnerup_squared_distance_gap": 0.1054261177778244,
+      "values": [
+        0,
+        1,
+        2
+      ]
+    },
+    "wood_sword": {
+      "pixel_atlas_matches": 4388,
+      "latent_correct": 4388,
+      "rows": 4388,
+      "min_runnerup_squared_distance_gap": 0.15499719977378845,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "stone_sword": {
+      "pixel_atlas_matches": 4388,
+      "latent_correct": 4388,
+      "rows": 4388,
+      "min_runnerup_squared_distance_gap": 0.1493459790945053,
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "iron_sword": {
+      "pixel_atlas_matches": 4388,
+      "latent_correct": 4388,
+      "rows": 4388,
+      "min_runnerup_squared_distance_gap": 0.1910324990749359,
+      "values": [
+        0,
+        1,
+        2
+      ]
+    }
+  }
+}

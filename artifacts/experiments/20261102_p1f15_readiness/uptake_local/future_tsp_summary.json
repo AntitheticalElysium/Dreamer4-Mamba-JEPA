@@ -1,0 +1,30 @@
+{
+ "difference": {
+  "mean": -1.4834889590121544e-06,
+  "ci95": [
+   -3.7830669374542897e-06,
+   3.668821484069225e-07
+  ],
+  "n": 58,
+  "episodes": 48
+ },
+ "control_loss": {
+  "mean": 0.004567904866056496,
+  "ci95": [
+   0.003918617231995392,
+   0.005196417872306355
+  ],
+  "n": 58,
+  "episodes": 48
+ },
+ "fractional_difference": {
+  "mean": -0.00023636065580476967,
+  "ci95": [
+   -0.0006615300093201589,
+   0.0001522586358439701
+  ],
+  "n": 58,
+  "episodes": 48
+ },
+ "scope": "native TSP predicts next crop given next real periphery and the varied post-action belief; no direct past-glimpse path"
+}

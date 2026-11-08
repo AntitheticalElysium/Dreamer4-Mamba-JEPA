@@ -1,0 +1,237 @@
+{
+ "self_test": false,
+ "references": {
+  "trace": "artifacts/experiments/20261105_consequence_trace/readings/f2/results.json",
+  "stone": "artifacts/experiments/20261105_consequence_trace/readings/stone/f2/results.json",
+  "interface": "artifacts/experiments/20261105_consequence_trace/readings/evening/interface_f2_steps.json",
+  "recursion16": "artifacts/experiments/20261105_consequence_trace/readings/recursion/f2_steps16/raw.npz",
+  "s1": "artifacts/experiments/20261103_p1f2/run/s1/results.json"
+ },
+ "primary": {
+  "field_sigma20_hud": {
+   "coal": {
+    "diff": 0.030311600372947903,
+    "se": 0.006890533881208199,
+    "f2": 0.12444533754539104,
+    "f3": 0.15475693791833894
+   },
+   "iron": {
+    "diff": 0.042621015256268845,
+    "se": 0.005253028460638068,
+    "f2": 0.04647718162364386,
+    "f3": 0.0890981968799127
+   },
+   "wood": {
+    "diff": 0.13840847333474093,
+    "se": 0.010003194658507667,
+    "f2": 0.703846787917156,
+    "f3": 0.842255261251897
+   },
+   "stone": {
+    "diff": 0.17438616127455364,
+    "se": 0.009139586306332832,
+    "f2": 0.6323209211328334,
+    "f3": 0.8067070824073871
+   },
+   "drink": {
+    "diff": 0.19677724906528604,
+    "se": 0.012191775914221605,
+    "f2": 0.445987170772433,
+    "f3": 0.642764419837719
+   }
+  },
+  "lever": "partial",
+  "plateau": "signal-limited"
+ },
+ "actor_16_steps": {
+  "first_coal": {
+   "f2": 0.3643089646566929,
+   "f3": 0.4438888426873105,
+   "diff": 0.07957987803061761,
+   "se": 0.02537191727097561,
+   "improved": false
+  },
+  "first_iron": {
+   "f2": 0.19284643579674152,
+   "f3": 0.23987205382428758,
+   "diff": 0.04702561802754607,
+   "se": 0.01872306297774564,
+   "improved": false
+  },
+  "risky_death": {
+   "f2": 0.06200591657462477,
+   "f3": 0.08840155024252802,
+   "diff": 0.02639563366790325,
+   "se": 0.004901505417602618,
+   "improved": false
+  },
+  "adjacent_damage": {
+   "f2": 0.05628902423771474,
+   "f3": 0.09664098517696355,
+   "diff": 0.04035196093924882,
+   "se": 0.00493315964456813,
+   "improved": false
+  },
+  "risky_damage": {
+   "f2": 0.11484782255311808,
+   "f3": 0.10980746475120097,
+   "diff": -0.005040357801917111,
+   "se": 0.006095752326654778,
+   "improved": false
+  },
+  "sapling_calibrated": {
+   "f3_minus_recorded": 0.032694757064761104,
+   "ok": false
+  }
+ },
+ "guards": {
+  "low_noise_bias": {
+   "max_abs": 0.008500596563021342,
+   "ok": true
+  },
+  "s1_presence": {
+   "worst_f3_minus_f2": -0.004829726721169214,
+   "ok": true
+  },
+  "s1_tsp": {
+   "f2": 2.209240534977528,
+   "f3": 2.2178655475295344,
+   "ok": true
+  },
+  "common_classes_16": {
+   "classes": {
+    "ach_COLLECT_WOOD": {
+     "diff": 0.10919832148428854,
+     "se": 0.020406311960288304,
+     "breach": false
+    },
+    "ach_COLLECT_STONE": {
+     "diff": 0.12553936389857678,
+     "se": 0.019343411700523824,
+     "breach": false
+    },
+    "ach_PLACE_TABLE": {
+     "diff": 0.03625028452003787,
+     "se": 0.011134268697560332,
+     "breach": false
+    },
+    "ach_PLACE_STONE": {
+     "diff": 0.011897479396981048,
+     "se": 0.014632246271583011,
+     "breach": false
+    },
+    "ach_COLLECT_DRINK": {
+     "diff": 0.0370745828805904,
+     "se": 0.021881819490540716,
+     "breach": false
+    },
+    "ach_MAKE_WOOD_PICKAXE": {
+     "diff": 0.03970539260607209,
+     "se": 0.018013226190448095,
+     "breach": false
+    },
+    "ach_MAKE_WOOD_SWORD": {
+     "diff": 0.01960679572081825,
+     "se": 0.022343028407897165,
+     "breach": false
+    },
+    "ach_MAKE_STONE_PICKAXE": {
+     "diff": 0.07559955646301808,
+     "se": 0.023280670184893073,
+     "breach": false
+    },
+    "ach_MAKE_STONE_SWORD": {
+     "diff": 0.0381777815596529,
+     "se": 0.02433328654665375,
+     "breach": false
+    }
+   },
+   "ok": true
+  },
+  "false_rewards_16": {
+   "f2": 0.048470164721480746,
+   "f3": 0.045097938044056096,
+   "diff": -0.00337222667742465,
+   "se": 0.003699352206728117,
+   "ok": true
+  },
+  "own_history_count_gate_16": {
+   "fires": 0,
+   "checks": {
+    "zombies/teacher": {
+     "ratio": 1.0409440994262695,
+     "diff": {
+      "est": 0.0103759765625,
+      "se": 0.006609595827580153,
+      "n_cond": 512
+     },
+     "fires": false
+    },
+    "zombies/free": {
+     "ratio": 1.355491280555725,
+     "diff": {
+      "est": 0.090087890625,
+      "se": 0.0318775546570858,
+      "n_cond": 512
+     },
+     "fires": false
+    },
+    "cows/teacher": {
+     "ratio": 1.0244437456130981,
+     "diff": {
+      "est": 0.0203857421875,
+      "se": 0.013143991558110229,
+      "n_cond": 512
+     },
+     "fires": false
+    },
+    "cows/free": {
+     "ratio": 1.0417155027389526,
+     "diff": {
+      "est": 0.0347900390625,
+      "se": 0.05754493530434978,
+      "n_cond": 512
+     },
+     "fires": false
+    },
+    "skeletons/teacher": {
+     "ratio": 1.0070093870162964,
+     "diff": {
+      "est": 0.000732421875,
+      "se": 0.007116063166636101,
+      "n_cond": 512
+     },
+     "fires": false
+    },
+    "skeletons/free": {
+     "ratio": 1.1939252614974976,
+     "diff": {
+      "est": 0.020263671875,
+      "se": 0.02353979894821718,
+      "n_cond": 512
+     },
+     "fires": false
+    },
+    "arrows/teacher": {
+     "ratio": 1.496666669845581,
+     "diff": {
+      "est": 0.0181884765625,
+      "se": 0.007643829952072793,
+      "n_cond": 512
+     },
+     "fires": false
+    },
+    "arrows/free": {
+     "ratio": 1.653333306312561,
+     "diff": {
+      "est": 0.02392578125,
+      "se": 0.011145260572740241,
+      "n_cond": 512
+     },
+     "fires": false
+    }
+   },
+   "ok": true
+  }
+ }
+}

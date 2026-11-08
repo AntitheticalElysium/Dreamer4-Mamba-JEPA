@@ -3,8 +3,11 @@ Label-free signal from the frozen world, pre-outcome inputs only: the action con
 periphery, per cell ||D(a_taken) - D(NOOP)||^2, D the denoiser's clean estimate at production's first evaluation from
 pure noise, the belief recomputed for each action. Competing: predicted change, spread of production samples;
 post-outcome reference: the realized change. Window score = sum over the window's 9 cells; chooser = arg-max window.
+Added 11-02 (decision 2, TEACHING 15; re-read on P1-F1.5): surprise, ||p_t - D(a_taken)||^2 per cell, the observed
+periphery of frame t against the same expectation: pre-crop under the same-frame timeline (TEACHING 14), not
+pre-outcome; older outputs lack it and are summarised without it. --ckpt=NAME=PATH reads that checkpoint instead.
 Labels select contexts and score the choice only.
-Usage (project venv, GPU): python -m artifacts.experiments.20261031_learned_fixation_sweep.locus OUT_DIR [--smoke]
+Usage (project venv, GPU): python -m artifacts.experiments.20261031_learned_fixation_sweep.locus OUT_DIR [--smoke] [--ckpt=NAME=PATH]
                            python -m artifacts.experiments.20261031_learned_fixation_sweep.locus --summary OUT_DIR
 """
 import importlib, json, math, os, sys
@@ -26,7 +29,7 @@ CKPTS = {"w1_02": W1 / "ckpt_02.pt", "w1_05": W1 / "ckpt_05.pt", "w1_10": W1 / "
 ATTEMPTS = {"drink": (FC.WATER, 65, None), **DC.COLLECT}                 # faced block, counter cell, tool (s_inv index)
 MINED = ("stone", "coal", "iron")                                        # the faced block becomes path
 NOOP, N_EP, CAP, N_RANDOM, P, K, DRAWS, NB = 0, 400, 300, 600, 8, 4, 2, 8
-SIGNALS = ("contingency", "contingency_marginal", "predicted_change", "spread", "realized_change")
+SIGNALS = ("contingency", "contingency_marginal", "predicted_change", "spread", "realized_change", "surprise")
 CENTRES = torch.stack(torch.meshgrid(torch.arange(1, 8), torch.arange(1, 8), indexing="ij"), -1).reshape(-1, 2)
 WIN = M.window(CENTRES)                                                  # [49 windows, 9 cells]
 
@@ -128,7 +131,8 @@ def run(model, cfg, enc, rows, bps, gen):
                  "contingency_marginal": sum(((d[ar, taken] - d.mean(1)) ** 2).sum(-1) for d in Ds) / DRAWS,
                  "predicted_change": sum(((d[ar, taken] - prev) ** 2).sum(-1) for d in Ds) / DRAWS,
                  "spread": smp.view(n, K, *shapes[0]).var(1).sum(-1),
-                 "realized_change": ((real - prev) ** 2).sum(-1)}
+                 "realized_change": ((real - prev) ** 2).sum(-1),
+                 "surprise": sum(((real - d[ar, taken]) ** 2).sum(-1) for d in Ds) / DRAWS}
         for k, v in cells.items():
             out[k].append(v[:, win].sum(-1).cpu())
         out["cell_contingency"].append(cells["contingency"].cpu())
@@ -148,7 +152,7 @@ def summary(out_dir):
             chance = np.stack([(win[None] == x[:, None, None]).any(-1) for x in cons]).any(0).mean(1)
             est = lambda v: G.estimate(np.asarray(v, float), np.ones(len(ep), bool), ep)
             r[c] = {"rows": int(m.sum())}
-            for s in SIGNALS:
+            for s in (s for s in SIGNALS if s in z):
                 ch = z[s][m].argmax(1)
                 e_ = est(covered(ch)) if c != "random" else None
                 r[c][s] = {"coverage": e_, "counter": est((win[ch] == z["counter"][m][:, None]).any(1)) if c != "random" else None,
@@ -173,7 +177,7 @@ def summary(out_dir):
         for c, x in r.items():
             print(f"  {c:14s} n{x['rows']:4d} chance {x['chance']:.2f}", " | ".join(
                 f"{s[:12]} {x[s]['coverage']['est']:.2f}({x[s]['coverage']['se']:.2f}){'*' if x[s].get('locates') else ''}"
-                if x[s]["coverage"] else f"{s[:12]} hud {x[s]['hud_share']['est']:.2f}" for s in SIGNALS),
+                if x[s]["coverage"] else f"{s[:12]} hud {x[s]['hud_share']['est']:.2f}" for s in SIGNALS if s in x),
                   f"| top cell {x['top_cell_is_consequence']['est']:.2f}" if "top_cell_is_consequence" in x else "")
     return res
 
@@ -190,7 +194,8 @@ def main():
         ctx = {c: rows[:6] for c, rows in ctx.items() if rows}
     s_off = np.r_[0, np.cumsum(L["ep_T"] + 1)]
     meta = {"episodes": int(len(L["ep_T"])), "contexts": {c: len(v) for c, v in ctx.items()}, "checkpoints": {}}
-    for name, path in (list(CKPTS.items())[2:3] if smoke else CKPTS.items()):
+    ckpts = dict(a.split("=", 2)[1:] for a in sys.argv if a.startswith("--ckpt=")) or CKPTS
+    for name, path in (list(ckpts.items())[2:3] if smoke else ckpts.items()):
         ck = torch.load(path, weights_only=False, map_location="cpu")
         cfg = ck["cfg"]
         model = M.M0(cfg).to(DEV); model.load_state_dict(ck["model"]); model.eval()

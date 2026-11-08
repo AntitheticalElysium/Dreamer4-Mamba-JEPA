@@ -1,0 +1,25 @@
+{
+  "head": "5d84c53b7a89525ff824e6b7d40f12670aafe5c1",
+  "source_changes_since_readout": [],
+  "checkpoint_sha256": "95fa2cc82cb9dc3cae11cbf9f44f880aff17e250de639911f39d159564978128",
+  "training_sources_current": {
+    "saccade/model.py": true,
+    "saccade/train.py": true,
+    "saccade/data.py": true,
+    "saccade/m0.yaml": true
+  },
+  "cpu_tests": {
+    "passed": 53,
+    "gpu_skipped": 5,
+    "seconds": 20.88
+  },
+  "new_training_or_model_interventions": false,
+  "canonical_edits": false,
+  "jobs_stopped": false,
+  "other_repair_work_on_hold": true,
+  "factual_findings": [
+    "HUD definition mismatch: any HUD coverage is 20.33/21.17 percent for contingency/surprise; bottom-centre shares 10/4 percent use a different reference.",
+    "Full-world gaze invariance not established: rewarding-context per-query mean reward ranges up to .23076.",
+    "Uptake null on one-step whole-map denoising MSE does not establish need for IOR or measure controller surprise reduction."
+  ]
+}

@@ -1,0 +1,8 @@
+{
+ "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261101_p1f15/run/ckpt_10.pt",
+ "sha256": "95fa2cc82cb9dc3cae11cbf9f44f880aff17e250de639911f39d159564978128",
+ "script_sha256": "59532564c55eb004dd9adb871aa50ba31340024c615d5a13b34d34536240423e",
+ "protocol_sha256": "4762b1383d91724e8aa6d3488ffbb2e11d97ec66b6fb2b8cf33f9b16042b7daa",
+ "prefix_rms_error_max": 0.007665735669434071,
+ "frames": 58
+}

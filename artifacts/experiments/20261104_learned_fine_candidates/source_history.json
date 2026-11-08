@@ -1,0 +1,110 @@
+[
+  {
+    "index": 3,
+    "episode": 0,
+    "time": 198,
+    "kind": "stone",
+    "ever_in_view": false,
+    "geometric_visible_frames_before": 0,
+    "last_seen_gap": null
+  },
+  {
+    "index": 6,
+    "episode": 1,
+    "time": 209,
+    "kind": "tree",
+    "ever_in_view": false,
+    "geometric_visible_frames_before": 0,
+    "last_seen_gap": null
+  },
+  {
+    "index": 16,
+    "episode": 6,
+    "time": 193,
+    "kind": "stone",
+    "ever_in_view": false,
+    "geometric_visible_frames_before": 0,
+    "last_seen_gap": null
+  },
+  {
+    "index": 22,
+    "episode": 8,
+    "time": 190,
+    "kind": "stone",
+    "ever_in_view": true,
+    "geometric_visible_frames_before": 1,
+    "last_seen_gap": 38
+  },
+  {
+    "index": 26,
+    "episode": 10,
+    "time": 191,
+    "kind": "stone",
+    "ever_in_view": false,
+    "geometric_visible_frames_before": 0,
+    "last_seen_gap": null
+  },
+  {
+    "index": 37,
+    "episode": 18,
+    "time": 541,
+    "kind": "stone",
+    "ever_in_view": false,
+    "geometric_visible_frames_before": 0,
+    "last_seen_gap": null
+  },
+  {
+    "index": 41,
+    "episode": 20,
+    "time": 206,
+    "kind": "tree",
+    "ever_in_view": true,
+    "geometric_visible_frames_before": 3,
+    "last_seen_gap": 15
+  },
+  {
+    "index": 42,
+    "episode": 20,
+    "time": 221,
+    "kind": "stone",
+    "ever_in_view": true,
+    "geometric_visible_frames_before": 55,
+    "last_seen_gap": 48
+  },
+  {
+    "index": 46,
+    "episode": 35,
+    "time": 200,
+    "kind": "tree",
+    "ever_in_view": false,
+    "geometric_visible_frames_before": 0,
+    "last_seen_gap": null
+  },
+  {
+    "index": 47,
+    "episode": 36,
+    "time": 205,
+    "kind": "stone",
+    "ever_in_view": false,
+    "geometric_visible_frames_before": 0,
+    "last_seen_gap": null
+  },
+  {
+    "index": 51,
+    "episode": 41,
+    "time": 190,
+    "kind": "stone",
+    "ever_in_view": true,
+    "geometric_visible_frames_before": 46,
+    "last_seen_gap": 61
+  },
+  {
+    "index": 52,
+    "episode": 42,
+    "time": 203,
+    "kind": "stone",
+    "ever_in_view": true,
+    "geometric_visible_frames_before": 17,
+    "last_seen_gap": 11
+  }
+]

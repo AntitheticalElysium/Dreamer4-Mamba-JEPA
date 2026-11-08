@@ -1,0 +1,19 @@
+{
+  "checkpoint_sha256": "34bda77fe5ec5226c4f003301c972d918e2d4a4a554a5a6f279fcabbe922b045",
+  "files": {
+    "artifacts/experiments/20261104_learned_fine_candidates/sources.py": "d1f1841b37266320c3f0ce632f1cb94dc99ee1cb74b4b20b58a5e2002eb9d166",
+    "artifacts/experiments/20261104_learned_fine_candidates/catalogue.py": "468a38a90fdfa7ce403bd4d2a981f0ce38323712bd080f55819a9c2a8070b832",
+    "artifacts/experiments/20261104_learned_fine_candidates/far_catalogue.py": "c7c38c694e26f97253ac617a0b715be225018c2f5576372442cedd0a045c0d44",
+    "artifacts/experiments/20261104_learned_fine_candidates/native.py": "8cdb258f7cfa2afd759399f79af026b7a65286186344e8da1941fb0baefd7e37",
+    "artifacts/experiments/20261104_learned_fine_candidates/hud_codebook.py": "27a230d9e0d81aed0726c83af160c0b0fc580a073241628a94d8eb81115b7cd2",
+    "artifacts/experiments/20261104_learned_fine_candidates/PLAN.md": "b470c7e0d5c00e21000472984515d6451e959ef28fdb3249c0d3aa466ca19ccb",
+    "saccade/model.py": "5b63fb341fd5d9d983c2de7ccebcbc04a2e33182c13cc35a12e65c84954c76d3",
+    "artifacts/experiments/20261104_fine_causal_design/test_native.py": "b4b45c731a11f31cf579f63a3c8a53bb91dc6dc10c14d1f675d263865942b54f",
+    "artifacts/experiments/20261102_p1f16/run/s1/results.reader.pt": "af0f1c08105a0fd98116f6d15b294efda179df212b03798b22bacb1a2fd5673a",
+    "artifacts/experiments/20261103_p1f16_review/p1f16/readers.pt": "604837306f3f664f20c190adcfa9ca3a5ded3a3bf54efd5b2613621e6e084103",
+    "artifacts/experiments/20261104_learned_fine_candidates/sources.pt": "1a2751971c67be0cf46de3862ce5b2a3949ffcde24b1afb0a5a51f7153726b59",
+    "artifacts/experiments/20261104_learned_fine_candidates/far_catalogue.json": "1919c4527ceedee287f60b69819ed736de430880dd44bb69d0246e296c79eeb9",
+    "artifacts/experiments/20261104_learned_fine_candidates/catalogue.json": "b276696c283e542946816c4ac0d635f2aed6b35ac7cc52ce1d1e74070a5bd015",
+    "artifacts/experiments/20261104_learned_fine_candidates/hud_atlas.npy": "c6a3ff395156d8983887cb1cda6b2d1b2b47cbf196dd93f04f113c2b3c5c3020"
+  }
+}

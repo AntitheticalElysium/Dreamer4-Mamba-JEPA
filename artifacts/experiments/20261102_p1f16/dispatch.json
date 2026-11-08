@@ -1,0 +1,15 @@
+{
+  "train": [
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/.venv/bin/python",
+    "-u",
+    "-m",
+    "artifacts.experiments.20261102_p1f16.train_p1f16",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261102_p1f16/run"
+  ],
+  "evaluation": [
+    "bash",
+    "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261102_p1f16/queue.sh",
+    "SELECTED_CHECKPOINT"
+  ],
+  "sources": 48
+}

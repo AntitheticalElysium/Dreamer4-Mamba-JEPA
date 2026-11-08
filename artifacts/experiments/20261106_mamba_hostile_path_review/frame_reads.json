@@ -1,0 +1,192 @@
+{
+ "readers": {
+  "63": {
+   "accuracy": 1.0,
+   "per_value": {
+    "0": [
+     100,
+     1.0
+    ],
+    "1": [
+     394,
+     1.0
+    ],
+    "2": [
+     784,
+     1.0
+    ],
+    "3": [
+     1107,
+     1.0
+    ],
+    "4": [
+     1322,
+     1.0
+    ],
+    "5": [
+     1691,
+     1.0
+    ],
+    "6": [
+     2534,
+     1.0
+    ],
+    "7": [
+     3899,
+     1.0
+    ],
+    "8": [
+     3793,
+     1.0
+    ],
+    "9": [
+     18435,
+     1.0
+    ]
+   },
+   "epochs": 30,
+   "valid": true
+  }
+ },
+ "conditions": {
+  "empty": {
+   "frame_dead": 0.00275,
+   "frame_damaged": 0.00525,
+   "head_death": 0.002749483063817024,
+   "head_negative": 0.005539712342924504,
+   "head_death_on_frame_dead": 0.9998120123689825,
+   "head_death_on_frame_alive": 2.988450477582884e-11,
+   "share_of_head_death_mass_on_alive_frames": 1.0839245667628026e-08,
+   "health_read_counts": [
+    11,
+    937,
+    2862,
+    152,
+    2,
+    0,
+    5,
+    0,
+    1,
+    30
+   ]
+  },
+  "both": {
+   "frame_dead": 0.042,
+   "frame_damaged": 0.056,
+   "head_death": 0.04179741089045926,
+   "head_negative": 0.057360488451205414,
+   "head_death_on_frame_dead": 0.9951764440962246,
+   "head_death_on_frame_alive": 2.488703752068703e-10,
+   "share_of_head_death_mass_on_alive_frames": 5.704128901022511e-09,
+   "health_read_counts": [
+    168,
+    877,
+    2784,
+    136,
+    4,
+    2,
+    6,
+    3,
+    0,
+    20
+   ]
+  },
+  "fine": {
+   "frame_dead": 0.00275,
+   "frame_damaged": 0.0055,
+   "head_death": 0.002749565422534946,
+   "head_negative": 0.005853663015450548,
+   "head_death_on_frame_dead": 0.9998419609936801,
+   "head_death_on_frame_alive": 2.9884508338339426e-11,
+   "share_of_head_death_mass_on_alive_frames": 1.0838922287920288e-08,
+   "health_read_counts": [
+    11,
+    938,
+    2864,
+    150,
+    2,
+    0,
+    5,
+    0,
+    1,
+    29
+   ]
+  },
+  "coarse": {
+   "frame_dead": 0.03975,
+   "frame_damaged": 0.053,
+   "head_death": 0.039539023316909304,
+   "head_negative": 0.05488341428308048,
+   "head_death_on_frame_dead": 0.9946920136985539,
+   "head_death_on_frame_alive": 1.6425297352438235e-08,
+   "share_of_head_death_mass_on_alive_frames": 3.989069648044032e-07,
+   "health_read_counts": [
+    159,
+    877,
+    2790,
+    140,
+    3,
+    2,
+    6,
+    3,
+    0,
+    20
+   ]
+  },
+  "cow_fine": {
+   "frame_dead": 0.00275,
+   "frame_damaged": 0.00525,
+   "head_death": 0.0027492323964831886,
+   "head_negative": 0.005552077456878214,
+   "head_death_on_frame_dead": 0.9997208606113087,
+   "head_death_on_frame_alive": 2.9884271431385664e-11,
+   "share_of_head_death_mass_on_alive_frames": 1.084014931697739e-08,
+   "health_read_counts": [
+    11,
+    938,
+    2861,
+    155,
+    2,
+    0,
+    5,
+    0,
+    1,
+    27
+   ]
+  },
+  "natural_both": {
+   "frame_dead": 0.08775,
+   "frame_damaged": 0.12375,
+   "head_death": 0.08765965973211177,
+   "head_negative": 0.1294822600302403,
+   "head_death_on_frame_dead": 0.9989702322883823,
+   "head_death_on_frame_alive": 2.3950459014412008e-08,
+   "share_of_head_death_mass_on_alive_frames": 2.4924584812064503e-07,
+   "health_read_counts": [
+    351,
+    886,
+    2518,
+    182,
+    16,
+    4,
+    15,
+    4,
+    1,
+    23
+   ]
+  }
+ },
+ "real_successor": {
+  "reader_agreement": 1.0,
+  "dead_read_by_source": {
+   "empty": 0.0,
+   "zombie": 0.984,
+   "cow": 0.0
+  },
+  "dead_true_by_source": {
+   "empty": 0.0,
+   "zombie": 0.984,
+   "cow": 0.0
+  }
+ }
+}

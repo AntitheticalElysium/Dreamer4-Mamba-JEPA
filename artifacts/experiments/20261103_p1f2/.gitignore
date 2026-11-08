@@ -1,0 +1,7 @@
+# checkpoints, raw arrays, the gaze trace (16 B / frame), logs and the launch source archive stay out
+*.pt
+*.npz
+*.bin
+*.log
+__pycache__/
+LAUNCH_SOURCES.tar.gz

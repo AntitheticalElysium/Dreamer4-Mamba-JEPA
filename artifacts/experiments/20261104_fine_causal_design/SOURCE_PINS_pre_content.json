@@ -1,0 +1,15 @@
+{
+  "saccade/model.py": "5b63fb341fd5d9d983c2de7ccebcbc04a2e33182c13cc35a12e65c84954c76d3",
+  "saccade/train.py": "3eeda34a11c2c56209a3285c4c42c555a5a5a2eac4fbe5dcaedca7a9c506c850",
+  "saccade/data.py": "d4c865124e0cdf8819fb5cc258d519c5dcfb7ec05985eedcf821e2b632907698",
+  "artifacts/eda/replay.py": "8b1260907be37a02041eda713c4891e179bcc0dacecf10326bff393b0a41639b",
+  "saccade/eval/s1.py": "b1cd8af74e144289ab8063f4ab8b84437a5d7872a53b3e1c398dca2e9c1e92f2",
+  "artifacts/eda/s0/s0_dev_labels.npz": "80ed73c7ffb7882c5952bdab90a7b27a764c7d41239275f8f70c701450eb1d54",
+  "artifacts/experiments/20261104_fine_causal_design/test_native.py": "b4b45c731a11f31cf579f63a3c8a53bb91dc6dc10c14d1f675d263865942b54f",
+  "artifacts/experiments/20261104_fine_causal_design/qualify.py": "d6bbc2cf5f6df813bda1a2d2cc7d07532f30be082c26ac8b40d343ec4ef33e4b",
+  "artifacts/experiments/20261104_fine_causal_design/PLAN.md": "10a9089c36e2f3939232936e8b07b739083a7598b4de1ac8c3378f4f921a6ded",
+  "artifacts/experiments/20261102_p1f16/run/ckpt_10.pt": "34bda77fe5ec5226c4f003301c972d918e2d4a4a554a5a6f279fcabbe922b045",
+  "artifacts/experiments/20261102_p1f16/run/s1/results.reader.pt": "af0f1c08105a0fd98116f6d15b294efda179df212b03798b22bacb1a2fd5673a",
+  "artifacts/experiments/20261103_p1f16_review/p1f16/readers.pt": "604837306f3f664f20c190adcfa9ca3a5ded3a3bf54efd5b2613621e6e084103",
+  "artifacts/experiments/20261102_p1f16/readings/eval_m05/p1f16_1500_readers.pt": "30881f28f2f5c3ce688e2945cbfa5c86bb6f85ff6e5a33ae7fe847c0a75acb6c"
+}

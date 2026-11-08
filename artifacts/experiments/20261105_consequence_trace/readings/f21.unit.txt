@@ -1,0 +1,6 @@
+Running as unit: trace-f21.service
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 21min 42.834s
+             CPU time consumed: 29min 57.222s
+                   Memory peak: 11.8G (swap: 0B)

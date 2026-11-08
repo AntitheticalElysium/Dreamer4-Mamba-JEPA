@@ -1,0 +1,22 @@
+{
+  "worlds": {
+    "p1f15": {
+      "checkpoint_sha256": "95fa2cc82cb9dc3cae11cbf9f44f880aff17e250de639911f39d159564978128",
+      "reader_sha256": "81833aae71afeac6ae50fa0181a1731e4916bc992832672d88005e54d1852e16",
+      "prefix_rms_max": 0.007665735669434071,
+      "scenes": 58
+    },
+    "p1f16": {
+      "checkpoint_sha256": "34bda77fe5ec5226c4f003301c972d918e2d4a4a554a5a6f279fcabbe922b045",
+      "reader_sha256": "604837306f3f664f20c190adcfa9ca3a5ded3a3bf54efd5b2613621e6e084103",
+      "prefix_rms_max": 0.008435209281742573,
+      "scenes": 58
+    }
+  },
+  "seconds": 105.68204951286316,
+  "source_sha256": "5f0062c8e84161268cbc69be1c9d0f30ae7102ae8d8aad902ff02042c5e176dd",
+  "plan_sha256": "68c4a4a6a04ca205b70bbe6bdce6fcc9ffdc64b5861911bce5ac478636dc33ad",
+  "analysis_note": "Added declared common-readable source cohort after collection; no new sampling or fits.",
+  "collection_script_sha256": "75ddbf91be6f8729a82c0f7f156e8d7f14dd896d41cc9932fe146137acc44f47",
+  "analysis_script_sha256": "be6a0ea199834e61d99f5327e0ac3c927514012e7b62e82f098eb31126ddae2b"
+}
