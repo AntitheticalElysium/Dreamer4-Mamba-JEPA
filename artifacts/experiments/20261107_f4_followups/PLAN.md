@@ -264,3 +264,30 @@ for health the same issue as the denoiser ignoring the zombie damage?" RESULTS 1
   received the same gradient (reward: 0.042-0.046 for all) - it cannot say which digit a loss asks for. Instead: the
   gradient on the belief's input VALUES per periphery token (|dL/d x_token| entering percept_in), per pass, over all
   frames and at each class's frames (descriptive).
+
+## 13. What does the denoiser teach Mamba? (`denoiser_teaching.py`; user 11-08)
+
+User: "In principle, shouldn't the denoiser's gradients teach Mamba to remember what the denoiser can't use the cache
+for? Ie, those timers... Why isn't it working - does it not have enough share? ... what is the denoiser actually teaching
+Mamba, can you see that or not?" Codex (11-08): bootstrap rows' student DOES backpropagate into memory (only the
+teacher's memory is detached, model.py 576) - RESULTS 15 excluded them wrongly; norm ratios are not shares of learning.
+Four measurements on frozen F4 (ckpt_10), P1's training chunks (Streams, 64 steps, one bootstrap row in four past
+bootstrap_start), each loss backpropagated alone at its harmoniser weight:
+- **M1 magnitude** (corrected): |dL/d bp_t| per term (G1 total; G1 restricted to the food, health, energy token; reward;
+  change map) per event class, flow rows and bootstrap rows reported separately.
+- **M2 consistency**: across the events of a class, |sum g| / sum |g| of the per-frame gradient vectors on bp (1 = every
+  event pushes the belief the same way; ~1/sqrt(n) = no shared direction): G1-food at food -1, G1-health at recovery and
+  at hits, reward at hits, change map at wakes, G1 total at ordinary frames (reference).
+- **M3 reach through time**: one event per stream row (chunk position >= 41), that frame's loss alone (G1 restricted to
+  its token), |dL_t / d emb_{t-k}| on the belief's input embeddings, k = 1..40, and the value at the lag of the
+  counter's previous reset (replayed counters) against its neighbours. Food -1 (food token), recovery (health token),
+  hits (health token), wakes and ordinary frames (G1 total).
+- **M4 visibility of the reset in the belief's input** (dev, S.encode): "the digit changed between t-1 and t" from
+  emb_t - emb_{t-1} and from [emb_t, emb_{t-1}] (logistic, episode folds, AP) vs the HUD token difference (control),
+  for food, drink, energy, health; and "digit == 0" from emb_t and b_t (Codex: starvation may be detectable without
+  exact values).
+Interpretation (declared): M3 at the reset lag no larger than its neighbours and < 1% of its k = 1 value by k = 10 ->
+the event's error cannot reach the frame holding the information (a credit-assignment limit that more supervision at
+the event frame does not change). Reaches, but M4's embedding AP far below the token control -> the input does not
+register what must be counted. Reaches and visible, M1 / M2 small or inconsistent next to signals the belief did learn
+(change map at wakes) -> learning pressure. Descriptive of the trained model at its end point; no fix is tested.
