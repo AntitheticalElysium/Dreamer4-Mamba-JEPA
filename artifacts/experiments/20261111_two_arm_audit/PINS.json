@@ -1,0 +1,21 @@
+{
+  "git_head": "795a1f2f64698a0c8685ba88fc425592e2d3d956",
+  "source_and_bank_sha256": {
+    "artifacts/experiments/20261111_two_arm_audit/paired_hunger.py": "37014740f13f0685b81cded6decfa303817f98ec9da7d99f56b4393e75adf897",
+    "artifacts/experiments/20261111_two_arm_audit/compare.py": "2a013b7b7fe8efa701d93d1f5c87df43860535465a8400bcc035937f7e4f104f",
+    "artifacts/experiments/20261111_two_arm_audit/reset_check.py": "3c6975840884d803e091f6559f1f02055bc15f8e56c906ee945de7367f3310e2",
+    "saccade/model.py": "9524c34b36597289aad6a1e86e7fceb9d7c5d1ffc1f51be9b5d613163305971c",
+    "saccade/train.py": "81194d632be88fa13258a155dc23ac2d4a47aee019de1299b59d8f94b7385354",
+    "saccade/data.py": "1177c951165cdbd5af10636ec52026f4e8638a022e31ae0ceab47744ad1e8b06",
+    "saccade/chooser.py": "eedaaaaad45c5cd0ef6d5f53be445ef7be46c4d52302f4e780557742a1a8ebde",
+    "saccade/eval/s1.py": "9f43a7a3e5135845848e2f5d27901b445c574d0a949bd7b2463a9dffc7031802",
+    "artifacts/experiments/20261111_p1_multistep_mamba/trainer.py": "cd7f3c9045b8487b8a448a0b7b0329a7c88b0fc69393c919e412bd210c5d0403",
+    "artifacts/experiments/20261111_p1_multistep_mamba/model_multistep.py": "4092824c6cf30e4b0649cb05b66402a7e93122ef401559577d9ba396001cd7b4",
+    "artifacts/experiments/20261108_full_frame_change/phase_bank.pt": "43767b51f6143ca4fb17ca05f3619d9ed6ac8f8444ceca086b0ba51a54e3466a"
+  },
+  "checkpoint_sha256": {
+    "20261106_p1f4": "1b70edcc432daf3fb337c37c67af8d709d3728e25d02ac94523f8a7322ba1379",
+    "20261109_p1_hud_change": "967d1a15979049fa332c3832cf05f3021b50b8f7067cf1413648775ffcc68cfa",
+    "20261111_p1_multistep_mamba": "c9c00e53565424ac3ed0f00beeb60a26f1ed40b2d4e381d8d197c405a2cd1e70"
+  }
+}

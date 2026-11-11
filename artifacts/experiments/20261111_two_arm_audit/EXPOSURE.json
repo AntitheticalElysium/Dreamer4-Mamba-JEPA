@@ -1,0 +1,22 @@
+{
+  "exact_final_stream_and_horizon_rng": true,
+  "frames": 25600000,
+  "by_chunk": {
+    "64": {
+      "rows": 200000,
+      "split_after_reset": 18270,
+      "frames": 12800000,
+      "suffix_until_reset": 463268,
+      "valid_student_rows": 194728,
+      "corrupted_teacher_endpoints": 17577
+    },
+    "256": {
+      "rows": 50000,
+      "split_after_reset": 16888,
+      "frames": 12800000,
+      "suffix_until_reset": 1323278,
+      "valid_student_rows": 48659,
+      "corrupted_teacher_endpoints": 16422
+    }
+  }
+}
