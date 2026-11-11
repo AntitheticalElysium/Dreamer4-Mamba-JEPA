@@ -15547,3 +15547,30 @@ Paired hunger and factual guards queued. No training changes, no 2k efficacy rea
 in all24 pairs for both arms, geometry agrees to one sample. Both produce more false drops as well as
 more hits vs parent. Factual guards mixed, endpoint higher on all four final point readings. No native
 timer repair or reason to extend this same loss; no claim about exact retention in Mamba carry.
+
+## 2026-11-11 — Frozen dissection of dense vs endpoint MSE
+
+`20261111_dense_mse_dissection/RESULTS.md`. Replayed the native sampler at four leads on
+all five checkpoints. All 7,680 due-fork periphery draws reproduced bitwise. The token moves
+toward a decrement in both histories as the early deadline approaches. Dense 2k's due-minus-delayed
+response is +0.021% of a real digit step on the first call and −0.027% in the final token.
+Both scene intervals include zero. Endpoint has a tiny positive final contrast (+0.013%),
+with identical digit counts. No evidence of useful anticipatory phase conditioning.
+
+On the 23-scene 16-step blind replay, dense MSE .4634→.3484. Pair-mean matching accounts for
+99.5% of the reduction. Erasing the student's history contrast costs .000052 MSE at dense 2k
+(0.015% of tied MSE), versus .000042 endpoint. Most of the teacher's phase separation requires
+actual future observations. On 192 ordinary DEV episodes neither arm gains reliable awake phase
+readability; elapsed-sleep R² rises at384 and falls below parent at2k. Existing factual guards show
+some improvement, with no dense advantage at2k. No world updates or canonical changes.
+
+## 2026-11-11 — Next-step timer readouts on dense/endpoint continuations
+
+`20261111_dense_mse_dissection/RESULTS.md` follow-up. Fixed 192 DEV episodes and held-out folds,
+frozen actual post-action belief plus recent semantic controls. Exact simulator phase checks all
+40,193 qualified food/drink/awake-energy next-step labels (13,927 / 11,580 / 14,686).
+Both final arms shave about .00007 off the linear hunger Brier versus the parent, below the
+recent-only and fitted constant controls in skill; nonlinear hunger does not improve. Thirst
+and fatigue changes are small and Brier intervals include zero. Sleep duration's early gain
+fades in both post-percept and post-action readings. The previously validated natural thirst
+alias gives 0/128 vs 0/128 for each 2k export (parent 1/128 each, true 1 vs 0). No world training.

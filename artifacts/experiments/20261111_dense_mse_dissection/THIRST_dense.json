@@ -1,0 +1,51 @@
+{
+  "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261111_dense_mse_2k/run/dense/eval.pt",
+  "checkpoint_sha256": "3ba5a7ed0d7a5b4b0ec09209c402f0c4af236727189b699632c463d1dd719caf",
+  "reader_holdout_accuracy": 1.0,
+  "recent_full_frames_actions_outcomes_exact": true,
+  "recent_percepts_exact": true,
+  "K": 128,
+  "cases": [
+    {
+      "e": 376,
+      "t": 658,
+      "current": 5,
+      "true_next": 4,
+      "generated_drop": 0.0,
+      "generated_digits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        128,
+        0,
+        0,
+        0,
+        0
+      ],
+      "mean_reader_confidence": 0.999991774559021
+    },
+    {
+      "e": 376,
+      "t": 654,
+      "current": 5,
+      "true_next": 5,
+      "generated_drop": 0.0,
+      "generated_digits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        128,
+        0,
+        0,
+        0,
+        0
+      ],
+      "mean_reader_confidence": 0.9999917149543762
+    }
+  ],
+  "contrast": 0.0
+}

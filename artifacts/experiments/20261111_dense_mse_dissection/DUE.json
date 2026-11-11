@@ -1,0 +1,877 @@
+{
+  "recent": {
+    "linear": {
+      "hunger": {
+        "n": 13927,
+        "positives": 652,
+        "episodes": 182,
+        "ap": 0.04759323732555895,
+        "brier": 0.04519996419548988,
+        "brier_minus_reference": 0.0,
+        "paired_episode_bootstrap_95": [
+          0.0,
+          0.0
+        ]
+      },
+      "thirst": {
+        "n": 11580,
+        "positives": 830,
+        "episodes": 192,
+        "ap": 0.07389854360282372,
+        "brier": 0.06753561645746231,
+        "brier_minus_reference": 0.0,
+        "paired_episode_bootstrap_95": [
+          0.0,
+          0.0
+        ]
+      },
+      "fatigue": {
+        "n": 14686,
+        "positives": 549,
+        "episodes": 175,
+        "ap": 0.04282787394710782,
+        "brier": 0.036263685673475266,
+        "brier_minus_reference": 0.0,
+        "paired_episode_bootstrap_95": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "mlp": {
+      "hunger": {
+        "n": 13927,
+        "positives": 652,
+        "episodes": 182,
+        "ap": 0.04796935135263875,
+        "brier": 0.04638993367552757,
+        "brier_minus_reference": 0.0,
+        "paired_episode_bootstrap_95": [
+          0.0,
+          0.0
+        ]
+      },
+      "thirst": {
+        "n": 11580,
+        "positives": 830,
+        "episodes": 192,
+        "ap": 0.07590034709913933,
+        "brier": 0.06847891211509705,
+        "brier_minus_reference": 0.0,
+        "paired_episode_bootstrap_95": [
+          0.0,
+          0.0
+        ]
+      },
+      "fatigue": {
+        "n": 14686,
+        "positives": 549,
+        "episodes": 175,
+        "ap": 0.03984771294879267,
+        "brier": 0.037509649991989136,
+        "brier_minus_reference": 0.0,
+        "paired_episode_bootstrap_95": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "checkpoints": {
+    "parent": {
+      "sha256": "967d1a15979049fa332c3832cf05f3021b50b8f7067cf1413648775ffcc68cfa",
+      "linear": {
+        "against_recent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.04789119968521683,
+            "brier": 0.045424312353134155,
+            "brier_minus_reference": 0.00022434641141444445,
+            "paired_episode_bootstrap_95": [
+              0.00011312176137869306,
+              0.00033490069943416305
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.07294692067324975,
+            "brier": 0.06824705004692078,
+            "brier_minus_reference": 0.0007114317268133163,
+            "paired_episode_bootstrap_95": [
+              0.00047529000302716344,
+              0.0009407820204669852
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.042673283395058006,
+            "brier": 0.03637799993157387,
+            "brier_minus_reference": 0.00011431775783421472,
+            "paired_episode_bootstrap_95": [
+              2.7691631239922027e-05,
+              0.00019805396659581455
+            ]
+          }
+        },
+        "against_parent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.04789119968521683,
+            "brier": 0.045424312353134155,
+            "brier_minus_reference": 0.0,
+            "paired_episode_bootstrap_95": [
+              0.0,
+              0.0
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.07294692067324975,
+            "brier": 0.06824705004692078,
+            "brier_minus_reference": 0.0,
+            "paired_episode_bootstrap_95": [
+              0.0,
+              0.0
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.042673283395058006,
+            "brier": 0.03637799993157387,
+            "brier_minus_reference": 0.0,
+            "paired_episode_bootstrap_95": [
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "mlp": {
+        "against_recent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.04735520081287882,
+            "brier": 0.04536501690745354,
+            "brier_minus_reference": -0.001024919911287725,
+            "paired_episode_bootstrap_95": [
+              -0.00143003531197942,
+              -0.0006398295002014841
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.07417088718280794,
+            "brier": 0.06765841692686081,
+            "brier_minus_reference": -0.000820488203316927,
+            "paired_episode_bootstrap_95": [
+              -0.0013253714498154103,
+              -0.0003010670964354117
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.0420762265221951,
+            "brier": 0.03643175587058067,
+            "brier_minus_reference": -0.001077898545190692,
+            "paired_episode_bootstrap_95": [
+              -0.001516484218644572,
+              -0.0006971042865685976
+            ]
+          }
+        },
+        "against_parent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.04735520081287882,
+            "brier": 0.04536501690745354,
+            "brier_minus_reference": 0.0,
+            "paired_episode_bootstrap_95": [
+              0.0,
+              0.0
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.07417088718280794,
+            "brier": 0.06765841692686081,
+            "brier_minus_reference": 0.0,
+            "paired_episode_bootstrap_95": [
+              0.0,
+              0.0
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.0420762265221951,
+            "brier": 0.03643175587058067,
+            "brier_minus_reference": 0.0,
+            "paired_episode_bootstrap_95": [
+              0.0,
+              0.0
+            ]
+          }
+        }
+      }
+    },
+    "endpoint_384": {
+      "sha256": "f4bd527416488d4e64583e5fc20d684634f320bba529e076f0585c1316474f35",
+      "linear": {
+        "against_recent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.04819560141080208,
+            "brier": 0.045395974069833755,
+            "brier_minus_reference": 0.00019601294479798526,
+            "paired_episode_bootstrap_95": [
+              9.073347543933315e-05,
+              0.00030230166830133657
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.07228922666801822,
+            "brier": 0.06824945658445358,
+            "brier_minus_reference": 0.0007138366927392781,
+            "paired_episode_bootstrap_95": [
+              0.00048672148967667374,
+              0.0009344030327253665
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.04292116385773962,
+            "brier": 0.036365214735269547,
+            "brier_minus_reference": 0.00010153423500014469,
+            "paired_episode_bootstrap_95": [
+              1.5801073005759797e-05,
+              0.00018017432593296135
+            ]
+          }
+        },
+        "against_parent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.04819560141080208,
+            "brier": 0.045395974069833755,
+            "brier_minus_reference": -2.833345024555456e-05,
+            "paired_episode_bootstrap_95": [
+              -5.22902107143386e-05,
+              -3.1397821078585064e-06
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.07228922666801822,
+            "brier": 0.06824945658445358,
+            "brier_minus_reference": 2.404941824352136e-06,
+            "paired_episode_bootstrap_95": [
+              -5.664347520984337e-05,
+              6.0728251241178265e-05
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.04292116385773962,
+            "brier": 0.036365214735269547,
+            "brier_minus_reference": -1.2783523743564729e-05,
+            "paired_episode_bootstrap_95": [
+              -3.174703448379892e-05,
+              8.50048654796927e-06
+            ]
+          }
+        }
+      },
+      "mlp": {
+        "against_recent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.04713649316794538,
+            "brier": 0.045369986444711685,
+            "brier_minus_reference": -0.0010199500247836113,
+            "paired_episode_bootstrap_95": [
+              -0.001420140280492213,
+              -0.0006407157793567269
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.0744251936007188,
+            "brier": 0.06763924658298492,
+            "brier_minus_reference": -0.0008396647754125297,
+            "paired_episode_bootstrap_95": [
+              -0.0013483468042566327,
+              -0.00032267839818576514
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.04241995195279543,
+            "brier": 0.03641289100050926,
+            "brier_minus_reference": -0.0010967581765726209,
+            "paired_episode_bootstrap_95": [
+              -0.0015383816584090368,
+              -0.0007132952217143222
+            ]
+          }
+        },
+        "against_parent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.04713649316794538,
+            "brier": 0.045369986444711685,
+            "brier_minus_reference": 4.969906058249762e-06,
+            "paired_episode_bootstrap_95": [
+              -2.3983301069206167e-05,
+              3.388914164272262e-05
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.0744251936007188,
+            "brier": 0.06763924658298492,
+            "brier_minus_reference": -1.917658664751798e-05,
+            "paired_episode_bootstrap_95": [
+              -5.601477799851819e-05,
+              1.908184467400445e-05
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.04241995195279543,
+            "brier": 0.03641289100050926,
+            "brier_minus_reference": -1.88595695362892e-05,
+            "paired_episode_bootstrap_95": [
+              -4.3862765663018e-05,
+              6.275471252760157e-06
+            ]
+          }
+        }
+      }
+    },
+    "dense_384": {
+      "sha256": "983f5391d1d0877dfd5c4ff8b8e709282530ba81486dad529862ff092997871b",
+      "linear": {
+        "against_recent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.048104508099688706,
+            "brier": 0.0453939251601696,
+            "brier_minus_reference": 0.00019396338029764593,
+            "paired_episode_bootstrap_95": [
+              9.194186498600732e-05,
+              0.00029746133074432576
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.07216658317389234,
+            "brier": 0.06826329976320267,
+            "brier_minus_reference": 0.0007276844698935747,
+            "paired_episode_bootstrap_95": [
+              0.0004905978712536656,
+              0.0009513114009905121
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.04287397227450072,
+            "brier": 0.0363612025976181,
+            "brier_minus_reference": 9.751746983965859e-05,
+            "paired_episode_bootstrap_95": [
+              1.2872213833336559e-05,
+              0.0001746272218736816
+            ]
+          }
+        },
+        "against_parent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.048104508099688706,
+            "brier": 0.0453939251601696,
+            "brier_minus_reference": -3.038300565094687e-05,
+            "paired_episode_bootstrap_95": [
+              -5.631036623125004e-05,
+              -2.3958571301404587e-06
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.07216658317389234,
+            "brier": 0.06826329976320267,
+            "brier_minus_reference": 1.625277946004644e-05,
+            "paired_episode_bootstrap_95": [
+              -5.4586187621285386e-05,
+              8.623549956310387e-05
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.04287397227450072,
+            "brier": 0.0363612025976181,
+            "brier_minus_reference": -1.6800277080619708e-05,
+            "paired_episode_bootstrap_95": [
+              -3.975084814814366e-05,
+              7.67396222648164e-06
+            ]
+          }
+        }
+      },
+      "mlp": {
+        "against_recent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.047105789396809615,
+            "brier": 0.045373983681201935,
+            "brier_minus_reference": -0.0010159522062167525,
+            "paired_episode_bootstrap_95": [
+              -0.0014137599602564947,
+              -0.0006384408325330009
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.0746702225489386,
+            "brier": 0.06762973219156265,
+            "brier_minus_reference": -0.0008491826010867953,
+            "paired_episode_bootstrap_95": [
+              -0.001356841868102335,
+              -0.00033247371481868624
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.04220747734130043,
+            "brier": 0.03642665967345238,
+            "brier_minus_reference": -0.0010829898528754711,
+            "paired_episode_bootstrap_95": [
+              -0.001525744282539917,
+              -0.0006971263372128096
+            ]
+          }
+        },
+        "against_parent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.047105789396809615,
+            "brier": 0.045373983681201935,
+            "brier_minus_reference": 8.967620487965178e-06,
+            "paired_episode_bootstrap_95": [
+              -2.387960689983467e-05,
+              4.25263910590072e-05
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.0746702225489386,
+            "brier": 0.06762973219156265,
+            "brier_minus_reference": -2.8694443244603463e-05,
+            "paired_episode_bootstrap_95": [
+              -7.542838771466538e-05,
+              1.823713400972049e-05
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.04220747734130043,
+            "brier": 0.03642665967345238,
+            "brier_minus_reference": -5.091213097330183e-06,
+            "paired_episode_bootstrap_95": [
+              -3.341881825736308e-05,
+              2.3118035848963464e-05
+            ]
+          }
+        }
+      }
+    },
+    "endpoint_2000": {
+      "sha256": "01e106b2d683420514bd5cb1c3f4d959257aaffcb2fe8f43f2080f8e72d24934",
+      "linear": {
+        "against_recent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.04865937471634358,
+            "brier": 0.04535122215747833,
+            "brier_minus_reference": 0.00015125841309782118,
+            "paired_episode_bootstrap_95": [
+              4.8262581995529284e-05,
+              0.00025335480631100973
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.07283664122600166,
+            "brier": 0.06821178644895554,
+            "brier_minus_reference": 0.0006761706317774951,
+            "paired_episode_bootstrap_95": [
+              0.00046015795482996503,
+              0.0008796382970858733
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.042600103210929725,
+            "brier": 0.03637670353055,
+            "brier_minus_reference": 0.00011301939957775176,
+            "paired_episode_bootstrap_95": [
+              2.6134459561477774e-05,
+              0.00019514887916595813
+            ]
+          }
+        },
+        "against_parent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.04865937471634358,
+            "brier": 0.04535122215747833,
+            "brier_minus_reference": -7.308797648875043e-05,
+            "paired_episode_bootstrap_95": [
+              -0.00011993692859508648,
+              -2.6437733121158688e-05
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.07283664122600166,
+            "brier": 0.06821178644895554,
+            "brier_minus_reference": -3.526107320794836e-05,
+            "paired_episode_bootstrap_95": [
+              -0.00011359480555759773,
+              4.207763536320959e-05
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.042600103210929725,
+            "brier": 0.03637670353055,
+            "brier_minus_reference": -1.2983582564629614e-06,
+            "paired_episode_bootstrap_95": [
+              -2.8223445350835857e-05,
+              2.684142929913273e-05
+            ]
+          }
+        }
+      },
+      "mlp": {
+        "against_recent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.04750588157684344,
+            "brier": 0.045362867414951324,
+            "brier_minus_reference": -0.0010270646307617426,
+            "paired_episode_bootstrap_95": [
+              -0.0014311921897649218,
+              -0.0006460490819700097
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.07422039316955367,
+            "brier": 0.06764549762010574,
+            "brier_minus_reference": -0.0008334217709489167,
+            "paired_episode_bootstrap_95": [
+              -0.0013386745482847487,
+              -0.0003167696388029401
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.04172273376142381,
+            "brier": 0.03642519190907478,
+            "brier_minus_reference": -0.0010844575008377433,
+            "paired_episode_bootstrap_95": [
+              -0.0015182981592711004,
+              -0.0007098272791430123
+            ]
+          }
+        },
+        "against_parent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.04750588157684344,
+            "brier": 0.045362867414951324,
+            "brier_minus_reference": -2.144727204722585e-06,
+            "paired_episode_bootstrap_95": [
+              -4.286268643766979e-05,
+              4.190228884330625e-05
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.07422039316955367,
+            "brier": 0.06764549762010574,
+            "brier_minus_reference": -1.293353852815926e-05,
+            "paired_episode_bootstrap_95": [
+              -7.965626675132609e-05,
+              5.5854323424388336e-05
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.04172273376142381,
+            "brier": 0.03642519190907478,
+            "brier_minus_reference": -6.558861969097052e-06,
+            "paired_episode_bootstrap_95": [
+              -3.438575898825475e-05,
+              2.0247767368800235e-05
+            ]
+          }
+        }
+      }
+    },
+    "dense_2000": {
+      "sha256": "3ba5a7ed0d7a5b4b0ec09209c402f0c4af236727189b699632c463d1dd719caf",
+      "linear": {
+        "against_recent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.048690581719184375,
+            "brier": 0.04535801708698273,
+            "brier_minus_reference": 0.0001580540119903162,
+            "paired_episode_bootstrap_95": [
+              5.9089176165601214e-05,
+              0.00025681158205921535
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.07344183057237455,
+            "brier": 0.06818541139364243,
+            "brier_minus_reference": 0.0006497930153273046,
+            "paired_episode_bootstrap_95": [
+              0.00041777833721872386,
+              0.0008707973125034754
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.042801916119400374,
+            "brier": 0.036365680396556854,
+            "brier_minus_reference": 0.00010199596727034077,
+            "paired_episode_bootstrap_95": [
+              1.6892605799618366e-05,
+              0.0001828464416324143
+            ]
+          }
+        },
+        "against_parent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.048690581719184375,
+            "brier": 0.04535801708698273,
+            "brier_minus_reference": -6.6292384872213e-05,
+            "paired_episode_bootstrap_95": [
+              -0.00011112959354374821,
+              -2.012290142567009e-05
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.07344183057237455,
+            "brier": 0.06818541139364243,
+            "brier_minus_reference": -6.163876969367266e-05,
+            "paired_episode_bootstrap_95": [
+              -0.00014575004108890056,
+              2.511775650719153e-05
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.042801916119400374,
+            "brier": 0.036365680396556854,
+            "brier_minus_reference": -1.2321791473368648e-05,
+            "paired_episode_bootstrap_95": [
+              -4.064499643439684e-05,
+              1.6278201633030512e-05
+            ]
+          }
+        }
+      },
+      "mlp": {
+        "against_recent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.04717583238194516,
+            "brier": 0.0453791543841362,
+            "brier_minus_reference": -0.0010107762645930052,
+            "paired_episode_bootstrap_95": [
+              -0.001405376529234926,
+              -0.0006369277708891542
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.07481720725959978,
+            "brier": 0.06761429458856583,
+            "brier_minus_reference": -0.0008646181086078286,
+            "paired_episode_bootstrap_95": [
+              -0.0013757314358906582,
+              -0.0003435134255225258
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.04187552258165961,
+            "brier": 0.03641895204782486,
+            "brier_minus_reference": -0.0010906956158578396,
+            "paired_episode_bootstrap_95": [
+              -0.0015277907032585252,
+              -0.0007094149607036923
+            ]
+          }
+        },
+        "against_parent": {
+          "hunger": {
+            "n": 13927,
+            "positives": 652,
+            "episodes": 182,
+            "ap": 0.04717583238194516,
+            "brier": 0.0453791543841362,
+            "brier_minus_reference": 1.414357393514365e-05,
+            "paired_episode_bootstrap_95": [
+              -2.7263186175597176e-05,
+              5.967567698022806e-05
+            ]
+          },
+          "thirst": {
+            "n": 11580,
+            "positives": 830,
+            "episodes": 192,
+            "ap": 0.07481720725959978,
+            "brier": 0.06761429458856583,
+            "brier_minus_reference": -4.412987982505001e-05,
+            "paired_episode_bootstrap_95": [
+              -0.00011874853064518576,
+              2.722662044061606e-05
+            ]
+          },
+          "fatigue": {
+            "n": 14686,
+            "positives": 549,
+            "episodes": 175,
+            "ap": 0.04187552258165961,
+            "brier": 0.03641895204782486,
+            "brier_minus_reference": -1.279695425182581e-05,
+            "paired_episode_bootstrap_95": [
+              -4.350847046547818e-05,
+              1.8924064280480526e-05
+            ]
+          }
+        }
+      }
+    }
+  }
+}
