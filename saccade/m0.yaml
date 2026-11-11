@@ -116,7 +116,13 @@ heads:
                   mean_loss: faithful}   # 10-31: mean by squared error in [-1, 1], scale by NLL on the detached mean and
                                          # detached lighting latent (Stirn et al. 2023; Seitzer et al. 2022; decoder
                                          # diagnosis 10-30: the NLL's per-position scale starved HUD cells)
-  change_map: {target: full_frame_a9b_v2, hidden: 256, position_dim: 32, belief_dim: 128}   # 11-08: all screen cells, no semantic masks
+  change_map: null                            # P1-F5 (11-11): removed; never ablated, Craftax-tailored, its forecast mode failed
+                                              # its gate (20261111_change_forecast_gate). Historical: {target: full_frame_a9b_v2,
+                                              # hidden: 256, position_dim: 32, belief_dim: 128} (11-08, all screen cells)
+  forecast: {seed: 615001}                    # P1-F5: training-only forecast modes (Dreamer 4's ahead-predicting heads, one
+                                              # step): TSP and the outcome heads with frame t's inputs replaced by learned mask
+                                              # vectors, read from the belief predicted before frame t; TSP's window drawn
+                                              # uniformly per frame from this seed (the chooser's surprise term reads frame t)
   outcome: {hidden: 256}                      # working; DV3 size12m-like heads
   reward: {density: categorical, space: symlog, bins: 256, support: [-0.9, 1.1], support_space: raw,
            sampled_value: train_bin_mean}     # LOSSES G3 (revised 10-27, overfit check: the discretised logistic
@@ -127,7 +133,8 @@ heads:
 losses:
   harmoniser: harmonydream                    # L / sigma + log(1 + sigma) per group (LOSSES v1.1)
   harmoniser_init_sigma: 1.0                  # working
-  groups: [G1, G2, G3]                        # P1 groups (LOSSES terms table); G2 = change map + TSP + fovea reconstruction
+  groups: [G1, G2, G3, G4]                    # P1 groups (LOSSES terms table); G2 = TSP + fovea reconstruction (P1-F5);
+                                              # G4 = forecasts: TSP + reward + continuation before the frame (P1-F5)
   sigreg: null                                # dropped from M0 (10-27, LOSSES principle 7); comparison: LeWM module,
                                               # lambda x N held at 0.09 x 128 (Epps-Pulley statistic scales with N)
   stop_gradient: [denoiser_frame_inputs, denoiser_targets]   # REPA-E, JEDI; memory tokens stay differentiable

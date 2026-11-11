@@ -681,7 +681,9 @@ class PixelDecoder(nn.Module):
 
 class TSP(nn.Module):
     """Trans-saccadic prediction: the glimpse cells' pixels from (predicted belief, periphery tokens of the window, v)
-    before the glimpse is read. Also the fovea reconstruction adapter (glimpse tokens, v)."""
+    before the glimpse is read. Also the fovea reconstruction adapter (glimpse tokens, v). Forecast mode (P1-F5,
+    heads.forecast): p = v = None, both replaced by one learned mask vector, so only the belief predicted before the
+    frame and the window's positions are read."""
 
     def __init__(self, cfg):
         super().__init__()
@@ -691,8 +693,15 @@ class TSP(nn.Module):
         self.belief = nn.Linear(cfg["belief"]["width"], h["belief_dim"])
         self.tsp = nn.Sequential(mlp([dp + dv + h["position_dim"] + h["belief_dim"], h["hidden"], h["hidden"]]), nn.GELU())
         self.rec = nn.Sequential(mlp([dg + dv + h["position_dim"], h["hidden"], h["hidden"]]), nn.GELU())
+        self.split = (dp, dv)
+        if cfg["heads"].get("forecast"):
+            self.mask = nn.Parameter(torch.zeros(dp + dv))                # zero init: no random draw
 
     def predict(self, belief, p, v, cells):
+        if p is None:                                                    # forecast mode: nothing of the frame itself
+            dp, dv = self.split
+            p = self.mask[:dp].expand(*cells.shape[:-1], N, dp)
+            v = self.mask[dp:].expand(*belief.shape[:-1], dv)
         pw = torch.gather(p, -2, cells[..., None].expand(*cells.shape, p.shape[-1]))
         ctx = torch.cat([v, self.belief(belief)], -1).unsqueeze(-2).expand(*cells.shape, -1)
         return self.tsp(torch.cat([pw, self.cell(cells), ctx], -1))
@@ -753,8 +762,12 @@ class Outcome(nn.Module):
         self.register_buffer("edges", torch.linspace(lo, hi, self.bins + 1))
         self.register_buffer("bin_value", torch.sign((self.edges[:-1] + self.edges[1:]) / 2)
                              * torch.expm1(((self.edges[:-1] + self.edges[1:]) / 2).abs()))
+        if cfg["heads"].get("forecast"):
+            self.mask = nn.Parameter(torch.zeros(W))                      # forecast mode's percept stand-in, no draw
 
     def features(self, belief, embed):
+        """embed = None is the forecast mode (P1-F5): the outcome from the belief predicted before the percept."""
+        embed = self.mask.to(belief.dtype).expand_as(belief) if embed is None else embed
         return self.trunk(torch.cat([belief, embed], -1))
 
     def bin_of(self, r: Tensor) -> Tensor:
@@ -795,7 +808,9 @@ class M0(nn.Module):
         super().__init__()
         self.cfg = cfg
         self.perception, self.belief, self.denoiser = Perception(cfg), Belief(cfg), Denoiser(cfg)
-        self.pixels, self.tsp, self.change, self.outcome = PixelDecoder(cfg), TSP(cfg), ChangeMap(cfg), Outcome(cfg)
+        self.pixels, self.tsp = PixelDecoder(cfg), TSP(cfg)
+        self.change = ChangeMap(cfg) if cfg["heads"].get("change_map") else None   # P1-F5: removed (historical cfgs build it)
+        self.outcome = Outcome(cfg)
         self.harmoniser = Harmoniser(cfg["losses"]["groups"], cfg["losses"]["harmoniser_init_sigma"])
 
     def param_groups(self):

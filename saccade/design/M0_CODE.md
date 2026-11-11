@@ -90,7 +90,7 @@ scaled start, evaluation at sigma_hat). EDM coefficients match the reference for
 the clean-space loss weighted by 1/c_out^2 on fixed inputs. Reward: a head with all mass on one bin samples exactly 0
 for a deterministic 0 and exactly 1.0 for a deterministic 1; empirical bin frequencies of many samples agree with
 exp(log_prob). Gradients, tested PER LOSS: the denoising loss reaches the encoder only through the memory tokens,
-never through a denoiser frame input or target; TSP, the change map, the fovea reconstruction and the outcome heads
+never through a denoiser frame input or target; TSP, the change map (before P1-F5), the fovea reconstruction, the outcome heads and their P1-F5 forecast modes
 through their declared routes. A resumed run equals an uninterrupted one; recipe, seed or source mismatches reject.
 S1 regression checks cover tied AP, history sensitivity without target leakage, precision parity, null C2ST, observable
 absence/side targets, the unlock event, reader roundtrip and unmeasured blockers. P2 checks are DEFERRED until P2 is

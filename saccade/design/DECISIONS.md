@@ -20,6 +20,18 @@ trace bitwise; F4's checkpoint gives bitwise identical monitor and S1 one-step s
 earlier recipes and the experiment scripts written against them run from commit fa6edd1a (they import the removed
 functions). The `edm` config section keeps its name so F4's checkpoints' configurations read unchanged.
 
+## 2026-11-11 — P1-F5 recipe (pending its run): forecast modes, change map removed
+User 11-11, after the research pass and the change-map forecast gate (`artifacts/experiments/20261111_change_forecast_gate/`,
+`artifacts/experiments/20261111_p1f5/PLAN.md`). Three changes bundled in one run by the user's choice ("less clean
+scientifically, but it maximizes our progress chance"): (1) the change map is removed (`heads.change_map: null`): never
+ablated, Craftax-tailored (tile grid, whole-tile shifts, exact pixel equality, a LightGBM teacher), and F4's HUD tokens
+stayed exact without it on those rows; the grounded targets return to the 10-24 list (reward, termination, fovea pixels).
+(2) TSP and (3) the reward/continuation heads gain a training-only forecast mode (Dreamer 4's ahead-predicting heads, one
+step): frame t's inputs replaced by learned mask vectors, read from the belief predicted before frame t, in a fourth
+harmonised group G4, on every valid non-first frame. TSP's forecast window is drawn uniformly per frame from its own seed,
+because the chooser's surprise term reads the target frame. Imagination and the reactive heads are unchanged. Historical
+configurations still build the change map from their own cfg; m0.yaml is F5's recipe until its run is read.
+
 ## 2026-11-08 — World-belief role and region-general change supervision
 User clarification: retain the denoiser's recent cache. The immediate criterion for Mamba is history-dependent
 information useful to world prediction; actor-input sufficiency is a separate P3 question. The native denoiser

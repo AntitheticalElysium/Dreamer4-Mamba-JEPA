@@ -34,7 +34,7 @@ def run_provenance(cfg) -> dict:
     return {"git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
             "source_sha256": {p: file_sha256(ROOT / p) for p in sources},
             "manifest_sha256": file_sha256(ROOT / cfg["data"]["corpus"] / "manifest.json"),
-            "targets_sha256": file_sha256(D.targets_dir(cfg) / "change_targets.npy"),
+            "targets_sha256": file_sha256(D.targets_dir(cfg) / "change_targets.npy") if cfg["heads"].get("change_map") else None,
             "torch": str(torch.__version__)}
 
 
@@ -59,7 +59,7 @@ def encoder_grad_norms(model, terms):
     return result
 
 
-def encoder_diagnostics(model, chunk, carry, cache, targets, cfg, bootstrap=None, update=None):
+def encoder_diagnostics(model, chunk, carry, cache, targets, cfg, bootstrap=None, update=None, forecast_windows=None):
     """One stream, at most 64 new frames, after training backward. Preserve RNG and accumulated .grad.
 
     Reusing the full retained training graph for six extra backwards exceeded the 6 GB device budget.
@@ -68,7 +68,8 @@ def encoder_diagnostics(model, chunk, carry, cache, targets, cfg, bootstrap=None
     n = cfg["data"]["context_prefix"] + 64
     bounded = {k: v[:1, :n] for k, v in chunk.items()}
     with torch.random.fork_rng(devices=[cache.device.index]):
-        terms, _, _ = p1_losses(model, bounded, carry, cache, targets, cfg, bootstrap[:1], update)
+        fw = None if forecast_windows is None else forecast_windows[:1, :n - cfg["data"]["context_prefix"]]
+        terms, _, _ = p1_losses(model, bounded, carry, cache, targets, cfg, bootstrap[:1], update, fw)
         return encoder_grad_norms(model, terms)
 
 
@@ -110,11 +111,12 @@ def tensors(chunk: dict, device) -> dict:
     return {k: torch.as_tensor(v, device=device) for k, v in chunk.items() if k != "target"}
 
 
-def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=None, update=None):
+def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=None, update=None, forecast_windows=None):
     """One microbatch of streams: chunk arrays [B, P + T, ...] (prefix = context only), carried Mamba state, cache =
     predicted beliefs [B, P + 1, W] of the prefix frames and of chunk frame 0 (computed in the previous chunk,
-    detached; never replayed through Mamba), these streams' bootstrap rows (bootstrap_rows) and the update index (the
-    bootstrap start). Returns (loss terms, new carry, new cache)."""
+    detached; never replayed through Mamba), these streams' bootstrap rows (bootstrap_rows), the update index (the
+    bootstrap start) and, with heads.forecast, the TSP forecast's window index per new frame [B, T] (forecast_windows).
+    Returns (loss terms, new carry, new cache)."""
     P = cfg["data"]["context_prefix"]
     dev = cache.device
     t = tensors(chunk, dev)
@@ -144,27 +146,44 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=No
         y = pix.float() / 127.5 - 1
         tsp, rec = (mt.float() - y).square().mean(), (mr.float() - y).square().mean()
         noise = M.pixel_nll(mt.detach(), st, pix).mean() + M.pixel_nll(mr.detach(), sr, pix).mean()
-        logit = model.change(torch.cat([Pp.p, Pc.p], 1)[:, P - 1:L - 1], Pc.p, bp)
-        idx = chunk["target"][:, P:]
-        tgt = np.full((*idx.shape, D.GRID, D.GRID, len(D.CHANGE_MODES)), np.nan, np.float32)
-        tgt[idx >= 0] = targets[idx[idx >= 0]] if targets is not None else np.nan
-        tgt = torch.as_tensor(tgt, device=dev)
-        ok = torch.isfinite(tgt)
-        change = F.binary_cross_entropy_with_logits(logit.float()[ok], tgt[ok]) if ok.any() else logit.sum() * 0
+        terms = {}
+        if model.change is not None:                                     # historical recipes (P1-F5 removed it)
+            logit = model.change(torch.cat([Pp.p, Pc.p], 1)[:, P - 1:L - 1], Pc.p, bp)
+            idx = chunk["target"][:, P:]
+            tgt = np.full((*idx.shape, D.GRID, D.GRID, len(D.CHANGE_MODES)), np.nan, np.float32)
+            tgt[idx >= 0] = targets[idx[idx >= 0]] if targets is not None else np.nan
+            tgt = torch.as_tensor(tgt, device=dev)
+            ok = torch.isfinite(tgt)
+            terms["change"] = F.binary_cross_entropy_with_logits(logit.float()[ok], tgt[ok]) if ok.any() else logit.sum() * 0
         nf = ~first[:, P:]
         h = model.outcome.features(bp, emb)[nf]
         r = t["reward"][:, P:][nf]
+        alive = (~t["terminated"][:, P:][nf]).float()
         reward = -model.outcome.reward_logp(h, r).mean()
-        cont = F.binary_cross_entropy_with_logits(model.outcome.cont_logit(h, r).float(),
-                                                  (~t["terminated"][:, P:][nf]).float())
-    terms = {"g1": g1, "change": change, "tsp": tsp, "rec": rec, "reward": reward, "cont": cont,
-             "noise": noise}                                             # noise reaches only the scale network: outside the groups
+        cont = F.binary_cross_entropy_with_logits(model.outcome.cont_logit(h, r).float(), alive)
+        if cfg["heads"].get("forecast"):                                 # P1-F5: training-only forecast modes, no frame-t input
+            if forecast_windows is None:                                 # other callers: a deterministic gaze-independent draw
+                forecast_windows = np.random.default_rng([cfg["heads"]["forecast"]["seed"], int(update or 0)]).integers(49, size=tuple(nf.shape))
+            fx = C.CENTRES.to(dev)[torch.as_tensor(forecast_windows, device=dev)]   # one window per frame, gaze-independent
+            fc = M.window(fx)
+            mf, _ = model.pixels(model.tsp.predict(bp, None, None, fc), vs, fc)
+            yf = M.cell_pixels(M.crop(t["frames"][:, P:], fx)).float() / 127.5 - 1
+            hf = model.outcome.features(bp, None)[nf]
+            terms.update(tsp_forecast=(mf.float() - yf).square()[nf].mean(),
+                         reward_forecast=-model.outcome.reward_logp(hf, r).mean(),
+                         cont_forecast=F.binary_cross_entropy_with_logits(model.outcome.cont_logit(hf, r).float(), alive))
+    terms.update(g1=g1, tsp=tsp, rec=rec, reward=reward, cont=cont,
+                 noise=noise)                                            # noise reaches only the scale network: outside the groups
     return {k: v.float() for k, v in terms.items()}, carry, new_cache
 
 
 def groups(terms: dict) -> dict:
-    """LOSSES terms table: G1 next percept; G2 grounding (change map, TSP, fovea reconstruction); G3 consequences."""
-    return {"G1": terms["g1"], "G2": terms["change"] + terms["tsp"] + terms["rec"], "G3": terms["reward"] + terms["cont"]}
+    """LOSSES terms table: G1 next percept; G2 grounding (TSP, fovea reconstruction; the change map in historical
+    recipes); G3 consequences; G4 forecasts (P1-F5: TSP, reward and continuation before the frame)."""
+    g = {"G1": terms["g1"], "G2": terms.get("change", 0) + terms["tsp"] + terms["rec"], "G3": terms["reward"] + terms["cont"]}
+    if "tsp_forecast" in terms:
+        g["G4"] = terms["tsp_forecast"] + terms["reward_forecast"] + terms["cont_forecast"]
+    return g
 
 
 @torch.no_grad()
@@ -259,9 +278,11 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
     torch.manual_seed(world_seed)
     split = D.load_split(cfg)
     eps = split["train"][:n_episodes] if n_episodes else split["train"]
-    targets = np.load(D.targets_dir(cfg) / "change_targets.npy", mmap_mode="r")
+    targets = None
+    if cfg["heads"].get("change_map"):                                    # historical recipes only (P1-F5 removed it)
+        targets = np.load(D.targets_dir(cfg) / "change_targets.npy", mmap_mode="r")
+        D.validate_change_targets(targets, split["train"], D.targets_dir(cfg))
     offsets = D.frame_offsets(split["train"])
-    D.validate_change_targets(targets, split["train"], D.targets_dir(cfg))
     provenance = run_provenance(cfg)
     d, P = cfg["data"], cfg["data"]["context_prefix"]
     assert max(d["accumulate_at_64"], d["accumulate_at_256"]) <= d["streams"], "a microbatch without streams"
@@ -300,6 +321,9 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
         opt.zero_grad(set_to_none=True)
         rows_all = np.array_split(np.arange(d["streams"]), micro)
         boot = bootstrap_rows(cfg, world_seed, st["update"])
+        fw = None                                                        # TSP forecast windows: own seed, resumable
+        if cfg["heads"].get("forecast"):
+            fw = np.random.default_rng([cfg["heads"]["forecast"]["seed"], world_seed, st["update"]]).integers(49, size=(d["streams"], S))
         logs = []
         route_norms = None
         if at_checkpoint:
@@ -307,14 +331,15 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
             diagnostic_cache = cache[:1].clone()
         for rows in rows_all:
             terms, c_new, cache_new = p1_losses(model, D.select(chunk, rows), M.carry_rows(carry, rows),
-                                                cache[rows], targets, cfg, boot[rows], st["update"])
+                                                cache[rows], targets, cfg, boot[rows], st["update"],
+                                                None if fw is None else fw[rows])
             ((model.harmoniser(groups(terms)) + terms["noise"]) / micro).backward()
             M.carry_put(carry, rows, c_new)
             cache[rows] = cache_new
             logs.append({k: float(v.detach()) for k, v in terms.items()})
         del terms, c_new, cache_new
         if at_checkpoint:
-            route_norms = encoder_diagnostics(model, chunk, diagnostic_carry, diagnostic_cache, targets, cfg, boot, st["update"])
+            route_norms = encoder_diagnostics(model, chunk, diagnostic_carry, diagnostic_cache, targets, cfg, boot, st["update"], fw)
         gn = float(torch.nn.utils.clip_grad_norm_(model.parameters(), o["grad_clip"]))
         opt.step()
         controller.learn(int(chunk["valid"][:, P:].sum()))

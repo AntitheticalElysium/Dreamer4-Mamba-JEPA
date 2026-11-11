@@ -6,7 +6,8 @@ countered by the training graph and by grounding:
    stop-gradient; the memory tokens stay differentiable. The denoising loss reaches the encoder only through the belief
    (past percepts -> Mamba -> memory tokens), never through the frame being predicted; the encoder learns 0.3x slower
    than the denoiser.
-2. A fixed-target owner per token type: periphery tokens by trans-saccadic prediction (TSP) and the change map; glimpse
+2. A fixed-target owner per token type: periphery tokens by trans-saccadic prediction (TSP) (and the change map until
+   P1-F5, which removes it: F4's change map excluded the HUD rows, yet F4's HUD tokens encoded every digit exactly); glimpse
    tokens by the fovea's own reconstruction of its crop; the lighting latent through both pixel likelihoods; all of them
    through the reward and termination heads.
 3. Scale: each token is layer-normalised over its channels without affine (I-JEPA's target convention; V-JEPA 2-AC

@@ -54,7 +54,7 @@ There is no separate hidden world: simulation runs on the belief (belief-MDP; GE
    logistic mixture first chosen was replaced at the build's overfit check, LOSSES G3); continuation ~ p(c |
    B-_{t+1}, P_{t+1}, r). The critic keeps two-hot. Change map rendered from (B-_{t+1}, B_{t+1}).
 Losses and weights: LOSSES.md. Gradient routes into the encoders: the belief path (memory tokens stay
-differentiable), TSP, the fovea's own reconstruction, the change map, the outcome heads; every denoiser FRAME input
+differentiable), TSP, the fovea's own reconstruction, the change map (before P1-F5), the outcome heads and their P1-F5 forecast modes; every denoiser FRAME input
 and target is stop-gradient (LOSSES principle 7; COLLAPSE.md). No gradient from the fixation head, actor or critic
 into the world.
 

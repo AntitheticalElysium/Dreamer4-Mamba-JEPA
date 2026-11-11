@@ -6,8 +6,14 @@ import torch
 from saccade import data as D,model as M,train as TR
 
 
+def historical_cfg():
+    """The 11-08 full-frame change recipe (P1-F5 removed the head from m0.yaml; historical checkpoints still build it)."""
+    cfg=TR.load_cfg();cfg['heads']['change_map']={'target':'full_frame_a9b_v2','hidden':256,'position_dim':32,'belief_dim':128}
+    cfg['heads'].pop('forecast',None);cfg['losses']['groups']=['G1','G2','G3'];return cfg
+
+
 def test_change_head_covers_every_screen_cell_and_has_gradient():
-    cfg=TR.load_cfg();head=M.ChangeMap(cfg)
+    cfg=historical_cfg();head=M.ChangeMap(cfg)
     p=torch.randn(2,81,16,requires_grad=True);old=torch.randn_like(p);b=torch.randn(2,256,requires_grad=True)
     y=head(old,p,b)
     assert y.shape==(2,9,9,2)
@@ -18,7 +24,7 @@ def test_change_head_covers_every_screen_cell_and_has_gradient():
 
 
 def test_legacy_head_weights_load_without_modifying_existing_rows():
-    head=M.ChangeMap(TR.load_cfg());state=copy.deepcopy(head.state_dict())
+    head=M.ChangeMap(historical_cfg());state=copy.deepcopy(head.state_dict())
     state['cell.weight']=state['cell.weight'][:63].clone();old=state['cell.weight'].clone()
     head.load_state_dict(state)
     assert torch.equal(head.cell.weight[:63],old)
@@ -98,7 +104,7 @@ def test_refit_cannot_overwrite_a_completed_store_teacher(tmp_path):
 
 @pytest.mark.skipif(not torch.cuda.is_available(),reason='needs CUDA Mamba')
 def test_hud_only_change_loss_trains_perception_and_memory():
-    cfg=TR.load_cfg();torch.manual_seed(17);model=M.M0(cfg).cuda()
+    cfg=historical_cfg();torch.manual_seed(17);model=M.M0(cfg).cuda()
     eps=D.load_split(cfg)['train'][:4];offsets=D.frame_offsets(eps)
     stream=D.Streams(eps,2,8,17,targets_offsets=offsets);stream.next(8);chunk=stream.next(12)
     targets=np.full((int(offsets[-1]),9,9,2),np.nan,np.float16)
