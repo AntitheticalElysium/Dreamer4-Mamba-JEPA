@@ -15119,3 +15119,431 @@ Sources/inputs sealed including shared helpers and immutable baseline inputs.
 Corrected PLAN's unsupported claim that diversity helping four primaries would
 contradict train/dev evidence. No claim that this run repairs fine-information
 use, and no P2/P3 launch. See20261104_p1f21/CHECKS.md and raw JSON gates.
+
+
+## 2026-11-06 — Boundary-entry fine-source qualification while F3 evaluates
+
+User authorized the proposed experiment only without interfering with F3's
+readout. Ran CPU-only source/instrument stage (69.4 s, about1.8GiB peak) and
+native pre-crop control (10.6 s), CUDA hidden, two low-priority cores. No GPU
+research job added and no sealed source changed. Census reproduces1400
+recent-absence creature observations versus96 under the old interior filter.
+Fixed36 sources (8missed+4clear perkind) exact-replayed on both branches,
+32 fresh source rendering keys and32 paired one-step simulator futures.
+
+F3 operational source gates retain skeleton ep17/t821 and zombie ep29/t197,
+both excluded by old geometry. Native fine reconstruction's present-template
+choices30/32 and24/32 versus pre-crop TSP15/32 and10/32; absence choices all
+correct. Future reader sensitivity27/32 and31/31, specificity100%; zombie
+has1/32 legitimate out-of-view successor. Full factual-prefix CPU reference
+Mamba + common S1 uniform fixation history used for TSP; no current fine/future
+input. F2 retains two cases too, one shared: checkpoint-specific instruments,
+not a causal F3 efficacy comparison. All failed cases preserved.
+
+Exploratory source candidates, NOT proof that full coarse/history lacks the
+fact, native generation can express it, or fine evidence affects future belief.
+Zombie is at the75% gate boundary. No native-generation GPU experiment or
+automatic search expansion/repair launched while F3 readout is active.
+Protocol, exact pins, all row results and limitations:
+artifacts/experiments/20261106_fine_candidate_qualification/RESULTS.md.
+
+
+## 2026-11-06 — Authorized native fine-forecast test on F2/F3
+
+F3 evaluation fully completed before GPU use. User explicitly authorized the
+native continuation. Fixed two source-qualified cases (skeleton ep17/t821,
+zombie ep29/t197), four independent source-noise keys, six observation
+conditions,64 draws/condition/key/world; all eight preselected coarse-clear
+references,32draws/branch/world. Same16-step sampler on F2/F3.7168 native
+frames in141.9s, with full real prefixes and raw latents retained. No training.
+
+Independent32-render F3 source confirmation: fine present-template choices
+93.75% skeleton,78.125% zombie; TSP43.75%/37.5%; removed100%. ALL four actual
+forecast source keys distinguish both fine alternatives. F3 local generated
+presence1.95%/0.39% versus real-world100%/96.875%, real-reader81.25%/96.875%.
+Natural focus/off and isolated fine-token swaps give identical event sequences;
+0/256 paired flips per fine contrast. Underlying numerical changes are nonzero
+in embedding, Mamba, memory and future physical latents: connectivity, not
+semantic retention. Physical context K/V equality and exact sham checks pass.
+
+Capability controls also fail75% criterion: F2 zombie/skeleton34.38%/40.63%,
+F3 45.31%/54.69%, real-reader92.19%/92.97%; removed100%. Clear-case outcomes
+vary3.13–90.63%. This prevents uniquely assigning the fine null to mixer,
+Mamba or denoiser. CPU re-read of saved generated latents exactly reproduces
+all primary event decisions; creatures elsewhere do not establish persistence
+of this selected object. No source expansion, new repair or follow-up queued.
+
+Instrument corrections preserved:128vs256-token BF16 prefix chunking failed
+max.03 check (RMS.00457,max.04155); final uses S1 single-prefix call with exact
+repeat check. Logging sampler's infinite s_tmax fixed as metadata only. Full
+scientific protocol unchanged. All14 source/input pins verified after run.
+Results and limits:20261106_fine_candidate_qualification/NATIVE_RESULTS.md.
+
+
+## 2026-11-06 — Authorized 250-scene fine-hostile Mamba route test
+
+Folder: `20261106_mamba_hostile_path/`; protocol and code pinned before world
+outputs, all inference weights frozen (F3 checkpoint 10). Full 8.56-minute GPU
+pass generated 24,000 futures; 36 reader fits took 33.5 s. No architecture fix or
+extra training run. 250 independent dev backgrounds, actual low HP 1/2, bright,
+awake; exact replay before removing mobs and rendering empty/zombie/cow pairs.
+All pixel changes confined to selected adjacent tile; 8 simulator futures per
+source show 98.4% death for forced-ready zombie, 0% for empty/cow. Hidden readiness
+is NOT observed, so 98.4% is not the model's required forecast probability.
+
+Fine-only alters g alone. Its raw fine readers give 98–98.7% 3-class accuracy;
+after-action memory gives 36.7–42.0% (chance 33.3%, random-label 32–33.3%), zombie
+AUROC .565–.585 versus .872–.903 coarse-only. Some hostile content crosses Mamba,
+weakly accessible; not proof of erasure or a uniquely broken projection.
+
+Entire denoiser cache (all p/g/v K/V) held fixed across isolated contrasts.
+Fine-only death 0.27496% vs empty 0.27495%, paired delta +0.0000082 pp, CI includes 0;
+coarse-only 3.9539%, both-memory 4.1797%. Fine negative-reward effect +0.0314 pp,
+CI includes 0, with 2/250 backgrounds above 1 pp: retain these exceptions.
+Natural both-visible cache gives 77.2% local zombie generation, death 8.766%.
+Real-successor heads read 98.397% death and the local creature reader is perfect;
+whole-map zombie_any has 46.4% safe-scene false positives, so is not a valid
+capability/conservation statistic. Source history audit: 22/250 lacked visible
+hostiles in prior 8; their fine-only death response also flat, descriptive only.
+
+Sham/prefix, row-permutation and identical-row controls pass exactly; frozen
+parameter versions unchanged. Analytical head marginalization passes 1.5e-8.
+Finite probes, one world seed, uniform historical fixation, constructed coarse/
+fine disagreement, and one-action retention remain declared limits. No claim
+of natural foveal necessity or justified repair. Results/raw outputs/source
+snapshot ready for Claude review. Small instrument failures and AUC precision
+correction preserved in MECHANICAL_CHECKS.md; no scientific tuning or followups.
+
+Supplementary reader-scope correction: the 46.4% safe whole-map false positive
+was our instrument including the player cell, outside S1 KEEP. Re-read the same
+saved futures with the correct 62-cell mask; safe false positives 0%, zombie
+recall 100%. All primary local decisions and harm scores unchanged. Corrected
+generated any-zombie: empty 8.00%, fine-only 8.025%, natural-both 97.325%.
+Original values preserved; READER_SCOPE_AUDIT.json records the correction.
+
+## 2026-11-06 — independent review of determinant curves and proposed route localization
+
+Review artifact: `20261106_determinant_review/REVIEW.md`; executable CPU checks and source hashes in
+`checks.py` / `CHECKS.json`. Reviewed Claude's completed determinant curves, fine-route reanalysis, and
+experiment-3 plan/code at fe8d8b2f. No world generation/training launched; reviewed files untouched.
+
+All six curve point estimates reproduce from raw outputs to 1e-12. Wake/death errors are actually drawn:
+only .00233% of asleep-population wake-unlock probability mass and .02717% of adjacent-zombie death mass lie
+on frames without the event; damage disagreement is larger (4.01% of negative-reward mass without a health drop).
+Do not generalize this to perfect heads, zero determinant sensitivity, or exclusive hidden-state causes.
+
+Matched binary zombie/cow fits on the original 200/50 background split: absolute fine / embedding / belief /
+memory accuracy 98 / 81 / 61 / 56%; paired-empty-reference fits 100% at all four. Both findings coexist:
+content-specific differences survive, while native accessibility and the unique cause remain unresolved.
+The 14x relative norm attenuation before Mamba is a geometric fact, not proof of information loss or causality.
+
+Experiment 3 not approved unchanged: its existing smoke calls energy NOT AT INPUT despite determinant-cache
+reader accuracy 100%; mean pooling omits location-resolved information. DO-vs-NOOP layer readability cannot
+identify event binding versus +1 operation because action conditions every block. NONE ignores crossed-route
+effects/interaction (verified XOR counterexample). The hidden-state 'ceiling' uses global mob identity across
+unseen intervals (47/3600 hit histories actually count pre-gap hits) and is a heuristic, not a certified bound.
+Report full factorials, episode uncertainty, count strata, controlled readouts and unresolved outcomes; remove
+unsupported automatic causal labels. Minimum amendments and literature basis are in the independent review.
+
+## 2026-11-06 — falsification audit of F3's conditioning / finite-start hypothesis
+
+User authorized bounded frozen CPU/GPU tests and primary-source reading. Report and reproducible code:
+`20261106_conditioning_audit/AUDIT.md`, `RESEARCH.md`, `PLAN.md`, `CPU.json`, `readings/SUMMARY.json`.
+No training, canonical model changes, edits to Claude's experiment folders, or automatic follow-ups.
+
+208 reviewed simulator pairs, both diagonal members, K=16, three fixed inference recipes = 19,968 physical one-step
+futures. Physical-only loop matches canonical full sample's periphery/lighting bitwise; repeat checks pass; weights
+unchanged. Full inference loop 445 seconds plus encoding. Same worlds, contexts, beliefs, fixations and Gaussian draws.
+
+Original start 5/16: false wake 45.25%. Start 20/16: 6.12%. Four deterministic high-noise prefix evaluations then the
+EXACT original 16-step ladder/churn: 8.01%, paired change -37.24 pp, episode CI [-40.97,-33.61]. The prefix never
+evaluates above training cap 20 (standard start20 evaluates at21.25 after churn). Awake controls remain100% awake.
+Main reader and independent same-scene endpoint decisions using map / player / map mean agree >=99.8%, at high
+starts99.93-100%. This is a real frozen inference lever for sleep persistence, not a general world-quality result.
+
+Crucial non-fix: energy8/9 awake rates34.67/34.96% become4.98/5.18% (prefix6.35/6.54%): required0/100%. The deciding
+energy contrast remains about .2 pp. Coal increment10.94->9.11%; wood84.90->89.58% (prefix88.54), NOOP false increments0.
+Thus reducing false wakes hides worse correct-wake recall; no common repair of the transition rules demonstrated.
+
+Oracle correct-target+same-noise first calls: asleep100% correct at original level,99.74% at high; energy9 correct
+wake91.41% at original level but7.23% high. Consistent with target leakage and missing context-driven transition.
+Original pooled first/final r=.824 uses different noise draws; removing family/cell means givesr=.367. New aligned
+first-projection AUC=.993 within asleep scenes; initial-noise sleep-direction AUC=.855. Exact conditional-mixture
+counterexample generates a .1 branch at.10184 with noise AUC1: noise predictability alone is not a defect.
+Report distinguishes causal inference-recipe effect from unknown training cause, keeps one-seed/small-count limits,
+and leaves hidden readiness/kill generation, fine-route necessity and any new training recipe unresolved.
+
+
+## 2026-11-06 20:58 - Independent review of Claude decision-level work (Codex)
+
+User requested a meticulous review without interrupting Claude's jobs. Reviewed 929bb069,
+8dda93b8, 79953122 and the uncommitted T3 readout. No GPU jobs launched, stopped or changed;
+canonical Saccade and Claude's live files untouched. Read-only host check: dl-queue2 active,
+C training running. Review: `20261106_decision_levels_review/REVIEW.md`.
+
+Independent single-thread CPU checks preserve global RNG and glimpse draws, validate
+41,840 previous-state labels, and reproduce the T1 raw reliance means. Splitting sleep
+reliance at sigma=5 gives .842 asleep versus .010 awake (reported mean .426). Exact
+continuation-stream census: 3,062,334 transitions, 19,663 energy>=9 sleeping transitions,
+all truly wake; expected sigma>10 examples C/H/F = 239/5,095/15,778. These are expected
+noise counts, not actual saved CUDA draws. Inputs and outputs retained and hashed.
+
+Found a verdict bound bug: analyse_t3.py labels a synthetic [+30,+50] pp false-wake
+increase 'within15pp'. Independent readout adds paired differences of energy contrasts.
+All-negative 750-update fine-tunes cannot establish a routing/capacity limit; H also changes
+history corruption, and F is label-targeted. Higher-start frozen T2 preserves all six
+BLIND rule verdicts and worsens genuine asleep-ready-attack damage/waking (.43/.63 ->
+.18/.23). Thus better persistence is not a safe repair. T3 efficacy pending; no overnight
+training lever or launch approval inferred from the improving training losses.
+
+
+## 2026-11-07 00:21 - P1-F4 independent live setup review (Codex)
+
+Review only; no GPU jobs launched or interrupted. Core shortcut formula checked against
+the actual pinned PyTorch reference function (not merely its test transcription): loss
+difference <=2.98e-8, parameter/memory gradient difference <=3.73e-9. Real F3 denoiser
+weights produce bitwise-equal CPU legacy chunked outputs and seeded cascade samples
+with HEAD versus current code. All Saccade CPU tests plus F4 contract: 71 pass, 6 GPU
+skips. Tiny resume differences <=4.744e-18 are localized, not evidence of lost state.
+
+Support combined F4 experiment conditionally, not final launch approval: GPU preflight
+and seal still pending. New readout correctly removes EDM-specific diagnostics; smoke
+it, implement/explicitly drop the declared but unmeasured movement control, preserve
+true-wake/attack guards and pin F3 comparison artifacts. Combined stochastic recipe +
+dense attention does not isolate component attribution. Provisional runtime ~15h plus
+eval, not 11h. Report and reproduction: 20261107_p1f4_review/REVIEW.md and CHECKS.json.
+
+
+## 2026-11-07 19:30 - S2 proposal and danger review (Codex)
+
+Reviewed bfafb929 S2_PROPOSAL and 40c9a2a3 danger results/code; no GPU jobs changed
+or launched. Reports: 20261107_s2_danger_review/{S2_REVIEW,DANGER_REVIEW}.md.
+CPU checks independently reproduce 2,236 dev windows from 257 source episodes,
+with 12 recorded terminations all at step 16 (zero earlier). L2 truth after
+trajectory divergence and L3 full-state-oracle ranking need corrected estimands.
+Exact evaluator counterexamples: a Bayes-optimal hidden-bit model ranks at 50%
+against a privileged oracle; identical stochastic model/env with m4/m8 yield
+47.83% rank agreement, 41.61% if weighted by simulator-estimated action gaps.
+Thus require null/power checks where a correct stochastic model passes.
+
+Danger: matched timer cohorts show asleep energy rises at 0.02775 vs true0.101
+(F3 0.1015). K4->K8 does not repair damage; M2 identifies broad cache input route
+but cannot exclude routing from that cause specifically to the health output.
+C3 pure-noise health projection0.0289 is not an event probability; final0.0678
+provides no evidence a strong first estimate is discarded. F3/F4 M1 health
+cohorts differ, whereas original zombie transition IDs match exactly. Pooled
+exposure correlation0.105 hides awake0.636 vs asleep-0.300 across9 cells each;
+no exposure-causal conclusion. Keep data/objective/internal-routing explanations
+open, not a new fovea/mixer fix. Source hashes and CPU results in CHECKS.json.
+
+
+## 2026-11-07 22:47 - Post-F4 danger synthesis adversarial checks (Codex)
+
+User authorized tests; one bounded native GPU rollout plus smoke, no training or
+changes to Claude jobs. Report: 20261107_danger_adversarial/REPORT.md, code/pins
+and raw outputs retained. Shared source inputs unchanged; all tests completed.
+
+Strong new reference: reconstruct fatigue from observed sleep history and reset0.
+Zero errors on 33,324 quiet asleep energy<9 transitions (2,872 increases), and
+129,311 quiet awake/non-SLEEP transitions (3,526 decreases). Exact match to
+internal fatigue at all32 independently replayed sources. Evaluation-only
+mechanistic observer, not a hard-coded learner. Binned time-since-change is a
+weaker proxy and near-one AP-share to it does not prove a clock is retained.
+
+Native F4 self-feeding, 32 quiet energy8 sleeping starts, 8 futures, NOOP, H48:
+only28.5% awake by16 [21.5,36.7], 69.1% by48 vs oracle100% by12. Restricted
+mean wait29.90 vs7.125 steps, ratio4.20 [3.55,5.11], NOT unrestricted duration
+ratio (30.9% model futures censored at48). Generated energy9->awake holds160/165
+transitions; delay is mainly energy accumulation. One world seed / uniform gaze
+/ selected cohort; not a P2-failure claim. Plot sleep_timing.png.
+
+Per-history fair-ensemble Brier on same5,619 histories confirms F3 better damage
+forecasting: awake .0958/.1293, asleep .2631/.4182 (F3/F4); paired asleep gap
++.155 [.136,.176]. Simple training-only sleeping-adjacency rate .527 scores
+.2505 on asleep panel. Lack of exact readiness does not explain miscalibration.
+Cache contains historical Mamba tokens: current-memory/cache swaps are not
+Mamba/no-Mamba swaps (structural dependency tested, not native-benefit ablation).
+First F4 Euler move is25% estimate/75% noise; exact-mixture flow counterexample
+shows a copy-like first mean is not proof of mode lock. Reader confidence alone
+is not certification (27.8% channel-permuted controls >.9). Latest bp probes
+show positive zombie information but do not establish a complete energy clock.
+
+
+## 2026-11-08 00:14 - F4 health-output assertion audited (Codex)
+
+User requested adversarial review of Claude RESULTS 12 and a cause investigation, without interrupting Claude.
+Completed a bounded frozen F4 campaign in `20261107_health_readout_audit/`; REPORT.md has source-level findings,
+controls and limits. No canonical changes, production training, queues or Claude jobs altered.
+
+17,619 DEV histories (awake/asleep x adjacent/nonadjacent), natural-frequency inverse weights, five episode folds.
+Health reader perfect on 305,907 real DEV states. Physical-only sampler bitwise equals full cascade in shams.
+Damage information survives final norm/modulation (AP .714 awake/.837 asleep), but output with current-digit
+interactions retains .633/.821: output-alone AP is a mismatched diagnostic. Cohort-specialised AP is not a
+globally ready health predictor: all-situation weighted logistic AP asleep .570 (C=100 .592), mean prediction
+.131/.153 vs .504 true. Neither AP ratios nor a classifier's P(any hit) are calibrated token-displacement ratios.
+
+Finest-step first estimate already weak: hit-direction lean .196/.048 awake/asleep, native K4 .205/.059; same-cache
+two-step continuation .205/.090. This is not the entire training bootstrap (which advances the past too).
+Shared affine refit improves frozen flow regression ~2.8% but native damage unchanged .0543 -> .0542 awake,
+.0777 -> .0761 asleep. Health-specific affine fit gives .0638/.0922 vs true .1612/.5040, closes only 8.9%/3.4%
+of deficits; paired fair-Brier improves in adjacent cohorts but slightly worsens nonadjacent awake. Bounded
+nonlinear health refit also gives only a small token-error improvement, no native MLP repair claimed.
+
+Frozen output gradients show local conflict, but are not Adam/historical updates. Evidence supports underlearned
+conditional health flow/feature-to-target binding and a small head contribution, not an isolated final-layer
+culprit, proven sampler exoneration, or a chosen training repair. All jobs complete; no automatic follow-up.
+
+
+## 2026-11-08 - Belief-objective proposal reviewed (Codex)
+
+Review and bounded CPU checks: `20261108_belief_proposal_review/REVIEW.md`, `checks.py`, `CHECKS.json`.
+Support explicit predictive supervision of actor-facing b, not a chosen CPC repair. Contract mismatch: STEP_SPEC7
+defines belief as Mamba plus recent frames; m0.yaml P3 features are corrected b only. Full recurrent carry differs
+from exported b; probes of b alone do not prove absence in carry. Found a concrete correction in the gradient
+study: it excludes bootstrap rows saying memory detached, but only TEACHER memory is detached. Backward through
+actual F4 bootstrap student yields memory grad norm .00585479 (unused flow row zero). Seven-percent statement
+is a flow-subset norm ratio, not whole-training dependence on belief. Analytic controls: contrastive scene-ID
+solution drops event bit with loss1.188e-11; sufficient heteroscedastic state has predictable squared errors.
+Keep outcome readers and TSP grounding; predictive auxiliaries need explicit time indices, future-action support,
+state/decoder controls and native consequence checks. No GPU jobs, production changes or training launches.
+
+
+## 2026-11-08 - Took over Claude's denoiser-teaching discussion (Codex)
+
+Read the user question/transcript, verified v3 and M0 rationale in the original session, reviewed completed M1-M3,
+and finished the interrupted M4 correction using the already bound F4 DEV encodings. Original signed-health AP
+reproduces exactly; absolute-difference controls all AP1.000. Global embedding change AP health.99865/food.26796/
+drink.19100/energy.06281. Gradients reach old reset frames; the declared hard lag10 cutoff criterion is not met.
+M1 boot is active; gradient norms cannot identify semantic teaching or learning-budget shares. Saved an exact
+state-vs-parameter-gradient counterexample. Current critical boundaries remain readable in b (original zero probes).
+
+Full discussion: `20261108_denoiser_teaching_continuation/ANSWER.md`. Next-percept prediction was migrated into
+G1, not removed on a measured auxiliary-head cost decision. Change map overlaps G1 but preserves a distinct fixed
+raw-observation grounding route. Reactive outcome heads were part of the coherent same-branch generative chain;
+independent predictive outcome draws can be inconsistent even with correct marginals. Training-only predictive
+heads avoid a second simulator but do not automatically repair generation. Crucial distinction: a post-action
+export can read private carry that the actor's post-percept export omits; a teacher aimed at actor-state sufficiency
+should read actual actor b plus action. No full training/architecture repair selected or launched.
+
+
+## 2026-11-08 — Full-frame change correction and exact-history timer contrasts (Codex)
+
+User requests removing the noncanonical HUD/player exclusions and tests that establish actual memory need/use.
+Implemented region-general 9x9x2 change targets/head: same-position and dominant-translation comparisons everywhere,
+no semantic selector, exact equal patches target zero. Local single-winner correspondence and two detector refits
+were rejected after map regressions. Final matched held-out map AP day .948776->.951819, night .594413->.594218;
+food/drink/energy targets AP1, recall1 and FPR0 on 17,839 transitions. Health remains under-confident at threshold .5.
+This changes G2 beyond a mask flip; a pure mask-causality test must use the SAME new architecture/targets in both
+arms with only the historical exclusion in its experimental control. No world training launched.
+
+24 controlled hunger-phase pairs: exact identical recent full frames, actions and signals; older visible food
+resets imply opposite next decrements. Native F4 generated drops .059896/.058594 (true1/0), 1,536 futures.
+A natural exact alias was also found in DEV episode376 at t654/t658. Recent8 full frames/actions/signals match;
+last drink decrement t638, hidden thirst16/20, actual next drink5/4. Recomputed native histories with matched
+fixations give bitwise equal recent percepts, yet both generate a decrement in2/128 futures. Reader holds out this
+physical episode and reads real successors perfectly; direct latent geometry independently places ordinary outputs
+within .032 of a full 5->4 step from the unchanged5 token. Thus this is a native failure to exploit useful older
+information, not a probe-only statement or a visual-information redundancy case. No claim about which training
+loss caused it or whether information is erased versus unused.
+
+Full CPU/GPU suite74 passed; a further HUD-only gradient test checks the newly supervised location trains both
+perception and Mamba. Legacy generation remains bitwise equal; the enlarged auxiliary itself has BF16 rounding
+differences. Separate full-corpus target construction uses byte-identical detector-input cache reuse, bound to
+F4's target checksum/data configuration, with direct recomputation checks before atomic completion.
+Protocol, failures, results and scripts: `20261108_full_frame_change/RESULTS.md`.
+
+Final verification for this entry:77 CPU/GPU tests pass. The complete new store is [2,439,791,9,9,2], all7,672
+training episodes /2,432,119 transitions, completed in1,688s. Direct recomputation of3 whole episodes is bitwise
+equal to cache-assisted construction. Same-position targets cover all88,655 health,86,693 food,125,155 drink and
+88,631 energy changes, with zero nonzero targets on unchanged body values. Every player-cell identity target is
+finite. Threshold .5 still under-confident for health (77,613/88,655); no causal timer-repair claim or world training.
+
+## 2026-11-11 — Independent HUD / MultiStep audit
+
+`20261111_two_arm_audit/REVIEW.md`: no training/source/queue changes. Verified MultiStep teacher suffix resets
+carry at nonzero segment IDs. Actual GPU continuation equals zero carry on affected row; RMS vs uninterrupted
+.304 -> .004 with rebasing. Exact stream/horizon replay: 33,999/243,387 valid auxiliary targets affected, and
+1,786,546/25.6M G1 frames directly exposed before later true reset. Same-seed constructor reinitializes 43 belief
+tensors. Original preserved mask checkpoint and inference export have identical native weights.
+HUD package improves risky term .036 -> .081 (true .128), regresses coal/iron severely; multi partly recovers first
+units and step16 entity counts but not broad native memory. Raw HUD digits already read exactly in F4. Matched
+thirst still flat; native 24-pair hunger rates due/not due F4 .0599/.0586, HUD .0651/.0664, multi .0534/.0547
+(true1/0). All readers qualified; token geometry agrees. Do not read this as a clean rejection of bootstrap,
+proof of missing state in carry, or evidence that tube masking is required.
+
+## 2026-11-11 — Matched checkpoint belief trajectory
+
+`20261111_belief_trajectory/RESULTS.md`. 192 DEV episodes /57,576 states, checkpoints1/3/5/6/8/10
+in HUD and MultiStep plus both actual untrained constructors. Exact older-reset reference recovers all
+awake phase targets on the chosen observation-qualified cohort; max trained clock R² .00072 across readers,
+no early rise. Sleep >8 post-action R² starts near0 in both, at ck1 .523/.705, at ck3 .755/.756,
+at ck10 .633/.739; late corrected belief .619/.627. Descriptive export difference, not causal bootstrap effect.
+Older side and achievement readings show no broad lift. Frozen weighted gradient audit median aux/base
+.835/.544/.993 at ck1/5/10; with split rebase .835/.491/.992. Aux is not generally weak on these chunks.
+No training, state/checkpoint mutation or automatic follow-up. Keep next-step forecast and past-memory depth
+distinct; stronger forecast pressure is the simpler candidate before a grounded delayed auxiliary.
+
+## 2026-11-11 — Bootstrap target selectivity
+
+`20261111_bootstrap_target_audit/RESULTS.md`. Frozen original Multi checkpoints1/5/10, trained masks,
+24 exact-history hunger pairs H2/4/8, 80 ordinary H8/16 windows. At ck10, real history reduces blind endpoint
+MSE .355->.198 vs recent-rebuilt carry at H8; a teacher-matching effect, not native prediction benefit.
+On paired hunger at H8, blind contrast projects .097 [.089,.104] of true observed teacher difference;
+equalizing student outputs costs only .293% MSE. Equal teacher endpoint percepts reduce teacher median
+contrast RMS .121->.0085. Correct teacher vs unrebased at fixed student leaves the weakness; not retraining.
+Raw MSE consistency is weakly selective for the consequence even when history-sensitive. HarmonyDream analytic
+example: aux raw mean .1796, separate .1*aux group could equilibrate at .698 effective raw weight, not a cap.
+Keep long latent dynamics vs one-step rendering distinction. No canonical edits, training or queues.
+
+## 2026-11-11 — Fixed-fork phase-erasure gate
+
+`20261111_phase_erasure_gate/RESULTS.md`. Reproduced original 24 hunger pairs and extended the same NOOP/key
+histories from one fixed fork. 23 survived to H16. Drop onsets 8/16: H2/H4/H16 identical full RGB endpoints;
+H8 differs at one cell. Oracle tied-vs-distinct F4 percept MSE gap .001774 at H8, local max .20849, zero
+at H16. Generic first-visible-change query still distinguishes at H16 (ln2 nats locally, .008557 averaged
+over grid); an analytic incentive audit, not a learned repair or qualified raw-pixel target. Explicit gate:
+score optimal phase erasure at actual objective weights, then test native uptake; labels only evaluation.
+
+## 2026-11-11 — Observable rollout curriculum, first gate
+
+`20261111_observable_rollout_gate/RESULTS.md`. 23 exact hunger pairs, existing two-plane soft change
+targets + reward CE + termination BCE, mean over time/groups. Early fork H1/2/4 zero; H8/H16 dense
+erasure .000343/.000347 nats. Last transition at16 still differs (change target, not final RGB).
+Late fork H1 .002747, so denser averaging doesn't multiply incentive. Verified non-timer reward alias
+penalizes erasure ln2 in its one-step reward group. Identical sham zero. Mild exposure foils cheaper
+on average but episode9 +3/255 costs12.09x matched hunger, 99.86% from translation plane; 27 geometric
+mask differences. Do not launch unchanged target. Frozen/analytic gate only, no Mamba training or
+visual re-entry claim.
+
+## 2026-11-11 — Dense teacher-belief MSE gate
+
+`20261111_dense_belief_gate/RESULTS.md`. Same 23 exact-history hunger pairs, one 16-step blind scan,
+uninterrupted observed teacher, original ck1/5/10. No change detector. Final dense oracle gap .003059
+vs endpoint .001363 (2.24x); real student erasure .000346, only .188% of .184482 tied MSE.
+Same-history sham zero. At final checkpoint none of +1/+3/+6 exposure foils outrank matched hunger;
+worst ratios .049/.222/.934. Actual reward-only alias moves the post-observation teacher (.01254
+first step), not evidence of anticipatory reward memory. Cleaner candidate, not proven repair.
+No world training or canonical changes; compare dense vs endpoint with corrected mechanics before
+claiming learning, and test native forecast use.
+
+## 2026-11-11 — Short dense-vs-endpoint MSE comparison launched
+
+`20261111_dense_mse_short/PLAN.md`. User rejected full P1 scope; capped two384-update continuations from
+the same HUD checkpoint. All ordinary losses identical, fixed real replay gaze, corrected episode fork,
+same seed and mask init, .1 auxiliary weight held for this comparison only. Two-update real smoke matches
+all ordinary terms at update1; CUDA fork error .25/.26 -> .0039 after rebasing. Parent phase readout
+reproduces saved counts. Short serial unit `saccade-dense-mse-short` started, with native paired hunger
+and factual danger/mining readout queued. No other jobs changed; no automatic full run.
+
+## 2026-11-11 — 2k extension live audit
+
+`20261111_dense_mse_2k_review/AUDIT.md`: read-only. All19 pins, loss/readout bytes and training-loop
+AST match expected continuation. Endpoint finished exactly2000; stream/gaze/horizon replay from384
+matches its saved final state, Adam count2000. Eval export equals trained native weights, mask omitted
+only. Dense seed checkpoint byte-equal to original dense384; saw live update385 after handoff.
+Paired hunger and factual guards queued. No training changes, no 2k efficacy reading yet.
+
+2k final read: `20261111_dense_mse_2k_review/RESULTS.md`. Both due/not-due76/768, zero difference
+in all24 pairs for both arms, geometry agrees to one sample. Both produce more false drops as well as
+more hits vs parent. Factual guards mixed, endpoint higher on all four final point readings. No native
+timer repair or reason to extend this same loss; no claim about exact retention in Mamba carry.
