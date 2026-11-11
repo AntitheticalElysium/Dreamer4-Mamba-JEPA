@@ -3,10 +3,13 @@
 2026-11-11, CPU only, no training. Protocol and decision rules: `PLAN.md` (committed before running, a426e8f0).
 Raw outputs: `STAGE0.json`, `CHECKS.json`; decision arithmetic: `summarize.py` -> `SUMMARY.json`.
 
-**Verdict under the preregistered rules: fail, narrowly. No training plan follows.** The forecast target prices older
-evidence about 2.7-2.8x better than G1 does at pure noise, relative to each objective's natural noise floor. That is below
-the 3x bar, the advantage is concentrated in dark scenes, and a +1/255 brightness step out-prices the consequence in 2 of
-32 zombie scenes.
+**Verdict under the preregistered rules: fail. No training plan follows.** The decisive failure is C3: a +1/255
+brightness step out-prices the consequence in 2 of 32 zombie scenes. The forecast target discriminates older evidence
+about 2.7-2.8x better than G1 at pure noise, relative to each objective's natural noise floor, mostly in dark scenes.
+That ratio is a diagnostic of discrimination against ordinary variation, not of training incentive: it is unchanged
+by any rescaling of G1's weight, so the plan's reading of R < 3 as "no better than reweighting G1" does not hold
+(Codex's review). How much incentive the mode adds would depend on its sampling fraction and group scaling, which
+this gate does not model.
 
 ## Controls
 
@@ -47,7 +50,10 @@ nothing and was not needed; the motion check was therefore not run.
 Natural floors (240 DEV states x 8 keys): change target .0134 (day .0137, dark .0123); G1 .0097 (day .0070, dark .0190).
 C1's consequence is one cell (HUD row 7, col 1) in both comparisons. In 25 of 32 zombie scenes it is only the health
 cell; in the other 7 it also includes cells around the player, because the non-attacking zombie moves while the
-attacking one stays.
+attacking one stays. Across all 55 scenes and their foils the chosen camera shift is (0, 0), the controls cost exactly
+0 and every gap lies in the consequence cells, so the branch-specific support did not create label differences on
+these pairs. C2 certifies only memory of a recent hit: the distinguishing hit is inside G1's 8-frame cache, and it is
+another timing mechanism (a combat cooldown). A cue older than the cache that is not a timer was not tested.
 
 | Rule | C1 | C2 |
 |---|---|---|
