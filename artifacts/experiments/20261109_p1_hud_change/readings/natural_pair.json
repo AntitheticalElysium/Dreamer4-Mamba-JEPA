@@ -1,0 +1,51 @@
+{
+  "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261109_p1_hud_change/run/ckpt_10.pt",
+  "checkpoint_sha256": "967d1a15979049fa332c3832cf05f3021b50b8f7067cf1413648775ffcc68cfa",
+  "reader_holdout_accuracy": 1.0,
+  "recent_full_frames_actions_outcomes_exact": true,
+  "recent_percepts_exact": true,
+  "K": 128,
+  "cases": [
+    {
+      "e": 376,
+      "t": 658,
+      "current": 5,
+      "true_next": 4,
+      "generated_drop": 0.0078125,
+      "generated_digits": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        127,
+        0,
+        0,
+        0,
+        0
+      ],
+      "mean_reader_confidence": 0.9999926686286926
+    },
+    {
+      "e": 376,
+      "t": 654,
+      "current": 5,
+      "true_next": 5,
+      "generated_drop": 0.0078125,
+      "generated_digits": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        127,
+        0,
+        0,
+        0,
+        0
+      ],
+      "mean_reader_confidence": 0.9999925494194031
+    }
+  ],
+  "contrast": 0.0
+}

@@ -1,0 +1,69 @@
+{
+  "phase": "complete",
+  "started_at": "2026-11-09T09:36:08.801276+00:00",
+  "source_pins_sha256": "67a8372ac762d252e00a487c04fcb526315edf9d6b48f5ec171d176100dad2d2",
+  "training_completed_at": "2026-11-10T00:01:25.125208+00:00",
+  "selection": {
+    "checkpoint": 10,
+    "monitor_loss": 0.0030773263424634933,
+    "three_increases_triggered": false,
+    "rule": "final unless any three successive strict increases; then global minimum, earliest tie",
+    "monitor_history": [
+      {
+        "checkpoint": 1,
+        "frames": 2560000,
+        "loss": 0.012670373544096947
+      },
+      {
+        "checkpoint": 2,
+        "frames": 5120000,
+        "loss": 0.007625484839081764
+      },
+      {
+        "checkpoint": 3,
+        "frames": 7680000,
+        "loss": 0.005867581348866224
+      },
+      {
+        "checkpoint": 4,
+        "frames": 10240000,
+        "loss": 0.005385387688875198
+      },
+      {
+        "checkpoint": 5,
+        "frames": 12800000,
+        "loss": 0.004159267526119947
+      },
+      {
+        "checkpoint": 6,
+        "frames": 15360000,
+        "loss": 0.0033698680344969034
+      },
+      {
+        "checkpoint": 7,
+        "frames": 17920000,
+        "loss": 0.0033029376063495874
+      },
+      {
+        "checkpoint": 8,
+        "frames": 20480000,
+        "loss": 0.003186542773619294
+      },
+      {
+        "checkpoint": 9,
+        "frames": 23040000,
+        "loss": 0.0030926254112273455
+      },
+      {
+        "checkpoint": 10,
+        "frames": 25600000,
+        "loss": 0.0030773263424634933
+      }
+    ],
+    "checkpoint_path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261109_p1_hud_change/run/ckpt_10.pt",
+    "checkpoint_sha256": "967d1a15979049fa332c3832cf05f3021b50b8f7067cf1413648775ffcc68cfa",
+    "selected_at": "2026-11-10T00:01:26.482124+00:00"
+  },
+  "evaluation_started_at": "2026-11-10T00:01:26.484490+00:00",
+  "evaluation_completed_at": "2026-11-10T07:52:35+00:00"
+}

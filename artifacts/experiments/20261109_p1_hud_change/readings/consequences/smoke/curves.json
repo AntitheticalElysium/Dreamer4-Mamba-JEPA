@@ -1,0 +1,3304 @@
+{
+ "checkpoint": "artifacts/experiments/20261109_p1_hud_change/run/ckpt_10.pt",
+ "sha256": "967d1a15979049fa332c3832cf05f3021b50b8f7067cf1413648775ffcc68cfa",
+ "sampler": "shortcut, K = 4, from pure noise",
+ "K": 4,
+ "readers": {
+  "asleep": {
+   "accuracy": 1.0,
+   "per_value": {
+    "0": [
+     15482,
+     1.0
+    ],
+    "1": [
+     3380,
+     1.0
+    ]
+   },
+   "epochs": 30,
+   "valid": true
+  },
+  "63": {
+   "accuracy": 1.0,
+   "per_value": {
+    "0": [
+     60,
+     1.0
+    ],
+    "1": [
+     207,
+     1.0
+    ],
+    "2": [
+     401,
+     1.0
+    ],
+    "3": [
+     697,
+     1.0
+    ],
+    "4": [
+     820,
+     1.0
+    ],
+    "5": [
+     1036,
+     1.0
+    ],
+    "6": [
+     1438,
+     1.0
+    ],
+    "7": [
+     2340,
+     1.0
+    ],
+    "8": [
+     2059,
+     1.0
+    ],
+    "9": [
+     9804,
+     1.0
+    ]
+   },
+   "epochs": 30,
+   "valid": true
+  },
+  "64": {
+   "accuracy": 1.0,
+   "per_value": {
+    "0": [
+     133,
+     1.0
+    ],
+    "1": [
+     241,
+     1.0
+    ],
+    "2": [
+     561,
+     1.0
+    ],
+    "3": [
+     943,
+     1.0
+    ],
+    "4": [
+     1414,
+     1.0
+    ],
+    "5": [
+     1810,
+     1.0
+    ],
+    "6": [
+     2536,
+     1.0
+    ],
+    "7": [
+     3200,
+     1.0
+    ],
+    "8": [
+     4051,
+     1.0
+    ],
+    "9": [
+     3973,
+     1.0
+    ]
+   },
+   "epochs": 30,
+   "valid": true
+  },
+  "66": {
+   "accuracy": 1.0,
+   "per_value": {
+    "0": [
+     156,
+     1.0
+    ],
+    "1": [
+     269,
+     1.0
+    ],
+    "2": [
+     553,
+     1.0
+    ],
+    "3": [
+     791,
+     1.0
+    ],
+    "4": [
+     1023,
+     1.0
+    ],
+    "5": [
+     1428,
+     1.0
+    ],
+    "6": [
+     1966,
+     1.0
+    ],
+    "7": [
+     2773,
+     1.0
+    ],
+    "8": [
+     4828,
+     1.0
+    ],
+    "9": [
+     5075,
+     1.0
+    ]
+   },
+   "epochs": 30,
+   "valid": true
+  },
+  "68": {
+   "accuracy": 0.9961827993392944,
+   "per_value": {
+    "0": [
+     5819,
+     1.0
+    ],
+    "1": [
+     5809,
+     1.0
+    ],
+    "2": [
+     3620,
+     1.0
+    ],
+    "3": [
+     2490,
+     1.0
+    ],
+    "4": [
+     760,
+     1.0
+    ],
+    "5": [
+     292,
+     1.0
+    ],
+    "6": [
+     58,
+     0.0
+    ],
+    "7": [
+     4,
+     0.0
+    ],
+    "8": [
+     10,
+     0.0
+    ]
+   },
+   "epochs": 14,
+   "valid": true
+  },
+  "69": {
+   "accuracy": 1.0,
+   "per_value": {
+    "0": [
+     5617,
+     1.0
+    ],
+    "1": [
+     814,
+     1.0
+    ],
+    "2": [
+     665,
+     1.0
+    ],
+    "3": [
+     594,
+     1.0
+    ],
+    "4": [
+     1174,
+     1.0
+    ],
+    "5": [
+     1650,
+     1.0
+    ],
+    "6": [
+     1522,
+     1.0
+    ],
+    "7": [
+     1708,
+     1.0
+    ],
+    "8": [
+     1837,
+     1.0
+    ],
+    "9": [
+     3281,
+     1.0
+    ]
+   },
+   "epochs": 30,
+   "valid": true
+  },
+  "70": {
+   "accuracy": 0.9746580719947815,
+   "per_value": {
+    "0": [
+     8210,
+     1.0
+    ],
+    "1": [
+     2450,
+     1.0
+    ],
+    "2": [
+     3222,
+     1.0
+    ],
+    "3": [
+     1294,
+     1.0
+    ],
+    "4": [
+     1124,
+     1.0
+    ],
+    "5": [
+     1482,
+     1.0
+    ],
+    "6": [
+     904,
+     0.6659291982650757
+    ],
+    "7": [
+     176,
+     0.0
+    ]
+   },
+   "epochs": 16,
+   "valid": false
+  },
+  "71": {
+   "accuracy": 1.0,
+   "per_value": {
+    "0": [
+     10955,
+     1.0
+    ],
+    "1": [
+     4385,
+     1.0
+    ],
+    "2": [
+     2140,
+     1.0
+    ],
+    "3": [
+     997,
+     1.0
+    ],
+    "4": [
+     248,
+     1.0
+    ],
+    "5": [
+     41,
+     1.0
+    ],
+    "6": [
+     96,
+     1.0
+    ]
+   },
+   "epochs": 30,
+   "valid": true
+  }
+ },
+ "populations": {
+  "asleep": {
+   "e6": 10,
+   "e7_fresh": 6,
+   "e7_stale": 10,
+   "e8_fresh": 16,
+   "e8_stale": 24,
+   "e9": 20,
+   "e<=5": 10
+  },
+  "mining": {
+   "coal_0": 28,
+   "coal_1": 20,
+   "coal_2": 18,
+   "coal_3": 9,
+   "coal_4": 10,
+   "coal_5": 8,
+   "coal_6": 1,
+   "iron_0": 39,
+   "iron_1": 16,
+   "iron_2": 10,
+   "iron_3": 4,
+   "iron_4": 1,
+   "iron_5": 1,
+   "stone_0": 3,
+   "stone_1": 3,
+   "stone_2": 3,
+   "stone_3": 3,
+   "stone_4": 3,
+   "stone_5": 3,
+   "stone_6": 3,
+   "stone_7": 3,
+   "stone_8": 3,
+   "wood_0": 3,
+   "wood_1": 3,
+   "wood_2": 3,
+   "wood_3": 3,
+   "wood_4": 3,
+   "wood_5": 3,
+   "wood_6": 3,
+   "wood_7": 1
+  },
+  "zombie": {
+   "asleep_cooling_lethal": 20,
+   "asleep_cooling_safe": 7,
+   "asleep_ready_lethal": 20,
+   "asleep_ready_safe": 18,
+   "awake_cooling_lethal": 20,
+   "awake_cooling_safe": 20,
+   "awake_ready_lethal": 20,
+   "awake_ready_safe": 20
+  },
+  "hit": {
+   "cow_hit": 16,
+   "cow_kill": 16,
+   "zombie_hit": 20,
+   "zombie_kill": 20
+  }
+ },
+ "readings": {
+  "wake_value": {
+   "world": [
+    1.0,
+    0.0
+   ],
+   "true": [
+    1.0,
+    0.0
+   ],
+   "n_futures": [
+    80,
+    64
+   ],
+   "T": {
+    "est": 1.0,
+    "ci95": [
+     1.0,
+     1.0
+    ]
+   },
+   "Q": {
+    "est": 1.0,
+    "ci95": [
+     1.0,
+     1.0
+    ]
+   },
+   "false": {
+    "est": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "verdict": "TRACKS"
+  },
+  "wake_value_vs_change": {
+   "V": {
+    "est": 1.0,
+    "ci95": [
+     1.0,
+     1.0
+    ]
+   },
+   "C": {
+    "est": -0.03125,
+    "ci95": [
+     -0.09375,
+     0.0
+    ]
+   },
+   "verdict": "VALUE-READ"
+  },
+  "wake_time_asleep_e8_stale": {
+   "1-10": {
+    "est": 0.0625,
+    "se": 0.046944474957983574,
+    "n_cond": 48
+   },
+   "11-20": {
+    "est": 0.0,
+    "se": 0.0,
+    "n_cond": 16
+   },
+   "21-40": {
+    "est": 0.0,
+    "se": 0.0,
+    "n_cond": 12
+   },
+   "41-1000000": {
+    "est": 0.0,
+    "se": 0.0,
+    "n_cond": 20
+   }
+  },
+  "cooldown": {
+   "world": [
+    0.0125,
+    0.1375
+   ],
+   "true": [
+    0.2,
+    0.0
+   ],
+   "n_futures": [
+    80,
+    80
+   ],
+   "T": {
+    "est": -0.625,
+    "ci95": [
+     -3.0018382352941178,
+     -0.11515231092437
+    ]
+   },
+   "Q": {
+    "est": 0.0625,
+    "ci95": [
+     0.0,
+     0.25
+    ]
+   },
+   "false": {
+    "est": 0.1375,
+    "ci95": [
+     0.046875,
+     0.2400185185185184
+    ]
+   },
+   "verdict": "BLIND",
+   "heads": {
+    "world": [
+     0.012390659693168014,
+     0.13621036934450553
+    ],
+    "true": [
+     0.2,
+     0.0
+    ],
+    "n_futures": [
+     80,
+     80
+    ],
+    "T": {
+     "est": -0.6190985482566875,
+     "ci95": [
+      -2.9740863174470706,
+      -0.11413358191639154
+     ]
+    },
+    "Q": {
+     "est": 0.06195329846584007,
+     "ci95": [
+      4.787481123827691e-06,
+      0.2477581760682258
+     ]
+    },
+    "false": {
+     "est": 0.13621036934450553,
+     "ci95": [
+      0.045665211094939345,
+      0.23862724587396017
+     ]
+    },
+    "verdict": "BLIND"
+   }
+  },
+  "lethality": {
+   "world": [
+    0.2375,
+    0.0
+   ],
+   "true": [
+    0.45,
+    0.0
+   ],
+   "n_futures": [
+    80,
+    80
+   ],
+   "T": {
+    "est": 0.5277777777777778,
+    "ci95": [
+     0.27072916666666663,
+     0.78125
+    ]
+   },
+   "Q": {
+    "est": 0.5277777777777778,
+    "ci95": [
+     0.27072916666666663,
+     0.78125
+    ]
+   },
+   "false": {
+    "est": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "verdict": "PARTIAL",
+   "heads": {
+    "world": [
+     0.23749987557530403,
+     0.0
+    ],
+    "true": [
+     0.45,
+     0.0
+    ],
+    "n_futures": [
+     80,
+     80
+    ],
+    "T": {
+     "est": 0.5277775012784534,
+     "ci95": [
+      0.27072896021728715,
+      0.7812494453508407
+     ]
+    },
+    "Q": {
+     "est": 0.5277775012784534,
+     "ci95": [
+      0.27072896021728715,
+      0.7812494453508407
+     ]
+    },
+    "false": {
+     "est": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    },
+    "verdict": "PARTIAL"
+   }
+  },
+  "sleep_attack": {
+   "world": [
+    0.16447368421052633,
+    0.009259259259259259
+   ],
+   "true": [
+    1.0,
+    0.0
+   ],
+   "n_futures": [
+    152,
+    108
+   ],
+   "T": {
+    "est": 0.15521442495126708,
+    "ci95": [
+     0.07457287108272162,
+     0.2447348292765382
+    ]
+   },
+   "Q": {
+    "est": 0.16447368421052633,
+    "ci95": [
+     0.08823529411764706,
+     0.25
+    ]
+   },
+   "false": {
+    "est": 0.009259259259259259,
+    "ci95": [
+     0.0,
+     0.03260869565217391
+    ]
+   },
+   "verdict": "BLIND",
+   "heads": {
+    "world": [
+     0.1115250662813848,
+     0.009256649074703267
+    ],
+    "true": [
+     0.7368421052631579,
+     0.0
+    ],
+    "n_futures": [
+     152,
+     108
+    ],
+    "T": {
+     "est": 0.13879285192335353,
+     "ci95": [
+      0.05047838954282784,
+      0.23879467977770608
+     ]
+    },
+    "Q": {
+     "est": 0.15135544709616508,
+     "ci95": [
+      0.06730007024718913,
+      0.2409071831231314
+     ]
+    },
+    "false": {
+     "est": 0.009256649074703267,
+     "ci95": [
+      5.877443942345038e-07,
+      0.03257494907585334
+     ]
+    },
+    "verdict": "BLIND"
+   }
+  },
+  "zombie_kill": {
+   "world": [
+    0.55,
+    0.4625
+   ],
+   "true": [
+    0.95,
+    0.1
+   ],
+   "n_futures": [
+    80,
+    80
+   ],
+   "T": {
+    "est": 0.10294117647058826,
+    "ci95": [
+     -0.17821708463949848,
+     0.3394867886178858
+    ]
+   },
+   "Q": {
+    "est": 0.5789473684210527,
+    "ci95": [
+     0.390625,
+     0.7125
+    ]
+   },
+   "false": {
+    "est": 0.36250000000000004,
+    "ci95": [
+     0.140625,
+     0.5178571428571429
+    ]
+   },
+   "verdict": "PARTIAL"
+  },
+  "cow_kill": {
+   "world": [
+    0.765625,
+    0.609375
+   ],
+   "true": [
+    0.9375,
+    0.5625
+   ],
+   "n_futures": [
+    64,
+    64
+   ],
+   "T": {
+    "est": 0.4166666666666667,
+    "ci95": [
+     -0.02196122296793446,
+     1.8506249999999929
+    ]
+   },
+   "Q": {
+    "est": 0.8166666666666667,
+    "ci95": [
+     0.6875,
+     0.9334374999999995
+    ]
+   },
+   "false": {
+    "est": 0.046875,
+    "ci95": [
+     -0.27786458333333336,
+     0.36783088235294015
+    ]
+   },
+   "verdict": "PARTIAL"
+  },
+  "world_vs_head": {
+   "wake_false (asleep, energy <= 8, WAKE_UP not unlocked)": {
+    "P_frame_given_head": 0.0,
+    "n_head": 0,
+    "P_head_given_frame": 0.0,
+    "n_frame": 0,
+    "verdict": "HEAD-READ"
+   },
+   "wake_true (energy 9, WAKE_UP not unlocked)": {
+    "P_frame_given_head": 1.0,
+    "n_head": 36,
+    "P_head_given_frame": 1.0,
+    "n_frame": 36,
+    "verdict": "WORLD-DRAWN"
+   },
+   "death (zombie rows)": {
+    "P_frame_given_head": 1.0,
+    "n_head": 47,
+    "P_head_given_frame": 1.0,
+    "n_frame": 47,
+    "verdict": "WORLD-DRAWN"
+   },
+   "damage (zombie rows)": {
+    "P_frame_given_head": 0.9508196721311475,
+    "n_head": 61,
+    "P_head_given_frame": 0.8529411764705882,
+    "n_frame": 68,
+    "verdict": "WORLD-DRAWN"
+   }
+  },
+  "mining": {
+   "coal": {
+    "appearance_n0": {
+     "est": 0.6607142857142857,
+     "se": 0.06964328069015809,
+     "n_cond": 112
+    },
+    "increments_n>=1": {
+     "est": 0.0946969696969697,
+     "se": 0.022359723639233515,
+     "n_cond": 264
+    },
+    "n1-3": {
+     "est": 0.1276595744680851,
+     "se": 0.024418644703081607,
+     "n_cond": 188
+    }
+   },
+   "iron": {
+    "appearance_n0": {
+     "est": 0.10256410256410256,
+     "se": 0.022607074074784773,
+     "n_cond": 156
+    },
+    "increments_n>=1": {
+     "est": 0.03125,
+     "se": 0.015039399547600243,
+     "n_cond": 128
+    },
+    "n1-3": {
+     "est": 0.03333333333333333,
+     "se": 0.0174550244517068,
+     "n_cond": 120
+    }
+   },
+   "wood": {
+    "appearance_n0": {
+     "est": 0.9166666666666666,
+     "se": 0.07588955116299588,
+     "n_cond": 12
+    },
+    "increments_n>=1": {
+     "est": 0.631578947368421,
+     "se": 0.13139275408651038,
+     "n_cond": 76
+    },
+    "n1-3": {
+     "est": 1.0,
+     "se": 0.0,
+     "n_cond": 36
+    }
+   },
+   "stone": {
+    "appearance_n0": {
+     "est": 1.0,
+     "se": 0.0,
+     "n_cond": 12
+    },
+    "increments_n>=1": {
+     "est": 0.78125,
+     "se": 0.05498991685553996,
+     "n_cond": 96
+    },
+    "n1-3": {
+     "est": 0.9444444444444444,
+     "se": 0.04018245498777268,
+     "n_cond": 36
+    }
+   }
+  }
+ },
+ "curves": {
+  "asleep": {
+   "e6": {
+    "futures": 40,
+    "histories": 10,
+    "awake": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "damage": {
+     "gen": 0.025,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "energy9": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 0.011727313994931807,
+     "rec_head": 2.0705196326908927e-08,
+     "true": 0.0
+    },
+    "head_wake_unlock": {
+     "gen": 7.741809502387342e-06,
+     "rec_head": 7.84521374171121e-06,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 0.7,
+     "71": 1.0
+    }
+   },
+   "e7_fresh": {
+    "futures": 24,
+    "histories": 6,
+    "awake": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "energy9": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 2.619824355833596e-05,
+     "rec_head": 1.6789292770861646e-08,
+     "true": 0.0
+    },
+    "head_wake_unlock": {
+     "gen": 1.5692661037292055e-07,
+     "rec_head": 6.024709620078283e-08,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 0.8333333333333334,
+     "71": 1.0
+    }
+   },
+   "e7_stale": {
+    "futures": 40,
+    "histories": 10,
+    "awake": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "energy9": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 1.6366302863640714e-07,
+     "rec_head": 1.4587408830868398e-08,
+     "true": 0.0
+    },
+    "head_wake_unlock": {
+     "gen": 8.132503541246252e-13,
+     "rec_head": 1.6506798356876221e-13,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 0.975,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 1.0,
+     "71": 1.0
+    }
+   },
+   "e8_fresh": {
+    "futures": 64,
+    "histories": 16,
+    "awake": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "energy9": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 9.517125371940813e-08,
+     "rec_head": 4.89334305922573e-08,
+     "true": 0.0
+    },
+    "head_wake_unlock": {
+     "gen": 1.0107508532785654e-07,
+     "rec_head": 7.519429596318188e-08,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 0.875,
+     "71": 1.0
+    }
+   },
+   "e8_stale": {
+    "futures": 96,
+    "histories": 24,
+    "awake": {
+     "gen": 0.03125,
+     "rec_reader": 0.041666666666666664,
+     "true": 0.041666666666666664
+    },
+    "damage": {
+     "gen": 0.020833333333333332,
+     "rec_reader": 0.041666666666666664,
+     "true": 0.041666666666666664
+    },
+    "death": {
+     "gen": 0.020833333333333332,
+     "rec_reader": 0.041666666666666664,
+     "true": 0.041666666666666664
+    },
+    "energy9": {
+     "gen": 0.041666666666666664,
+     "rec_reader": 0.041666666666666664,
+     "true": 0.041666666666666664
+    },
+    "head_death": {
+     "gen": 0.02083349662522475,
+     "rec_head": 0.0416666641831398,
+     "true": 0.041666666666666664
+    },
+    "head_damage": {
+     "gen": 0.02087120634215195,
+     "rec_head": 0.041621567339189154,
+     "true": 0.041666666666666664
+    },
+    "head_wake_unlock": {
+     "gen": 6.298158045388983e-05,
+     "rec_head": 4.5892820794214815e-05,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 0.9895833333333334,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 0.9166666666666666,
+     "71": 1.0
+    }
+   },
+   "e9": {
+    "futures": 80,
+    "histories": 20,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.1375,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0125,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "energy9": {
+     "gen": 0.9875,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.012499991804361343,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 0.13354974907477504,
+     "rec_head": 5.4707617914706574e-06,
+     "true": 0.0
+    },
+    "head_wake_unlock": {
+     "gen": 0.9998799910147985,
+     "rec_head": 0.9998386369811164,
+     "true": 1.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 0.95,
+     "69": 1.0,
+     "70": 0.9,
+     "71": 1.0
+    }
+   },
+   "e<=5": {
+    "futures": 40,
+    "histories": 10,
+    "awake": {
+     "gen": 0.1,
+     "rec_reader": 0.1,
+     "true": 0.1
+    },
+    "damage": {
+     "gen": 0.075,
+     "rec_reader": 0.1,
+     "true": 0.1
+    },
+    "death": {
+     "gen": 0.025,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "energy9": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "head_death": {
+     "gen": 0.02499999850988388,
+     "rec_head": 2.2649765014648436e-07,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 0.07561121297882785,
+     "rec_head": 0.09997947282212145,
+     "true": 0.1
+    },
+    "head_wake_unlock": {
+     "gen": 1.0059860180433589e-06,
+     "rec_head": 1.0909271566106327e-06,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 1.0,
+     "71": 1.0
+    }
+   }
+  },
+  "mining": {
+   "coal_0": {
+    "futures": 112,
+    "histories": 28,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.6607142857142857,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.33035714285714285,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 0.9732142857142857,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 6.605217244022552e-07,
+     "rec_head": 1.7558593247644816e-06,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 0.9821428571428571,
+     "70": 1.0,
+     "71": 1.0
+    }
+   },
+   "coal_1": {
+    "futures": 80,
+    "histories": 20,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0125,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.15,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.8375,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 1.0,
+     "rec_reader": 0.95,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 0.012477264644011143,
+     "rec_head": 1.8476710417214548e-07,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 0.9375,
+     "69": 0.9625,
+     "70": 1.0,
+     "71": 1.0
+    }
+   },
+   "coal_2": {
+    "futures": 72,
+    "histories": 18,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.09722222222222222,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.9027777777777778,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 0.9861111111111112,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 4.7056678233027407e-07,
+     "rec_head": 4.6900700306156614e-07,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 0.9861111111111112,
+     "66": 1.0,
+     "68": 0.9444444444444444,
+     "69": 1.0,
+     "70": 0.9861111111111112,
+     "71": 1.0
+    }
+   },
+   "coal_3": {
+    "futures": 36,
+    "histories": 9,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.1388888888888889,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.8611111111111112,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 0.9722222222222222,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 3.806601962444114e-06,
+     "rec_head": 6.145768003494743e-06,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 1.0,
+     "71": 1.0
+    }
+   },
+   "coal_4": {
+    "futures": 40,
+    "histories": 10,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.025,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.025,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.975,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 0.975,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 0.02287053464364909,
+     "rec_head": 5.289929182472619e-07,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 0.975,
+     "70": 0.975,
+     "71": 1.0
+    }
+   },
+   "coal_5": {
+    "futures": 32,
+    "histories": 8,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.0,
+     "rec_reader": 0.625,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 1.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 0.96875,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 9.633819991222703e-06,
+     "rec_head": 2.0159683993825617e-06,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 0.96875,
+     "70": 0.0,
+     "71": 1.0
+    }
+   },
+   "coal_6": {
+    "futures": 4,
+    "histories": 1,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.75,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 7.655889220359313e-07,
+     "rec_head": 1.4261837577578262e-07,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 0.75,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 0.0,
+     "71": 1.0
+    }
+   },
+   "iron_0": {
+    "futures": 156,
+    "histories": 39,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.10256410256410256,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.8974358974358975,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 0.5897435897435898,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 0.00010986271490692684,
+     "rec_head": 0.00014361400081571633,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 0.9487179487179487,
+     "69": 0.9871794871794872,
+     "70": 0.8205128205128205,
+     "71": 1.0
+    }
+   },
+   "iron_1": {
+    "futures": 64,
+    "histories": 16,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.015625,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.984375,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 0.703125,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 1.1960067261181095e-06,
+     "rec_head": 1.0600063437074536e-07,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 0.984375,
+     "70": 0.8125,
+     "71": 1.0
+    }
+   },
+   "iron_2": {
+    "futures": 40,
+    "histories": 10,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.025,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.975,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 0.65,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 3.4925593708601264e-06,
+     "rec_head": 1.576226750898968e-07,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 0.95,
+     "70": 0.9,
+     "71": 1.0
+    }
+   },
+   "iron_3": {
+    "futures": 16,
+    "histories": 4,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.125,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.875,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 0.875,
+     "rec_reader": 0.75,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 1.3499202167199797e-07,
+     "rec_head": 1.72705835854714e-07,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 1.0,
+     "71": 1.0
+    }
+   },
+   "iron_4": {
+    "futures": 4,
+    "histories": 1,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 1.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 1.7801331964051315e-07,
+     "rec_head": 3.059950017814117e-07,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 1.0,
+     "71": 1.0
+    }
+   },
+   "iron_5": {
+    "futures": 4,
+    "histories": 1,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 1.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 1.529306778991213e-07,
+     "rec_head": 4.3780906366919226e-07,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 1.0,
+     "71": 1.0
+    }
+   },
+   "stone_0": {
+    "futures": 12,
+    "histories": 3,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 8.26415429096746e-06,
+     "rec_head": 2.3857495007698995e-06,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 1.0,
+     "71": 1.0
+    }
+   },
+   "stone_1": {
+    "futures": 12,
+    "histories": 3,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 2.3682106868131807e-08,
+     "rec_head": 1.9013954558981066e-08,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 1.0,
+     "71": 1.0
+    }
+   },
+   "stone_2": {
+    "futures": 12,
+    "histories": 3,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.8333333333333334,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.16666666666666666,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 0.9166666666666666,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 8.898102315154274e-09,
+     "rec_head": 8.69236875071048e-09,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 1.0,
+     "71": 1.0
+    }
+   },
+   "stone_3": {
+    "futures": 12,
+    "histories": 3,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 1.5212125156760514e-07,
+     "rec_head": 1.763953919227864e-07,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 1.0,
+     "71": 1.0
+    }
+   },
+   "stone_4": {
+    "futures": 12,
+    "histories": 3,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.8333333333333334,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.08333333333333333,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 2.8505626200233297e-07,
+     "rec_head": 1.236364268741852e-07,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 0.6666666666666666,
+     "71": 1.0
+    }
+   },
+   "stone_5": {
+    "futures": 12,
+    "histories": 3,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.5833333333333334,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.4166666666666667,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 4.6220484861692057e-07,
+     "rec_head": 5.03977522233375e-07,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 0.9166666666666666,
+     "70": 1.0,
+     "71": 1.0
+    }
+   },
+   "stone_6": {
+    "futures": 12,
+    "histories": 3,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.5,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.4166666666666667,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 0.9166666666666666,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 1.0445649549032746e-08,
+     "rec_head": 5.94486409516426e-07,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 0.9166666666666666,
+     "70": 1.0,
+     "71": 1.0
+    }
+   },
+   "stone_7": {
+    "futures": 12,
+    "histories": 3,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.75,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.16666666666666666,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 0.8333333333333334,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 2.547483949714528e-08,
+     "rec_head": 2.699271680247269e-08,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 1.0,
+     "71": 1.0
+    }
+   },
+   "stone_8": {
+    "futures": 12,
+    "histories": 3,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.75,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.25,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 1.022422596363981e-06,
+     "rec_head": 3.3345444923800943e-07,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 0.9166666666666666,
+     "70": 0.6666666666666666,
+     "71": 1.0
+    }
+   },
+   "wood_0": {
+    "futures": 12,
+    "histories": 3,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.3333333333333333,
+     "true": 0.3333333333333333
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.3333333333333333,
+     "true": 0.3333333333333333
+    },
+    "count_next": {
+     "gen": 0.9166666666666666,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.08333333333333333,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.3333332339922587,
+     "true": 0.3333333333333333
+    },
+    "head_damage": {
+     "gen": 2.631966734482442e-06,
+     "rec_head": 0.32334785687009077,
+     "true": 0.3333333333333333
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 1.0,
+     "71": 1.0
+    }
+   },
+   "wood_1": {
+    "futures": 12,
+    "histories": 3,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 5.1270765336989634e-08,
+     "rec_head": 4.655893885245158e-08,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 0.6666666666666666,
+     "71": 1.0
+    }
+   },
+   "wood_2": {
+    "futures": 12,
+    "histories": 3,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.3333333333333333,
+     "true": 0.3333333333333333
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 2.5027234488531985e-07,
+     "rec_head": 0.3333208955257258,
+     "true": 0.3333333333333333
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 1.0,
+     "71": 1.0
+    }
+   },
+   "wood_3": {
+    "futures": 12,
+    "histories": 3,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 2.8501759508081648e-08,
+     "rec_head": 1.78946255591228e-08,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 1.0,
+     "71": 1.0
+    }
+   },
+   "wood_4": {
+    "futures": 12,
+    "histories": 3,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 1.7479115075695142e-07,
+     "rec_head": 9.52997917617419e-08,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 0.0,
+     "69": 1.0,
+     "70": 1.0,
+     "71": 1.0
+    }
+   },
+   "wood_5": {
+    "futures": 12,
+    "histories": 3,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 3.324720319053398e-07,
+     "rec_head": 3.4323192406778463e-07,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 0.0,
+     "69": 1.0,
+     "70": 0.3333333333333333,
+     "71": 1.0
+    }
+   },
+   "wood_6": {
+    "futures": 12,
+    "histories": 3,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.08333333333333333,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 0.9166666666666666,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 1.5742749385575885e-07,
+     "rec_head": 5.982017903249925e-08,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 0.08333333333333333,
+     "69": 1.0,
+     "70": 0.6666666666666666,
+     "71": 1.0
+    }
+   },
+   "wood_7": {
+    "futures": 4,
+    "histories": 1,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "count_next": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 1.0
+    },
+    "count_copy": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "cell_cleared": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 6.082618000391449e-07,
+     "rec_head": 7.507663895012229e-07,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 0.25,
+     "69": 1.0,
+     "70": 1.0,
+     "71": 1.0
+    }
+   }
+  },
+  "zombie": {
+   "asleep_cooling_lethal": {
+    "futures": 80,
+    "histories": 20,
+    "awake": {
+     "gen": 0.025,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "damage": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 7.872727316029713e-06,
+     "rec_head": 9.125874820131719e-08,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 0.975,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 0.85,
+     "71": 1.0
+    }
+   },
+   "asleep_cooling_safe": {
+    "futures": 28,
+    "histories": 7,
+    "awake": {
+     "gen": 0.17857142857142858,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "damage": {
+     "gen": 0.03571428571428571,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 0.03568172435295251,
+     "rec_head": 1.1715361736275298e-08,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 0.8571428571428571,
+     "71": 1.0
+    }
+   },
+   "asleep_ready_lethal": {
+    "futures": 80,
+    "histories": 20,
+    "awake": {
+     "gen": 0.4125,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.225,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "death": {
+     "gen": 0.2125,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "head_death": {
+     "gen": 0.21250086650252342,
+     "rec_head": 0.9999993205070495,
+     "true": 1.0
+    },
+    "head_damage": {
+     "gen": 0.1370345629331766,
+     "rec_head": 0.7472505999321584,
+     "true": 0.75
+    },
+    "readable_gen": {
+     "63": 0.9875,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 0.8,
+     "71": 1.0
+    }
+   },
+   "asleep_ready_safe": {
+    "futures": 72,
+    "histories": 18,
+    "awake": {
+     "gen": 0.5416666666666666,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.09722222222222222,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 3.178914388020833e-07,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 0.08318118111272721,
+     "rec_head": 0.7346602560072724,
+     "true": 0.7222222222222222
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 0.8888888888888888,
+     "71": 1.0
+    }
+   },
+   "awake_cooling_lethal": {
+    "futures": 80,
+    "histories": 20,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.1375,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.1375,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "head_death": {
+     "gen": 0.13750044256448746,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 0.1604348811841497,
+     "rec_head": 1.7513667992796744e-07,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 0.95,
+     "71": 1.0
+    }
+   },
+   "awake_cooling_safe": {
+    "futures": 80,
+    "histories": 20,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.1375,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 0.13621036934450553,
+     "rec_head": 0.005562672458350714,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 0.9,
+     "71": 1.0
+    }
+   },
+   "awake_ready_lethal": {
+    "futures": 80,
+    "histories": 20,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.2375,
+     "rec_reader": 0.45,
+     "true": 0.45
+    },
+    "death": {
+     "gen": 0.2375,
+     "rec_reader": 0.45,
+     "true": 0.45
+    },
+    "head_death": {
+     "gen": 0.23749987557530403,
+     "rec_head": 0.4499994844198227,
+     "true": 0.45
+    },
+    "head_damage": {
+     "gen": 0.2302931398349343,
+     "rec_head": 0.4484775894463847,
+     "true": 0.45
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 0.9,
+     "71": 1.0
+    }
+   },
+   "awake_ready_safe": {
+    "futures": 80,
+    "histories": 20,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0125,
+     "rec_reader": 0.2,
+     "true": 0.2
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 0.012390659693168014,
+     "rec_head": 0.1998503829132156,
+     "true": 0.2
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 0.9875,
+     "70": 0.7,
+     "71": 1.0
+    }
+   }
+  },
+  "hit": {
+   "cow_hit": {
+    "futures": 64,
+    "histories": 16,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0625,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "mob_gone": {
+     "gen": 0.609375,
+     "rec_reader": 0.5625,
+     "true": 0.5625
+    },
+    "food_up": {
+     "gen": 0.03125,
+     "rec_reader": 0.0625,
+     "true": 0.0625
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 0.06100811083307722,
+     "rec_head": 1.5847528677337408e-05,
+     "true": 0.0
+    },
+    "head_kill_unlock": {
+     "gen": 0.11174444394534207,
+     "rec_head": 0.002870429945191559,
+     "true": 0.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 1.0,
+     "71": 1.0
+    }
+   },
+   "cow_kill": {
+    "futures": 64,
+    "histories": 16,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.0625,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "mob_gone": {
+     "gen": 0.765625,
+     "rec_reader": 0.9375,
+     "true": 0.9375
+    },
+    "food_up": {
+     "gen": 0.15625,
+     "rec_reader": 0.8125,
+     "true": 0.8125
+    },
+    "head_death": {
+     "gen": 1.7024576663970947e-06,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 0.06838710217030389,
+     "rec_head": 2.865901184367914e-06,
+     "true": 0.0
+    },
+    "head_kill_unlock": {
+     "gen": 0.29964049912996416,
+     "rec_head": 0.55499167740345,
+     "true": 1.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 0.984375,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 0.875,
+     "71": 1.0
+    }
+   },
+   "zombie_hit": {
+    "futures": 80,
+    "histories": 20,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.075,
+     "rec_reader": 0.3,
+     "true": 0.3
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "mob_gone": {
+     "gen": 0.4625,
+     "rec_reader": 0.1,
+     "true": 0.1
+    },
+    "food_up": {
+     "gen": 0.0125,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "head_death": {
+     "gen": 0.0,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 0.0673453911712237,
+     "rec_head": 0.2982128415928855,
+     "true": 0.3
+    },
+    "head_kill_unlock": {
+     "gen": 0.14046148603464106,
+     "rec_head": 0.06097889031213361,
+     "true": 0.09090909090909091
+    },
+    "readable_gen": {
+     "63": 0.9875,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 0.85,
+     "69": 1.0,
+     "70": 0.95,
+     "71": 1.0
+    }
+   },
+   "zombie_kill": {
+    "futures": 80,
+    "histories": 20,
+    "awake": {
+     "gen": 1.0,
+     "rec_reader": 1.0,
+     "true": 1.0
+    },
+    "damage": {
+     "gen": 0.025,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "death": {
+     "gen": 0.0,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "mob_gone": {
+     "gen": 0.55,
+     "rec_reader": 0.95,
+     "true": 0.95
+    },
+    "food_up": {
+     "gen": 0.05,
+     "rec_reader": 0.0,
+     "true": 0.0
+    },
+    "head_death": {
+     "gen": 2.9802322387695312e-08,
+     "rec_head": 0.0,
+     "true": 0.0
+    },
+    "head_damage": {
+     "gen": 0.024077584122707284,
+     "rec_head": 1.4539568945970415e-05,
+     "true": 0.0
+    },
+    "head_kill_unlock": {
+     "gen": 0.34787341971363617,
+     "rec_head": 0.8064352634828538,
+     "true": 1.0
+    },
+    "readable_gen": {
+     "63": 1.0,
+     "64": 1.0,
+     "66": 1.0,
+     "68": 1.0,
+     "69": 1.0,
+     "70": 0.8,
+     "71": 1.0
+    }
+   }
+  }
+ }
+}
