@@ -1,0 +1,47 @@
+{
+  "parent": {
+    "due_not_due": [
+      0.06510416666666667,
+      0.06640625
+    ],
+    "contrast": -0.0013020833333333333,
+    "reader_holdout": 1.0
+  },
+  "endpoint": {
+    "due_not_due": [
+      0.09895833333333333,
+      0.09895833333333333
+    ],
+    "contrast": 0.0,
+    "reader_holdout": 1.0
+  },
+  "dense": {
+    "due_not_due": [
+      0.09895833333333333,
+      0.09895833333333333
+    ],
+    "contrast": 0.0,
+    "reader_holdout": 1.0
+  },
+  "dense_minus_endpoint": {
+    "contrast_change": 0.0,
+    "paired_episode_ci95": [
+      0.0,
+      0.0
+    ]
+  },
+  "dense_minus_parent": {
+    "contrast_change": 0.0013020833333333333,
+    "paired_episode_ci95": [
+      0.0,
+      0.00390625
+    ]
+  },
+  "endpoint_minus_parent": {
+    "contrast_change": 0.0013020833333333333,
+    "paired_episode_ci95": [
+      0.0,
+      0.00390625
+    ]
+  }
+}

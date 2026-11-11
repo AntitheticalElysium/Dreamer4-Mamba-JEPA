@@ -1,0 +1,22 @@
+{
+  "artifacts/experiments/20261111_dense_mse_short/pair.py": "e3b2ee3cf3d8a43e0e066cddcf268ee448ea6745805af82b2b1239d06b43cab8",
+  "artifacts/experiments/20261111_dense_mse_short/verify.py": "b1138de42814bf797c85b67de96c16f123b4217eb23937db1bff0d3f83eacb82",
+  "artifacts/experiments/20261111_dense_mse_short/readout.py": "9b8512b55b0c74c5eb88fe1905310c4957fdbeaccdbfa8bed17129a427f9a478",
+  "artifacts/experiments/20261111_dense_mse_short/train.py": "85ad26c13aecbe9ed4949edf8e8e5149b3cb838553b03cea5b47eac77cfcbb46",
+  "artifacts/experiments/20261111_dense_mse_short/loss.py": "936bb05e4a9ef07c02ed189dbe8d68a63f226f710f03a376a649a8ad1be67485",
+  "artifacts/experiments/20261111_dense_mse_short/CHECKS.json": "5310d2bc546386c0010be3fc327659efdee35b2ba5fcfcd98796a39955888cad",
+  "saccade/model.py": "9524c34b36597289aad6a1e86e7fceb9d7c5d1ffc1f51be9b5d613163305971c",
+  "saccade/train.py": "81194d632be88fa13258a155dc23ac2d4a47aee019de1299b59d8f94b7385354",
+  "saccade/data.py": "1177c951165cdbd5af10636ec52026f4e8638a022e31ae0ceab47744ad1e8b06",
+  "saccade/chooser.py": "eedaaaaad45c5cd0ef6d5f53be445ef7be46c4d52302f4e780557742a1a8ebde",
+  "saccade/eval/s1.py": "9f43a7a3e5135845848e2f5d27901b445c574d0a949bd7b2463a9dffc7031802",
+  "saccade/eval/gates.py": "a81d816b188ec4b56d4dc98a5cb3934ec21c142fde7ca229a8e833ee01a134c2",
+  "artifacts/eda/replay.py": "8b1260907be37a02041eda713c4891e179bcc0dacecf10326bff393b0a41639b",
+  "artifacts/experiments/20261111_two_arm_audit/paired_hunger.py": "37014740f13f0685b81cded6decfa303817f98ec9da7d99f56b4393e75adf897",
+  "artifacts/experiments/20261111_two_arm_audit/PHASE_hud.json": "45148d4314952a7b67b514f1b8f43aeec2491faa44890c0d6af9515c6941475d",
+  "artifacts/experiments/20261030_actor_interface/interface.py": "1a99730c8757befa4c76e54b045f934df67695913fbda001982064a34bee3bed",
+  "artifacts/experiments/20261108_full_frame_change/phase_bank.pt": "43767b51f6143ca4fb17ca05f3619d9ed6ac8f8444ceca086b0ba51a54e3466a",
+  "artifacts/experiments/20261109_p1_hud_change/run/ckpt_10.pt": "967d1a15979049fa332c3832cf05f3021b50b8f7067cf1413648775ffcc68cfa",
+  "artifacts/experiments/20261109_p1_hud_change/run/gaze.bin": "7da07a2cc4fdfd5d81471837054a978b94fe71e8927374b4816d2a16068facbd",
+  "artifacts/saccade_full_frame_change/targets/change_targets.npy": "cf67af328b419566f732e747439d63b38fca5a5fd68a72dbfb46f18418e80493"
+}
