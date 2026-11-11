@@ -1,0 +1,21 @@
+{
+  "at": "2026-11-08T13:04:30.484768+11:00",
+  "sha256": {
+    "saccade/model.py": "50c45359e43d6d7119f07312061bf64f4a8b9677464aaa9e086d8572204fc268",
+    "saccade/train.py": "3b523e43a6e806a475996a005f51aa5926567ea122035b5bbddc6bfd3fd05190",
+    "saccade/m0.yaml": "ec024277ff3f6cd44f97da31f203e1bc876e2410f15bdd2654d2bfadb1d4352a",
+    "saccade/design/STEP_SPEC.md": "9a428c232acb42bb064c3bfc23323beca51e6ac759df1542a0a59e89dee680b5",
+    "saccade/design/GENERATOR.md": "8e0a320cea7000631ead0968496b0915efc178a741ad4b9c93418e98fe028065",
+    "saccade/design/DECISIONS.md": "4b995ba056090250362ed7ae7c14538bef97aff7dce4fdde13a080c31fa3acea",
+    "artifacts/experiments/20261023_system_design/LEARNING_SKETCH.md": "7b0d81cb33cddba78f40a5af8bf8df68f38e2ef377141246703b0e669ae54462",
+    "artifacts/experiments/20261107_f4_followups/denoiser_teaching.py": "fdfefe3abb751079c7672bde36b447b0c91d2c2f43d52da96e3df94b4b12d55d",
+    "artifacts/experiments/20261107_f4_followups/readings/danger/denoiser_teaching_f4.json": "85c5a6cc4fe20a9b1f9a8236c34b9a4c1c74d113dc85499da16fd40b78af8879",
+    "artifacts/experiments/20261108_denoiser_teaching_continuation/summarise.py": "e962389311452d62c63513a6ecca866780a642066630de3c4dfdfea8518b31e7",
+    "artifacts/experiments/20261108_denoiser_teaching_continuation/visibility.py": "cf1459ddb9af81a654e10856b1b813090c542620679e704b17573be8459aed1d",
+    "artifacts/experiments/20261108_denoiser_teaching_continuation/HISTORY_EXCERPTS.json": "62f377eedfb1d501f2f78cb799e0dc517f25d89d6d5d6c5720c9d6961a36b93f",
+    "artifacts/experiments/20261108_denoiser_teaching_continuation/VISIBILITY.json": "2d54ac6ebce437e5cd748b8c174ffd11c20872a0d969514635433a55b335f7b5",
+    "artifacts/experiments/20261108_denoiser_teaching_continuation/ADVERSARIAL_CHECKS.json": "768fe26be067c2e79fa4d82fbbbeeeef9829dbc83be14ec2ebd02000eadd9039",
+    "artifacts/experiments/20261108_denoiser_teaching_continuation/SUMMARY.json": "52719d023b2ebce332b86198997ddeb9052274ad51481558016190369d1dfba0",
+    "artifacts/experiments/20261108_denoiser_teaching_continuation/PROJECTION_CHECK.json": "30460b17b4e005d87aa37fd3e5dd74cc31aa9de23541ce0bc5359f49459c60f0"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "state_gradient_cancellation_counterexample": {
+    "state_gradients": [
+      0.25,
+      -0.25
+    ],
+    "parameter_gradients": [
+      -0.5,
+      -0.5
+    ],
+    "state_consistency": 0.0,
+    "parameter_consistency": 1.0
+  },
+  "independent_correct_marginals_counterexample": {
+    "p_damage": 0.1,
+    "independently_draw_health_and_reward_mismatch_probability": 0.18000000000000002,
+    "claim": "Perfect marginal forecasts do not ensure a coherent joint draw."
+  },
+  "post_action_export_counterexample": {
+    "private_state": [
+      0,
+      1
+    ],
+    "actor_vector": [
+      0,
+      0
+    ],
+    "reward_rule": "r=1 iff action equals private state",
+    "post_action_export": "contains private state and action",
+    "predictive_head_can_be_perfect": true,
+    "best_actor_on_constant_vector_expected_reward": 0.5,
+    "state_aware_optimum": 1.0,
+    "claim": "A perfect before-outcome head on the post-action readout does not certify the actor-facing vector."
+  }
+}
