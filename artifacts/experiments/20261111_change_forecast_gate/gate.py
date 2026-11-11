@@ -169,7 +169,8 @@ def hunger_pairs(L, jax, jnp, roll):
             out.append({"e": i, "excluded": "termination"}); continue
         assert np.array_equal(f[0, 24:32], f[1, 24:32])
         assert food[0, 32] == food[0, 31] - 1 and food[1, 32] == food[1, 31]
-        out.append({"e": i, "prefix": rec["prefix_frames"], "branch": f, "q": 31, "controls": list(range(24, 31))})
+        out.append({"e": i, "prefix": rec["prefix_frames"], "branch": f, "q": 31, "controls": list(range(24, 31)),
+                    "reward": np.stack([x[2] for x in runs]), "term": d})
     return out
 
 
@@ -216,7 +217,8 @@ def zombie_pairs(L, jax, jnp, step, render, roll, want=32, tries=64, seed=202611
                 fields = recorded(L, i)
                 assert np.array_equal(f[0, 0], fields["observations"][t0].numpy())
                 out.append({"e": int(i), "t0": t0, "key": k, "health0": h0, "zombie": zi,
-                            "prefix": fields["observations"][:t0].numpy(), "branch": f, "q": 6, "controls": [3, 4, 5]})
+                            "prefix": fields["observations"][:t0].numpy(), "branch": f, "q": 6, "controls": [3, 4, 5],
+                            "reward": np.stack([x[2] for x in runs]), "term": d})
                 print("zombie pair", i, t0, k, flush=True)
                 break
     return out, scanned
