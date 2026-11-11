@@ -116,7 +116,7 @@ heads:
                   mean_loss: faithful}   # 10-31: mean by squared error in [-1, 1], scale by NLL on the detached mean and
                                          # detached lighting latent (Stirn et al. 2023; Seitzer et al. 2022; decoder
                                          # diagnosis 10-30: the NLL's per-position scale starved HUD cells)
-  change_map: {target: a9b_soft_detector, rows: map_only, hidden: 256, position_dim: 32, belief_dim: 128}   # A9b + working widths
+  change_map: {target: full_frame_a9b_v2, hidden: 256, position_dim: 32, belief_dim: 128}   # 11-08: all screen cells, no semantic masks
   outcome: {hidden: 256}                      # working; DV3 size12m-like heads
   reward: {density: categorical, space: symlog, bins: 256, support: [-0.9, 1.1], support_space: raw,
            sampled_value: train_bin_mean}     # LOSSES G3 (revised 10-27, overfit check: the discretised logistic
@@ -152,6 +152,7 @@ p1:                                           # CURRICULUM Budgets
   precision: bf16_autocast                    # RTX 3060; losses and the SSM state in fp32
   activation_checkpointing: true              # per denoiser block (6 GB card)
   out_dir: artifacts/saccade_m0
+  change_targets_dir: artifacts/saccade_full_frame_change/targets   # never overwrite historical map-only targets
   monitor: {windows: 2000, fixed_noise_seed: 0, fixed_fixation_seed: 0, objective: shortcut_flow_term}   # G1's flow term at
                                               # the k_max finest-grid signal levels, context at its level (P1-F4)
 

@@ -243,7 +243,7 @@ def test_gradient_routes_per_loss(cfg, split, monkeypatch):
     s = D.Streams(eps, 2, 8, seed=0, targets_offsets=D.frame_offsets(eps))
     s.next(8)
     chunk = s.next(16)
-    targets = np.random.default_rng(0).random((int(D.frame_offsets(eps)[-1]), 7, 9)).astype(np.float16)
+    targets = np.random.default_rng(0).random((int(D.frame_offsets(eps)[-1]), 9, 9, 2)).astype(np.float16)
     W = cfg["belief"]["width"]
 
     def grads(term, detach_memory=False):
@@ -331,8 +331,17 @@ def test_periodic_diagnostics_preserve_gradients_rng_and_mode(cfg, split, monkey
     assert not model.training and [len(m._forward_hooks) for m in modules] == hooks_before
 
 @gpu
-def test_resumed_run_equals_uninterrupted(cfg, tmp_path):
+def test_resumed_run_equals_uninterrupted(cfg, tmp_path, monkeypatch):
     c = copy.deepcopy(cfg)
+    split = D.load_split(c)
+    split = {**split, "train": split["train"][:20], "monitor": split["monitor"][:2]}
+    monkeypatch.setattr(D, "load_split", lambda cfg: split)
+    # Exercise the real new target constructor and metadata, without depending on a multi-million-frame side file.
+    import lightgbm as lgb
+    directory = tmp_path / "targets"
+    teacher = lgb.Booster(model_file=str(D.ROOT / "artifacts/saccade_m0/targets/change_teacher.txt"))
+    D.change_targets(split["train"], directory, teacher)
+    c["p1"]["change_targets_dir"] = str(directory)
     c["p1"]["frames"] = 4 * 256
     c["p1"]["monitor"]["windows"] = 4
     c["optimizer"]["warmup_frames"] = 256

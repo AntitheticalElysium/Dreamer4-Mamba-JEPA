@@ -1,0 +1,119 @@
+{
+  "episodes": 160,
+  "start_episode": 320,
+  "teacher": "artifacts/saccade_m0/targets/change_teacher.txt",
+  "hud": {
+    "health": {
+      "rows": 52332,
+      "events": 1949,
+      "methods": {
+        "score_identity": {
+          "ap": 0.9303288722289355,
+          "recall": 0.8691636736788096,
+          "fpr": 0.04239525236686978
+        },
+        "score_generic": {
+          "ap": 1.0,
+          "recall": 0.8696767573114418,
+          "fpr": 0.0
+        }
+      }
+    },
+    "food": {
+      "rows": 52332,
+      "events": 1853,
+      "methods": {
+        "score_identity": {
+          "ap": 1.0,
+          "recall": 1.0,
+          "fpr": 0.3886368588918164
+        },
+        "score_generic": {
+          "ap": 1.0,
+          "recall": 1.0,
+          "fpr": 0.0
+        }
+      }
+    },
+    "drink": {
+      "rows": 52332,
+      "events": 2697,
+      "methods": {
+        "score_identity": {
+          "ap": 1.0,
+          "recall": 1.0,
+          "fpr": 0.2277223733252745
+        },
+        "score_generic": {
+          "ap": 1.0,
+          "recall": 1.0,
+          "fpr": 0.0
+        }
+      }
+    },
+    "energy": {
+      "rows": 52332,
+      "events": 1914,
+      "methods": {
+        "score_identity": {
+          "ap": 1.0,
+          "recall": 1.0,
+          "fpr": 0.1845967709944861
+        },
+        "score_generic": {
+          "ap": 1.0,
+          "recall": 1.0,
+          "fpr": 0.0
+        }
+      }
+    }
+  },
+  "map": {
+    "day": {
+      "rows": 2061380,
+      "events": 42174,
+      "old_ap": 0.9375300273150159,
+      "new_ap": 0.8527070095597711,
+      "old_teacher_new_correspondence_ap": 0.8527070095597711,
+      "new_teacher_old_correspondence_ap": 0.9375300273150159,
+      "old_recall": 0.8914971309337506,
+      "new_recall": 0.8351353914734196,
+      "new_fpr": 0.004360129674733534
+    },
+    "night": {
+      "rows": 1023631,
+      "events": 27642,
+      "old_ap": 0.5523002847559053,
+      "new_ap": 0.4264553583475278,
+      "old_teacher_new_correspondence_ap": 0.4264553583475278,
+      "new_teacher_old_correspondence_ap": 0.5523002847559053,
+      "old_recall": 0.44823095289776427,
+      "new_recall": 0.39638955213081545,
+      "new_fpr": 0.011461973977624251
+    }
+  },
+  "raw_history": {
+    "windows": 51052,
+    "duplicate_histories": 3,
+    "conflicts": [
+      {
+        "e": 376,
+        "t": 658,
+        "other_e": 376,
+        "other_t": 654,
+        "event": [
+          0,
+          0,
+          -1,
+          0
+        ],
+        "other_event": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "git_commit": "795a1f2f64698a0c8685ba88fc425592e2d3d956",
+  "checkpoint_sha256": "1b70edcc432daf3fb337c37c67af8d709d3728e25d02ac94523f8a7322ba1379",
+  "source_sha256": {
+    "saccade/data.py": "1177c951165cdbd5af10636ec52026f4e8638a022e31ae0ceab47744ad1e8b06",
+    "saccade/model.py": "9524c34b36597289aad6a1e86e7fceb9d7c5d1ffc1f51be9b5d613163305971c",
+    "saccade/train.py": "81194d632be88fa13258a155dc23ac2d4a47aee019de1299b59d8f94b7385354",
+    "saccade/m0.yaml": "9aeb2de10fc7754ed1c9f73f67e8c7f2825f235f079a2818773572d4a8799d74",
+    "saccade/tests/test_change.py": "f114d5d9823a79a306bdea5037c2828401ffbf9d2e8f5ce63d74e355752eb568",
+    "saccade/tests/test_m0.py": "1be39e20e2a25383a8bbbf89bf25fc943f6c7b705fd86cc5cc7a0d67cb57e822",
+    "artifacts/experiments/20261108_full_frame_change/audit.py": "0eff0f71de1ca71eb5353546dffcc9040c8732181067a776ffa49e5a68ca6e4d",
+    "artifacts/experiments/20261108_full_frame_change/build_targets.py": "9c2f144af2339011421f757160faf21a671052533748d0a462c3346e9efb2e38",
+    "artifacts/experiments/20261108_full_frame_change/legacy_check.py": "b5bbe280b9ff75fd027bbc2fd294dd3803e789164b76c53015717df69aefa9d8",
+    "artifacts/experiments/20261108_full_frame_change/legacy_pair_features.py": "fea270587a68ee2bb5461a87c397d99c546eb001c6d80f9489f8e0928f18f285",
+    "artifacts/experiments/20261108_full_frame_change/motion.py": "80e68b4ca3123d2dba7c576a7ea08a3d1c34a640b9e842a805ea103bdf332eee",
+    "artifacts/experiments/20261108_full_frame_change/natural_pair.py": "00be5a671a10b4ce00fb00082622009199b185042bcff2a7a0389562c89a8a20",
+    "artifacts/experiments/20261108_full_frame_change/phase_pairs.py": "28afdadff1643307586a093ec7346301bd14875d61b073ab570446719a8bcc72",
+    "artifacts/experiments/20261108_full_frame_change/refit.py": "25d01ac9e88ba3fae6f6c82c35a110296b22ebfdd819a7ffb1439f3e5bb403a9",
+    "artifacts/experiments/20261108_full_frame_change/rejected_audit.py": "b180d49d92385d8710f5f1a57eeb4c5629eb7334bb6ad529b0561c2fdc918fc9",
+    "artifacts/experiments/20261108_full_frame_change/rejected_single.py": "786b3168d74b0fa694853fd526376c66e334efeef2be86a0ee658907109a8256",
+    "artifacts/experiments/20261108_full_frame_change/store_coverage.py": "a0e9a58d32cc35dd55b87f9d2f8e382a6b53085fd5a934aa2c4f8281746440fc"
+  },
+  "historical_model_source_sha256": "50c45359e43d6d7119f07312061bf64f4a8b9677464aaa9e086d8572204fc268",
+  "notes": "Constructed phase generation used historical canonical model before auxiliary correction. Natural generation used the same trained weights loaded into the enlarged auxiliary; bitwise generation compatibility verified.",
+  "new_targets_sha256": "cf67af328b419566f732e747439d63b38fca5a5fd68a72dbfb46f18418e80493",
+  "new_target_metadata_sha256": "6b6985c8e1d7a99c54ec0bfadb1fc37a3992aa2099da5d543cc4dae1dce63dd0",
+  "pair_detector_sha256": "69862f6b98e3ba770395d07bdb516c2cc0e326917c0f848c4a8aedadd109406f",
+  "store_coverage_sha256": "1c29f4ec7d5755a02f17c1d3f8a937e100d5f31ac0f5cf1d26d550d99b0b99f6"
+}

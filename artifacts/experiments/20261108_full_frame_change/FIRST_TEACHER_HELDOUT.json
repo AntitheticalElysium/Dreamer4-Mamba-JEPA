@@ -1,0 +1,96 @@
+{
+  "episodes": 160,
+  "start_episode": 160,
+  "teacher": "artifacts/experiments/20261108_full_frame_change/candidate_teacher.txt",
+  "hud": {
+    "health": {
+      "rows": 42937,
+      "events": 1635,
+      "methods": {
+        "score_identity": {
+          "ap": 0.9301742188958138,
+          "recall": 0.8709480122324159,
+          "fpr": 0.044574112633770764
+        },
+        "score_generic": {
+          "ap": 1.0,
+          "recall": 1.0,
+          "fpr": 0.0
+        }
+      }
+    },
+    "food": {
+      "rows": 42937,
+      "events": 1534,
+      "methods": {
+        "score_identity": {
+          "ap": 1.0,
+          "recall": 1.0,
+          "fpr": 0.3529937444146559
+        },
+        "score_generic": {
+          "ap": 1.0,
+          "recall": 1.0,
+          "fpr": 0.0
+        }
+      }
+    },
+    "drink": {
+      "rows": 42937,
+      "events": 2118,
+      "methods": {
+        "score_identity": {
+          "ap": 1.0,
+          "recall": 1.0,
+          "fpr": 0.21825620421862368
+        },
+        "score_generic": {
+          "ap": 1.0,
+          "recall": 1.0,
+          "fpr": 0.0
+        }
+      }
+    },
+    "energy": {
+      "rows": 42937,
+      "events": 1535,
+      "methods": {
+        "score_identity": {
+          "ap": 1.0,
+          "recall": 1.0,
+          "fpr": 0.17117530554079513
+        },
+        "score_generic": {
+          "ap": 0.9993718241383729,
+          "recall": 0.9993485342019544,
+          "fpr": 0.0
+        }
+      }
+    }
+  },
+  "map": {
+    "day": {
+      "rows": 1701839,
+      "events": 29328,
+      "old_ap": 0.9374991716133547,
+      "new_ap": 0.2535715598120353,
+      "old_recall": 0.9015616475722859,
+      "new_recall": 0.9483087834151664,
+      "new_fpr": 0.6661552599654053
+    },
+    "night": {
+      "rows": 820089,
+      "events": 21619,
+      "old_ap": 0.557842161639828,
+      "new_ap": 0.20798992876562977,
+      "old_recall": 0.4661640223877145,
+      "new_recall": 0.716730653591748,
+      "new_fpr": 0.37406039049682516
+    }
+  },
+  "raw_history": {
+    "windows": 41657,
+    "duplicate_histories": 0,
+    "conflicts": []
+  }
+}

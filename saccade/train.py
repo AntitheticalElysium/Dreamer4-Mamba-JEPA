@@ -34,7 +34,7 @@ def run_provenance(cfg) -> dict:
     return {"git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
             "source_sha256": {p: file_sha256(ROOT / p) for p in sources},
             "manifest_sha256": file_sha256(ROOT / cfg["data"]["corpus"] / "manifest.json"),
-            "targets_sha256": file_sha256(ROOT / cfg["p1"]["out_dir"] / "targets/change_targets.npy"),
+            "targets_sha256": file_sha256(D.targets_dir(cfg) / "change_targets.npy"),
             "torch": str(torch.__version__)}
 
 
@@ -146,7 +146,7 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=No
         noise = M.pixel_nll(mt.detach(), st, pix).mean() + M.pixel_nll(mr.detach(), sr, pix).mean()
         logit = model.change(torch.cat([Pp.p, Pc.p], 1)[:, P - 1:L - 1], Pc.p, bp)
         idx = chunk["target"][:, P:]
-        tgt = np.full((*idx.shape, 7, D.GRID), np.nan, np.float32)
+        tgt = np.full((*idx.shape, D.GRID, D.GRID, len(D.CHANGE_MODES)), np.nan, np.float32)
         tgt[idx >= 0] = targets[idx[idx >= 0]] if targets is not None else np.nan
         tgt = torch.as_tensor(tgt, device=dev)
         ok = torch.isfinite(tgt)
@@ -259,10 +259,9 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
     torch.manual_seed(world_seed)
     split = D.load_split(cfg)
     eps = split["train"][:n_episodes] if n_episodes else split["train"]
-    targets = np.load(ROOT / cfg["p1"]["out_dir"] / "targets/change_targets.npy", mmap_mode="r")
+    targets = np.load(D.targets_dir(cfg) / "change_targets.npy", mmap_mode="r")
     offsets = D.frame_offsets(split["train"])
-    if targets.shape != (int(offsets[-1]), 7, D.GRID):
-        raise ValueError("Change targets do not match the configured training split")
+    D.validate_change_targets(targets, split["train"], D.targets_dir(cfg))
     provenance = run_provenance(cfg)
     d, P = cfg["data"], cfg["data"]["context_prefix"]
     assert max(d["accumulate_at_64"], d["accumulate_at_256"]) <= d["streams"], "a microbatch without streams"

@@ -9,7 +9,8 @@ The first build, M0, is defined in STEP_SPEC §7; entries below marked [supersed
 
 ## Canonical recipe (2026-11-07): P1-F4
 User 11-07: "make this canonical" after P1-F4's results (`artifacts/experiments/20261106_p1f4/RESULTS.md`, follow-ups in
-`20261107_f4_followups/RESULTS.md`). `saccade/` now holds exactly P1-F4's system: shortcut forcing (Dreamer 4) with dense
+`20261107_f4_followups/RESULTS.md`). `saccade/` was canonicalized to exactly P1-F4's system on 11-07 (the 11-08
+full-frame grounding correction below supersedes its auxiliary head/targets for future training): shortcut forcing (Dreamer 4) with dense
 long-context attention, decision 1's factorised denoiser and cascade, F1.6's joint spatial fusion, the faithful pixel
 decoder, and the learned fixation controller (`saccade/chooser.py`, F2's head and policy moved from the experiment
 folders, its hyperparameters in `m0.yaml`). Removed, with no switch left behind: EDM (preconditioning, loss, sampler, the
@@ -18,6 +19,28 @@ uniform training gaze. Verified: the canonical trainer reproduces F4's logged fi
 trace bitwise; F4's checkpoint gives bitwise identical monitor and S1 one-step samples under the old and new code. The
 earlier recipes and the experiment scripts written against them run from commit fa6edd1a (they import the removed
 functions). The `edm` config section keeps its name so F4's checkpoints' configurations read unchanged.
+
+## 2026-11-08 — World-belief role and region-general change supervision
+User clarification: retain the denoiser's recent cache. The immediate criterion for Mamba is history-dependent
+information useful to world prediction; actor-input sufficiency is a separate P3 question. The native denoiser
+cache also contains past Mamba memory tokens, so it is not a memory-free recent-vision control.
+
+The user rejects semantic HUD/player exclusions in change supervision and explicitly requests correction.
+Implemented 11-08: one shared change head outputs two comparisons at EVERY 9x9 screen cell, same-position and
+dominant-translation. Translation is inferred using soft temporal-variability support at source and destination;
+no semantic region chooses a mode. Both modes supervise every geometrically available source; identity covers
+the entire screen. Exact matching patches have target zero, correcting the old detector's static-content bias.
+Local winner selection and two synthetic-detector refits were rejected after map regressions. Historical F4's
+weights remain evaluable without changing its generated samples; new training requires a separate versioned
+9x9x2 target store and cannot resume the historical recipe. This corrects grounding, not a demonstrated timer repair.
+The two-mode target is a changed G2 definition; a causal mask-only comparison would apply the historical mask
+to these SAME new targets/architecture in a separate experimental control, not compare packages and call it a mask
+effect. No new full training is launched. Protocol, failed candidates and tests:
+`artifacts/experiments/20261108_full_frame_change/`.
+
+Acquired current vision plus belief is a P3 actor-input candidate, not an adopted implementation change or raw
+full-resolution bypass of the fovea. Evidence, source checks and discussion:
+`artifacts/experiments/20261108_denoiser_teaching_continuation/FOLLOWUP.md`.
 
 ## Active experiment ownership (2026-11-02)
 At the user's request, Codex owns the P1-F1.5 readiness and emergent-fovea experiment segment. The living evidence

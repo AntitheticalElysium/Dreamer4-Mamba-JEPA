@@ -133,6 +133,11 @@ tokens with EDM x-prediction. JEDI adds tanh clamping, a slower encoder and own-
   beyond Mamba's effective memory; identity through long absences.
 
 ## 8. Build order (bounded learned-loop test)
+11-08 grounding correction: the change auxiliary covers the WHOLE 9x9 observation, with two region-general
+comparison outputs (same-position and dominant-translation), no HUD/player exclusions. Existing F4 weights are a
+historical baseline; the corrected objective has not been trained or shown to improve timers. Targets are
+versioned 9x9x2 arrays in a separate directory; historical 7x9 arrays are rejected. See LOSSES and DECISIONS.
+
 M0 one-step -> M0 rollouts -> M0 actor; then I1 / I2 only on a measured trigger (TEST_SPEC.md). Disabling a structure
 in a trained model measures RELIANCE on it; claiming its BENEFIT needs a matched training comparison (Codex).
 

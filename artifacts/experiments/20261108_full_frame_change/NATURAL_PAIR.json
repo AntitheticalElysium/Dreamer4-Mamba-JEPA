@@ -1,0 +1,49 @@
+{
+  "reader_holdout_accuracy": 1.0,
+  "recent_full_frames_actions_outcomes_exact": true,
+  "recent_percepts_exact": true,
+  "K": 128,
+  "cases": [
+    {
+      "e": 376,
+      "t": 658,
+      "current": 5,
+      "true_next": 4,
+      "generated_drop": 0.015625,
+      "generated_digits": [
+        0,
+        0,
+        0,
+        0,
+        2,
+        126,
+        0,
+        0,
+        0,
+        0
+      ],
+      "mean_reader_confidence": 0.9998875856399536
+    },
+    {
+      "e": 376,
+      "t": 654,
+      "current": 5,
+      "true_next": 5,
+      "generated_drop": 0.015625,
+      "generated_digits": [
+        0,
+        0,
+        0,
+        0,
+        2,
+        126,
+        0,
+        0,
+        0,
+        0
+      ],
+      "mean_reader_confidence": 0.9999482035636902
+    }
+  ],
+  "contrast": 0.0
+}

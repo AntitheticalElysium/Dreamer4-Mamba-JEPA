@@ -1,0 +1,5 @@
+*
+!.gitignore
+!targets/
+targets/*
+!targets/change_targets.json

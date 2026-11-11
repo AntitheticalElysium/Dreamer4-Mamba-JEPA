@@ -1,0 +1,56 @@
+{
+  "episodes": 7672,
+  "transitions": 2432119,
+  "target_shape": [
+    2439791,
+    9,
+    9,
+    2
+  ],
+  "body_cues": {
+    "health": {
+      "transitions": 2432119,
+      "changes": 88655,
+      "changes_with_nonzero_target": 88655,
+      "changes_above_half": 77613,
+      "unchanged_with_nonzero_target": 0
+    },
+    "food": {
+      "transitions": 2432119,
+      "changes": 86693,
+      "changes_with_nonzero_target": 86693,
+      "changes_above_half": 86693,
+      "unchanged_with_nonzero_target": 0
+    },
+    "drink": {
+      "transitions": 2432119,
+      "changes": 125155,
+      "changes_with_nonzero_target": 125155,
+      "changes_above_half": 125155,
+      "unchanged_with_nonzero_target": 0
+    },
+    "energy": {
+      "transitions": 2432119,
+      "changes": 88631,
+      "changes_with_nonzero_target": 88631,
+      "changes_above_half": 88631,
+      "unchanged_with_nonzero_target": 0
+    }
+  },
+  "modes": {
+    "same_position": {
+      "finite": 197001639,
+      "above_half": 7472689,
+      "sum": 8013877.120290279,
+      "positive_fraction_above_half": 0.03793211588457901,
+      "mean_soft_target": 0.04067924084778949
+    },
+    "dominant_translation": {
+      "finite": 189328554,
+      "above_half": 15367181,
+      "sum": 15374966.906805217,
+      "positive_fraction_above_half": 0.08116673726880098,
+      "mean_soft_target": 0.08120786105409762
+    }
+  }
+}

@@ -1,0 +1,4 @@
+*.pt
+*.npz
+*.log
+*teacher.txt

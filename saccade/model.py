@@ -702,23 +702,37 @@ class TSP(nn.Module):
 
 
 class ChangeMap(nn.Module):
-    """Soft change probability per map cell of frame t from the periphery of t, the 3 x 3 neighbourhood of each cell
-    in t - 1 (the camera moves at most one cell) and the predicted belief (LOSSES G2, A9b target)."""
+    """Two comparison probabilities at EVERY screen cell: identity and dominant translation.
+    Both percepts and predicted belief are inputs. The previous 3x3 neighbourhood accommodates correspondence;
+    no semantic region is excluded and no fixed region chooses a comparison mode."""
 
     def __init__(self, cfg):
         super().__init__()
         h, dp = cfg["heads"]["change_map"], cfg["perception"]["periphery"]["token_dim"]
-        self.cell = nn.Embedding(7 * GRID, h["position_dim"])
+        self.cell = nn.Embedding(N, h["position_dim"])
         self.belief = nn.Linear(cfg["belief"]["width"], h["belief_dim"])
-        self.net = mlp([10 * dp + h["position_dim"] + h["belief_dim"], h["hidden"], h["hidden"], 1])
+        self.net = mlp([10 * dp + h["position_dim"] + h["belief_dim"], h["hidden"], h["hidden"], 2])
 
     def forward(self, p_prev, p, belief):
         lead = p.shape[:-2]
         grid = p_prev.reshape(-1, GRID, GRID, p.shape[-1]).permute(0, 3, 1, 2)
-        nb = F.unfold(grid, 3, padding=1).reshape(-1, p.shape[-1] * 9, GRID, GRID)[:, :, :7].flatten(2).transpose(1, 2)
-        x = torch.cat([p.reshape(-1, N, p.shape[-1])[:, : 7 * GRID], nb, self.cell.weight.expand(len(nb), -1, -1),
-                       self.belief(belief).reshape(-1, 1, self.belief.out_features).expand(-1, 7 * GRID, -1)], -1)
-        return self.net(x).reshape(*lead, 7, GRID)
+        nb = F.unfold(grid, 3, padding=1).flatten(2).transpose(1, 2)
+        x = torch.cat([p.reshape(-1, N, p.shape[-1]), nb, self.cell.weight.expand(len(nb), -1, -1),
+                       self.belief(belief).reshape(-1, 1, self.belief.out_features).expand(-1, N, -1)], -1)
+        return self.net(x).reshape(*lead, GRID, GRID, 2)
+
+    def _load_from_state_dict(self, state_dict, prefix, *args, **kwargs):
+        # Historical checkpoints remain readable for generation. Only this auxiliary's absent position rows are
+        # initialized; existing weights are preserved. Old target arrays are separately rejected by training.
+        key = prefix + "cell.weight"
+        if key in state_dict and state_dict[key].shape == (7 * GRID, self.cell.embedding_dim):
+            old = state_dict[key]
+            state_dict[key] = torch.cat([old, old.new_zeros(N - len(old), old.shape[1])])
+        for name in ("net.4.weight", "net.4.bias"):
+            key = prefix + name
+            if key in state_dict and state_dict[key].shape[0] == 1:
+                state_dict[key] = state_dict[key].repeat_interleave(2, dim=0)
+        super()._load_from_state_dict(state_dict, prefix, *args, **kwargs)
 
 
 class Outcome(nn.Module):

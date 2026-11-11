@@ -1,0 +1,25 @@
+{
+  "digit_step_norm": 3.2038755416870117,
+  "cases": [
+    {
+      "mean_step_projection": 0.01544551458209753,
+      "median_distance_to_5_in_digit_steps": 0.03149649500846863,
+      "distance_quantiles": [
+        0.02838195487856865,
+        0.03151390701532364,
+        0.0377836711704731
+      ],
+      "closer_to_4_than_5": 0.015625
+    },
+    {
+      "mean_step_projection": 0.015065905638039112,
+      "median_distance_to_5_in_digit_steps": 0.0315430574119091,
+      "distance_quantiles": [
+        0.028444066643714905,
+        0.03156308829784393,
+        0.0374225489795208
+      ],
+      "closer_to_4_than_5": 0.015625
+    }
+  ]
+}

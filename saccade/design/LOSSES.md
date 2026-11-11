@@ -64,7 +64,7 @@ separate (no gradient into the world).
 | group | term | form | unit, normalisation | weight |
 |---|---|---|---|---|
 | G1 next step | next percept (generator v3) | denoising loss on the next percept (lighting latent, periphery, glimpse jointly), EDM noise levels, x-prediction, conditioned on the predicted belief. Weighting (pinned 10-27, Codex): EDM's lambda(sigma) = 1 / c_out^2, i.e. MSE on the raw network output against (x0 - c_skip x_sigma) / c_out (DIAMOND's code; JEDI's Algorithm 1 writes the clean-space form without a weight), equivalent to clean-space MSE weighted by 1 + 1/sigma^2 at sigma_data = 1 (Codex: equal to 4.6e-13); no noise offset (DIAMOND's 0.3 offsets image brightness; our lighting has its own token); diffusion forcing gives each frame its own sigma | squared distance; mean over ALL elements of a frame's percept (81 x 16 periphery + 9 x 64 glimpse + 8 lighting = 1,880; each scalar equal), then over frames | harmonised |
-| G2 grounding | change map | BCE against the soft label-free target (A9b) | nats per cell; mean over cells | harmonised |
+| G2 grounding | full-frame change comparisons (11-08 correction) | BCE against soft observation-derived pair targets (A9b detector), at every screen cell for BOTH same-position and dominant-translation comparisons; exact identical patches target zero, geometric source validity only, no HUD/player masks | nats; mean over valid cell/comparison pairs | harmonised |
 | G2 grounding | TSP | discretised logistic NLL; mean from (belief, periphery, v), scale from (v, position) | nats per pixel; mean over the glimpse | harmonised |
 | G3 consequences | reward (observation model) | cross-entropy of a CATEGORICAL over 256 bins uniform in symlog(r) (revised 10-27 at the build's overfit check: the discretised mixture of logistics first chosen here has tail gradients of order 1 / scale; as its components sharpened the reward gradient reached norms of 300-800, the common clip factor became about 0.001 and TSP / reconstruction stalled; removing the reward term restored them. This is evidence of gradient domination, not a measured 1,000-fold reduction in Adam parameter updates (moment normalisation can cancel constant scaling). A categorical is still proper, samplable and exact for deterministic rewards, with bounded gradients with respect to logits; DIAMOND, JEDI and IRIS predict reward categorically. Support: the train split's raw reward range [-0.9, 1.1]; rewards outside fall in the edge bins; the same bins score the S1 calibration references, saccade/eval/calib.py). Sampled VALUE (pinned 10-27, Codex: the zero-reward bin's centre decodes to -0.0013): a sampled bin decodes to the mean of the train-split rewards falling in it (the MSE-optimal representative of a quantiser cell, Lloyd 1982; the symexp of the bin centre if none), so deterministic rewards are reproduced exactly (0 -> 0, 1 -> 1) | nats; mean over steps | harmonised |
 | G3 consequences | continuation | BCE, conditioned on (predicted belief, percept, reward) | nats; mean over steps | harmonised |
@@ -83,9 +83,15 @@ required correction; no particular estimator, extra loss weight or new training 
 selected. Details and data-admission constraints are in P2_READINESS.md and CURRICULUM.md.
 
 ## Facts used
-Change-map positives 1.7% (day) / 2.9% (night) of cells (A9b); reward non-zero on 6.7% of steps, termination 0.3%
+Historical map-only change positives were 1.7% (day) / 2.9% (night) of cells (A9b); those frequencies do not describe
+the 11-08 full-frame two-comparison target. Reward non-zero on 6.7% of steps, termination 0.3%
 (corpus); exogenous windows from A8. (Free bits left with generator v2; they were never an entropy budget, and the
 1.37-bit figure is movement-only and conditioned on full simulator state, Codex.)
 
 ## Open
+The full-frame change head observes both actual percepts: it grounds visible cues, but does not require anticipation
+of hidden timer phase. HUD clocks are hidden; visible body-value changes are their reset cues. Do not claim that
+removing the exclusion has repaired timer memory without native future-prediction evidence after matched learning.
+Qualification and the real/constructed exact-history timer tests: `20261108_full_frame_change/` in experiments.
+
 Sigma initialisation; schedule lengths; per-route gradient-norm alarms; how to protect rare entities inside the next-percept group.
