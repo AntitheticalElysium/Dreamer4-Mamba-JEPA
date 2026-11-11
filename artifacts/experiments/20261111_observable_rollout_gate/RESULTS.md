@@ -44,19 +44,23 @@ Prescribed brightness step on a copied, otherwise identical future (same physica
 | +3 | .00015008 | .00323045 |
 | +6 | .00014905 | .00322694 |
 
-Mean guard passes. **Paired robustness does not**: same scene (episode9) fails for each brightness amplitude.
-For +3, nuisance is12.09x that scene's hunger cost. 99.86% of its unnormalised change-entropy gap comes from
-the dominant-translation plane. Geometry validity differs in27 cell/time/plane entries (consistent with three
-translations of a nine-cell edge). No physical movement was introduced. This localizes the problem to the
-translation target path, not to the time schedule or reward bins. No claim that exposure is always irrelevant
-or that the foil occurs with this frequency in normal training.
+Mean guard passes. Paired robustness does not in this computation: the same scene (episode 9) fails for each
+amplitude; for +3 the nuisance is 12.09x that scene's hunger cost, 99.86% of it in the dominant-translation plane,
+with geometry validity differing in 27 entries. The cause is how this gate computes the targets, not the foil:
+`target` derives the temporal-variability support from the 17-frame branch window, whereas the canonical store
+derives it from the whole episode. With so little variation in the window, the PLAIN member picks a wrong camera
+shift at 3 of 16 transitions although the player never moves; the foil makes every cell vary and restores the
+correct shift in the foil member only. With episode-level support every shift is correct and the foil costs
+.0022 / .0004 / .0003 (+1 / +3 / +6) against .0084 for hunger at the informative step
+(`../20261111_change_forecast_gate/RESULTS.md`, Stage 0). The dense-time and reward-bin conclusions are unaffected.
 
 ## Decision
 
 Do not launch the proposed auxiliary as-is. The temporal target and ordinary outcomes give real, label-free
-incentives, but "all intermediate steps" is not a strength multiplier, and the inherited correspondence
-teacher can give much more pressure to an appearance artifact than to hidden dynamics. Qualify a more stable
-change target on this exact foil and real motion before making it a forecasting teacher. Preserve the existing
+incentives, but "all intermediate steps" is not a strength multiplier. The one-step forecast was then gated
+with episode-level support, a zombie-readiness case and natural noise floors in
+`../20261111_change_forecast_gate/` (fails narrowly: pricing 2.7-2.8x G1 at pure noise against a 3x bar, and
+a +1/255 step out-prices 2 of 32 zombie consequences). Preserve the existing
 G2 supervision; it was validated for a different role. Keep short queries in a horizon curriculum. No evidence
 here that a shortcut head, larger weight, or broad time average alone solves memory.
 
