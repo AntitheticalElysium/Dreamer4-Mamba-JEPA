@@ -1,0 +1,489 @@
+{
+  "target_teacher_sha256": "69862f6b98e3ba770395d07bdb516c2cc0e326917c0f848c4a8aedadd109406f",
+  "bank_sha256": "43767b51f6143ca4fb17ca05f3619d9ed6ac8f8444ceca086b0ba51a54e3466a",
+  "reward_alias": {
+    "1": {
+      "change": 0.0,
+      "reward": 0.6931471805599453,
+      "termination": 0.0,
+      "aux": 0.23104906018664842,
+      "largest_cell_time_gap": 0.0,
+      "steps_with_change_gap": [],
+      "change_gap_by_step": [
+        0.0
+      ],
+      "gap_sum_by_plane": [
+        0.0,
+        0.0
+      ],
+      "geometric_mask_disagreement": 0
+    },
+    "4": {
+      "change": 0.0,
+      "reward": 0.17328679513998632,
+      "termination": 0.0,
+      "aux": 0.057762265046662105,
+      "largest_cell_time_gap": 0.0,
+      "steps_with_change_gap": [],
+      "change_gap_by_step": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "gap_sum_by_plane": [
+        0.0,
+        0.0
+      ],
+      "geometric_mask_disagreement": 0
+    }
+  },
+  "rows": [
+    {
+      "e": 9,
+      "early": {
+        "1": {
+          "dense": {
+            "change": 0.0,
+            "reward": 0.0,
+            "termination": 0.0,
+            "aux": 0.0,
+            "largest_cell_time_gap": 0.0,
+            "steps_with_change_gap": [],
+            "change_gap_by_step": [
+              0.0
+            ],
+            "gap_sum_by_plane": [
+              0.0,
+              0.0
+            ],
+            "geometric_mask_disagreement": 0
+          },
+          "endpoint": {
+            "change": 0.0,
+            "reward": 0.0,
+            "termination": 0.0,
+            "aux": 0.0,
+            "largest_cell_time_gap": 0.0,
+            "steps_with_change_gap": [],
+            "change_gap_by_step": [
+              0.0
+            ],
+            "gap_sum_by_plane": [
+              0.0,
+              0.0
+            ],
+            "geometric_mask_disagreement": 0
+          }
+        },
+        "2": {
+          "dense": {
+            "change": 0.0,
+            "reward": 0.0,
+            "termination": 0.0,
+            "aux": 0.0,
+            "largest_cell_time_gap": 0.0,
+            "steps_with_change_gap": [],
+            "change_gap_by_step": [
+              0.0,
+              0.0
+            ],
+            "gap_sum_by_plane": [
+              0.0,
+              0.0
+            ],
+            "geometric_mask_disagreement": 0
+          },
+          "endpoint": {
+            "change": 0.0,
+            "reward": 0.0,
+            "termination": 0.0,
+            "aux": 0.0,
+            "largest_cell_time_gap": 0.0,
+            "steps_with_change_gap": [],
+            "change_gap_by_step": [
+              0.0
+            ],
+            "gap_sum_by_plane": [
+              0.0,
+              0.0
+            ],
+            "geometric_mask_disagreement": 0
+          }
+        },
+        "4": {
+          "dense": {
+            "change": 0.0,
+            "reward": 0.0,
+            "termination": 0.0,
+            "aux": 0.0,
+            "largest_cell_time_gap": 0.0,
+            "steps_with_change_gap": [],
+            "change_gap_by_step": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "gap_sum_by_plane": [
+              0.0,
+              0.0
+            ],
+            "geometric_mask_disagreement": 0
+          },
+          "endpoint": {
+            "change": 0.0,
+            "reward": 0.0,
+            "termination": 0.0,
+            "aux": 0.0,
+            "largest_cell_time_gap": 0.0,
+            "steps_with_change_gap": [],
+            "change_gap_by_step": [
+              0.0
+            ],
+            "gap_sum_by_plane": [
+              0.0,
+              0.0
+            ],
+            "geometric_mask_disagreement": 0
+          }
+        },
+        "8": {
+          "dense": {
+            "change": 0.0005344493160061814,
+            "reward": 0.0,
+            "termination": 0.0,
+            "aux": 0.00017814977200206045,
+            "largest_cell_time_gap": 0.6812724064470782,
+            "steps_with_change_gap": [
+              8
+            ],
+            "change_gap_by_step": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.6878362696999555
+            ],
+            "gap_sum_by_plane": [
+              0.6812724064470782,
+              0.006563863252877278
+            ],
+            "geometric_mask_disagreement": 0
+          },
+          "endpoint": {
+            "change": 0.004495661893463761,
+            "reward": 0.0,
+            "termination": 0.0,
+            "aux": 0.0014985539644879204,
+            "largest_cell_time_gap": 0.6812724064470782,
+            "steps_with_change_gap": [
+              1
+            ],
+            "change_gap_by_step": [
+              0.6878362696999555
+            ],
+            "gap_sum_by_plane": [
+              0.6812724064470782,
+              0.006563863252877278
+            ],
+            "geometric_mask_disagreement": 0
+          }
+        },
+        "16": {
+          "dense": {
+            "change": 0.0008013559444962575,
+            "reward": 0.0,
+            "termination": 0.0,
+            "aux": 0.0002671186481654192,
+            "largest_cell_time_gap": 0.6812724064470782,
+            "steps_with_change_gap": [
+              8,
+              9,
+              11,
+              16
+            ],
+            "change_gap_by_step": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.6878362696999555,
+              0.0025484575193943128,
+              0.0,
+              0.0025484575193943128,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.3625448128941564
+            ],
+            "gap_sum_by_plane": [
+              1.3625448128941564,
+              0.6929331847387441
+            ],
+            "geometric_mask_disagreement": 0
+          },
+          "endpoint": {
+            "change": 0.008410770449963929,
+            "reward": 0.0,
+            "termination": 0.0,
+            "aux": 0.0028035901499879764,
+            "largest_cell_time_gap": 0.6812724064470782,
+            "steps_with_change_gap": [
+              1
+            ],
+            "change_gap_by_step": [
+              1.3625448128941564
+            ],
+            "gap_sum_by_plane": [
+              0.6812724064470782,
+              0.6812724064470782
+            ],
+            "geometric_mask_disagreement": 0
+          }
+        }
+      },
+      "late": {
+        "1": {
+          "change": 0.004495661893463761,
+          "reward": 0.0,
+          "termination": 0.0,
+          "aux": 0.0014985539644879204,
+          "largest_cell_time_gap": 0.6812724064470782,
+          "steps_with_change_gap": [
+            1
+          ],
+          "change_gap_by_step": [
+            0.6878362696999555
+          ],
+          "gap_sum_by_plane": [
+            0.6812724064470782,
+            0.006563863252877278
+          ],
+          "geometric_mask_disagreement": 0
+        },
+        "2": {
+          "change": 0.002256159239278921,
+          "reward": 0.0,
+          "termination": 0.0,
+          "aux": 0.0007520530797596403,
+          "largest_cell_time_gap": 0.6812724064470782,
+          "steps_with_change_gap": [
+            1,
+            2
+          ],
+          "change_gap_by_step": [
+            0.6878362696999555,
+            0.0025484575193943128
+          ],
+          "gap_sum_by_plane": [
+            0.6812724064470782,
+            0.00911232077227159
+          ],
+          "geometric_mask_disagreement": 0
+        },
+        "4": {
+          "change": 0.001115834435972213,
+          "reward": 0.0,
+          "termination": 0.0,
+          "aux": 0.00037194481199073764,
+          "largest_cell_time_gap": 0.6812724064470782,
+          "steps_with_change_gap": [
+            1,
+            2,
+            4
+          ],
+          "change_gap_by_step": [
+            0.6878362696999555,
+            0.0025484575193943128,
+            0.0,
+            0.0025484575193943128
+          ],
+          "gap_sum_by_plane": [
+            0.6812724064470782,
+            0.011660778291665903
+          ],
+          "geometric_mask_disagreement": 0
+        },
+        "8": {
+          "change": 0.0005460466388800191,
+          "reward": 0.0,
+          "termination": 0.0,
+          "aux": 0.0001820155462933397,
+          "largest_cell_time_gap": 0.6812724064470782,
+          "steps_with_change_gap": [
+            1,
+            2,
+            4
+          ],
+          "change_gap_by_step": [
+            0.6878362696999555,
+            0.0025484575193943128,
+            0.0,
+            0.0025484575193943128,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "gap_sum_by_plane": [
+            0.6812724064470782,
+            0.011660778291665903
+          ],
+          "geometric_mask_disagreement": 0
+        }
+      },
+      "exposure": {
+        "0": {
+          "change": 0.0,
+          "reward": 0.0,
+          "termination": 0.0,
+          "aux": 0.0,
+          "largest_cell_time_gap": 0.0,
+          "steps_with_change_gap": [],
+          "change_gap_by_step": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "gap_sum_by_plane": [
+            0.0,
+            0.0
+          ],
+          "geometric_mask_disagreement": 0
+        },
+        "1": {
+          "change": 0.009781564959950615,
+          "reward": 0.0,
+          "termination": 0.0,
+          "aux": 0.0032605216533168717,
+          "largest_cell_time_gap": 0.6931185155382297,
+          "steps_with_change_gap": [
+            8,
+            9,
+            11,
+            12,
+            16
+          ],
+          "change_gap_by_step": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            8.826673024970042,
+            7.768262359161035,
+            0.0,
+            8.4944577017016,
+            3.674704614301861e-06,
+            0.0,
+            0.0,
+            0.0,
+            0.0003173617360365602
+          ],
+          "gap_sum_by_plane": [
+            0.18223283098656756,
+            24.90748129128675
+          ],
+          "geometric_mask_disagreement": 27
+        },
+        "3": {
+          "change": 0.009742369762324017,
+          "reward": 0.0,
+          "termination": 0.0,
+          "aux": 0.003247456587441339,
+          "largest_cell_time_gap": 0.6931185155382297,
+          "steps_with_change_gap": [
+            8,
+            9,
+            11,
+            12,
+            16
+          ],
+          "change_gap_by_step": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            8.734307874200187,
+            7.7605858337434785,
+            0.0,
+            8.494156593755502,
+            3.419549163882947e-05,
+            0.0,
+            0.0,
+            0.0,
+            9.39431703024518e-05
+          ],
+          "gap_sum_by_plane": [
+            0.035589986430133565,
+            24.95358845393097
+          ],
+          "geometric_mask_disagreement": 27
+        },
+        "6": {
+          "change": 0.009731770280743016,
+          "reward": 0.0,
+          "termination": 0.0,
+          "aux": 0.0032439234269143386,
+          "largest_cell_time_gap": 0.6931185155382297,
+          "steps_with_change_gap": [
+            8,
+            9,
+            11,
+            12,
+            16
+          ],
+          "change_gap_by_step": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            8.72413326274226,
+            7.741885232280515,
+            0.0,
+            8.494165087870115,
+            2.7894181450012446e-05,
+            0.0,
+            0.0,
+            0.0,
+            0.0017792930314973476
+          ],
+          "gap_sum_by_plane": [
+            0.03058684776941881,
+            24.931403922336408
+          ],
+          "geometric_mask_disagreement": 27
+        }
+      }
+    }
+  ]
+}
