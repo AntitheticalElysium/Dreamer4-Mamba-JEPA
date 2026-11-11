@@ -1,0 +1,78 @@
+{
+  "hud": {
+    "ridge_b": {
+      "hunger": -0.01705145835876465,
+      "thirst": -0.024832487106323242,
+      "fatigue": -0.01652657985687256,
+      "sleep_duration": 0.023468971252441406,
+      "zombie_side": 0.5103335576276075,
+      "achievement_drink": 0.8916670401875703,
+      "achievement_zombie": 0.8308931959976151
+    },
+    "ridge_bp": {
+      "hunger": -0.02277517318725586,
+      "thirst": -0.023775219917297363,
+      "fatigue": -0.020889639854431152,
+      "sleep_duration": -0.050369858741760254,
+      "zombie_side": 0.5085071613957513,
+      "achievement_drink": 0.7360315012771657,
+      "achievement_zombie": 0.6706427403944286
+    },
+    "ridge_recent_bp": {
+      "hunger": -0.028278350830078125,
+      "thirst": -0.03700816631317139,
+      "fatigue": -0.03318178653717041,
+      "sleep_duration": 0.27087271213531494,
+      "zombie_side": 0.512544458329328,
+      "achievement_drink": 0.9665492942114117,
+      "achievement_zombie": 0.9420399403018175
+    },
+    "mlp_recent_bp": {
+      "hunger": -0.0016050338745117188,
+      "thirst": -0.016494393348693848,
+      "fatigue": -0.0007786750793457031,
+      "sleep_duration": 0.3406156897544861,
+      "zombie_side": 0.5235028357204653,
+      "achievement_drink": 0.9630928366619375,
+      "achievement_zombie": 0.9380040874906883
+    }
+  },
+  "multi": {
+    "ridge_b": {
+      "hunger": -0.01573050022125244,
+      "thirst": -0.024266600608825684,
+      "fatigue": -0.012725472450256348,
+      "sleep_duration": 0.047506749629974365,
+      "zombie_side": 0.5074497741036239,
+      "achievement_drink": 0.8752098931429286,
+      "achievement_zombie": 0.8264023180032581
+    },
+    "ridge_bp": {
+      "hunger": -0.020366549491882324,
+      "thirst": -0.020494818687438965,
+      "fatigue": -0.01373898983001709,
+      "sleep_duration": -0.04527413845062256,
+      "zombie_side": 0.5104296837450736,
+      "achievement_drink": 0.7033978547762109,
+      "achievement_zombie": 0.651819397541468
+    },
+    "ridge_recent_bp": {
+      "hunger": -0.02541041374206543,
+      "thirst": -0.03378784656524658,
+      "fatigue": -0.028922557830810547,
+      "sleep_duration": 0.26567554473876953,
+      "zombie_side": 0.5127367105642603,
+      "achievement_drink": 0.9665035220478155,
+      "achievement_zombie": 0.942349401896407
+    },
+    "mlp_recent_bp": {
+      "hunger": -0.0020089149475097656,
+      "thirst": -0.01430368423461914,
+      "fatigue": -0.00015819072723388672,
+      "sleep_duration": 0.3363340497016907,
+      "zombie_side": 0.5281168893588388,
+      "achievement_drink": 0.9629389337239153,
+      "achievement_zombie": 0.9394492693354151
+    }
+  }
+}
