@@ -1,0 +1,106 @@
+{
+  "passed": true,
+  "smoke_checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261111_p1f5/checks/smoke_qroweigw/straight/latest.pt",
+  "exact_resume": {
+    "streams": true,
+    "carry": true,
+    "cache": true,
+    "state": true,
+    "rng": true,
+    "fixation_controller": true,
+    "gaze_bytes": true,
+    "logged_terms": true
+  },
+  "model_max_abs": 3.2869113518203125e-18,
+  "optimizer_max_abs": 1.4210854715202004e-14,
+  "measurements": {
+    "early64": {
+      "updates": 12,
+      "peak_gib": 2.5369324684143066,
+      "last": {
+        "update": 12,
+        "frames": 12288,
+        "steps": 64,
+        "lr": 1.1e-06,
+        "grad_norm": 9.201223373413086,
+        "sigma": [
+          0.9999934434890747,
+          1.0000064373016357,
+          1.0000065565109253,
+          1.0000065565109253
+        ],
+        "tsp_forecast": 0.4289275109767914,
+        "reward_forecast": 5.606659889221191,
+        "cont_forecast": 0.6976315081119537,
+        "g1": 0.31358881294727325,
+        "tsp": 0.4329025149345398,
+        "rec": 0.4324028491973877,
+        "reward": 5.59552526473999,
+        "cont": 0.6985097825527191,
+        "noise": 11.290753841400146,
+        "sec_per_update": 1.8934276103973389,
+        "peak_gib": 2.5369324684143066
+      },
+      "seconds_per_update": 1.9180448055267334
+    },
+    "late64": {
+      "updates": 12,
+      "peak_gib": 2.5369324684143066,
+      "last": {
+        "update": 12,
+        "frames": 12288,
+        "steps": 64,
+        "lr": 1.1e-06,
+        "grad_norm": 9.201227188110352,
+        "sigma": [
+          0.9999934434890747,
+          1.0000064373016357,
+          1.0000065565109253,
+          1.0000065565109253
+        ],
+        "tsp_forecast": 0.4289275109767914,
+        "reward_forecast": 5.606659889221191,
+        "cont_forecast": 0.6976315081119537,
+        "g1": 0.31358881294727325,
+        "tsp": 0.4329025149345398,
+        "rec": 0.4324028491973877,
+        "reward": 5.59552526473999,
+        "cont": 0.6985097825527191,
+        "noise": 11.290753841400146,
+        "sec_per_update": 2.1386711597442627,
+        "peak_gib": 2.5369324684143066
+      },
+      "seconds_per_update": 2.1230006217956543
+    },
+    "late256": {
+      "updates": 6,
+      "peak_gib": 2.510420799255371,
+      "last": {
+        "update": 6,
+        "frames": 24576,
+        "steps": 256,
+        "lr": 2.0000000000000003e-06,
+        "grad_norm": 9.205923080444336,
+        "sigma": [
+          0.9999939799308777,
+          1.0000059604644775,
+          1.0000059604644775,
+          1.0000059604644775
+        ],
+        "tsp_forecast": 0.4230409264564514,
+        "reward_forecast": 5.610029995441437,
+        "cont_forecast": 0.697478175163269,
+        "g1": 0.3189106677266387,
+        "tsp": 0.41828517988324165,
+        "rec": 0.4175417758524418,
+        "reward": 5.599618196487427,
+        "cont": 0.6983581855893135,
+        "noise": 11.301743149757385,
+        "sec_per_update": 8.114395380020142,
+        "peak_gib": 2.510420799255371
+      },
+      "seconds_per_update": 8.187547206878662
+    }
+  },
+  "estimated_training_hours": 14.194114920165804
+}

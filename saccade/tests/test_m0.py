@@ -28,6 +28,14 @@ def cfg():
 
 
 @pytest.fixture(scope="module")
+def forecast_cfg(cfg):
+    c = copy.deepcopy(cfg)
+    c["heads"].update(change_map=None, forecast={"seed": 615001})
+    c["losses"]["groups"].append("G4")
+    return c
+
+
+@pytest.fixture(scope="module")
 def split(cfg):
     return D.load_split(cfg)
 
@@ -232,7 +240,8 @@ def test_reward_decoding_and_bin_probabilities(cfg):
 # ---- gradient routes, per loss ----
 
 @gpu
-def test_gradient_routes_per_loss(cfg, split, monkeypatch):
+def test_gradient_routes_per_loss(forecast_cfg, split, monkeypatch):
+    cfg = forecast_cfg
     torch.manual_seed(0)
     model = M.M0(cfg).cuda()
     for blk in model.denoiser.blocks:
@@ -284,8 +293,9 @@ def test_gradient_routes_per_loss(cfg, split, monkeypatch):
 
 
 @gpu
-def test_forecasts_never_read_the_frame_they_forecast(cfg, split, monkeypatch):
+def test_forecasts_never_read_the_frame_they_forecast(forecast_cfg, split, monkeypatch):
     """Changing a frame changes its forecast targets, never its forecasts (Codex, 11-11); reactive readers do change."""
+    cfg = forecast_cfg
     torch.manual_seed(0)
     model = M.M0(cfg).cuda()
     eps = split["train"][:4]
@@ -379,7 +389,8 @@ def test_periodic_diagnostics_preserve_gradients_rng_and_mode(cfg, split, monkey
     assert not model.training and [len(m._forward_hooks) for m in modules] == hooks_before
 
 @gpu
-def test_resumed_run_equals_uninterrupted(cfg, tmp_path, monkeypatch):
+def test_resumed_run_equals_uninterrupted(forecast_cfg, tmp_path, monkeypatch):
+    cfg = forecast_cfg
     c = copy.deepcopy(cfg)
     split = D.load_split(c)
     split = {**split, "train": split["train"][:20], "monitor": split["monitor"][:2]}

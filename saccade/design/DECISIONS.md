@@ -30,7 +30,9 @@ stayed exact without it on those rows; the grounded targets return to the 10-24 
 step): frame t's inputs replaced by learned mask vectors, read from the belief predicted before frame t, in a fourth
 harmonised group G4, on every valid non-first frame. TSP's forecast window is drawn uniformly per frame from its own seed,
 because the chooser's surprise term reads the target frame. Imagination and the reactive heads are unchanged. Historical
-configurations still build the change map from their own cfg; m0.yaml is F5's recipe until its run is read.
+configurations still build the change map from their own cfg. F5's recipe lives in its launcher
+(`artifacts/experiments/20261111_p1f5/train_p1f5.py`: the HUD-Change control's saved recipe plus these three changes,
+asserted), so m0.yaml stays the validated HUD-Change recipe until F5 is read.
 
 ## 2026-11-08 — World-belief role and region-general change supervision
 User clarification: retain the denoiser's recent cache. The immediate criterion for Mamba is history-dependent

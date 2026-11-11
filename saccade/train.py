@@ -155,7 +155,7 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=No
             tgt = torch.as_tensor(tgt, device=dev)
             ok = torch.isfinite(tgt)
             terms["change"] = F.binary_cross_entropy_with_logits(logit.float()[ok], tgt[ok]) if ok.any() else logit.sum() * 0
-        nf = ~first[:, P:]
+        nf = ~first[:, P:] & t["valid"][:, P:]
         h = model.outcome.features(bp, emb)[nf]
         r = t["reward"][:, P:][nf]
         alive = (~t["terminated"][:, P:][nf]).float()
@@ -166,7 +166,7 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=No
                 forecast_windows = np.random.default_rng([cfg["heads"]["forecast"]["seed"], int(update or 0)]).integers(49, size=tuple(nf.shape))
             fx = C.CENTRES.to(dev)[torch.as_tensor(forecast_windows, device=dev)]   # one window per frame, gaze-independent
             fc = M.window(fx)
-            mf, _ = model.pixels(model.tsp.predict(bp, None, None, fc), vs, fc)
+            mf = model.pixels.mean(model.tsp.predict(bp, None, None, fc))
             yf = M.cell_pixels(M.crop(t["frames"][:, P:], fx)).float() / 127.5 - 1
             hf = model.outcome.features(bp, None)[nf]
             terms.update(tsp_forecast=(mf.float() - yf).square()[nf].mean(),
@@ -340,7 +340,7 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
         del terms, c_new, cache_new
         if at_checkpoint:
             route_norms = encoder_diagnostics(model, chunk, diagnostic_carry, diagnostic_cache, targets, cfg, boot, st["update"], fw)
-        gn = float(torch.nn.utils.clip_grad_norm_(model.parameters(), o["grad_clip"]))
+        gn = float(torch.nn.utils.clip_grad_norm_(model.parameters(), o["grad_clip"], error_if_nonfinite=True))
         opt.step()
         controller.learn(int(chunk["valid"][:, P:].sum()))
         st["frames"] += int(chunk["valid"][:, P:].sum())

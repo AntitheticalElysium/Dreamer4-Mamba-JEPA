@@ -22,7 +22,7 @@ with the user, (4) F5 launched only after Codex's review.
 
 ## Changes
 
-1. **Change map removed** (`heads.change_map: null`). G2 = TSP + fovea reconstruction. No change targets are read.
+1. **Change map removed** in the experiment launcher (`heads.change_map: null`). G2 = TSP + fovea reconstruction. No change targets are read.
    The class stays so historical checkpoints build from their own configuration.
 2. **TSP forecast mode** (`heads.forecast`). The same TSP network and pixel decoder, with the current frame's periphery
    tokens and lighting latent replaced by one learned mask vector (zero-initialised; no random draw). It predicts a 3x3
@@ -45,8 +45,9 @@ Imagination, sampling and the reactive heads are unchanged; the forecast modes a
   from the recorded frame. Not the chooser's fixation: the chooser's surprise term compares its forecast with the
   actual periphery of the target frame (`saccade/chooser.py`, `s = (y - taken)^2`), so it looks at the HUD more often
   exactly when a digit changes, and a forecast at that window could infer the change from where the eye went. This
-  keeps one fovea-sized window per frame (the agreed pixel budget) but places it where the eye did not necessarily look:
-  flagged for review.
+  adds one fovea-sized training target per frame at a window where the eye did not necessarily look. This uses the
+  offline corpus's full frames. The original learned-gaze crop still supplies the normal TSP/reconstruction targets
+  and the observed glimpse, so the inference-time foveal budget is one crop as before.
 - **Weighting: a fourth harmonised group, G4 = TSP forecast + reward forecast + continuation forecast.** Summing the
   forecasts into G2 / G3 would let their larger losses raise those groups' sigma and shrink the reactive anchors' and
   outcome readers' effective weight. HarmonyDream's logic (one learned scale per task) treats anticipation as its own
@@ -70,11 +71,33 @@ C2 zombie readiness 32 pairs, C3 +1/+3/+6 brightness, 240 natural states x 8 key
 - **TSP forecast:** pair cost = ||y_A - y_B||^2 / (4 n) over the window's n = 1,323 pixel values in [-1, 1], averaged
   over the 49 uniform windows; natural floor = the same over 8 keys.
 - **Outcome forecast:** reward-bin and termination log-score gaps (exact, as the 11-11 observable gate) and their
-  natural floors.
+  natural floors. Termination is conditioned on the observed reward, matching the implemented factorisation.
 Reported beside G1 at pure noise and the change target from the earlier gate (same scenes, same states: reproduced and
 asserted). R is a discrimination diagnostic, not a go/no-go (weight-invariant). What would change F5: if the TSP
 forecast prices both consequences below G1 at pure noise relative to the floors, or its foils out-price the
 consequences in most scenes, we discuss dropping the TSP forecast from F5 and keeping the outcome forecast.
+
+## Review and preflight
+
+The existing F4/HUD recipe remains the generic default. The F5 launcher takes its exact training configuration
+and learned fixation controller from the pinned HUD checkpoint, resets weights and optimizer as a fresh seed-1
+run, and applies the three changes above. Its reward head starts with different RNG draws after removal of the
+change map. It uses the 25.6M-frame budget and the ten checkpoint monitor readings with the existing selection
+rule. It starts training and then runs the checkpoint-bound, resumable evaluation queue in one service.
+
+The CPU oracle gate finished on 23 hunger pairs, 32 cooldown pairs and 240 natural states. The median TSP/G1
+contrast-to-natural-variation ratios are 4.73 for hunger and 2.26 for cooldown. The largest +6/255 edit is
+stronger than the cooldown TSP signal in 18/32 pairs, so the original discussion trigger fires. At +1 and +3
+no foil beats either consequence. Hunger also passes at +6, and the reward forecast separately gives all
+32 cooldown pairs ln(2) nats of contrast while carrying none for passive hunger. Keeping both forecast modes
+is the reviewed recommendation for the bundled arm, subject to the user's launch approval. This gate prices
+the target. It does not measure learned timing, belief retention or deployment uptake.
+
+The independent uniform forecast windows are used in the gate, the proposed run and the held-out forecast
+score. The regular learned fovea stays active for ordinary TSP, reconstruction and Mamba input. The current
+chooser's realized surprise reads the target frame, so reusing its selected location would give the forecast
+information about that frame. A future causal alternative could choose with the preceding frames and incoming
+action, using the existing contingency score plus uniform exploration and no realized target error.
 
 ## F5 judged on (fixed before launch; readout plan reviewed with the launch)
 
@@ -84,3 +107,26 @@ consequences in most scenes, we discuss dropping the TSP forecast from F5 and ke
   for), consequence determinant curves and crafting, actor interface, 4-step recursion, belief probes (timers, sleep).
 - The forecast heads' own held-out scores, reported but not used as success: an improved forecast without native
   generated improvement is not a repaired world.
+
+## Launch and evaluation
+
+From the repository root, after the approved preflight and source seal:
+
+```sh
+systemd-run --user --unit=saccade-p1f5 -p MemoryMax=24G \
+  -E MAMBA_DETERMINISTIC=1 -E JAX_PLATFORMS=cpu \
+  -E OMP_NUM_THREADS=2 -E MKL_NUM_THREADS=2 \
+  -E PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
+  --working-directory="$PWD" "$PWD/.venv/bin/python" -u -m artifacts.experiments.20261111_p1f5.run
+```
+
+The worker binds the evaluation to the selected checkpoint hash after all ten monitor records exist. Queue
+order: S1, paired hunger and cooldown generation, held-out forecast scores, determinant and crafting curves,
+actor interface, four-step recursion, the natural thirst pair, timer-event and belief-path probes, then the
+same hunger and cooldown generation on the pinned F4 and HUD controls. The cooldown pair's older hit falls
+within the visual cache, so the native comparison measures the assembled world, not causal attribution to
+Mamba. Use the unchanged full-cache sampler throughout.
+
+After an evaluation interruption, resume from the same selected checkpoint with
+`python -m artifacts.experiments.20261111_p1f5.readout CHECKPOINT` under the launch environment. The readout
+verifies the checkpoint hash and skips only stages with completed status and their expected artifact.

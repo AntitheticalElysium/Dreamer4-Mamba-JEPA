@@ -700,9 +700,10 @@ class TSP(nn.Module):
     def predict(self, belief, p, v, cells):
         if p is None:                                                    # forecast mode: nothing of the frame itself
             dp, dv = self.split
-            p = self.mask[:dp].expand(*cells.shape[:-1], N, dp)
+            pw = self.mask[:dp].expand(*cells.shape, dp)
             v = self.mask[dp:].expand(*belief.shape[:-1], dv)
-        pw = torch.gather(p, -2, cells[..., None].expand(*cells.shape, p.shape[-1]))
+        else:
+            pw = torch.gather(p, -2, cells[..., None].expand(*cells.shape, p.shape[-1]))
         ctx = torch.cat([v, self.belief(belief)], -1).unsqueeze(-2).expand(*cells.shape, -1)
         return self.tsp(torch.cat([pw, self.cell(cells), ctx], -1))
 

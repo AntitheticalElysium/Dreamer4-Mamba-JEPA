@@ -44,19 +44,29 @@ def cat_gap(labels):
     return float(-(p * np.log(p)).sum())
 
 
+def outcome_gap(reward, terminated, edges):
+    """Match G4: categorical reward and Bernoulli termination conditional on the recorded reward."""
+    reward = torch.as_tensor(reward, dtype=torch.float32)
+    symlog = reward.sign() * reward.abs().log1p()
+    bins = len(edges) - 1
+    binned = (((symlog - edges[0]) / (edges[-1] - edges[0])) * bins).floor().long().clamp(0, bins - 1)
+    _, groups, counts = np.unique(reward.numpy(), return_inverse=True, return_counts=True)
+    cond_term = sum(n / len(reward) * cat_gap(np.asarray(terminated)[groups == i]) for i, n in enumerate(counts))
+    return cat_gap(binned.numpy()), float(cond_term)
+
+
 def main():
     jax, jnp, step, render, roll = G.sim()
     L = G.dev_labels()
     prev = json.loads(PREV_PATH.read_text())
     ck = torch.load(G.CKPT, mmap=True, map_location="cpu", weights_only=False)
-    edges = ck["model"]["outcome.edges"].numpy()
-    sym = lambda x: np.sign(x) * np.log1p(np.abs(x))
-    rbin = lambda r: np.clip(np.searchsorted(edges, sym(np.asarray(r)), side="right") - 1, 0, len(edges) - 2)
+    edges = ck["model"]["outcome.edges"]
 
     banks = {"C1": G.hunger_pairs(L, jax, jnp, roll), "C2": G.zombie_pairs(L, jax, jnp, step, render, roll)[0]}
     rows = {}
     for name, bank in banks.items():
         before = {x["e"]: x for x in prev["rows"][name] if "excluded" not in x}
+        assert {sc["e"] for sc in bank if "excluded" not in sc} == set(before), name
         rows[name] = []
         for sc in bank:
             if "excluded" in sc:
@@ -66,8 +76,9 @@ def main():
                 assert k not in old or old[k] == sc[k], (name, sc["e"], k)
             br, q = sc["branch"], sc["q"]
             a, b = br[0, q + 1], br[1, q + 1]
+            reward, termination = outcome_gap(sc["reward"][:, q], sc["term"][:, q], edges)
             row = {"e": sc["e"], "change": old["change"], "g1": old["g1"], "tsp": tsp_pair(a, b),
-                   "reward": cat_gap(rbin(sc["reward"][:, q])), "termination": cat_gap(sc["term"][:, q]),
+                   "reward": reward, "termination": termination,
                    "rewards": sc["reward"][:, q].tolist(), "controls_tsp": [tsp_pair(br[0, c + 1], br[1, c + 1]) for c in sc["controls"]],
                    "foil_tsp": {}, "foil_g1": {k: v["g1"] for k, v in old["foil"].items()}}
             for amp in (1, 3, 6):
@@ -90,8 +101,8 @@ def main():
             outs = [step(k, st, jnp.asarray(int(acts[t]), jnp.int32)) for k in kk]
             nxt = np.stack([np.asarray(render(o[1])) for o in outs])
             rng.integers(len(G.CENTRES))                                 # the fixation draw the earlier gate consumed
-            noise.append({**old, "tsp": tsp_keys(nxt), "reward": cat_gap(rbin([float(o[2]) for o in outs])),
-                          "termination": cat_gap([bool(o[3]) for o in outs])})
+            reward, termination = outcome_gap([float(o[2]) for o in outs], [bool(o[3]) for o in outs], edges)
+            noise.append({**old, "tsp": tsp_keys(nxt), "reward": reward, "termination": termination})
 
     floors = {k: float(np.mean([x[k] for x in noise])) for k in ("change", "g1", "tsp", "reward", "termination")}
     dark = np.array([x["night"] for x in noise])
@@ -102,8 +113,12 @@ def main():
         st, sg = np.array([r["tsp"] for r in rs]), np.array([r["g1"] for r in rs])
         nt, ng = np.array([x["tsp"] for x in noise]), np.array([x["g1"] for x in noise])
         R = (st / nt.mean()) / (sg / ng.mean())
+        assert len(noise) == 2 * len(eps)
+        # The two natural states in an episode are a single resampling unit.
         bs = [np.median((st[i] / nt[k].mean()) / (sg[i] / ng[k].mean()))
-              for i, k in ((boot.integers(len(rs), size=len(rs)), boot.integers(len(noise), size=len(noise))) for _ in range(2000))]
+              for i, k in ((boot.integers(len(rs), size=len(rs)),
+                            (2 * boot.integers(len(eps), size=(len(eps), 1)) + np.arange(2)).ravel())
+                           for _ in range(2000))]
         summary[name] = {
             "pairs": len(rs),
             "event_over_floor": {k: float(np.median([r[k] for r in rs]) / floors[k]) if floors[k] > 0 else None
