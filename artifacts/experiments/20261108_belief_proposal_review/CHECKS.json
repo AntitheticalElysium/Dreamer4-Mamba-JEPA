@@ -1,0 +1,35 @@
+{
+  "actual_f4_denoiser_bootstrap_test": {
+    "loss": 0.0026824898086488247,
+    "memory_grad_bootstrap_row_norm": 0.0058547877706587315,
+    "memory_grad_unselected_flow_row_norm": 0.0,
+    "claim": "Only teacher memory is detached; student bootstrap loss trains memory."
+  },
+  "contrastive_counterexample": {
+    "candidates": 128,
+    "correct_scene_logit": 30.0,
+    "other_scene_logits": 0.0,
+    "infonce_nats": 1.1884181170356405e-11,
+    "future_event_bit_retained": false
+  },
+  "innovation_counterexample": {
+    "history_state_A": [
+      0,
+      1
+    ],
+    "predicted_mean": [
+      0,
+      0
+    ],
+    "conditional_variance": [
+      1,
+      9
+    ],
+    "E_error_squared_given_history": [
+      1,
+      9
+    ],
+    "state_sufficient": true,
+    "point": "Predictable error magnitude does not imply missing state; predictable signed residual can reflect decoder error."
+  }
+}

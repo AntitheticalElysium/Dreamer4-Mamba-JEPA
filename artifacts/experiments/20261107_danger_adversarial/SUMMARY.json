@@ -1,0 +1,412 @@
+{
+  "sources": 32,
+  "draws_per_source": 8,
+  "horizon": 48,
+  "source_cohort": "asleep, energy8, health>=7, food/drink>=3; initially no close hostiles/arrows; NOOP; uniform fixation",
+  "prefix_sham_rms_max": 0.009040835313498974,
+  "readers_valid": {
+    "asleep": {
+      "accuracy": 1.0,
+      "per_value": {
+        "0": [
+          7772,
+          1.0
+        ],
+        "1": [
+          1646,
+          1.0
+        ]
+      },
+      "epochs": 30,
+      "valid": true
+    },
+    "66": {
+      "accuracy": 1.0,
+      "per_value": {
+        "0": [
+          44,
+          1.0
+        ],
+        "1": [
+          84,
+          1.0
+        ],
+        "2": [
+          157,
+          1.0
+        ],
+        "3": [
+          152,
+          1.0
+        ],
+        "4": [
+          257,
+          1.0
+        ],
+        "5": [
+          438,
+          1.0
+        ],
+        "6": [
+          693,
+          1.0
+        ],
+        "7": [
+          1190,
+          1.0
+        ],
+        "8": [
+          3035,
+          1.0
+        ],
+        "9": [
+          3368,
+          1.0
+        ]
+      },
+      "epochs": 30,
+      "valid": true
+    },
+    "63": {
+      "accuracy": 1.0,
+      "per_value": {
+        "0": [
+          32,
+          1.0
+        ],
+        "1": [
+          221,
+          1.0
+        ],
+        "2": [
+          275,
+          1.0
+        ],
+        "3": [
+          269,
+          1.0
+        ],
+        "4": [
+          385,
+          1.0
+        ],
+        "5": [
+          372,
+          1.0
+        ],
+        "6": [
+          538,
+          1.0
+        ],
+        "7": [
+          906,
+          1.0
+        ],
+        "8": [
+          975,
+          1.0
+        ],
+        "9": [
+          5445,
+          1.0
+        ]
+      },
+      "epochs": 30,
+      "valid": true
+    }
+  },
+  "reader_stress": {
+    "channel_permuted_tokens_no_semantic_label": true,
+    "median_confidence": 0.7466443777084351,
+    "fraction_confidence_above_0p9": 0.278076171875,
+    "interpretation": "High confidence on invalid controls cannot establish correctness on generated tokens."
+  },
+  "F4": {
+    "energy9": {
+      "probability_by_step": {
+        "12": {
+          "mean": 0.23046875,
+          "ci95": [
+            0.16796875,
+            0.3046875
+          ]
+        },
+        "16": {
+          "mean": 0.30078125,
+          "ci95": [
+            0.23046875,
+            0.3828125
+          ]
+        },
+        "32": {
+          "mean": 0.546875,
+          "ci95": [
+            0.46484375,
+            0.6328125
+          ]
+        },
+        "48": {
+          "mean": 0.703125,
+          "ci95": [
+            0.6171875,
+            0.78125
+          ]
+        }
+      },
+      "median_step_or_Hplus1_if_unobserved": 29.0,
+      "restricted_mean_waiting_steps": {
+        "mean": 29.26171875,
+        "ci95": [
+          26.05458984375,
+          32.144824218749996
+        ]
+      },
+      "censored_fraction": 0.296875
+    },
+    "awake": {
+      "probability_by_step": {
+        "12": {
+          "mean": 0.1953125,
+          "ci95": [
+            0.13671875,
+            0.265625
+          ]
+        },
+        "16": {
+          "mean": 0.28515625,
+          "ci95": [
+            0.21484375,
+            0.3671875
+          ]
+        },
+        "32": {
+          "mean": 0.52734375,
+          "ci95": [
+            0.4453125,
+            0.61328125
+          ]
+        },
+        "48": {
+          "mean": 0.69140625,
+          "ci95": [
+            0.60546875,
+            0.7734375
+          ]
+        }
+      },
+      "median_step_or_Hplus1_if_unobserved": 30.5,
+      "restricted_mean_waiting_steps": {
+        "mean": 29.8984375,
+        "ci95": [
+          26.75693359375,
+          32.74619140625
+        ]
+      },
+      "censored_fraction": 0.30859375
+    },
+    "terminal": {
+      "probability_by_step": {
+        "12": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "16": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "32": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "48": {
+          "mean": 0.00390625,
+          "ci95": [
+            0.0,
+            0.01171875
+          ]
+        }
+      },
+      "median_step_or_Hplus1_if_unobserved": 49.0,
+      "restricted_mean_waiting_steps": {
+        "mean": 47.9609375,
+        "ci95": [
+          47.8828125,
+          48.0
+        ]
+      },
+      "censored_fraction": 0.99609375
+    }
+  },
+  "simulator": {
+    "energy9": {
+      "probability_by_step": {
+        "12": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "16": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "32": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "48": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        }
+      },
+      "median_step_or_Hplus1_if_unobserved": 6.5,
+      "restricted_mean_waiting_steps": {
+        "mean": 6.125,
+        "ci95": [
+          4.875,
+          7.313281249999996
+        ]
+      },
+      "censored_fraction": 0.0
+    },
+    "awake": {
+      "probability_by_step": {
+        "12": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "16": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "32": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "48": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        }
+      },
+      "median_step_or_Hplus1_if_unobserved": 7.5,
+      "restricted_mean_waiting_steps": {
+        "mean": 7.125,
+        "ci95": [
+          5.875,
+          8.313281249999996
+        ]
+      },
+      "censored_fraction": 0.0
+    },
+    "terminal": {
+      "probability_by_step": {
+        "12": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "16": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "32": {
+          "mean": 0.00390625,
+          "ci95": [
+            0.0,
+            0.01171875
+          ]
+        },
+        "48": {
+          "mean": 0.0625,
+          "ci95": [
+            0.0234375,
+            0.109375
+          ]
+        }
+      },
+      "median_step_or_Hplus1_if_unobserved": 49.0,
+      "restricted_mean_waiting_steps": {
+        "mean": 47.73828125,
+        "ci95": [
+          47.48046875,
+          47.93359375
+        ]
+      },
+      "censored_fraction": 0.9375
+    }
+  },
+  "energy9_restricted_wait_ratio": {
+    "mean": 4.777423469387755,
+    "ci95": [
+      3.962130758173715,
+      6.067500889046942
+    ],
+    "not_an_unrestricted_duration_ratio": true
+  },
+  "awake_restricted_wait_ratio": {
+    "mean": 4.196271929824562,
+    "ci95": [
+      3.552657903439153,
+      5.112449051874454
+    ],
+    "not_an_unrestricted_duration_ratio": true
+  },
+  "generated_energy9_rule": {
+    "eligible_transitions": 165,
+    "next_awake_fraction": 0.9696969696969697
+  },
+  "clock_reference": {
+    "input": "sleep observations up to and including current state, reset fatigue=0; no future energy used",
+    "scope": "rule-based evaluation control with simulator-label sleep observations, whose real-frame readability is separately validated",
+    "asleep_energy_up": {
+      "transitions": 33324,
+      "positive_events": 2872,
+      "errors": 0
+    },
+    "awake_energy_down": {
+      "transitions": 129311,
+      "positive_events": 3526,
+      "errors": 0
+    },
+    "independent_simulator_counter_check": {
+      "sources": 32,
+      "max_fatigue_error": 0.0
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "artifacts/experiments/20261107_danger_adversarial/PLAN.md": "7669947ceb8b862bea339ed8df81c839933f5704fee653032d78d49831981c00",
+  "artifacts/experiments/20261107_danger_adversarial/cpu.py": "938f4165a51372f1a4d866f1cbaf3b2aeee5179c97d2e6d2cdba9d4c07b47163",
+  "artifacts/experiments/20261107_danger_adversarial/sleep.py": "d20a4219126cbaf5b9ff26f2f87c191e717018c51d954b9aef7aa515bd3e3202",
+  "artifacts/experiments/20261107_danger_adversarial/analyse.py": "d50c77dd5147f5ac3cf12b2ae00dd9efb75df9807fb96b7ca0aca60c4340c615",
+  "artifacts/experiments/20261107_danger_adversarial/CPU.json": "1256a0244cda35a4123ee87c5e2c75084427c9fccd6173ce35478babaf619c40",
+  "artifacts/experiments/20261107_danger_adversarial/SUMMARY.json": "f17f7202a77ce8108c2fee375007991e8bd23e0ffe6a3cdec94316905c0c4e4a",
+  "artifacts/experiments/20261107_danger_adversarial/REPORT.md": "aa1ae3d7693bccd3c8b8e2e34dd85988f63c91e5dc461d27d8d835ee3422234a",
+  "saccade/model.py": "50c45359e43d6d7119f07312061bf64f4a8b9677464aaa9e086d8572204fc268",
+  "saccade/eval/s1.py": "9f43a7a3e5135845848e2f5d27901b445c574d0a949bd7b2463a9dffc7031802",
+  "artifacts/experiments/20261107_f4_followups/belief_probe.py": "53a8f0b191d57219f3794e73948b677602e5e682cd25455a616904dddf8afce8",
+  "artifacts/experiments/20261107_f4_followups/readings/danger/belief_f4.json": "f540e00fb394877dafcef995934a05e1c4939f56741cf6e36ded2f7b6ac88dc7"
+}

@@ -1,0 +1,30 @@
+{
+  "shared": {
+    "old": {
+      "heldout_mse": 0.008621035312064314,
+      "weight_delta_rms": 0.0
+    },
+    "shared": {
+      "heldout_mse": 0.008376442609314291,
+      "weight_delta_rms": 0.002836351843715452
+    },
+    "health": {
+      "heldout_mse": 0.39797635835044487,
+      "weight_delta_rms": 0.023410264548423536
+    }
+  },
+  "health": {
+    "old": {
+      "heldout_mse": 0.008975207957160773,
+      "weight_delta_rms": 0.0
+    },
+    "shared": {
+      "heldout_mse": 0.008848384150361554,
+      "weight_delta_rms": 0.002836351843715452
+    },
+    "health": {
+      "heldout_mse": 0.008685347689623155,
+      "weight_delta_rms": 0.023410264548423536
+    }
+  }
+}
