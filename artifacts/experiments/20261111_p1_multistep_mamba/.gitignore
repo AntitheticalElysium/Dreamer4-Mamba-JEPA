@@ -1,0 +1,5 @@
+checks/
+run/
+readings/**/*.npz
+*.log
+__pycache__/
