@@ -26,14 +26,16 @@ arm is `compare.py` -> `readings/comparison.json`. One world seed per arm.
      through ~26 recurrence steps and the denoiser's use of the belief both work.
 2. **Timers that only the pixels show are unchanged.** Hunger pairs: 0.069 due vs 0.068 not due (F4 0.060 / 0.059).
    Natural thirst alias contrast: −0.008. Food, drink and energy drop APs from the belief are at their base rates.
-3. **Why: the TSP forecast cannot render what the belief holds (section 7).**
+3. **Leading explanation, not established: the TSP forecast cannot render what the belief holds (section 7).** The
+   readout problem is measured. Its role in the timer failure is a hypothesis.
    - On frames where the digit does not change, its error at the health cell is 0.094. That is against 0.129 for a
      digit-blind forecaster and 0.010 for the reactive mode, although the belief holds health at 97% exact.
    - Food is 0.172 vs 0.188 blind.
    - The HUD cells carry 14–25% of the window's forecast error, so the loss priced them on every frame. It could not
      buy them through this readout.
-   - Energy separates the remaining suspects. Its awake drops register at Mamba's input (AP 0.587, 23x the base rate,
-     section 6), yet the belief has no energy timer. Registration is therefore not energy's binding link.
+   - Energy's awake drops are visible at Mamba's input: AP 0.587 from the input-embedding difference, 23x the base
+     rate (section 6). Every awake energy change in DEV is a decrement, i.e. the clock's reset. Yet the belief has no
+     energy timer. Whether the reset registers in Mamba's state is not measured.
    - Food is additionally poorly registered (awake AP 0.191; F4 0.268, HUD-Change 0.369).
 4. **What removing the change map, bundled with the forecasts, cost (section 8):**
    - TSP fidelity: held-out 2.571 vs 2.161–2.218 nats/pixel; training MSE doubled.
@@ -52,8 +54,9 @@ arm is `compare.py` -> `readings/comparison.json`. One world seed per arm.
 | Hunger (24): food drop | 0.060 / 0.059 | 0.065 / 0.066 | 0.069 / 0.068 | [−0.003, 0.005] |
 | Zombie cooldown (32): health −2 | 0.065 / 0.058 | 0.223 / 0.108 | **0.862 / 0.025** | [0.757, 0.901] |
 
-F5's cooldown pairs all point the right way (32/32). Generated digits are mostly exact: the due member draws the true
-next digit in 0.760 of futures.
+Hunger pairs share the last 8 frames. Cooldown pairs share only the last 4: the earlier hit lies inside the 8-frame
+cache, so section 3's swap establishes the route. F5's cooldown pairs all point the right way (32/32). Generated digits
+are mostly exact: the due member draws the true next digit in 0.760 of futures.
 
 ## 3. Cooldown route swap (`readings/dissection/swap.json`)
 
