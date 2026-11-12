@@ -1,0 +1,1698 @@
+{
+  "checkpoint_sha256": "b232d2d7f900700b7ed4fb7c2affae2c1cea1c56bc462fbd806a761dc14b1ead",
+  "frames": 30703,
+  "means": {
+    "forecast": {
+      "tsp_mse": 0.049321489898069996,
+      "reward_nll": 0.08743208344868712,
+      "continuation_nll_given_reward": 0.003261615737221624
+    },
+    "reactive": {
+      "tsp_mse": 0.0018859854727774235,
+      "reward_nll": 0.013647544952179591,
+      "continuation_nll_given_reward": 2.572851408697549e-08
+    }
+  },
+  "episodes": [
+    {
+      "episode": 1,
+      "n": 454,
+      "forecast": {
+        "tsp_mse": 0.04571538791060448,
+        "reward_nll": 0.09397989511489868,
+        "continuation_nll_given_reward": 0.00024610437685623765
+      },
+      "reactive": {
+        "tsp_mse": 0.0022898975294083357,
+        "reward_nll": 0.008115763776004314,
+        "continuation_nll_given_reward": 7.160947745887825e-08
+      }
+    },
+    {
+      "episode": 14,
+      "n": 164,
+      "forecast": {
+        "tsp_mse": 0.03628815338015556,
+        "reward_nll": 0.0036334532778710127,
+        "continuation_nll_given_reward": 6.940461025806144e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.0008956971578299999,
+        "reward_nll": 0.00013872102135792375,
+        "continuation_nll_given_reward": 2.8059510010641775e-12
+      }
+    },
+    {
+      "episode": 17,
+      "n": 1234,
+      "forecast": {
+        "tsp_mse": 0.05420432984828949,
+        "reward_nll": 0.09063200652599335,
+        "continuation_nll_given_reward": 5.290717672323808e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.0023528984747827053,
+        "reward_nll": 0.0029229859355837107,
+        "continuation_nll_given_reward": 1.9047075028311156e-09
+      }
+    },
+    {
+      "episode": 20,
+      "n": 788,
+      "forecast": {
+        "tsp_mse": 0.05983172357082367,
+        "reward_nll": 0.12069767713546753,
+        "continuation_nll_given_reward": 9.894822142086923e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.0019984112586826086,
+        "reward_nll": 0.017550427466630936,
+        "continuation_nll_given_reward": 2.4575101065238414e-08
+      }
+    },
+    {
+      "episode": 26,
+      "n": 230,
+      "forecast": {
+        "tsp_mse": 0.0370597317814827,
+        "reward_nll": 0.012989445589482784,
+        "continuation_nll_given_reward": 0.00022979021014180034
+      },
+      "reactive": {
+        "tsp_mse": 0.0016089467098936439,
+        "reward_nll": 0.011430921964347363,
+        "continuation_nll_given_reward": 2.8318179801090082e-08
+      }
+    },
+    {
+      "episode": 30,
+      "n": 64,
+      "forecast": {
+        "tsp_mse": 0.035329464823007584,
+        "reward_nll": 0.05662229284644127,
+        "continuation_nll_given_reward": 0.0002086794120259583
+      },
+      "reactive": {
+        "tsp_mse": 0.0007566039566881955,
+        "reward_nll": 0.0022995893377810717,
+        "continuation_nll_given_reward": 1.4901194944627605e-08
+      }
+    },
+    {
+      "episode": 44,
+      "n": 270,
+      "forecast": {
+        "tsp_mse": 0.040666766464710236,
+        "reward_nll": 0.13046781718730927,
+        "continuation_nll_given_reward": 0.00015945686027407646
+      },
+      "reactive": {
+        "tsp_mse": 0.0019670878536999226,
+        "reward_nll": 0.019874103367328644,
+        "continuation_nll_given_reward": 5.425746074649851e-09
+      }
+    },
+    {
+      "episode": 53,
+      "n": 582,
+      "forecast": {
+        "tsp_mse": 0.04954317957162857,
+        "reward_nll": 0.11987223476171494,
+        "continuation_nll_given_reward": 0.0006601419881917536
+      },
+      "reactive": {
+        "tsp_mse": 0.0019152180757373571,
+        "reward_nll": 0.008605408482253551,
+        "continuation_nll_given_reward": 1.4635401779372614e-09
+      }
+    },
+    {
+      "episode": 54,
+      "n": 43,
+      "forecast": {
+        "tsp_mse": 0.037445224821567535,
+        "reward_nll": 0.019020602107048035,
+        "continuation_nll_given_reward": 0.004989946261048317
+      },
+      "reactive": {
+        "tsp_mse": 0.0009302117396146059,
+        "reward_nll": 0.0009595360024832189,
+        "continuation_nll_given_reward": 1.9960624797477067e-07
+      }
+    },
+    {
+      "episode": 57,
+      "n": 102,
+      "forecast": {
+        "tsp_mse": 0.07435344159603119,
+        "reward_nll": 0.09677484631538391,
+        "continuation_nll_given_reward": 1.2044200957461726e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.0012462841114029288,
+        "reward_nll": 0.026599515229463577,
+        "continuation_nll_given_reward": 6.2519243491790995e-15
+      }
+    },
+    {
+      "episode": 62,
+      "n": 815,
+      "forecast": {
+        "tsp_mse": 0.05073687434196472,
+        "reward_nll": 0.09441498667001724,
+        "continuation_nll_given_reward": 7.305218605324626e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.002287620445713401,
+        "reward_nll": 0.009415279142558575,
+        "continuation_nll_given_reward": 9.764680175550211e-10
+      }
+    },
+    {
+      "episode": 92,
+      "n": 45,
+      "forecast": {
+        "tsp_mse": 0.07181921601295471,
+        "reward_nll": 0.11686653643846512,
+        "continuation_nll_given_reward": 0.00016393819532822818
+      },
+      "reactive": {
+        "tsp_mse": 0.0011303735664114356,
+        "reward_nll": 0.01017551776021719,
+        "continuation_nll_given_reward": 4.832085252759466e-13
+      }
+    },
+    {
+      "episode": 99,
+      "n": 1077,
+      "forecast": {
+        "tsp_mse": 0.0568685457110405,
+        "reward_nll": 0.06904381513595581,
+        "continuation_nll_given_reward": 0.002097025280818343
+      },
+      "reactive": {
+        "tsp_mse": 0.0024197057355195284,
+        "reward_nll": 0.005190233699977398,
+        "continuation_nll_given_reward": 6.943483982224663e-11
+      }
+    },
+    {
+      "episode": 101,
+      "n": 65,
+      "forecast": {
+        "tsp_mse": 0.04322013258934021,
+        "reward_nll": 0.09296524524688721,
+        "continuation_nll_given_reward": 0.002032788470387459
+      },
+      "reactive": {
+        "tsp_mse": 0.0006390508497133851,
+        "reward_nll": 0.002581119304522872,
+        "continuation_nll_given_reward": 6.142497433272737e-15
+      }
+    },
+    {
+      "episode": 116,
+      "n": 1792,
+      "forecast": {
+        "tsp_mse": 0.04983770102262497,
+        "reward_nll": 0.04397552087903023,
+        "continuation_nll_given_reward": 6.244666292332113e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.0021564646158367395,
+        "reward_nll": 0.004198577255010605,
+        "continuation_nll_given_reward": 4.039034884328885e-09
+      }
+    },
+    {
+      "episode": 133,
+      "n": 189,
+      "forecast": {
+        "tsp_mse": 0.04612872004508972,
+        "reward_nll": 0.11303635686635971,
+        "continuation_nll_given_reward": 2.5387875211890787e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.001370964222587645,
+        "reward_nll": 0.013745775446295738,
+        "continuation_nll_given_reward": 3.029124329145816e-08
+      }
+    },
+    {
+      "episode": 142,
+      "n": 206,
+      "forecast": {
+        "tsp_mse": 0.05876767262816429,
+        "reward_nll": 0.061334166675806046,
+        "continuation_nll_given_reward": 9.12290342967026e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.0017624812899157405,
+        "reward_nll": 0.005046443548053503,
+        "continuation_nll_given_reward": 4.090181494821772e-15
+      }
+    },
+    {
+      "episode": 143,
+      "n": 222,
+      "forecast": {
+        "tsp_mse": 0.03599291667342186,
+        "reward_nll": 0.07438472658395767,
+        "continuation_nll_given_reward": 0.00012248384882695973
+      },
+      "reactive": {
+        "tsp_mse": 0.00193288445007056,
+        "reward_nll": 0.03128588944673538,
+        "continuation_nll_given_reward": 6.883853209682655e-11
+      }
+    },
+    {
+      "episode": 162,
+      "n": 389,
+      "forecast": {
+        "tsp_mse": 0.05547681078314781,
+        "reward_nll": 0.07984019070863724,
+        "continuation_nll_given_reward": 0.00990032684057951
+      },
+      "reactive": {
+        "tsp_mse": 0.0022122524678707123,
+        "reward_nll": 0.006569782271981239,
+        "continuation_nll_given_reward": 4.520308394262429e-08
+      }
+    },
+    {
+      "episode": 165,
+      "n": 375,
+      "forecast": {
+        "tsp_mse": 0.0531461164355278,
+        "reward_nll": 0.21499212086200714,
+        "continuation_nll_given_reward": 0.00011013225594069809
+      },
+      "reactive": {
+        "tsp_mse": 0.0023679109290242195,
+        "reward_nll": 0.04997463524341583,
+        "continuation_nll_given_reward": 2.2580654013282242e-10
+      }
+    },
+    {
+      "episode": 195,
+      "n": 47,
+      "forecast": {
+        "tsp_mse": 0.05384723097085953,
+        "reward_nll": 0.16746237874031067,
+        "continuation_nll_given_reward": 0.00015741714742034674
+      },
+      "reactive": {
+        "tsp_mse": 0.0007147092837840319,
+        "reward_nll": 0.010081884451210499,
+        "continuation_nll_given_reward": 3.2064993021885257e-12
+      }
+    },
+    {
+      "episode": 198,
+      "n": 252,
+      "forecast": {
+        "tsp_mse": 0.03736398369073868,
+        "reward_nll": 0.10484105348587036,
+        "continuation_nll_given_reward": 5.914105713600293e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.0019635215867310762,
+        "reward_nll": 0.011430010199546814,
+        "continuation_nll_given_reward": 7.768594795232175e-11
+      }
+    },
+    {
+      "episode": 201,
+      "n": 77,
+      "forecast": {
+        "tsp_mse": 0.07574263215065002,
+        "reward_nll": 0.12409408390522003,
+        "continuation_nll_given_reward": 0.0013115451438352466
+      },
+      "reactive": {
+        "tsp_mse": 0.0010876130545511842,
+        "reward_nll": 0.018129194155335426,
+        "continuation_nll_given_reward": 7.836844237787965e-13
+      }
+    },
+    {
+      "episode": 203,
+      "n": 139,
+      "forecast": {
+        "tsp_mse": 0.07679355144500732,
+        "reward_nll": 0.022202573716640472,
+        "continuation_nll_given_reward": 0.0020695445127785206
+      },
+      "reactive": {
+        "tsp_mse": 0.0013656202936545014,
+        "reward_nll": 0.00100067222956568,
+        "continuation_nll_given_reward": 3.093858822467155e-07
+      }
+    },
+    {
+      "episode": 204,
+      "n": 88,
+      "forecast": {
+        "tsp_mse": 0.04625144600868225,
+        "reward_nll": 0.07136139273643494,
+        "continuation_nll_given_reward": 8.291675044347357e-07
+      },
+      "reactive": {
+        "tsp_mse": 0.0011513548670336604,
+        "reward_nll": 0.011741271242499352,
+        "continuation_nll_given_reward": 1.7430241278093561e-12
+      }
+    },
+    {
+      "episode": 215,
+      "n": 336,
+      "forecast": {
+        "tsp_mse": 0.04955321177840233,
+        "reward_nll": 0.1093267947435379,
+        "continuation_nll_given_reward": 0.0006672387826256454
+      },
+      "reactive": {
+        "tsp_mse": 0.0017106632003560662,
+        "reward_nll": 0.011806638911366463,
+        "continuation_nll_given_reward": 7.670303975304549e-11
+      }
+    },
+    {
+      "episode": 221,
+      "n": 87,
+      "forecast": {
+        "tsp_mse": 0.04874090850353241,
+        "reward_nll": 0.11208376288414001,
+        "continuation_nll_given_reward": 0.0014955964870750904
+      },
+      "reactive": {
+        "tsp_mse": 0.00128029880579561,
+        "reward_nll": 0.004475633148103952,
+        "continuation_nll_given_reward": 1.0893353927232674e-11
+      }
+    },
+    {
+      "episode": 241,
+      "n": 232,
+      "forecast": {
+        "tsp_mse": 0.02730517089366913,
+        "reward_nll": 0.08009347319602966,
+        "continuation_nll_given_reward": 9.169388067675754e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.00205400213599205,
+        "reward_nll": 0.0022679006215184927,
+        "continuation_nll_given_reward": 1.0766380842408552e-10
+      }
+    },
+    {
+      "episode": 250,
+      "n": 537,
+      "forecast": {
+        "tsp_mse": 0.04401261731982231,
+        "reward_nll": 0.05238032713532448,
+        "continuation_nll_given_reward": 5.258089367998764e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.0023780055344104767,
+        "reward_nll": 0.0027125931810587645,
+        "continuation_nll_given_reward": 1.2025038083340878e-11
+      }
+    },
+    {
+      "episode": 254,
+      "n": 274,
+      "forecast": {
+        "tsp_mse": 0.04351526498794556,
+        "reward_nll": 0.18851712346076965,
+        "continuation_nll_given_reward": 8.202371645893436e-06
+      },
+      "reactive": {
+        "tsp_mse": 0.0024967167992144823,
+        "reward_nll": 0.052857331931591034,
+        "continuation_nll_given_reward": 1.511163527645465e-09
+      }
+    },
+    {
+      "episode": 258,
+      "n": 340,
+      "forecast": {
+        "tsp_mse": 0.040240172296762466,
+        "reward_nll": 0.11152249574661255,
+        "continuation_nll_given_reward": 0.014483662322163582
+      },
+      "reactive": {
+        "tsp_mse": 0.0015144653152674437,
+        "reward_nll": 0.025185732170939445,
+        "continuation_nll_given_reward": 1.787784677242943e-11
+      }
+    },
+    {
+      "episode": 259,
+      "n": 132,
+      "forecast": {
+        "tsp_mse": 0.0845004990696907,
+        "reward_nll": 0.058265410363674164,
+        "continuation_nll_given_reward": 1.7005015251925215e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.001464010332711041,
+        "reward_nll": 0.008445098996162415,
+        "continuation_nll_given_reward": 4.474512774188533e-12
+      }
+    },
+    {
+      "episode": 263,
+      "n": 310,
+      "forecast": {
+        "tsp_mse": 0.050207700580358505,
+        "reward_nll": 0.1185988113284111,
+        "continuation_nll_given_reward": 0.008754930458962917
+      },
+      "reactive": {
+        "tsp_mse": 0.0021724810358136892,
+        "reward_nll": 0.005338289774954319,
+        "continuation_nll_given_reward": 1.007413708009608e-09
+      }
+    },
+    {
+      "episode": 278,
+      "n": 323,
+      "forecast": {
+        "tsp_mse": 0.051569320261478424,
+        "reward_nll": 0.09956860542297363,
+        "continuation_nll_given_reward": 0.0010619297390803695
+      },
+      "reactive": {
+        "tsp_mse": 0.002344338456168771,
+        "reward_nll": 0.03374219313263893,
+        "continuation_nll_given_reward": 1.1428329571572249e-07
+      }
+    },
+    {
+      "episode": 281,
+      "n": 169,
+      "forecast": {
+        "tsp_mse": 0.04724450781941414,
+        "reward_nll": 0.1735110729932785,
+        "continuation_nll_given_reward": 0.0002388159919064492
+      },
+      "reactive": {
+        "tsp_mse": 0.0017063621198758483,
+        "reward_nll": 0.024189554154872894,
+        "continuation_nll_given_reward": 1.1250704144358248e-12
+      }
+    },
+    {
+      "episode": 285,
+      "n": 298,
+      "forecast": {
+        "tsp_mse": 0.04546267166733742,
+        "reward_nll": 0.13812141120433807,
+        "continuation_nll_given_reward": 0.020930618047714233
+      },
+      "reactive": {
+        "tsp_mse": 0.002683681435883045,
+        "reward_nll": 0.04374130815267563,
+        "continuation_nll_given_reward": 6.42471409406653e-09
+      }
+    },
+    {
+      "episode": 290,
+      "n": 314,
+      "forecast": {
+        "tsp_mse": 0.038333259522914886,
+        "reward_nll": 0.14664262533187866,
+        "continuation_nll_given_reward": 0.0025753634981811047
+      },
+      "reactive": {
+        "tsp_mse": 0.0017384663224220276,
+        "reward_nll": 0.03221515193581581,
+        "continuation_nll_given_reward": 4.534057396199387e-08
+      }
+    },
+    {
+      "episode": 295,
+      "n": 285,
+      "forecast": {
+        "tsp_mse": 0.04345239698886871,
+        "reward_nll": 0.07238581031560898,
+        "continuation_nll_given_reward": 7.172831101343036e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.002133033238351345,
+        "reward_nll": 0.01655113883316517,
+        "continuation_nll_given_reward": 4.362378860922611e-11
+      }
+    },
+    {
+      "episode": 299,
+      "n": 273,
+      "forecast": {
+        "tsp_mse": 0.03343221917748451,
+        "reward_nll": 0.04928571358323097,
+        "continuation_nll_given_reward": 0.0005185451009310782
+      },
+      "reactive": {
+        "tsp_mse": 0.0018023881129920483,
+        "reward_nll": 0.025320077314972878,
+        "continuation_nll_given_reward": 3.4944769300437883e-09
+      }
+    },
+    {
+      "episode": 341,
+      "n": 215,
+      "forecast": {
+        "tsp_mse": 0.0576835535466671,
+        "reward_nll": 0.13723185658454895,
+        "continuation_nll_given_reward": 0.02437015064060688
+      },
+      "reactive": {
+        "tsp_mse": 0.0018972262041643262,
+        "reward_nll": 0.05522258207201958,
+        "continuation_nll_given_reward": 2.3499093781964575e-09
+      }
+    },
+    {
+      "episode": 358,
+      "n": 59,
+      "forecast": {
+        "tsp_mse": 0.07831539958715439,
+        "reward_nll": 0.10371700674295425,
+        "continuation_nll_given_reward": 0.00010319736611563712
+      },
+      "reactive": {
+        "tsp_mse": 0.0014088836032897234,
+        "reward_nll": 0.00872817449271679,
+        "continuation_nll_given_reward": 9.395724825879588e-15
+      }
+    },
+    {
+      "episode": 366,
+      "n": 114,
+      "forecast": {
+        "tsp_mse": 0.09997845441102982,
+        "reward_nll": 0.33269885182380676,
+        "continuation_nll_given_reward": 0.058539602905511856
+      },
+      "reactive": {
+        "tsp_mse": 0.0018731595482677221,
+        "reward_nll": 0.029970824718475342,
+        "continuation_nll_given_reward": 8.385620198225752e-09
+      }
+    },
+    {
+      "episode": 369,
+      "n": 39,
+      "forecast": {
+        "tsp_mse": 0.027229124680161476,
+        "reward_nll": 0.026877135038375854,
+        "continuation_nll_given_reward": 0.001021629199385643
+      },
+      "reactive": {
+        "tsp_mse": 0.0005542512517422438,
+        "reward_nll": 0.0018501764861866832,
+        "continuation_nll_given_reward": 1.9562550335194828e-07
+      }
+    },
+    {
+      "episode": 380,
+      "n": 239,
+      "forecast": {
+        "tsp_mse": 0.0368887335062027,
+        "reward_nll": 0.12414875626564026,
+        "continuation_nll_given_reward": 0.0043021310120821
+      },
+      "reactive": {
+        "tsp_mse": 0.0015107729705050588,
+        "reward_nll": 0.01781853660941124,
+        "continuation_nll_given_reward": 6.413957294171269e-07
+      }
+    },
+    {
+      "episode": 381,
+      "n": 103,
+      "forecast": {
+        "tsp_mse": 0.06617289781570435,
+        "reward_nll": 0.1079326942563057,
+        "continuation_nll_given_reward": 0.00013866786321159452
+      },
+      "reactive": {
+        "tsp_mse": 0.0009843514999374747,
+        "reward_nll": 0.0023901958484202623,
+        "continuation_nll_given_reward": 3.5217395666364837e-10
+      }
+    },
+    {
+      "episode": 391,
+      "n": 62,
+      "forecast": {
+        "tsp_mse": 0.056825242936611176,
+        "reward_nll": 0.14589883387088776,
+        "continuation_nll_given_reward": 4.568593794829212e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.0013654286740347743,
+        "reward_nll": 0.013834085315465927,
+        "continuation_nll_given_reward": 2.2016791872709468e-14
+      }
+    },
+    {
+      "episode": 394,
+      "n": 150,
+      "forecast": {
+        "tsp_mse": 0.05592508614063263,
+        "reward_nll": 0.003877184586599469,
+        "continuation_nll_given_reward": 9.62676786002703e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.0010152553441002965,
+        "reward_nll": 5.2230658184271306e-05,
+        "continuation_nll_given_reward": 4.2242264916038386e-13
+      }
+    },
+    {
+      "episode": 401,
+      "n": 272,
+      "forecast": {
+        "tsp_mse": 0.03765915334224701,
+        "reward_nll": 0.05457993224263191,
+        "continuation_nll_given_reward": 0.007239283062517643
+      },
+      "reactive": {
+        "tsp_mse": 0.0017875531921163201,
+        "reward_nll": 0.008057634346187115,
+        "continuation_nll_given_reward": 7.207612978676892e-11
+      }
+    },
+    {
+      "episode": 405,
+      "n": 501,
+      "forecast": {
+        "tsp_mse": 0.053895171731710434,
+        "reward_nll": 0.07619711011648178,
+        "continuation_nll_given_reward": 0.0019315052777528763
+      },
+      "reactive": {
+        "tsp_mse": 0.002243893686681986,
+        "reward_nll": 0.0072102840058505535,
+        "continuation_nll_given_reward": 4.4325716430648754e-07
+      }
+    },
+    {
+      "episode": 408,
+      "n": 247,
+      "forecast": {
+        "tsp_mse": 0.042797304689884186,
+        "reward_nll": 0.1968436986207962,
+        "continuation_nll_given_reward": 0.008095039054751396
+      },
+      "reactive": {
+        "tsp_mse": 0.0019772667437791824,
+        "reward_nll": 0.040854714810848236,
+        "continuation_nll_given_reward": 2.632787876599707e-10
+      }
+    },
+    {
+      "episode": 409,
+      "n": 553,
+      "forecast": {
+        "tsp_mse": 0.0598120279610157,
+        "reward_nll": 0.09594347327947617,
+        "continuation_nll_given_reward": 0.00013877807941753417
+      },
+      "reactive": {
+        "tsp_mse": 0.002466726815328002,
+        "reward_nll": 0.022017229348421097,
+        "continuation_nll_given_reward": 5.589528839777813e-10
+      }
+    },
+    {
+      "episode": 412,
+      "n": 221,
+      "forecast": {
+        "tsp_mse": 0.03250708803534508,
+        "reward_nll": 0.008499658666551113,
+        "continuation_nll_given_reward": 0.00010604845738271251
+      },
+      "reactive": {
+        "tsp_mse": 0.0013247475726529956,
+        "reward_nll": 0.0018406149465590715,
+        "continuation_nll_given_reward": 2.721202186788162e-15
+      }
+    },
+    {
+      "episode": 418,
+      "n": 337,
+      "forecast": {
+        "tsp_mse": 0.03774101659655571,
+        "reward_nll": 0.10241814702749252,
+        "continuation_nll_given_reward": 0.006622976623475552
+      },
+      "reactive": {
+        "tsp_mse": 0.0019819748122245073,
+        "reward_nll": 0.005926135461777449,
+        "continuation_nll_given_reward": 3.303736173521088e-09
+      }
+    },
+    {
+      "episode": 429,
+      "n": 238,
+      "forecast": {
+        "tsp_mse": 0.040076978504657745,
+        "reward_nll": 0.15892690420150757,
+        "continuation_nll_given_reward": 0.00021909494535066187
+      },
+      "reactive": {
+        "tsp_mse": 0.0024966513738036156,
+        "reward_nll": 0.04323869198560715,
+        "continuation_nll_given_reward": 1.3022583011945699e-08
+      }
+    },
+    {
+      "episode": 440,
+      "n": 58,
+      "forecast": {
+        "tsp_mse": 0.06648724526166916,
+        "reward_nll": 0.04631688818335533,
+        "continuation_nll_given_reward": 0.0002630606177262962
+      },
+      "reactive": {
+        "tsp_mse": 0.0013520217034965754,
+        "reward_nll": 0.001480292296037078,
+        "continuation_nll_given_reward": 2.593298405878519e-12
+      }
+    },
+    {
+      "episode": 442,
+      "n": 202,
+      "forecast": {
+        "tsp_mse": 0.04210400581359863,
+        "reward_nll": 0.1938692182302475,
+        "continuation_nll_given_reward": 0.05996951088309288
+      },
+      "reactive": {
+        "tsp_mse": 0.0016510984860360622,
+        "reward_nll": 0.020588919520378113,
+        "continuation_nll_given_reward": 3.4985666707426644e-12
+      }
+    },
+    {
+      "episode": 445,
+      "n": 213,
+      "forecast": {
+        "tsp_mse": 0.05526135861873627,
+        "reward_nll": 0.15205822885036469,
+        "continuation_nll_given_reward": 0.00033729724236764014
+      },
+      "reactive": {
+        "tsp_mse": 0.002088024979457259,
+        "reward_nll": 0.04049152135848999,
+        "continuation_nll_given_reward": 8.009782941076349e-12
+      }
+    },
+    {
+      "episode": 465,
+      "n": 263,
+      "forecast": {
+        "tsp_mse": 0.05365387722849846,
+        "reward_nll": 0.15184351801872253,
+        "continuation_nll_given_reward": 0.004636700265109539
+      },
+      "reactive": {
+        "tsp_mse": 0.0029463188257068396,
+        "reward_nll": 0.052994851022958755,
+        "continuation_nll_given_reward": 8.989858635288783e-09
+      }
+    },
+    {
+      "episode": 470,
+      "n": 106,
+      "forecast": {
+        "tsp_mse": 0.021932033821940422,
+        "reward_nll": 0.09558456391096115,
+        "continuation_nll_given_reward": 5.954653715889435e-06
+      },
+      "reactive": {
+        "tsp_mse": 0.0011902045225724578,
+        "reward_nll": 0.0022297310642898083,
+        "continuation_nll_given_reward": 8.88118138059335e-13
+      }
+    },
+    {
+      "episode": 474,
+      "n": 186,
+      "forecast": {
+        "tsp_mse": 0.054379530251026154,
+        "reward_nll": 0.09003126621246338,
+        "continuation_nll_given_reward": 2.2282622012426145e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.0012504294281825423,
+        "reward_nll": 0.0034533804282546043,
+        "continuation_nll_given_reward": 1.2811779415144997e-10
+      }
+    },
+    {
+      "episode": 477,
+      "n": 177,
+      "forecast": {
+        "tsp_mse": 0.04354127496480942,
+        "reward_nll": 0.03012608364224434,
+        "continuation_nll_given_reward": 0.0014675307320430875
+      },
+      "reactive": {
+        "tsp_mse": 0.0011721823830157518,
+        "reward_nll": 0.0007213337230496109,
+        "continuation_nll_given_reward": 2.489168810307363e-13
+      }
+    },
+    {
+      "episode": 482,
+      "n": 125,
+      "forecast": {
+        "tsp_mse": 0.09390649944543839,
+        "reward_nll": 0.02342977002263069,
+        "continuation_nll_given_reward": 0.0008058525854721665
+      },
+      "reactive": {
+        "tsp_mse": 0.0014946283772587776,
+        "reward_nll": 0.01500821951776743,
+        "continuation_nll_given_reward": 2.535309419002263e-12
+      }
+    },
+    {
+      "episode": 493,
+      "n": 166,
+      "forecast": {
+        "tsp_mse": 0.04172910377383232,
+        "reward_nll": 0.11544065177440643,
+        "continuation_nll_given_reward": 0.0034346787724643946
+      },
+      "reactive": {
+        "tsp_mse": 0.0010249650804325938,
+        "reward_nll": 0.010372568853199482,
+        "continuation_nll_given_reward": 2.2237558461313256e-09
+      }
+    },
+    {
+      "episode": 495,
+      "n": 293,
+      "forecast": {
+        "tsp_mse": 0.05103421211242676,
+        "reward_nll": 0.035644832998514175,
+        "continuation_nll_given_reward": 6.853917147964239e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.0019904107321053743,
+        "reward_nll": 0.0017908148001879454,
+        "continuation_nll_given_reward": 8.820771566777578e-15
+      }
+    },
+    {
+      "episode": 497,
+      "n": 194,
+      "forecast": {
+        "tsp_mse": 0.04380141571164131,
+        "reward_nll": 0.09292174875736237,
+        "continuation_nll_given_reward": 0.016046643257141113
+      },
+      "reactive": {
+        "tsp_mse": 0.001424323651008308,
+        "reward_nll": 0.039162542670965195,
+        "continuation_nll_given_reward": 9.263363052970305e-14
+      }
+    },
+    {
+      "episode": 529,
+      "n": 62,
+      "forecast": {
+        "tsp_mse": 0.08145324885845184,
+        "reward_nll": 0.05597369000315666,
+        "continuation_nll_given_reward": 0.01160111278295517
+      },
+      "reactive": {
+        "tsp_mse": 0.0008077392121776938,
+        "reward_nll": 0.0036191395483911037,
+        "continuation_nll_given_reward": 4.813901881284277e-12
+      }
+    },
+    {
+      "episode": 533,
+      "n": 87,
+      "forecast": {
+        "tsp_mse": 0.05527954176068306,
+        "reward_nll": 0.10633584856987,
+        "continuation_nll_given_reward": 7.519857899751514e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.0008405467960983515,
+        "reward_nll": 0.01563887670636177,
+        "continuation_nll_given_reward": 3.5593257230459585e-09
+      }
+    },
+    {
+      "episode": 543,
+      "n": 157,
+      "forecast": {
+        "tsp_mse": 0.05345980077981949,
+        "reward_nll": 0.0686006173491478,
+        "continuation_nll_given_reward": 0.0004811739781871438
+      },
+      "reactive": {
+        "tsp_mse": 0.0012113997945562005,
+        "reward_nll": 0.007639591116458178,
+        "continuation_nll_given_reward": 5.709808181819653e-09
+      }
+    },
+    {
+      "episode": 549,
+      "n": 78,
+      "forecast": {
+        "tsp_mse": 0.06784292310476303,
+        "reward_nll": 0.05440885201096535,
+        "continuation_nll_given_reward": 7.318031566683203e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.00176806200761348,
+        "reward_nll": 0.00031909343670122325,
+        "continuation_nll_given_reward": 3.845238016886299e-11
+      }
+    },
+    {
+      "episode": 556,
+      "n": 96,
+      "forecast": {
+        "tsp_mse": 0.04534580931067467,
+        "reward_nll": 0.05036191642284393,
+        "continuation_nll_given_reward": 6.229820428416133e-06
+      },
+      "reactive": {
+        "tsp_mse": 0.0005955116357654333,
+        "reward_nll": 0.00030905354651622474,
+        "continuation_nll_given_reward": 1.5869733305251543e-10
+      }
+    },
+    {
+      "episode": 561,
+      "n": 191,
+      "forecast": {
+        "tsp_mse": 0.07864302396774292,
+        "reward_nll": 0.009070154279470444,
+        "continuation_nll_given_reward": 6.61654703435488e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.0012555225985124707,
+        "reward_nll": 0.001033208449371159,
+        "continuation_nll_given_reward": 1.4979178786234115e-08
+      }
+    },
+    {
+      "episode": 579,
+      "n": 181,
+      "forecast": {
+        "tsp_mse": 0.05170033872127533,
+        "reward_nll": 0.0955684557557106,
+        "continuation_nll_given_reward": 0.0157086793333292
+      },
+      "reactive": {
+        "tsp_mse": 0.0012151020346209407,
+        "reward_nll": 0.0022909180261194706,
+        "continuation_nll_given_reward": 3.398306702706577e-08
+      }
+    },
+    {
+      "episode": 589,
+      "n": 127,
+      "forecast": {
+        "tsp_mse": 0.06473889946937561,
+        "reward_nll": 0.1458323895931244,
+        "continuation_nll_given_reward": 0.00019562563102226704
+      },
+      "reactive": {
+        "tsp_mse": 0.0016056192107498646,
+        "reward_nll": 0.013553621247410774,
+        "continuation_nll_given_reward": 3.1543589784632786e-07
+      }
+    },
+    {
+      "episode": 597,
+      "n": 46,
+      "forecast": {
+        "tsp_mse": 0.043846555054187775,
+        "reward_nll": 0.14424355328083038,
+        "continuation_nll_given_reward": 0.00018726667622104287
+      },
+      "reactive": {
+        "tsp_mse": 0.0014147819019854069,
+        "reward_nll": 0.0003353992651682347,
+        "continuation_nll_given_reward": 1.1723387458560403e-14
+      }
+    },
+    {
+      "episode": 606,
+      "n": 192,
+      "forecast": {
+        "tsp_mse": 0.04895925521850586,
+        "reward_nll": 0.03478579968214035,
+        "continuation_nll_given_reward": 0.0009443567832931876
+      },
+      "reactive": {
+        "tsp_mse": 0.0012916167033836246,
+        "reward_nll": 0.002483453368768096,
+        "continuation_nll_given_reward": 1.7921932737863244e-07
+      }
+    },
+    {
+      "episode": 617,
+      "n": 109,
+      "forecast": {
+        "tsp_mse": 0.054592669010162354,
+        "reward_nll": 0.11367904394865036,
+        "continuation_nll_given_reward": 7.412072591250762e-07
+      },
+      "reactive": {
+        "tsp_mse": 0.0008404055843129754,
+        "reward_nll": 0.03309132531285286,
+        "continuation_nll_given_reward": 8.462956220143744e-14
+      }
+    },
+    {
+      "episode": 620,
+      "n": 207,
+      "forecast": {
+        "tsp_mse": 0.03474399074912071,
+        "reward_nll": 0.0691990852355957,
+        "continuation_nll_given_reward": 6.17283585597761e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.001582261291332543,
+        "reward_nll": 0.01934482902288437,
+        "continuation_nll_given_reward": 1.3350925920363466e-09
+      }
+    },
+    {
+      "episode": 625,
+      "n": 418,
+      "forecast": {
+        "tsp_mse": 0.05158998444676399,
+        "reward_nll": 0.09251637756824493,
+        "continuation_nll_given_reward": 0.011980697512626648
+      },
+      "reactive": {
+        "tsp_mse": 0.002306208247318864,
+        "reward_nll": 0.00437370827421546,
+        "continuation_nll_given_reward": 8.278810796624736e-12
+      }
+    },
+    {
+      "episode": 642,
+      "n": 201,
+      "forecast": {
+        "tsp_mse": 0.04438374191522598,
+        "reward_nll": 0.03960036113858223,
+        "continuation_nll_given_reward": 0.0009873165981844068
+      },
+      "reactive": {
+        "tsp_mse": 0.0013504057424142957,
+        "reward_nll": 0.0013685822486877441,
+        "continuation_nll_given_reward": 2.1174407018753226e-15
+      }
+    },
+    {
+      "episode": 644,
+      "n": 314,
+      "forecast": {
+        "tsp_mse": 0.034538816660642624,
+        "reward_nll": 0.11668641865253448,
+        "continuation_nll_given_reward": 0.0036219207104295492
+      },
+      "reactive": {
+        "tsp_mse": 0.001853373134508729,
+        "reward_nll": 0.01111414935439825,
+        "continuation_nll_given_reward": 2.5442830065003363e-09
+      }
+    },
+    {
+      "episode": 651,
+      "n": 1141,
+      "forecast": {
+        "tsp_mse": 0.044756967574357986,
+        "reward_nll": 0.08817227929830551,
+        "continuation_nll_given_reward": 0.00011264716158621013
+      },
+      "reactive": {
+        "tsp_mse": 0.0020791590213775635,
+        "reward_nll": 0.008275718428194523,
+        "continuation_nll_given_reward": 1.7841049471112314e-10
+      }
+    },
+    {
+      "episode": 661,
+      "n": 209,
+      "forecast": {
+        "tsp_mse": 0.0425461120903492,
+        "reward_nll": 0.06525804847478867,
+        "continuation_nll_given_reward": 0.00023718849115539342
+      },
+      "reactive": {
+        "tsp_mse": 0.001896382076665759,
+        "reward_nll": 0.009491762146353722,
+        "continuation_nll_given_reward": 2.6034325045711133e-14
+      }
+    },
+    {
+      "episode": 675,
+      "n": 85,
+      "forecast": {
+        "tsp_mse": 0.07047172635793686,
+        "reward_nll": 0.07233428210020065,
+        "continuation_nll_given_reward": 2.9189752694946947e-06
+      },
+      "reactive": {
+        "tsp_mse": 0.001107198535464704,
+        "reward_nll": 0.046396560966968536,
+        "continuation_nll_given_reward": 3.7388460455256404e-16
+      }
+    },
+    {
+      "episode": 685,
+      "n": 71,
+      "forecast": {
+        "tsp_mse": 0.06254446506500244,
+        "reward_nll": 0.15554414689540863,
+        "continuation_nll_given_reward": 0.06442137062549591
+      },
+      "reactive": {
+        "tsp_mse": 0.0013250821502879262,
+        "reward_nll": 0.06849024444818497,
+        "continuation_nll_given_reward": 4.319249402584546e-09
+      }
+    },
+    {
+      "episode": 690,
+      "n": 322,
+      "forecast": {
+        "tsp_mse": 0.043425846844911575,
+        "reward_nll": 0.15454545617103577,
+        "continuation_nll_given_reward": 9.148146637016907e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.002006558934226632,
+        "reward_nll": 0.04650653153657913,
+        "continuation_nll_given_reward": 1.894925993894958e-09
+      }
+    },
+    {
+      "episode": 691,
+      "n": 208,
+      "forecast": {
+        "tsp_mse": 0.04462231695652008,
+        "reward_nll": 0.05887101590633392,
+        "continuation_nll_given_reward": 0.0006113500567153096
+      },
+      "reactive": {
+        "tsp_mse": 0.00136023317463696,
+        "reward_nll": 0.007636750116944313,
+        "continuation_nll_given_reward": 4.14196585016291e-12
+      }
+    },
+    {
+      "episode": 695,
+      "n": 65,
+      "forecast": {
+        "tsp_mse": 0.0506930910050869,
+        "reward_nll": 0.13887616991996765,
+        "continuation_nll_given_reward": 6.939938430150505e-06
+      },
+      "reactive": {
+        "tsp_mse": 0.0013890763511881232,
+        "reward_nll": 0.02222234569489956,
+        "continuation_nll_given_reward": 1.7899469883717045e-12
+      }
+    },
+    {
+      "episode": 710,
+      "n": 211,
+      "forecast": {
+        "tsp_mse": 0.04253752902150154,
+        "reward_nll": 0.03585971146821976,
+        "continuation_nll_given_reward": 0.00039350002771243453
+      },
+      "reactive": {
+        "tsp_mse": 0.001541730365715921,
+        "reward_nll": 0.0019489409169182181,
+        "continuation_nll_given_reward": 3.277365601128679e-10
+      }
+    },
+    {
+      "episode": 717,
+      "n": 242,
+      "forecast": {
+        "tsp_mse": 0.028680726885795593,
+        "reward_nll": 0.0732138529419899,
+        "continuation_nll_given_reward": 0.012097571045160294
+      },
+      "reactive": {
+        "tsp_mse": 0.00186502980068326,
+        "reward_nll": 0.009571768343448639,
+        "continuation_nll_given_reward": 1.8341605567684383e-08
+      }
+    },
+    {
+      "episode": 729,
+      "n": 291,
+      "forecast": {
+        "tsp_mse": 0.04353654757142067,
+        "reward_nll": 0.1048884317278862,
+        "continuation_nll_given_reward": 5.890464763069758e-06
+      },
+      "reactive": {
+        "tsp_mse": 0.0023060981184244156,
+        "reward_nll": 0.018957089632749557,
+        "continuation_nll_given_reward": 7.94340496157453e-11
+      }
+    },
+    {
+      "episode": 736,
+      "n": 117,
+      "forecast": {
+        "tsp_mse": 0.047273047268390656,
+        "reward_nll": 0.2413148283958435,
+        "continuation_nll_given_reward": 0.002469558035954833
+      },
+      "reactive": {
+        "tsp_mse": 0.001355551416054368,
+        "reward_nll": 0.04616481810808182,
+        "continuation_nll_given_reward": 5.287783557371417e-13
+      }
+    },
+    {
+      "episode": 759,
+      "n": 41,
+      "forecast": {
+        "tsp_mse": 0.07529018819332123,
+        "reward_nll": 0.07124573737382889,
+        "continuation_nll_given_reward": 0.0006918094004504383
+      },
+      "reactive": {
+        "tsp_mse": 0.0008568551857024431,
+        "reward_nll": 0.01819971390068531,
+        "continuation_nll_given_reward": 2.8983268557511085e-14
+      }
+    },
+    {
+      "episode": 761,
+      "n": 63,
+      "forecast": {
+        "tsp_mse": 0.033907923847436905,
+        "reward_nll": 0.1479537934064865,
+        "continuation_nll_given_reward": 0.014351995661854744
+      },
+      "reactive": {
+        "tsp_mse": 0.0007047107210382819,
+        "reward_nll": 0.005686819087713957,
+        "continuation_nll_given_reward": 4.5421742811413424e-08
+      }
+    },
+    {
+      "episode": 762,
+      "n": 308,
+      "forecast": {
+        "tsp_mse": 0.03399033471941948,
+        "reward_nll": 0.08400097489356995,
+        "continuation_nll_given_reward": 0.00858271587640047
+      },
+      "reactive": {
+        "tsp_mse": 0.0021115208510309458,
+        "reward_nll": 0.014248053543269634,
+        "continuation_nll_given_reward": 3.81091176393511e-08
+      }
+    },
+    {
+      "episode": 774,
+      "n": 149,
+      "forecast": {
+        "tsp_mse": 0.06331535428762436,
+        "reward_nll": 0.07126565277576447,
+        "continuation_nll_given_reward": 8.231522224377841e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.0014024344272911549,
+        "reward_nll": 0.006337906699627638,
+        "continuation_nll_given_reward": 4.2689651813532237e-10
+      }
+    },
+    {
+      "episode": 793,
+      "n": 223,
+      "forecast": {
+        "tsp_mse": 0.05363832041621208,
+        "reward_nll": 0.014507238753139973,
+        "continuation_nll_given_reward": 0.00356971169821918
+      },
+      "reactive": {
+        "tsp_mse": 0.0015391468768939376,
+        "reward_nll": 0.0011771897552534938,
+        "continuation_nll_given_reward": 2.4667206943718156e-08
+      }
+    },
+    {
+      "episode": 795,
+      "n": 150,
+      "forecast": {
+        "tsp_mse": 0.03612111881375313,
+        "reward_nll": 0.057082194834947586,
+        "continuation_nll_given_reward": 8.426703061559238e-06
+      },
+      "reactive": {
+        "tsp_mse": 0.0008828697027638555,
+        "reward_nll": 0.006822456605732441,
+        "continuation_nll_given_reward": 1.01455757857416e-12
+      }
+    },
+    {
+      "episode": 799,
+      "n": 103,
+      "forecast": {
+        "tsp_mse": 0.048200931400060654,
+        "reward_nll": 0.1297348141670227,
+        "continuation_nll_given_reward": 0.024748561903834343
+      },
+      "reactive": {
+        "tsp_mse": 0.001664579613134265,
+        "reward_nll": 0.03009052388370037,
+        "continuation_nll_given_reward": 1.897529561186188e-15
+      }
+    },
+    {
+      "episode": 818,
+      "n": 63,
+      "forecast": {
+        "tsp_mse": 0.04385780170559883,
+        "reward_nll": 0.008138401433825493,
+        "continuation_nll_given_reward": 0.0002015179634327069
+      },
+      "reactive": {
+        "tsp_mse": 0.0007561937673017383,
+        "reward_nll": 0.0003171468561049551,
+        "continuation_nll_given_reward": 1.5455706159350768e-11
+      }
+    },
+    {
+      "episode": 823,
+      "n": 152,
+      "forecast": {
+        "tsp_mse": 0.07452093064785004,
+        "reward_nll": 0.08955773711204529,
+        "continuation_nll_given_reward": 3.2547672162763774e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.0008241157047450542,
+        "reward_nll": 0.03712954372167587,
+        "continuation_nll_given_reward": 2.3312852093226866e-08
+      }
+    },
+    {
+      "episode": 836,
+      "n": 144,
+      "forecast": {
+        "tsp_mse": 0.06551555544137955,
+        "reward_nll": 0.015621594153344631,
+        "continuation_nll_given_reward": 3.216888217139058e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.0009012828813865781,
+        "reward_nll": 0.00036918159457854927,
+        "continuation_nll_given_reward": 6.622740134076821e-09
+      }
+    },
+    {
+      "episode": 838,
+      "n": 254,
+      "forecast": {
+        "tsp_mse": 0.025998113676905632,
+        "reward_nll": 0.036606114357709885,
+        "continuation_nll_given_reward": 0.0006103373598307371
+      },
+      "reactive": {
+        "tsp_mse": 0.001483413390815258,
+        "reward_nll": 0.00027050331118516624,
+        "continuation_nll_given_reward": 1.3457410099476652e-13
+      }
+    },
+    {
+      "episode": 840,
+      "n": 896,
+      "forecast": {
+        "tsp_mse": 0.048987261950969696,
+        "reward_nll": 0.038591958582401276,
+        "continuation_nll_given_reward": 2.6090117899002507e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.0021793916821479797,
+        "reward_nll": 0.004938623867928982,
+        "continuation_nll_given_reward": 3.0147228029936413e-12
+      }
+    },
+    {
+      "episode": 848,
+      "n": 70,
+      "forecast": {
+        "tsp_mse": 0.05769350379705429,
+        "reward_nll": 0.11614342033863068,
+        "continuation_nll_given_reward": 0.0009752314072102308
+      },
+      "reactive": {
+        "tsp_mse": 0.0007933352026157081,
+        "reward_nll": 0.0037046351935714483,
+        "continuation_nll_given_reward": 3.289702833601284e-14
+      }
+    },
+    {
+      "episode": 866,
+      "n": 135,
+      "forecast": {
+        "tsp_mse": 0.06587786227464676,
+        "reward_nll": 0.02914201281964779,
+        "continuation_nll_given_reward": 1.6639936575302272e-06
+      },
+      "reactive": {
+        "tsp_mse": 0.0011067839805036783,
+        "reward_nll": 0.0013237781822681427,
+        "continuation_nll_given_reward": 1.8838014102188355e-13
+      }
+    },
+    {
+      "episode": 869,
+      "n": 296,
+      "forecast": {
+        "tsp_mse": 0.05471894145011902,
+        "reward_nll": 0.10336089879274368,
+        "continuation_nll_given_reward": 2.102990220009815e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.002331881783902645,
+        "reward_nll": 0.025806153193116188,
+        "continuation_nll_given_reward": 1.04023692735827e-14
+      }
+    },
+    {
+      "episode": 877,
+      "n": 187,
+      "forecast": {
+        "tsp_mse": 0.05021021142601967,
+        "reward_nll": 0.06637462228536606,
+        "continuation_nll_given_reward": 0.0005330152343958616
+      },
+      "reactive": {
+        "tsp_mse": 0.001320769777521491,
+        "reward_nll": 0.019195346161723137,
+        "continuation_nll_given_reward": 1.009739600960069e-12
+      }
+    },
+    {
+      "episode": 895,
+      "n": 208,
+      "forecast": {
+        "tsp_mse": 0.03298332914710045,
+        "reward_nll": 0.05492664501070976,
+        "continuation_nll_given_reward": 0.0035000042989850044
+      },
+      "reactive": {
+        "tsp_mse": 0.0013597644865512848,
+        "reward_nll": 0.000662292237393558,
+        "continuation_nll_given_reward": 5.837081573645264e-08
+      }
+    },
+    {
+      "episode": 911,
+      "n": 207,
+      "forecast": {
+        "tsp_mse": 0.053943343460559845,
+        "reward_nll": 0.11408771574497223,
+        "continuation_nll_given_reward": 0.00010061812645290047
+      },
+      "reactive": {
+        "tsp_mse": 0.002098176861181855,
+        "reward_nll": 0.035439830273389816,
+        "continuation_nll_given_reward": 3.7589456547415523e-10
+      }
+    },
+    {
+      "episode": 913,
+      "n": 139,
+      "forecast": {
+        "tsp_mse": 0.07291436940431595,
+        "reward_nll": 0.06368447095155716,
+        "continuation_nll_given_reward": 0.00574747659265995
+      },
+      "reactive": {
+        "tsp_mse": 0.0022234118077903986,
+        "reward_nll": 0.0021061971783638,
+        "continuation_nll_given_reward": 7.538018603411856e-14
+      }
+    },
+    {
+      "episode": 919,
+      "n": 212,
+      "forecast": {
+        "tsp_mse": 0.034765467047691345,
+        "reward_nll": 0.061571747064590454,
+        "continuation_nll_given_reward": 0.014072569087147713
+      },
+      "reactive": {
+        "tsp_mse": 0.0016012004343792796,
+        "reward_nll": 0.014361527748405933,
+        "continuation_nll_given_reward": 1.8239721555346478e-07
+      }
+    },
+    {
+      "episode": 926,
+      "n": 71,
+      "forecast": {
+        "tsp_mse": 0.05240103602409363,
+        "reward_nll": 0.12785986065864563,
+        "continuation_nll_given_reward": 0.0032118679955601692
+      },
+      "reactive": {
+        "tsp_mse": 0.0011185385519638658,
+        "reward_nll": 0.01842878758907318,
+        "continuation_nll_given_reward": 6.717457523564008e-08
+      }
+    },
+    {
+      "episode": 934,
+      "n": 231,
+      "forecast": {
+        "tsp_mse": 0.04244379699230194,
+        "reward_nll": 0.0919080376625061,
+        "continuation_nll_given_reward": 0.017687007784843445
+      },
+      "reactive": {
+        "tsp_mse": 0.0019062792416661978,
+        "reward_nll": 0.002211999148130417,
+        "continuation_nll_given_reward": 6.73324862532354e-08
+      }
+    },
+    {
+      "episode": 940,
+      "n": 99,
+      "forecast": {
+        "tsp_mse": 0.04798629879951477,
+        "reward_nll": 0.05018768087029457,
+        "continuation_nll_given_reward": 0.00016863964265212417
+      },
+      "reactive": {
+        "tsp_mse": 0.0011353789595887065,
+        "reward_nll": 0.001870542299002409,
+        "continuation_nll_given_reward": 4.933130184729684e-13
+      }
+    },
+    {
+      "episode": 962,
+      "n": 223,
+      "forecast": {
+        "tsp_mse": 0.049930788576602936,
+        "reward_nll": 0.09762883931398392,
+        "continuation_nll_given_reward": 0.0003907030913978815
+      },
+      "reactive": {
+        "tsp_mse": 0.0019411433022469282,
+        "reward_nll": 0.027600325644016266,
+        "continuation_nll_given_reward": 3.612638660444034e-11
+      }
+    },
+    {
+      "episode": 988,
+      "n": 89,
+      "forecast": {
+        "tsp_mse": 0.056913670152425766,
+        "reward_nll": 0.06169350817799568,
+        "continuation_nll_given_reward": 4.802600960829295e-05
+      },
+      "reactive": {
+        "tsp_mse": 0.0006931624957360327,
+        "reward_nll": 0.0001892367290565744,
+        "continuation_nll_given_reward": 2.7793766637154715e-14
+      }
+    },
+    {
+      "episode": 989,
+      "n": 181,
+      "forecast": {
+        "tsp_mse": 0.051872991025447845,
+        "reward_nll": 0.0058145299553871155,
+        "continuation_nll_given_reward": 0.00012164020154159516
+      },
+      "reactive": {
+        "tsp_mse": 0.000862938875798136,
+        "reward_nll": 4.669857298722491e-05,
+        "continuation_nll_given_reward": 4.437419669992698e-13
+      }
+    },
+    {
+      "episode": 993,
+      "n": 1149,
+      "forecast": {
+        "tsp_mse": 0.051530249416828156,
+        "reward_nll": 0.05905938521027565,
+        "continuation_nll_given_reward": 0.003476749174296856
+      },
+      "reactive": {
+        "tsp_mse": 0.0020723675843328238,
+        "reward_nll": 0.009611609391868114,
+        "continuation_nll_given_reward": 6.954755438215443e-09
+      }
+    },
+    {
+      "episode": 1002,
+      "n": 137,
+      "forecast": {
+        "tsp_mse": 0.056255023926496506,
+        "reward_nll": 0.0789564922451973,
+        "continuation_nll_given_reward": 8.959876140579581e-06
+      },
+      "reactive": {
+        "tsp_mse": 0.0010426291264593601,
+        "reward_nll": 0.014758847653865814,
+        "continuation_nll_given_reward": 7.787723374161337e-13
+      }
+    },
+    {
+      "episode": 1006,
+      "n": 143,
+      "forecast": {
+        "tsp_mse": 0.04493977874517441,
+        "reward_nll": 0.18089061975479126,
+        "continuation_nll_given_reward": 0.0003450304502621293
+      },
+      "reactive": {
+        "tsp_mse": 0.001311875064857304,
+        "reward_nll": 0.026387223973870277,
+        "continuation_nll_given_reward": 5.680417025644147e-09
+      }
+    }
+  ]
+}

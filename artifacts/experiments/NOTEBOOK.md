@@ -15574,3 +15574,29 @@ recent-only and fitted constant controls in skill; nonlinear hunger does not imp
 and fatigue changes are small and Brier intervals include zero. Sleep duration's early gain
 fades in both post-percept and post-action readings. The previously validated natural thirst
 alias gives 0/128 vs 0/128 for each 2k export (parent 1/128 each, true 1 vs 0). No world training.
+
+## 2026-11-12 — F5 approved launch
+
+`20261111_p1f5/`. CPU objective gate: 23 hunger pairs, 32 cooldown pairs, 240 natural
+states. Uniform TSP forecast ratio to G1 after normalising by each target's natural
+variation was 4.73 for hunger and 2.26 for cooldown. No +1/+3 brightness foil beat
+either event. At +6, 18/32 cooldown foils won; reward separated all 32 cooldown pairs
+and did not separate hunger. This qualifies the incentive with a nuisance limitation,
+without measuring learned forecast or native uptake. Kept the independent extra
+training crop because the normal learned chooser's surprise reads the successor.
+The observed fovea, reactive TSP and reconstruction still use learned gaze.
+
+Bounded training smoke passed both chunk sizes and the bootstrap-boundary resume.
+Seven evaluation smoke stages and three focused CUDA tests passed. Four reused or
+full-cohort readouts remain in the production queue only. Sealed 60 files and launched
+`saccade-p1f5.service` at 08:57:50 AEDT with user approval. The worker selects from the
+ten monitor checkpoints and runs the checkpoint-bound evaluation automatically.
+
+F5 follow-ups queued at 21:42 AEDT. The separate `saccade-p1f5-followups.service`
+waits for the sealed training and automatic evaluation invocation to exit, then
+binds to its selected checkpoint hash. It runs the 64 move-vs-NOOP pairs, the 201
+coal and 201 wood action pairs (including the crossed inputs), and the 32-source,
+eight-draw, 48-frame sleep rollout. Original banks and sampler settings retained.
+CPU checks verified the pair banks, reproduced the archived F4 sleep summary and
+exercised queue order and resume. All 60 original pins still match. The new GPU
+readouts were deferred to the queued handoff.

@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "checkpoint_sha256": "a22b811e59e4f6d5433ac2dffa7b7b5c6744b83fd498540d01f5145b421d6a45",
+  "stages": {
+    "s1": true,
+    "native_pairs": true,
+    "forecast_scores": true,
+    "consequences": true,
+    "interface": true,
+    "recursion_4": true,
+    "natural_thirst": true
+  },
+  "fixture_only": true,
+  "full_queue_only": [
+    "belief_probe",
+    "belief_path_probe",
+    "native_pairs_f4",
+    "native_pairs_hud"
+  ]
+}

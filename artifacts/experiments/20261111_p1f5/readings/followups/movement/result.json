@@ -1,0 +1,19 @@
+{
+  "pairs": 64,
+  "episodes": 64,
+  "K": 16,
+  "moved (member 0 = move, member 1 = NOOP)": [
+    1.0,
+    0.0
+  ],
+  "pairs with every move future moved / every NOOP future still": [
+    64,
+    64
+  ],
+  "f_mean (0 = move successor, 1 = NOOP successor)": [
+    0.0949999988079071,
+    0.9819999933242798
+  ],
+  "bank_sha256": "052d12851992b898b25e3b8453eb1a8a5e8702b8bf3298c3df454106025acc4e",
+  "checkpoint_sha256": "b232d2d7f900700b7ed4fb7c2affae2c1cea1c56bc462fbd806a761dc14b1ead"
+}

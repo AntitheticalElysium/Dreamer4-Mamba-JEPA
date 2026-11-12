@@ -1,5 +1,6 @@
 /run/
-/readings/
 /checks/
 *.log
 /STATUS.json
+readings/**/*.npz
+readings/**/*.pt

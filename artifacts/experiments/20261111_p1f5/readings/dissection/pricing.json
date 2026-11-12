@@ -1,0 +1,64 @@
+{
+ "episodes": 120,
+ "sha256": "b232d2d7f900700b7ed4fb7c2affae2c1cea1c56bc462fbd806a761dc14b1ead",
+ "(7, 1)/health": {
+  "frames": 30703,
+  "change_frames": 1228,
+  "forecast_err_unchanged": 0.09401756525039673,
+  "forecast_err_changed": 0.27951580286026,
+  "reactive_err_unchanged": 0.010453082621097565,
+  "reactive_err_changed": 0.017786597833037376,
+  "digit_blind_reference": 0.12935033440589905,
+  "share_of_window_forecast_error": 0.14477020502090454
+ },
+ "(7, 1)/food": {
+  "frames": 30703,
+  "change_frames": 1085,
+  "forecast_err_unchanged": 0.1716991811990738,
+  "forecast_err_changed": 0.19858726859092712,
+  "reactive_err_unchanged": 0.009882203303277493,
+  "reactive_err_changed": 0.010561675764620304,
+  "digit_blind_reference": 0.18802012503147125,
+  "share_of_window_forecast_error": 0.24640455842018127
+ },
+ "(7, 1)/drink": {
+  "frames": 30703,
+  "change_frames": 1530,
+  "forecast_err_unchanged": 0.1467326283454895,
+  "forecast_err_changed": 0.1971215158700943,
+  "reactive_err_unchanged": 0.00576481269672513,
+  "reactive_err_changed": 0.005736475810408592,
+  "digit_blind_reference": 0.2019413858652115,
+  "share_of_window_forecast_error": 0.21299998462200165
+ },
+ "(7, 2)/food": {
+  "frames": 30703,
+  "change_frames": 1085,
+  "forecast_err_unchanged": 0.1716991662979126,
+  "forecast_err_changed": 0.19858726859092712,
+  "reactive_err_unchanged": 0.009882203303277493,
+  "reactive_err_changed": 0.010561676695942879,
+  "digit_blind_reference": 0.18802012503147125,
+  "share_of_window_forecast_error": 0.2390926331281662
+ },
+ "(7, 2)/drink": {
+  "frames": 30703,
+  "change_frames": 1530,
+  "forecast_err_unchanged": 0.1467326283454895,
+  "forecast_err_changed": 0.1971215158700943,
+  "reactive_err_unchanged": 0.00576481269672513,
+  "reactive_err_changed": 0.005736475810408592,
+  "digit_blind_reference": 0.2019413858652115,
+  "share_of_window_forecast_error": 0.2066793292760849
+ },
+ "(7, 2)/energy": {
+  "frames": 30703,
+  "change_frames": 1079,
+  "forecast_err_unchanged": 0.12129790335893631,
+  "forecast_err_changed": 0.20616230368614197,
+  "reactive_err_unchanged": 0.0070945932529866695,
+  "reactive_err_changed": 0.011419017799198627,
+  "digit_blind_reference": 0.16003717482089996,
+  "share_of_window_forecast_error": 0.1721089780330658
+ }
+}
