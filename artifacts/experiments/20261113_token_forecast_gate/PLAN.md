@@ -213,3 +213,40 @@ forecast's health / food / drink / energy error on unchanged frames; reward log-
 
 This tests sharing in the head, on frozen inputs. It does not test what a shared objective does to the belief during
 training.
+
+## Round 3 (user, 11-13 night): does handing the forecast the present let it ask for the pixel clocks?
+
+Hypothesis (RESULTS round 2, D2 reading; untested): the belief-only forecast's error at a pixel clock's cell is mostly
+the current value, which the belief does not hold (input exact: health 1.00, food 0.35, drink 0.49, energy 0.47) and
+which is identical in a pair's two members, so the request to separate them is drowned. The reward forecast predicts
+a change and carries no such burden. Round 1 denied the head the previous tokens on purpose ("the cache's job").
+
+`gate3.py`, as Codex specified: plain MSE and the simplest fixed skip, `next tokens = observed current tokens +
+head(belief)`, tokens detached. The **absolute** arm is round 2's plain head (must reproduce its held-out loss). The
+**skip** arm has the same class, the same initial weights, the same draws and budget; only the added current tokens
+differ. Checkpoints 1, 2, 10; the same four pair sets; fp32 targets. No categorical arm and no learned access to the
+current tokens: either would confound the one change tested. Codex's check, taken as given: on the pairs the current
+tokens are identical in both members, so the oracle consequence and the oracle foil cost are unchanged by the skip;
+only the fitted head changes.
+
+Per pair and arm: the request cosine (all cells; digit cell only); kappa; the predicted change at the digit cell on
+the due and the not-due member, as a fraction of the true change, measured from the current tokens (0 = copying);
+the digit cell's error split into the part common to both members and the part that differs; the +6/255 foil as the
+trained head pays it; the matched held-out update (d kappa, plain-gradient geometry, the other fold's summed
+gradient). Held-out loss beside the shuffled-belief control and copying.
+
+**Readings, fixed before results.** Checkpoint 2 is the primary read (Codex: the update test missed its positive
+control at checkpoint 1); checkpoints 1 and 10 are descriptive.
+1. **Mechanism check:** the common error at the food and energy cells falls under the skip. If it does not, the test
+   is uninformative.
+2. **Value-first supported for a clock:** under the skip its digit-cell cosine is positive with a bootstrap 95%
+   interval excluding 0, where the absolute arm's is not. Energy and hunger are read separately.
+3. **Controls:** recovery and cooldown (present already held) keep a positive digit-cell cosine under the skip.
+4. **Not supported:** energy's and hunger's digit-cell cosines keep intervals including 0 under the skip. Then the
+   present was not what drowned the request, and the competing explanation stands: the pixel clocks' traces are not
+   in a form a forecast can use.
+5. **Reported, not bars:** all-cell cosines, the due / not-due predicted change (Codex's reading: a correctly timed
+   change above copying needs a belief that already times it, which F5's does not for these clocks, so a null there
+   is expected and does not decide the request), nuisance, matched update.
+
+A pass earns a bounded training test, not a repaired world.
