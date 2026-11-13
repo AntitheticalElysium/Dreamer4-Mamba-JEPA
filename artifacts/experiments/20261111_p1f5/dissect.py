@@ -162,11 +162,20 @@ def swap():
     write("swap.json", res)
 
 
-# ---------- recovery pairs ----------
+# ---------- exact-history clock pairs (recovery, energy) ----------
 
-def build_recovery(n=32):
+CLOCKS = {  # counter set to two values at a recorded state, then NOOPs; the digit's due event at step s + 1 in branch 0
+    "recovery": dict(field="player_recover", values=(20., 12.), col=0, sign=+1, steps=42, search=(16, 40), seed=111301,
+                     select=lambda b: (b[:, 0] <= 7) & (b[:, 1:].min(1) >= 3), margin=45),
+    "energy": dict(field="player_fatigue", values=(25., 17.), col=3, sign=-1, steps=47, search=(16, 45), seed=111302,
+                   select=lambda b: (b[:, 0] >= 3) & (b[:, 1] >= 3) & (b[:, 2] >= 4) & (b[:, 3] >= 3), margin=50),
+}
+
+
+def build_clock(name, n=32):
     import jax, jax.numpy as jnp
     assert jax.default_backend() == "cpu"
+    k = CLOCKS[name]
     L = dict(np.load(D.ROOT / "artifacts/eda/s0/s0_dev_labels.npz"))
     off = np.r_[0, np.cumsum(L["ep_T"] + 1)]
     _, _, _, step, render = D.RP.env_and_render()
@@ -177,7 +186,7 @@ def build_recovery(n=32):
         lo, hi = off[e:e + 2]
         b = L["s_body"][lo:hi]
         ts = np.arange(T + 1)
-        ok = (ts >= 12) & (ts <= T - 45) & (b[:, 0] <= 7) & (b[:, 1:].min(1) >= 3) & ~L["s_sleep"][lo:hi] & (L["s_light"][lo:hi] >= .9)
+        ok = (ts >= 12) & (ts <= T - k["margin"]) & k["select"](b) & ~L["s_sleep"][lo:hi] & (L["s_light"][lo:hi] >= .9)
         idx = np.flatnonzero(ok)
         if not len(idx):
             continue
@@ -186,22 +195,24 @@ def build_recovery(n=32):
         state = D.RP.advance_to(sh, sl, t)
         orig = D.RP.episode_fields(sh, sl)
         assert np.array_equal(np.asarray(render(state)), orig["observations"][t].numpy())
-        states = [state.replace(player_recover=jnp.asarray(v, state.player_recover.dtype)) for v in (20., 12.)]
-        frames, rewards, term, health = ([[], []] for _ in range(4))
-        keys = jax.random.split(jax.random.PRNGKey(111301 + e), 50)
-        for s in range(42):
+        dtype = getattr(state, k["field"]).dtype
+        states = [state.replace(**{k["field"]: jnp.asarray(v, dtype)}) for v in k["values"]]
+        frames, rewards, term, body = ([[], []] for _ in range(4))
+        keys = jax.random.split(jax.random.PRNGKey(k["seed"] + e), 50)
+        for s in range(k["steps"]):
             for br in range(2):
                 st = states[br]
                 frames[br].append(np.asarray(render(st)))
-                health[br].append(int(st.player_health))
+                body[br].append([int(st.player_health), int(st.player_food), int(st.player_drink), int(st.player_energy)])
                 _, nxt, r, d, _ = step(keys[s], st, jnp.asarray(0, jnp.int32))
                 states[br] = nxt
                 rewards[br].append(float(r))
                 term[br].append(bool(d))
-        frames, rewards, term, health = map(np.asarray, (frames, rewards, term, health))
+        frames, rewards, term, body = map(np.asarray, (frames, rewards, term, body))
+        digit, health = body[..., k["col"]], body[..., 0]
         found = []
-        for s in range(16, 40):
-            if (health[:, s + 1] > health[:, s]).tolist() != [True, False]:
+        for s in range(*k["search"]):
+            if (np.sign(digit[:, s + 1] - digit[:, s]) == k["sign"]).tolist() != [True, False]:
                 continue
             if not np.array_equal(frames[0, s - 7:s + 1], frames[1, s - 7:s + 1]):
                 continue
@@ -209,26 +220,48 @@ def build_recovery(n=32):
                 continue
             if term[:, :s + 1].any() or (np.diff(health[:, :s + 2], axis=1) < 0).any():
                 continue
-            rises = [np.flatnonzero(np.diff(health[k, :s + 1]) > 0) + 1 for k in (0, 1)]
-            if not all(len(x) for x in rises):
+            events = [np.flatnonzero(np.sign(np.diff(digit[j, :s + 1])) == k["sign"]) + 1 for j in (0, 1)]
+            if not all(len(x) for x in events):
                 continue
-            found.append((s, [int(x[-1]) for x in rises]))
+            found.append((s, [int(x[-1]) for x in events]))
         if not found:
             excluded.append({"e": e, "reason": "no qualified pair"})
             continue
         s, resets = found[0]
-        bank.append({"e": e, "t0": t, "end": s, "frames": frames[:, :s + 2], "reward": rewards[:, :s + 1], "term": term[:, :s + 1],
-                     "health": health[:, :s + 2], "last_rise": resets,
-                     "prefix_frames": orig["observations"][:t].numpy(), "prefix_actions": orig["actions_taken"][:t].numpy(),
-                     "prefix_reward": orig["rewards"][:t].numpy(), "prefix_term": orig["terminated"][:t].numpy()})
-        print("pair", len(bank), "episode", e, "t0", t, "step", s, "last rises", resets, "health", health[:, s:s + 2].tolist(), flush=True)
+        row = {"e": e, "t0": t, "end": s, "frames": frames[:, :s + 2], "reward": rewards[:, :s + 1], "term": term[:, :s + 1],
+               "digit": digit[:, :s + 2], "col": k["col"], "last_event": resets,
+               "prefix_frames": orig["observations"][:t].numpy(), "prefix_actions": orig["actions_taken"][:t].numpy(),
+               "prefix_reward": orig["rewards"][:t].numpy(), "prefix_term": orig["terminated"][:t].numpy()}
+        if name == "recovery":
+            row["health"], row["last_rise"] = row["digit"], resets
+        bank.append(row)
+        print("pair", len(bank), "episode", e, "t0", t, "step", s, "last events", resets, "digit", digit[:, s:s + 2].tolist(), flush=True)
         if len(bank) >= n:
             break
     OUT.mkdir(parents=True, exist_ok=True)
-    torch.save(bank, OUT / "recovery_bank.pt")
-    write("recovery_build.json", {"pairs": len(bank), "excluded": len(excluded),
-                                  "rows": [{k: (r[k].tolist() if hasattr(r[k], "tolist") and k in ("last_rise",) else r[k])
-                                            for k in ("e", "t0", "end", "last_rise")} for r in bank]})
+    torch.save(bank, OUT / f"{name}_bank{BANK_TAG}.pt")
+    write(f"{name}_build{BANK_TAG}.json", {"pairs": len(bank), "excluded": len(excluded),
+                                          "rows": [{"e": r["e"], "t0": r["t0"], "end": r["end"], "last_event": r["last_event"]} for r in bank]})
+
+
+BANK_TAG = os.environ.get("DISSECT_BANK_TAG", "")      # a suffix for rebuilds (reproduction check against the saved bank)
+
+
+def build_recovery():
+    build_clock("recovery")
+
+
+def build_energy():
+    build_clock("energy")
+
+
+def clock_pairs(name):
+    bank = torch.load(OUT / f"{name}_bank.pt", map_location="cpu", weights_only=False)
+    for i, row in enumerate(bank):
+        q = row["end"]
+        prefix = (row["prefix_frames"], row["prefix_actions"], row["prefix_reward"], row["prefix_term"])
+        digit = row["digit"] if "digit" in row else row["health"]
+        yield i, row["e"], prefix, row["frames"], row["reward"], row["term"], q, digit[:, q:q + 2]
 
 
 def recovery_pairs():
@@ -306,6 +339,6 @@ def write(name, obj):
 
 
 if __name__ == "__main__":
-    if sys.argv[1] != "build_recovery":
+    if sys.argv[1] not in ("build_recovery", "build_energy"):
         assert os.environ.get("MAMBA_DETERMINISTIC") == "1"
-    {"registration": registration, "swap": swap, "build_recovery": build_recovery, "recovery": recovery, "pricing": pricing}[sys.argv[1]]()
+    {"registration": registration, "swap": swap, "build_recovery": build_recovery, "recovery": recovery, "pricing": pricing, "build_energy": build_energy}[sys.argv[1]]()
