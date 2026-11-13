@@ -1,4 +1,4 @@
-# P1-F5 with a change-form token forecast: early acquisition test (2026-11-13)
+# P1-F6: F5 with a change-form token forecast (2026-11-13; first an early acquisition test to checkpoint 2)
 
 Ordered by the user on 11-13 ("proceed with running this to checkpoint 1; and then extend to checkpoint 2 if
 necessary"), after the frozen gate `../20261113_token_forecast_gate/` (round 3). Design: Codex's review of the same day,
@@ -95,8 +95,41 @@ checkpoint 2 without the user.
 
     systemd-run --user --unit=p1f5t -p MemoryMax=24G -E MAMBA_DETERMINISTIC=1 -E JAX_PLATFORMS=cpu \
       -E OMP_NUM_THREADS=2 -E MKL_NUM_THREADS=2 -E PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
-      --working-directory="$PWD" "$PWD/.venv/bin/python" -u -m artifacts.experiments.20261113_p1f5_token_forecast.train \
-      artifacts/experiments/20261113_p1f5_token_forecast/run --updates 2500
+      --working-directory="$PWD" "$PWD/.venv/bin/python" -u -m artifacts.experiments.20261113_p1f6.train \
+      artifacts/experiments/20261113_p1f6/run --updates 2500
 
 About 1.35 h per checkpoint (F5's log), then `readout CHECKPOINT`. The saccade sources must not change between the
 two segments (resume checks their hashes).
+
+## P1-F6: the full run (user, 11-13 night)
+
+The user named this arm P1-F6 and ordered its extension to the usual ten checkpoints, resumed from checkpoint 2, with
+the readout queue, without waiting for a review ("F6 shouldn't wait for Codex"). The folder is renamed
+`20261113_p1f6`. Nothing in the recipe, the schedule or the code changes: `run.py` (the one-shot worker of
+`../20261104_p1f21/run.py`, as F5) resumes `run/latest.pt` (exact resume, preflight), completes the 25.6M frames,
+applies the fixed checkpoint rule and runs `evaluation.py` on the selected checkpoint.
+
+Why the full run and not a stop at checkpoint 2: F5's own clocks formed late (recovery from the belief 0.05 / 0.20 /
+0.28 / 0.43 / 0.57 / 0.59 at checkpoints 1 / 2 / 3 / 5 / 8 / 10; drawn in generation from checkpoint 5), the arm
+showed no energy request yet at checkpoint 1, and chunks grow from 64 to 256 steps at checkpoint 5 (gradients stop at
+chunk boundaries). The run also reads what replacing the TSP forecast does to F5's bundle costs (reactive TSP 0.015
+against 0.021 at checkpoint 1).
+
+Queue (`evaluation.py`): F5's nine stages with the same tools and order (S1, native pairs, forecast scores read from
+the token forecast, consequence curves and crafting, actor interface, four-step recursion, natural thirst, belief
+probe, belief-path probe; the F4 / HUD-Change control pairs are F5's), then `stages.py`: the clock readings above at
+checkpoints 2 and the selected one, F5's trajectory table at all ten checkpoints, movement, mining, sleep, the entity
+breakdown, the comparison table with an F6 column.
+
+Read first, fixed here: (1) the primary reading above at the selected checkpoint, energy then hunger; (2) the asleep
+energy rise, the shortest pixel-only clock (11 asleep steps; F5: belief AP 0.18-0.22 at every checkpoint against a
+0.086 base rate, generated rises untimed at 0.048 per asleep step): belief AP by checkpoint and the sleep rollout's
+wait ratio (F5 3.24 / 3.06); (3) guards: recovery and cooldown (F5 0.508 / 0.000 and 0.862 / 0.025 drawn due / not
+due), danger, the standard table against F5. Coal and iron are expected to stay collapsed (cause open; not this arm's
+target).
+
+Launch:
+
+    systemd-run --user --unit=saccade-p1f6 -p MemoryMax=24G -E MAMBA_DETERMINISTIC=1 -E JAX_PLATFORMS=cpu \
+      -E OMP_NUM_THREADS=2 -E MKL_NUM_THREADS=2 -E PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
+      --working-directory="$PWD" "$PWD/.venv/bin/python" -u -m artifacts.experiments.20261113_p1f6.run

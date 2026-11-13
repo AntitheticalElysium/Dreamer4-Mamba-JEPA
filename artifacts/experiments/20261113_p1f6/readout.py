@@ -9,7 +9,7 @@ run, so every number has F5's at the same checkpoint beside it.
   d1          ../20261113_token_forecast_gate/d1.py: each reset's registration at the tokens, Mamba's input and state.
   trace       ../20261111_p1f5/trace.py: how much of the earlier reset survives in the state to the due step.
 
-    MAMBA_DETERMINISTIC=1 python -m artifacts.experiments.20261113_p1f5_token_forecast.readout CHECKPOINT [stages...]
+    MAMBA_DETERMINISTIC=1 python -m artifacts.experiments.20261113_p1f6.readout CHECKPOINT [stages...]
 """
 import importlib
 import json

@@ -3,3 +3,5 @@
 *.log
 readings/**/*.npz
 readings/**/*.pt
+/STATUS.json
+readings/logs/

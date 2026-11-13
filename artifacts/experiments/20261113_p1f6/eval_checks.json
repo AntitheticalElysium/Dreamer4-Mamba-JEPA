@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "checkpoint_sha256": "7974ec5755ce11c72889fd9da15e5a700741e76c1b5f5e81e4497ac6a84273fb",
+  "fixture": "a copy of run/ckpt_02.pt outside run/ (the S1 reader path is checkpoint-relative)",
+  "stages": {
+    "s1": true,
+    "native_pairs": true,
+    "forecast_scores": true,
+    "consequences": true,
+    "interface": true,
+    "recursion_4": true,
+    "natural_thirst": true
+  },
+  "fixture_only": true,
+  "full_queue_only": [
+    "belief_probe",
+    "belief_path_probe",
+    "clocks",
+    "trajectory",
+    "movement",
+    "mining",
+    "sleep",
+    "entities",
+    "compare"
+  ],
+  "already_run_on_this_arm": "readout.py's clock stages (gate3, trajectory, d1, trace) at checkpoint 1"
+}

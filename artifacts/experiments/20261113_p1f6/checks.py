@@ -9,7 +9,7 @@
   resume    2 + 2 updates equal 4 straight (model, optimizer, streams, carry, cache, RNG, gaze).
   smoke     12 updates through the launcher's recipe: finite terms, peak memory, seconds per update.
 
-    MAMBA_DETERMINISTIC=1 python -m artifacts.experiments.20261113_p1f5_token_forecast.checks
+    MAMBA_DETERMINISTIC=1 python -m artifacts.experiments.20261113_p1f6.checks
 """
 import copy
 import importlib
