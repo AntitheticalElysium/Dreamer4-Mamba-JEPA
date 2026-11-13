@@ -196,3 +196,63 @@ seed-to-seed spread.
   accordingly.
 - **Limit:** this tests sharing in the head on frozen inputs. It does not test what a shared objective does to the
   belief during training, which is where the reward forecast's mode taught the clocks.
+
+---
+
+# Round 3 (2026-11-13 night): the change form makes the token forecast a strong asker for clocks the belief carries; it still asks nothing for the pixel clocks
+
+Plan: `PLAN.md` round 3 (37f33080, committed before results). `gate3.py`, `readings/round3/`. Plain MSE; **absolute** =
+round 2's belief-only head (reproduces its held-out loss to all digits at every checkpoint); **skip** = observed
+current tokens + the same head from the same initial weights, draws and budget.
+
+Held-out loss (absolute / skip / copying the previous tokens): 0.159 / 0.085 / 0.097 at checkpoint 1, 0.135 / 0.078 /
+0.091 at 2, 0.131 / 0.089 / 0.104 at 10. The skip head beats copying and its shuffled-belief control (0.104-0.121).
+
+Request cosines, absolute -> skip (mean [95% CI] for the skip):
+
+| Ckpt | Clock | All cells | Digit cell | Matched held-out update (d kappa) |
+| :--- | :--- | :--- | :--- | :--- |
+| 1 | Energy | +0.076 -> -0.004 [-0.074, +0.066] | +0.058 -> +0.016 [-0.078, +0.118] | +0.007 -> 0.000 |
+| 1 | Hunger | +0.011 -> -0.021 [-0.086, +0.049] | +0.020 -> -0.024 [-0.128, +0.078] | +0.013 -> 0.000 |
+| 1 | Recovery | -0.010 -> +0.041 [-0.029, +0.107] | -0.050 -> **+0.137** [+0.037, +0.236] | +0.025 -> +0.001 |
+| 1 | Cooldown | +0.033 -> **+0.283** [+0.121, +0.442] | +0.111 -> **+0.380** [+0.179, +0.561] | +0.063 -> +0.052 |
+| 2 | Energy | +0.049 -> +0.081 [-0.026, +0.187] | -0.074 -> -0.025 [-0.161, +0.123] | +0.030 -> 0.000 |
+| 2 | Hunger | -0.010 -> +0.046 [-0.070, +0.169] | +0.184 -> -0.024 [-0.143, +0.092] | -0.017 -> 0.000 |
+| 2 | Recovery | +0.014 -> **+0.681** [+0.586, +0.775] | +0.257 -> **+0.761** [+0.668, +0.851] | +0.028 -> **+1.50** [+0.93, +2.09] |
+| 2 | Cooldown | +0.019 -> **+0.580** [+0.412, +0.721] | +0.163 -> **+0.604** [+0.451, +0.741] | +0.061 -> **+2.87** [+1.10, +4.97] |
+| 10 | Energy | -0.021 -> -0.037 [-0.153, +0.071] | -0.019 -> +0.068 [-0.024, +0.154] | 0.000 |
+| 10 | Hunger | +0.010 -> +0.019 [-0.079, +0.126] | +0.158 -> +0.035 [-0.101, +0.168] | 0.000 |
+| 10 | Recovery | +0.033 -> **+0.631** [+0.431, +0.818] | +0.904 -> +0.758 [+0.553, +0.929] | +0.84 -> **+37.6** |
+| 10 | Cooldown | +0.044 -> **+0.593** [+0.428, +0.751] | +0.769 -> +0.624 [+0.433, +0.798] | -0.16 -> **+9.7** |
+
+Timed change at the digit cell (fraction of the true change predicted from the current tokens, due / not due):
+- recovery, checkpoint 10: absolute 0.31 / 0.03, skip **0.59 / 0.002**; cooldown: absolute 0.66 / 0.30, skip **0.73 / 0.01**;
+- recovery, checkpoint 2: skip 0.077 / 0.026; cooldown 0.23 / 0.11;
+- energy and hunger: skip 0.000-0.005 on both members at every checkpoint (it copies); absolute predicts the same
+  partial change on both (energy 0.09-0.22, hunger 0.32-0.38), i.e. a blur, not timing.
+
+Readings against the bars fixed before the results:
+1. **Mechanism check as written: not met, because the measure was wrong.** The common error at the food and energy
+   cells is higher under the skip (energy 0.128 -> 0.171, hunger 0.034 -> 0.110 at checkpoint 2). A head that
+   predicts no change has common = branch = a quarter of the squared true change, which is what the skip shows
+   (0.171 / 0.172); the absolute head's lower figure is its blur predicting part of the drop on both members. The
+   split does not isolate the burden of drawing the present. The held-out loss does (0.135 -> 0.078, below copying).
+   By the plan's own rule, bar 1 does not certify the test; the readings below stand as measured.
+2. **Value-first is not supported for the pixel clocks (bar 4).** Energy's and hunger's digit-cell and all-cell
+   cosines keep intervals including 0 under the skip at every checkpoint. The skip head's separation gradient there is
+   1e-5 to 1e-4, against 0.07-1.2 for recovery: with the present handed over, the fitted head finds nothing in F5's
+   belief that tells the two histories apart. The competing explanation stands: the pixel clocks' traces are not in a
+   form a forecast can use. Round 2's plain-MSE energy request (+0.049 all cells, checkpoint 2) does not survive the
+   skip in the matched update (0.000), so it was not a request for energy's timing.
+3. **Controls: the change form is a far stronger asker where the belief carries a trace.** At checkpoint 2 the all-cell
+   cosine goes from +0.01-0.02 to +0.58-0.68, the size of the reward forecast's own (+0.21 at checkpoint 2, +0.75 at
+   10), and the all-cell and digit-cell cosines coincide: the spatial dilution of rounds 1-2 was mostly the error of
+   redrawing the present. At checkpoint 1, before recovery is decodable (belief AP 0.05), the skip already asks for
+   cooldown (+0.28 all cells) and for recovery at its cell (+0.14), where the absolute head asked for neither.
+4. **Nuisance (+6/255 beats the consequence, skip):** energy 2 / 0 / 0 of 32 and hunger 24 / 0 / 0 of 24 at
+   checkpoints 1 / 2 / 10; recovery 0 / 0 / 16; cooldown 21 / 10 / 18. Mixed, and worse than absolute on the health
+   cell at checkpoint 10.
+
+What this does not establish: whether the change form, trained from the first step, would make a pixel clock form.
+Checkpoint 1 has already had 2.56M frames in which the reward forecast shaped the health clocks' route and nothing
+shaped the others' (Codex); a frozen checkpoint cannot show a route that only the candidate objective would build.
