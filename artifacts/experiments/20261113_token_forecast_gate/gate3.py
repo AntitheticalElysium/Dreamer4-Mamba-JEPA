@@ -46,12 +46,14 @@ def checkpoint(k):
     res = {"checkpoint": k, "sha256": TR.file_sha256(ck)}
     init = G2.make_head("plain", bp.shape[-1])                              # round 2's plain head: same position in the RNG stream
     heads = {}
-    for arm in ARMS:
-        net = copy.deepcopy(init)
-        base = (lambda ix: prev[ix].to(DEV).float()) if arm == "skip" else (lambda ix: 0.)
+    own = getattr(model, "token_forecast", None)                            # a world trained with the change-form forecast:
+    arms = ARMS + (("native",) if own is not None else ())                  # its own head as a third arm, not refitted
+    for arm in arms:
+        net = own if arm == "native" else copy.deepcopy(init)
+        base = (lambda ix: prev[ix].to(DEV).float()) if arm != "absolute" else (lambda ix: 0.)
         opt = torch.optim.Adam(net.parameters(), 1e-3)
         g = torch.Generator().manual_seed(1)
-        for s in range(STEPS):
+        for s in range(0 if arm == "native" else STEPS):
             ix = tr_ix[torch.randint(len(tr_ix), (BATCH,), generator=g)]
             loss = mse(base(ix) + net(bp[ix].to(DEV)), tgt[ix].to(DEV).float())
             opt.zero_grad(); loss.backward(); opt.step()
@@ -70,8 +72,9 @@ def checkpoint(k):
                 lc += float(mse(prev[ix].to(DEV).float(), x)) * len(ix)
             res[f"heldout/{arm}"] = {"head": lh / len(te_ix), "shuffled_belief": ls / len(te_ix), "copy_previous": lc / len(te_ix)}
         print(k, arm, json.dumps(res[f"heldout/{arm}"]), flush=True)
-    r2 = json.loads((G.HERE / f"readings/round2/ckpt_{k:02d}.json").read_text())["heldout/plain"]["head"]
-    res["round2_plain_reproduction"] = {"round2": r2, "now": res["heldout/absolute"]["head"]}
+    if F5 == G.F5:                                                          # the round-2 reproduction is F5's only
+        r2 = json.loads((G.HERE / f"readings/round2/ckpt_{k:02d}.json").read_text())["heldout/plain"]["head"]
+        res["round2_plain_reproduction"] = {"round2": r2, "now": res["heldout/absolute"]["head"]}
     del tgt, prev, bp
     for prm in model.parameters():
         prm.requires_grad_(True)
@@ -85,14 +88,14 @@ def checkpoint(k):
         with TR.autocast(DEV, cfg):
             y, _ = model.belief(model.belief.tokens(model.belief.percept_embed(p), rw, td, act), model.belief.initial(2, DEV))
         cur = p.p[:, -1].float().detach()
-        return (cur if arm == "skip" else 0.) + heads[arm](y[:, -1].float()), cur
+        return (cur if arm != "absolute" else 0.) + heads[arm](y[:, -1].float()), cur
 
     fold_sum = {}
     for name, slot in SETS.items():
-        per = {arm: [] for arm in ARMS}
+        per = {arm: [] for arm in arms}
         for n_, row in enumerate(rows[name]):
             x, xb = G2.due_targets(model, row)
-            for arm in ARMS:
+            for arm in arms:
                 out, cur = forward(arm, row)
                 loss = mse(out[0], x[0]) + mse(out[1], x[1])
                 sep = mse(out[1], x[0]) + mse(out[0], x[1]) - loss
@@ -135,16 +138,16 @@ def checkpoint(k):
     unit = {key: [-s_ / s_.norm().clamp(min=1e-30) for s_ in v] for key, v in fold_sum.items()}
     del fold_sum
     for name, slot in SETS.items():                                      # matched held-out update, plain-gradient geometry
-        eff = {arm: [] for arm in ARMS}
+        eff = {arm: [] for arm in arms}
         for n_, row in enumerate(rows[name]):
             x, _ = G2.due_targets(model, row)
             dx = (x[0] - x[1])[slot]
-            for arm in ARMS:
+            for arm in arms:
                 out, _ = forward(arm, row)
                 kap = ((out[0] - out[1])[slot] * dx).sum() / dx.square().sum().clamp(min=1e-12)
                 eff[arm].append(float(grad(kap, False) @ unit[(name, arm)][1 - n_ % 2]))
         res[f"matched/{name}"] = {arm: {"mean_ci": G.boot_mean(v), "per_pair": v} for arm, v in eff.items()}
-        print(k, "matched", name, json.dumps({a: res[f"matched/{name}"][a]["mean_ci"] for a in ARMS}), flush=True)
+        print(k, "matched", name, json.dumps({a: res[f"matched/{name}"][a]["mean_ci"] for a in arms}), flush=True)
     OUT.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(res, indent=1) + "\n")
     del model

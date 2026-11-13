@@ -1,0 +1,5 @@
+/run/
+/checks/
+*.log
+readings/**/*.npz
+readings/**/*.pt

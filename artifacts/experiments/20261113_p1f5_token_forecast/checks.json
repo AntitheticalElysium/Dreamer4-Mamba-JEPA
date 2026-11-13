@@ -1,0 +1,121 @@
+{
+  "init": {
+    "shared_tensors_bitwise_equal": 220,
+    "new": [
+      "token_forecast.belief.bias",
+      "token_forecast.belief.weight",
+      "token_forecast.cell.weight",
+      "token_forecast.net.0.0.bias",
+      "token_forecast.net.0.0.weight",
+      "token_forecast.net.0.2.bias",
+      "token_forecast.net.0.2.weight",
+      "token_forecast.net.2.bias",
+      "token_forecast.net.2.weight"
+    ],
+    "token_head_parameters": 146608,
+    "global_rng_equal": true
+  },
+  "f5_path": {
+    "first_update_terms_equal_f5_log": [
+      "update",
+      "frames",
+      "steps",
+      "lr",
+      "grad_norm",
+      "sigma",
+      "tsp_forecast",
+      "reward_forecast",
+      "cont_forecast",
+      "g1",
+      "tsp",
+      "rec",
+      "reward",
+      "cont",
+      "noise"
+    ]
+  },
+  "matched": {
+    "first_update_terms_equal_f5_log": [
+      "update",
+      "frames",
+      "steps",
+      "lr",
+      "reward_forecast",
+      "cont_forecast",
+      "g1",
+      "tsp",
+      "rec",
+      "reward",
+      "cont",
+      "noise"
+    ],
+    "token_forecast": 0.02341664955019951,
+    "f5_tsp_forecast": 0.49708734452724457,
+    "grad_norm": [
+      8.97487735748291,
+      9.292491912841797
+    ]
+  },
+  "known": {
+    "token_forecast_zeroed_head": 0.02306242659687996,
+    "copy_previous": 0.02306242659687996,
+    "frames": 504
+  },
+  "resume": {
+    "exact": {
+      "streams": true,
+      "carry": true,
+      "cache": true,
+      "state": true,
+      "rng": true,
+      "fixation_controller": true,
+      "gaze_bytes": true
+    },
+    "model_max_abs": 3.3912022834509982e-18,
+    "optimizer_max_abs": 1.7763568394002505e-15
+  },
+  "smoke": {
+    "updates": 12,
+    "peak_gib": 2.5391182899475098,
+    "token_forecast_by_update": [
+      0.02341664955019951,
+      0.02550771739333868,
+      0.023176887072622776,
+      0.02233298495411873,
+      0.023435975424945354,
+      0.02741165552288294,
+      0.029427015222609043,
+      0.036480484530329704,
+      0.023310288786888123,
+      0.019741681404411793,
+      0.023679831996560097,
+      0.03277070913463831
+    ],
+    "seconds_per_update": 2.0631986061731973,
+    "last": {
+      "update": 12,
+      "frames": 12288,
+      "steps": 64,
+      "lr": 1.1e-06,
+      "grad_norm": 8.935561180114746,
+      "sigma": [
+        0.9999934434890747,
+        1.0000064373016357,
+        1.0000065565109253,
+        1.0000065565109253
+      ],
+      "token_forecast": 0.03277070913463831,
+      "reward_forecast": 5.606649875640869,
+      "cont_forecast": 0.6976355016231537,
+      "g1": 0.3135884404182434,
+      "tsp": 0.4330858886241913,
+      "rec": 0.43258078396320343,
+      "reward": 5.595519542694092,
+      "cont": 0.6985137164592743,
+      "noise": 11.288520812988281,
+      "sec_per_update": 2.0640478134155273,
+      "peak_gib": 2.5391182899475098
+    }
+  },
+  "passed": true
+}

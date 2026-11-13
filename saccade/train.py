@@ -164,13 +164,19 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=No
         if cfg["heads"].get("forecast"):                                 # P1-F5: training-only forecast modes, no frame-t input
             if forecast_windows is None:                                 # other callers: a deterministic gaze-independent draw
                 forecast_windows = np.random.default_rng([cfg["heads"]["forecast"]["seed"], int(update or 0)]).integers(49, size=tuple(nf.shape))
-            fx = C.CENTRES.to(dev)[torch.as_tensor(forecast_windows, device=dev)]   # one window per frame, gaze-independent
-            fc = M.window(fx)
-            mf = model.pixels.mean(model.tsp.predict(bp, None, None, fc))
-            yf = M.cell_pixels(M.crop(t["frames"][:, P:], fx)).float() / 127.5 - 1
+            if model.token_forecast is not None:                         # change form, every cell, in place of TSP's forecast:
+                with torch.autocast(dev.type, enabled=False):            # observed previous tokens + head(belief), plain MSE,
+                    prev = torch.cat([Pp.p, Pc.p], 1)[:, P - 1:L - 1].detach().float()   # both token sets detached (fp32 head)
+                    tf = prev + model.token_forecast(bp.float())
+                    terms["token_forecast"] = (tf - Pc.p.detach().float()).square()[nf].mean()
+            else:
+                fx = C.CENTRES.to(dev)[torch.as_tensor(forecast_windows, device=dev)]   # one window per frame, gaze-independent
+                fc = M.window(fx)
+                mf = model.pixels.mean(model.tsp.predict(bp, None, None, fc))
+                yf = M.cell_pixels(M.crop(t["frames"][:, P:], fx)).float() / 127.5 - 1
+                terms["tsp_forecast"] = (mf.float() - yf).square()[nf].mean()
             hf = model.outcome.features(bp, None)[nf]
-            terms.update(tsp_forecast=(mf.float() - yf).square()[nf].mean(),
-                         reward_forecast=-model.outcome.reward_logp(hf, r).mean(),
+            terms.update(reward_forecast=-model.outcome.reward_logp(hf, r).mean(),
                          cont_forecast=F.binary_cross_entropy_with_logits(model.outcome.cont_logit(hf, r).float(), alive))
     terms.update(g1=g1, tsp=tsp, rec=rec, reward=reward, cont=cont,
                  noise=noise)                                            # noise reaches only the scale network: outside the groups
@@ -179,10 +185,11 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=No
 
 def groups(terms: dict) -> dict:
     """LOSSES terms table: G1 next percept; G2 grounding (TSP, fovea reconstruction; the change map in historical
-    recipes); G3 consequences; G4 forecasts (P1-F5: TSP, reward and continuation before the frame)."""
+    recipes); G3 consequences; G4 forecasts (P1-F5: TSP or, with heads.forecast.tokens, the token forecast; reward and
+    continuation before the frame)."""
     g = {"G1": terms["g1"], "G2": terms.get("change", 0) + terms["tsp"] + terms["rec"], "G3": terms["reward"] + terms["cont"]}
-    if "tsp_forecast" in terms:
-        g["G4"] = terms["tsp_forecast"] + terms["reward_forecast"] + terms["cont_forecast"]
+    if "reward_forecast" in terms:
+        g["G4"] = terms.get("tsp_forecast", terms.get("token_forecast")) + terms["reward_forecast"] + terms["cont_forecast"]
     return g
 
 

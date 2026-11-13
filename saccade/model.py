@@ -694,7 +694,7 @@ class TSP(nn.Module):
         self.tsp = nn.Sequential(mlp([dp + dv + h["position_dim"] + h["belief_dim"], h["hidden"], h["hidden"]]), nn.GELU())
         self.rec = nn.Sequential(mlp([dg + dv + h["position_dim"], h["hidden"], h["hidden"]]), nn.GELU())
         self.split = (dp, dv)
-        if cfg["heads"].get("forecast"):
+        if cfg["heads"].get("forecast") and not cfg["heads"]["forecast"].get("tokens"):   # the token forecast replaces this mode
             self.mask = nn.Parameter(torch.zeros(dp + dv))                # zero init: no random draw
 
     def predict(self, belief, p, v, cells):
@@ -791,6 +791,25 @@ class Outcome(nn.Module):
         return self.cont(torch.cat([h, SYMLOG(r.float())[..., None].to(h.dtype)], -1))[..., 0]
 
 
+class TokenForecast(nn.Module):
+    """Change-form forecast of every periphery token (heads.forecast.tokens; 20261113_token_forecast_gate, round 3):
+    the change from frame t - 1's observed tokens to frame t's, from the belief predicted before frame t and the
+    cell's position. The caller adds the observed tokens. Training-only."""
+
+    def __init__(self, cfg):
+        super().__init__()
+        h = cfg["heads"]["forecast"]["tokens"]
+        self.cell = nn.Embedding(N, h["position_dim"])
+        self.belief = nn.Linear(cfg["belief"]["width"], h["belief_dim"])
+        self.net = nn.Sequential(mlp([h["position_dim"] + h["belief_dim"], h["hidden"], h["hidden"]]), nn.GELU(),
+                                 nn.Linear(h["hidden"], cfg["perception"]["periphery"]["token_dim"]))
+
+    def forward(self, belief: Tensor) -> Tensor:                         # [..., W] -> [..., 81, token_dim]
+        lead = belief.shape[:-1]
+        return self.net(torch.cat([self.cell.weight.expand(*lead, -1, -1),
+                                   self.belief(belief).unsqueeze(-2).expand(*lead, N, -1)], -1))
+
+
 class Harmoniser(nn.Module):
     """HarmonyDream: sum over groups of L_g / sigma_g + log(1 + sigma_g), sigma_g learned (LOSSES principle 4)."""
 
@@ -813,6 +832,11 @@ class M0(nn.Module):
         self.change = ChangeMap(cfg) if cfg["heads"].get("change_map") else None   # P1-F5: removed (historical cfgs build it)
         self.outcome = Outcome(cfg)
         self.harmoniser = Harmoniser(cfg["losses"]["groups"], cfg["losses"]["harmoniser_init_sigma"])
+        self.token_forecast = None
+        if (cfg["heads"].get("forecast") or {}).get("tokens"):
+            with torch.random.fork_rng(devices=[]):                      # its own draws: every other parameter and the
+                torch.random.default_generator.manual_seed(cfg["heads"]["forecast"]["tokens"]["init_seed"])   # training RNG keep F5's
+                self.token_forecast = TokenForecast(cfg)
 
     def param_groups(self):
         """AdamW groups: encoder (perception) at encoder_lr_scale; weight decay only on Linear / Conv weights, as
