@@ -117,6 +117,27 @@ losses must reproduce `readings/ckpt_XX.json`, which validates the run. The cate
 4. it adds over plain MSE: the matched held-out update on energy is larger than plain MSE's, with the paired
    per-pair difference's 95% interval excluding 0.
 
+**Yardstick changed after the 50-step smoke, before any real result.** In the smoke, the reward forecast's held-out
+update shrank the recovery pairs' raw belief distance (d log D -13.7 [-18.3, -9.5]). That is the loss that taught
+the recovery clock, so raw distance does not measure the separation that matters: a loss can sharpen the relevant
+difference while compressing the rest. The reward figure does not depend on the smoke's 50-step heads, so it is a
+real reading, and it is reported. The matched update is now read through each loss's own head, in common units:
+- kappa, the fraction of the true due / not-due contrast the head reproduces: the token change at the digit's cell
+  for the token heads, and P(actual reward) due minus not due for the reward forecast;
+- held-out (the other fold's step, as above) and in-pair (the pair's own step), both in AdamW geometry, unit norm;
+  d log D stays reported.
+
+**Geometry changed after a second smoke, before any real result.** In AdamW geometry (F5's second moments) the reward
+forecast's own d kappa on recovery was not positive, held out (-0.0034 [-0.0078, +0.0007]) or even in-pair (-0.0045
+[-0.011, +0.0017]), although its request cosine on the same pairs is +0.57 in plain-gradient geometry. F5's second
+moments hold no gradient of the new loss, so parameters the old losses barely move get very large preconditioned steps;
+frozen-v AdamW is therefore not the update training with a new loss would make. Plain-gradient geometry is the one the
+validated round-1 cosine uses. AdamW figures stay reported.
+
+Bar 4 uses the held-out d kappa in plain-gradient geometry, and only if the reference is valid: the reward forecast's
+held-out d kappa on recovery must be positive, interval excluding 0. If it is not, the in-pair d kappa is used under
+the same reference condition. If neither reference is positive, bar 4 is uninformative and is reported as such.
+
 Hunger is reported separately, as Codex suggests; Part 2 investigates it. A pass is not a repaired world. The run it
 could earn is judged as in round 1: native energy timing due / not due, false drops, F5's recovery, cooldown and
 danger gains, cows and arrows.
