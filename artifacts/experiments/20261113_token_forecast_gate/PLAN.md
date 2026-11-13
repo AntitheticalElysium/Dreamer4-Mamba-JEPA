@@ -191,3 +191,25 @@ positive, hunger's block sits upstream of the forecast; if both are clearly posi
 removes hunger's request.
 
 Not covered: drink has no exact-history pairs, so D2 cannot be run for it; D1 covers it.
+
+## Part 3 (user, 11-13 evening): does a forecast mode hurt or help its reactive mode?
+
+My round-1 reply said TSP's forecast mode "likely cost the reactive mode". The evidence for that (F5 `RESULTS.md`
+11.6) compared a fresh single-mode head with F5's trained shared head, which also differs in online training and in
+its window distribution, so it does not isolate sharing. The reward head has the same two-mode design and its forecast
+mode is what taught the clocks. Dreamer 4 (arXiv 2509.24527, Eq. 9) instead shares the trunk and gives each MTP
+distance its own output layer.
+
+`sharing.py`: fresh heads of the original classes on F5 checkpoint 10's frozen inputs (readout_fit's), with the same
+initial weights, rows, windows and budget in every regime; only the objective differs. TSP (squared error of the pixel
+mean, 20k steps): reactive only, forecast only, joint. Outcome (reward log-loss, 60k steps): reactive only, forecast
+only, joint. Two initialisation seeds per regime.
+
+**Reading, fixed now:** for each mode, joint against that mode alone (held-out TSP error on uniform windows; the
+forecast's health / food / drink / energy error on unchanged frames; reward log-loss overall and on reward frames).
+- **Harm:** joint is worse in both seeds by more than the seed-to-seed spread within the single-mode regime.
+- **Help:** joint is better in both seeds by more than that spread.
+- **Otherwise:** no difference detected.
+
+This tests sharing in the head, on frozen inputs. It does not test what a shared objective does to the belief during
+training.
