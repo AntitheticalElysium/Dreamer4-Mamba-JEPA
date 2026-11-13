@@ -161,3 +161,32 @@ at the due step, relative to their size):
    reward readout itself.
 
 Not established: what would bootstrap a clock whose only evidence is pixels; Part 3 (sharing) is below.
+
+## Part 3: a shared forecast mode costs the reactive mode, and helps the forecast draw belief content
+
+`sharing.py`, F5 checkpoint 10's frozen inputs. Fresh heads from one initialisation per seed; same rows, windows and
+budget; only the objective differs. Read as fixed in the plan: joint against single in both seeds, beyond the
+seed-to-seed spread.
+
+| Mode | Single (seeds 7, 8) | Joint (seeds 7, 8) | Joint / single | Reading |
+| :--- | :--- | :--- | :--- | :--- |
+| TSP reactive, squared error | 0.00048, 0.00045 | 0.00071, 0.00069 | 1.49, 1.54 | **harm** |
+| TSP forecast, squared error | 0.0414, 0.0411 | 0.0412, 0.0410 | 1.00, 1.00 | none detected |
+| TSP forecast, health cell (unchanged digit) | 0.0138, 0.0134 | 0.0114, 0.0096 | 0.82, 0.71 | **help** |
+| TSP forecast, food / drink / energy cells | 0.158 / 0.124 / 0.093 | 0.155 / 0.122 / 0.091 (seed 7) | 0.97-1.02 | none detected |
+| Reward reactive, log-loss | 0.059, 0.064 | 0.093, 0.097 | 1.57, 1.51 | harm (overfit regime) |
+| Reward reactive, reward frames | 0.54, 0.64 | 1.02, 1.03 | 1.87, 1.62 | harm (overfit regime) |
+| Reward forecast, log-loss | 0.472, 0.460 | 0.449, 0.461 | 0.95, 1.00 | none detected |
+
+- **Sharing one network costs the reactive mode about 1.5x in both heads**, and lets the TSP forecast draw the digit
+  the belief holds better (health, 20-30%). The modes trade: the forecast borrows the reactive mode's rendering, and the
+  reactive mode pays in precision. Classifier-free guidance shows the same mild cost when the masked mode takes half the
+  training (Ho & Salimans 2022, Table 1: FID 1.80 at p_uncond 0.1-0.2, 2.21 at 0.5). F5 gave its forecast a window on
+  every frame.
+- **Sharing explains part of F5's reactive TSP gap, not all of it.** F5's trained shared head scores 0.00199, against
+  0.00070 for a fresh joint head. The remaining ~2.8x is online training on moving inputs and the chooser's windows.
+- **The outcome fits overfit the frozen training frames** (training-batch log-loss 0.0004-0.03 by 40k steps against
+  held-out 0.06-0.47), so their comparison partly measures regularisation. F5 section 11.6's "underfit" is corrected
+  accordingly.
+- **Limit:** this tests sharing in the head on frozen inputs. It does not test what a shared objective does to the
+  belief during training, which is where the reward forecast's mode taught the clocks.

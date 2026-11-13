@@ -1,0 +1,99 @@
+{
+ "tsp_steps": 20000,
+ "outcome_steps": 60000,
+ "batch": 512,
+ "seeds": [
+  7,
+  8
+ ],
+ "train_frames": 246795,
+ "heldout_frames": 58103,
+ "tsp/7/reactive": {
+  "reactive_mse": 0.0004781562852567731,
+  "forecast_mse": 0.1911867853983904,
+  "forecast_health_unchanged": 0.1742136091153708,
+  "forecast_food_unchanged": 0.31795061025778826,
+  "forecast_drink_unchanged": 0.2610197363452288,
+  "forecast_energy_unchanged": 0.3274538885673595
+ },
+ "tsp/7/forecast": {
+  "reactive_mse": 0.0419324222156008,
+  "forecast_mse": 0.04139282685260162,
+  "forecast_health_unchanged": 0.01381772980140572,
+  "forecast_food_unchanged": 0.15811737279627375,
+  "forecast_drink_unchanged": 0.12373591584995543,
+  "forecast_energy_unchanged": 0.09340354889297646
+ },
+ "tsp/7/joint": {
+  "reactive_mse": 0.0007145762895212611,
+  "forecast_mse": 0.04119063379825215,
+  "forecast_health_unchanged": 0.011356440650130707,
+  "forecast_food_unchanged": 0.15483407104604066,
+  "forecast_drink_unchanged": 0.12191980398041448,
+  "forecast_energy_unchanged": 0.09066247622094528
+ },
+ "outcome/7/reactive": {
+  "reactive_nll": 0.05909845232963562,
+  "reactive_nll_reward_frames": 0.5440881252288818,
+  "forecast_nll": 41.056339263916016,
+  "forecast_nll_reward_frames": 26.112585067749023
+ },
+ "outcome/7/forecast": {
+  "reactive_nll": 0.4938966929912567,
+  "reactive_nll_reward_frames": 5.196639060974121,
+  "forecast_nll": 0.47155582904815674,
+  "forecast_nll_reward_frames": 4.912522315979004
+ },
+ "outcome/7/joint": {
+  "reactive_nll": 0.09276104718446732,
+  "reactive_nll_reward_frames": 1.019439935684204,
+  "forecast_nll": 0.4486832022666931,
+  "forecast_nll_reward_frames": 4.476564407348633
+ },
+ "tsp/8/reactive": {
+  "reactive_mse": 0.0004457262065604619,
+  "forecast_mse": 0.19386945013599613,
+  "forecast_health_unchanged": 0.1852865532930297,
+  "forecast_food_unchanged": 0.3454979761609703,
+  "forecast_drink_unchanged": 0.27515225174385666,
+  "forecast_energy_unchanged": 0.28329839725938283
+ },
+ "tsp/8/forecast": {
+  "reactive_mse": 0.04282094393195875,
+  "forecast_mse": 0.0411345716268673,
+  "forecast_health_unchanged": 0.013428674088867597,
+  "forecast_food_unchanged": 0.15843369816626968,
+  "forecast_drink_unchanged": 0.1236322768926642,
+  "forecast_energy_unchanged": 0.09082029809834656
+ },
+ "tsp/8/joint": {
+  "reactive_mse": 0.0006879776722020708,
+  "forecast_mse": 0.04102741393674506,
+  "forecast_health_unchanged": 0.00955014232523449,
+  "forecast_food_unchanged": 0.1582074269013278,
+  "forecast_drink_unchanged": 0.12576644265784837,
+  "forecast_energy_unchanged": 0.08891562453644339
+ },
+ "outcome/8/reactive": {
+  "reactive_nll": 0.06393448263406754,
+  "reactive_nll_reward_frames": 0.6385989785194397,
+  "forecast_nll": 22.6638126373291,
+  "forecast_nll_reward_frames": 22.391828536987305
+ },
+ "outcome/8/forecast": {
+  "reactive_nll": 0.4738607406616211,
+  "reactive_nll_reward_frames": 4.848021030426025,
+  "forecast_nll": 0.460311621427536,
+  "forecast_nll_reward_frames": 4.786308288574219
+ },
+ "outcome/8/joint": {
+  "reactive_nll": 0.09655021876096725,
+  "reactive_nll_reward_frames": 1.033937931060791,
+  "forecast_nll": 0.4613037705421448,
+  "forecast_nll_reward_frames": 4.870027542114258
+ },
+ "trained_f5": {
+  "tsp_reactive_mse": 0.001987112619015507,
+  "tsp_forecast_mse": 0.05030899963806345
+ }
+}

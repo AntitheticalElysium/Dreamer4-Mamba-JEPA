@@ -397,8 +397,9 @@ change.
 - **Sharing check (fresh single-mode heads of the original classes, same frozen inputs):**
   - TSP reactive-only reaches MSE 0.00044 against the trained shared head's 0.00199 on held-out uniform windows. The
     trained reactive mode learned mostly on the chooser's windows, so part of that gap may be window shift.
-  - The fresh outcome heads underfit within the same budget (reward NLL 0.033 / 0.228 against the trained 0.014 /
-    0.085), so the outcome head's sharing cost is not determined.
+  - The fresh outcome heads overfit the frozen training frames (held-out reward NLL 0.033 / 0.228 against the trained
+    0.014 / 0.085; training-batch loss ~0.01 by 20k steps, `../20261113_token_forecast_gate/RESULTS.md` round 2 part 3), so the
+    outcome head's sharing cost is not determined.
 
 ### 11.7 How much of a reset survives until the due step (`readings/dissection/trace.json`)
 
