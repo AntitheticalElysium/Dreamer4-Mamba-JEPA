@@ -77,10 +77,10 @@ reward forecast on the recovery pairs.
   categorical head fails hunger's nuisance check 24/24 at +3/255 and +6/255.
 - **Why:** with sharp HL-Gauss labels, small shifts on all 1,296 numbers outweigh a large change in 16, as Codex
   predicted. My claim that binning buys nuisance robustness was wrong.
-- **How weak plain MSE's request is:** at checkpoint 2, plain MSE's matched update on energy is +0.030, against the
-  reward forecast's +6.47 on recovery. Both are in the same units (fraction of the true due / not-due contrast
-  reproduced per unit step), so the token forecast's push is ~200x weaker than the one that taught a clock. It is gone
-  by checkpoint 10.
+- **Plain MSE's matched update on energy** is +0.030 at checkpoint 2 and gone by checkpoint 10. The reward forecast's
+  +6.47 on recovery is read through a different head (a reward-probability gap, against a decoded token projection
+  for energy), so the ratio of the two is not a ratio of teaching strength (Codex). The comparison that holds is
+  categorical against plain on the same energy readout, above.
 - **Matched-update instrument:** at checkpoint 1 the reference is invalid in every geometry and yardstick tried. The
   one-step held-out effect is not a reliable early predictor even for the loss that taught recovery; it becomes valid
   at checkpoint 2, when that clock starts forming (section 11.2 of `../20261111_p1f5/RESULTS.md`).
@@ -137,28 +137,34 @@ at the due step, relative to their size):
 | 10 | +0.010 [-0.053, +0.072] | x4.9: -0.043 [-0.102, +0.010] | -0.042 [-0.097, +0.012] | -0.021 [-0.070, +0.027] | x0.20: -0.022 [-0.065, +0.018] |
 
 - **Pre-registered reading: input-limited is not supported at any checkpoint.** Giving food's reset energy's input
-  size creates no request, and behaves like an equal random perturbation (the sham). Shrinking energy's to food's
-  size removes energy's weak request.
+  size creates no request; amplified minus sham spans 0 at every checkpoint (Codex's paired reanalysis). Shrinking
+  energy's to food's size weakens energy's request at checkpoint 1 (paired difference -0.086 [-0.158, -0.010]); at
+  checkpoint 2 the difference is inconclusive (-0.033 [-0.085, +0.020]).
 - **So input size is necessary for energy's request but not sufficient for hunger's.** Amplification raises D at the
   due step 1.6-2.8x (e.g. 2.6e-5 to 5.7e-5 at checkpoint 2, comparable to energy's 4.9e-5), so the state difference
   reaches energy's size without a request appearing.
-- **Reading:** amplifying food's change along the direction the untrained projection gives it is no better than a
-  random direction. Energy's direction has been partly shaped (its input AP rose from 0.11 to 0.27), and recovery's
-  reset enters through a dedicated channel, the reward input token. A first-order request only amplifies structure the
-  belief and the readout already share, and the food and drink drops have none. This is an interpretation of D1 and
-  D2 together, not a separate test.
+- **Reading (an interpretation, not a test):** the trace is not what separates the clocks. Every reset reaches the due
+  step with a trace of the same order before learning (`../20261111_p1f5/RESULTS.md` 11.7: hunger 0.0065, energy
+  0.0073, recovery 0.014 at checkpoint 1). What differs is the present: Mamba's input holds the health digit exactly
+  but food, drink and energy at 35-49% exact (section 5 there). A fresh belief-only head cannot draw those digits on
+  frames where they do not change (11.6 there, checkpoint 10: 0.152 / 0.124 / 0.091 against health's 0.0095 and
+  digit-blind 0.19 / 0.21 / 0.17), and the all-cell head here is worse than copying the previous tokens (0.159
+  against 0.097 at checkpoint 1).
+  So at a pixel clock's cell the forecast's error is mostly the current value, which is identical in a pair's two
+  members, and the request to separate them is drowned. The reward forecast predicts a change, not a value, and never
+  carries that burden. Amplifying the reset's input (D2) does not touch it.
 
 ## What round 2 establishes
 
 1. **Neither token-forecast currency teaches the pixel clocks.** HL-Gauss is worse than plain MSE on nuisance and on
-   the energy request. Plain MSE's energy request is real early but ~200x weaker than the reward forecast's on recovery,
-   and gone by checkpoint 10. Neither asks for hunger.
+   the energy request. Plain MSE's energy request is real early, weak, and gone by checkpoint 10. Neither asks for
+   hunger.
 2. **Every pixel clock's reset is lost at Mamba's input or state, not in perception.** Food and drink are lost at the
    input, energy at the state. Health and eating, which losses ask for, are registered, and the input learns them when
    asked.
-3. **Hunger's missing request is not caused by the input's weakness alone (D2).** What the requested clocks have is a
-   route by which the reset reaches the state in a form something already reads: the reward token for recovery, and the
-   reward readout itself.
+3. **Hunger's missing request is not caused by the input's weakness alone (D2).** The interpretation above (the
+   forecast's error at a pixel clock's cell is mostly the current value the belief does not hold) fits every reading
+   but is untested.
 
 Not established: what would bootstrap a clock whose only evidence is pixels; Part 3 (sharing) is below.
 

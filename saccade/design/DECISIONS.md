@@ -161,6 +161,16 @@ was not exogenous-filtered. No overnight launch or architecture/loss/corpus chan
   them; whether it counts as full-frame reconstruction must be measured, not argued. (User, 10-24.)
   P1 adds: a 1x1 colour summary finds zombies at night with AP 0.59 only (skeletons 0.32), so as a target it would be
   weak exactly where threats matter.
+- One forecaster for gaze and belief (user, 11-13; return to it later). The chooser (`saccade/chooser.py`) carries its
+  own coarse all-cell forecaster of the next periphery tokens (101,584 parameters, the 8 preceding frames, action and
+  outcomes): its error is the surprise term S, and its taken-minus-NOOP difference is the contingency term C. A
+  belief-side all-cell forecast predicts the same target from the belief. Merging them would give one forecaster that
+  both teaches the belief and aims the eye, close to saccades as experiments (Friston et al. 2012). They are not the
+  same thing today: feeding the belief to the chooser's head gave no reliable gain (`artifacts/experiments/
+  20261103_chooser_history`: one-frame MSE +2.9% in head A, -1.2% in head B; about 0 at eight frames; no consistent
+  gaze gain). A merged forecaster must keep the taken-versus-NOOP contrast (Codex), produce it before the frame is
+  seen, and stay out of the leak (S reads the target frame), while the chooser is kept apart from the world's
+  gradients by design. Revisit only after a belief-side forecast qualifies.
 
 ## Open, in discussion
 - UP FOR DEBATE LATER (user, 11-05; nothing below is decided by a test so far; evidence in
