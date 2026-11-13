@@ -62,3 +62,111 @@ A pass is not a repaired world. The run it earns is judged on:
 - false drops held down;
 - F5's recovery, cooldown and danger gains preserved;
 - moving cows and arrows as guards.
+
+---
+
+# Round 2 (11-13 afternoon): a categorical currency, and where hunger's reset is lost
+
+Asked by the user after round 1: run the categorical currency through the same instrument, and investigate whether
+hunger's missing request is an input-side problem, whether hunger is the only clock affected, and how to verify it.
+Codex's review of round 1 is adopted where marked. Frozen F5 checkpoints 1, 2 and 10, no world training.
+`gate2.py` (GPU) and `d1.py` (CPU probes) write `readings/round2/`.
+
+## Part 1: the categorical currency against plain MSE
+
+**The currency, fixed before any fit.** HL-Gauss (Farebrother et al. 2024, ICML; their Appendix A code):
+- the target of each token number x is the Gaussian mass N(x, sigma^2) on each bin, renormalised to the mass inside
+  the support;
+- the support is [-3, 3], the token's exact range (`out_map`: 3 tanh after a layer norm), not a choice;
+- 51 bins, their Atari default; sigma = 0.75 bin width (0.088), their recommended default. Their bin ablation is
+  21-201, and they report the best sigma does not depend on the bin width.
+- The loss is the cross-entropy, averaged over cells and numbers as plain MSE is. The token estimate (used for kappa)
+  is the expected bin centre.
+
+The reward head uses one-hot hard bins. Codex's CPU check showed hard bins charge an adjacent-bin crossing like a
+large jump, so the soft form is used. My round-1 claim that binning makes the forecast robust to brightness is
+withdrawn: with Gaussian labels, an exact forecaster's cost is close to MSE / (2 sigma^2) for any shift.
+
+**Same beliefs, data draws and trunk (Codex).** The plain head is refitted first, exactly as in round 1; its held-out
+losses must reproduce `readings/ckpt_XX.json`, which validates the run. The categorical head has the same trunk with
+16 x 51 outputs per cell and the same batch generator.
+
+**Readings per pair set** (energy, hunger; recovery and cooldown for reference), at the due transition:
+- **Nuisance, as the trained head pays it** (both currencies). Consequence = how much more loss the head pays when the
+  drop happens than when it does not, averaged over the two members' predictions. Foil = how much more it pays for
+  member B's next frame +1/+3/+6 per 255 brighter than for the real one. An exact-forecaster version needs the
+  probability an exact head would put on bins it never predicts, which is not defined for a softmax head. It is
+  reported for plain MSE (round 1's definition) and, with no floor, for the categorical currency (Codex's check), but
+  it is not the bar.
+- **Request direction** (round 1): cosine(-grad sep, grad loss) over belief parameters, per pair, with an episode
+  bootstrap. sep is each head's own swap cost.
+- **Request without the other 80 cells:** the same cosine with the loss restricted to the digit's cell; sep is
+  unchanged (the branches' targets differ only in that cell). This separates dilution by the other cells' errors from
+  a missing separation handle.
+- **Matched held-out update (Codex).** Pairs are split into two folds by episode. Each fold's summed loss gradient is
+  preconditioned as the trainer would (F5's AdamW second moments at that checkpoint, bias-corrected, eps 1e-8) and
+  normalised to a unit step. Its effect is read on the other fold's pairs through a yardstick common to every loss:
+  d(log D) per unit step, with D the squared distance between the two members' predicted beliefs at the due step,
+  relative to their mean squared size. The same is computed for the reward forecast on the recovery pairs, the loss
+  that did teach a clock; this is the reference scale.
+
+**Bars, fixed now.** The categorical currency is a candidate over plain MSE for energy if, at checkpoint 1 or 2:
+1. consequence > the +6/255 foil, as the trained head pays it, in a majority of energy pairs;
+2. the energy cosine is positive, episode-bootstrap 95% interval excluding 0;
+3. the head beats the same head given shuffled beliefs, in its own currency;
+4. it adds over plain MSE: the matched held-out update on energy is larger than plain MSE's, with the paired
+   per-pair difference's 95% interval excluding 0.
+
+Hunger is reported separately, as Codex suggests; Part 2 investigates it. A pass is not a repaired world. The run it
+could earn is judged as in round 1: native energy timing due / not due, false drops, F5's recovery, cooldown and
+danger gains, cows and arrows.
+
+## Part 2: is hunger's missing request an input-side problem?
+
+**What is already measured (F5 `RESULTS.md` 5, 6, 11.4, 11.7):**
+- digit value at Mamba's input (MLP probe): health 1.00, food 0.35, drink 0.49, energy 0.47;
+- digit change at the input (registration AP): health 0.998, food 0.19, drink 0.24, energy 0.59 (awake);
+- uptake into the state at lag 0: health +1 0.94, food 0.037, drink 0.094, energy 0.055 (base rate ~0.02-0.03);
+- the reset's trace in the pairs at checkpoint 1: 0.42 / 0.12 / 0.025 when it happens (recovery / energy / hunger),
+  0.014 / 0.0073 / 0.0065 at the due step;
+- new from round 1's saved gradients: hunger's separation-gradient norm is not smaller than energy's (2.5e-3 vs
+  1.4e-3 at checkpoint 1; 6.6e-3 vs 8.7e-3 at 2; 9.7e-3 vs 1.5e-2 at 10). That weighs against "the input stops the
+  request" and is why this needs testing rather than assuming.
+
+**D1. Where each reset is lost (natural DEV frames).** The section-6 registration protocol (40k transitions, seed
+2120, logistic on |change|, 5 episode folds, AP with an episode bootstrap) applied at three stages:
+- the periphery tokens, |p_t - p_(t-1)| over all 81 x 16 numbers;
+- Mamba's input, |x_t - x_(t-1)| (section 6 exactly);
+- Mamba's corrected state, |b_t - b_(t-1)|.
+
+Events: health drop, health rise; food drop (awake; the timer's reset), food rise (eating, which also resets hunger
+in Craftax-Classic); drink drop (awake), drink rise (drinking also resets thirst); energy drop (awake). Checkpoints
+1, 2 and 10. Section 6's four any-change rows are recomputed at checkpoint 10 as the validation; they must match.
+How to read it:
+- **input-side loss:** high at the tokens, low at the input;
+- **perception-side loss:** already low at the tokens;
+- **state-side loss:** high at the input, low at the state;
+- **learned versus present from the start:** the input stage across checkpoints 1, 2 and 10 (alongside F4 / HUD-Change
+  from section 6). Whether hunger is the only clock affected is read off the same table.
+
+**D2. Substitution on the exact-history pairs: is the input the cause?** Frozen model, modified inputs only.
+- **Hunger, amplified:** the two members' input-embedding difference at every history step is scaled so its total
+  norm equals the energy pairs' median. Gradients flow through the scaled difference, so this is what a projection
+  with that much more gain on the food change would give.
+- **Hunger, sham:** the same added norm, in a seeded random direction, at the same steps.
+- **Energy, attenuated:** the mirror; energy's difference scaled down to the hunger pairs' median.
+
+Per variant: D at the due step, the separation-gradient norm, the all-cell cosine (both currencies), and the
+digit-cell cosine (plain).
+
+How to read it, fixed now, at checkpoint 1 or 2:
+- **input-limited supported:** amplified hunger's plain all-cell cosine becomes positive (interval excluding 0), the
+  sham's does not, and attenuated energy loses its request (interval including 0);
+- **not supported:** amplified hunger stays at 0 (interval including 0);
+- anything else is reported as mixed.
+
+**D3 is the digit-cell cosine above.** If hunger's digit-cell cosine is also about 0 while energy's is clearly
+positive, hunger's block sits upstream of the forecast; if both are clearly positive, the all-cell average is what
+removes hunger's request.
+
+Not covered: drink has no exact-history pairs, so D2 cannot be run for it; D1 covers it.
