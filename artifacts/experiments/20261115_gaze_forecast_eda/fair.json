@@ -1,0 +1,68 @@
+{
+ "train_log": [
+  {
+   "epoch": 0,
+   "train_cross_entropy": 3.6732031815293906
+  },
+  {
+   "epoch": 1,
+   "train_cross_entropy": 3.5899155974141315
+  },
+  {
+   "epoch": 2,
+   "train_cross_entropy": 3.5602566332056904
+  },
+  {
+   "epoch": 3,
+   "train_cross_entropy": 3.533895749236239
+  }
+ ],
+ "test_frames": 58103,
+ "forecaster_kl_mean": 0.3140355348587036,
+ "forecaster_kl_by": {
+  "moved": 0.3751276433467865,
+  "still": 0.28133854269981384,
+  "day": 0.37593016028404236,
+  "night": 0.18572208285331726
+ },
+ "copy_kl_mean_same_frames": 0.7390925884246826,
+ "clocks": {
+  "food_down": {
+   "events": 1580,
+   "event_kl_mean": 0.31279225113490894,
+   "price_per_frame": 0.008505787253552418,
+   "share_of_forecaster_kl": 0.027085429225006306,
+   "forecaster_kl_at_events": 0.4745565354824066
+  },
+  "drink_down": {
+   "events": 1837,
+   "event_kl_mean": 0.2877545637634176,
+   "price_per_frame": 0.009097725309078675,
+   "share_of_forecaster_kl": 0.028970368952583928,
+   "forecaster_kl_at_events": 0.3727776110172272
+  },
+  "energy_down_awake": {
+   "events": 1252,
+   "event_kl_mean": 0.2500648365248192,
+   "price_per_frame": 0.005388382275081728,
+   "share_of_forecaster_kl": 0.01715851130511763,
+   "forecaster_kl_at_events": 0.38126975297927856
+  },
+  "energy_up_asleep": {
+   "events": 842,
+   "event_kl_mean": 0.4236657677352845,
+   "price_per_frame": 0.006139555211144168,
+   "share_of_forecaster_kl": 0.01955051110348574,
+   "forecaster_kl_at_events": 0.45296919345855713
+  },
+  "recovery": {
+   "events": 703,
+   "event_kl_mean": 0.6567726033642622,
+   "price_per_frame": 0.007946425144400054,
+   "share_of_forecaster_kl": 0.02530422281024805,
+   "forecaster_kl_at_events": 0.6289249062538147
+  }
+ },
+ "pixel_clock_share": 0.0927648205861936,
+ "pixel_clock_share_of_copy_kl_same_frames": 0.03941515651097025
+}

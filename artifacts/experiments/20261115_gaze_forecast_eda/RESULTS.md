@@ -51,3 +51,22 @@ exact function of the last 8 frames and the action (the chooser's head with the 
 scroll reveals new terrain follows the action. The 3.8% is therefore not like-for-like with the horizon EDA's 1.2-1.8%,
 whose denominator removed transport. The fair denominator is what a forecaster with the last 8 frames and the action
 still misses (the gaze analogue of the transport baseline); not yet measured.
+
+## Fair denominator (`fair.py`, `fair.json`; run 11-15 after the user's go)
+
+A forecaster of the gaze distribution from exactly the chooser's inputs (the chooser head's trunk, a score per cell, a
+window's logit the sum of its cells' plus a bias), fitted on 4/5 of DEV episodes for 4 epochs (training cross-entropy
+3.67 -> 3.53, still falling), read on the held-out fifth (58,103 frames). CPU, full precision; event prices recomputed on
+the same held-out frames (they match the GPU run within a few percent).
+
+- **What a memoryless forecaster still misses: KL 0.314 nats per frame**, against 0.739 for copying the previous
+  frame's distribution on the same frames (moved 0.375, still 0.281, day 0.376, night 0.186). It removes 57% of what
+  copying misses.
+- **Pixel-clock share: 9.3%** of that remainder (food 2.7%, drink 2.9%, awake energy 1.7%, asleep energy rise 2.0%;
+  recovery 2.5%), against 3.9% with the copy denominator on the same frames. **Just under the 10% bar, and a lower
+  bound:** a better memoryless forecaster (larger, trained to convergence) would leave less, raising the share.
+- The forecaster does not anticipate the events: its KL at event frames is 0.37-0.47, above its 0.31 mean.
+
+Reading: by the letter of the fixed bar this target still fails (9.3% < 10%), but the corrected share is five to twenty
+times the 0.4-1.8% of the earlier currencies, the bar was set to demand an order-of-magnitude jump rather than from a
+known learning threshold, and the instrument bounds the share from below. Left to the user's judgement.
