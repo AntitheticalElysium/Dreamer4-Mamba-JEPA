@@ -67,3 +67,27 @@ recorded displacement points to.
 `share.py light` (added after the factor table; a data fact, checkpoint 10, all DEV): on awake frames where the player
 did not move, the map cells' copy and head error by light level, with and without entities in view. With no entity and
 unchanged terrain, the remaining error is what no history predicts (night noise, lighting drift).
+
+## Third pass (user, 11-14 evening): research pass on questions 1 and 2
+
+Question 2 asks which prediction should teach the memory. The claim I made in discussion, untested: the denoiser is
+the system's action-conditioned forward model, so its error is cleaner of self-caused change than the token head's.
+Competing explanation: the denoiser's loss is spent on the same things (moved frames, night noise), so it is no
+cleaner a teacher. `g1map.py`, frozen, F6 checkpoints 10 and 2, DEV, the monitor's protocol (8 context frames at the
+context level, the target frame at each of the 8 signal levels, fixed noise per target, prior fixations):
+
+- **Targets:** 3,000 frames drawn uniformly from DEV (t >= 9) plus up to 300 frames of each digit event (health
+  down / up, food down, drink down, energy down awake, energy up asleep), kept separate in every reading.
+- **What the denoiser's loss is spent on:** x-space error per signal level and cell group (map cells, HUD digit
+  cells, other HUD cells, glimpse, lighting), by frame class (moved / still awake / asleep; night), unweighted and
+  with the trained ramp weight, beside copying the previous frame's tokens. Reading: on moved frames, is the
+  denoiser's periphery error near its still-frame error (it handles transport) or near copying's?
+- **Where it uses the memory:** the same errors with the window's beliefs replaced by those of a window at least 32
+  frames away in the same episode, per level, class and cell group; at each digit's cell on that digit's event frames.
+- **Pull by level (`g1map.py pull`, 300 uniform targets):** norm of d(target frame's loss at one level)/d(the
+  window's belief vectors), unweighted and ramp-weighted: at which signal levels does the denoiser ask the memory,
+  and what does the ramp (0.1 at pure noise, 1.0 at full signal) do to that request?
+Known-answer check: the instrumented ramp-weighted per-frame loss equals `model.shortcut_loss` on the same inputs.
+
+Question 1 (the unit) is a reading pass plus arithmetic on the saved gradient norms (`weights.py`, CPU): the
+belief-gradient shares that each published weighting rule would give on F6's measured raw norms. No rule is selected.
