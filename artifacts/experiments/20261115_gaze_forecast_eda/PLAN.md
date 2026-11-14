@@ -31,7 +31,8 @@ target), coarse tokens by the chooser's own `coarse`, inputs by its own `inputs`
 2. **Event price:** KL(real || no-event) of the 49-window distribution at event frames; per frame of all DEV, the
    clock's rate times its mean event KL (what a forecaster that knew the timing would save, to first order).
 3. **Share (primary):** the four pixel clocks' summed price over the mean KL(p_t || p_{t-1}) on all frames with a
-   previous frame (what copying the previous gaze distribution misses), with the same ratio split by moved / still
+   previous scored frame (what copying the previous gaze distribution misses; frame 0 of each episode has no previous
+   action and is not scored, as in training), with the same ratio split by moved / still
    frames and day / night. Earlier currencies gave the pixel clocks 0.4-1.8%.
 4. **Nuisance:** per clock, the share of event frames where the +1 / +3 / +6 brightness foil's KL (foil vs no-event
    counterfactual) is at least the event's KL. The change-map forecast gate failed here (+1/255 won 2 of 32).

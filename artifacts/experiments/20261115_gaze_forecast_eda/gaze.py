@@ -28,7 +28,7 @@ def kl(p, q):
 
 
 def main():
-    dev = torch.device("cuda")
+    dev = torch.device(os.environ.get("GAZE_DEVICE", "cuda"))          # cpu while a GPU job runs
     model, cfg = NP.IF.load(EXP / "20261113_p1f6/run/ckpt_10.pt")
     state = torch.load(EXP / "20261113_p1f6/run/chooser_last.pt", map_location="cpu", weights_only=False)
     pol = dict(state["config"])
@@ -65,8 +65,8 @@ def main():
         p = torch.cat([a for a, _ in pv])[None].float()
         v = torch.cat([b for _, b in pv])[None].float()
         xx, _ = C.inputs(p, v, chunk, P, pol["history"])
-        prob = scores(fr[0, P:], xx, torch.arange(T + 1, device=dev))      # [T + 1, 49], frame t = target t
-        g = off[e] + np.arange(1, T + 1)
+        prob = scores(fr[0, P + 1:], xx, torch.arange(1, T + 1, device=dev))   # [T, 49], row t - 1 = frame t (frame 0 has
+        g = off[e] + np.arange(2, T + 1)                                     # no previous action: unscored, as in training)
         copy_kl.append(kl(prob[1:], prob[:-1]).cpu().numpy())
         moved_all.append((pos[g] != pos[g - 1]).any(1))
         night_all.append(light[g] < 0.5)
@@ -80,7 +80,7 @@ def main():
             base[:, 7 * r:7 * r + 7, 7 * c:7 * c + 7] = fr[0, P + ts - 1, 7 * r:7 * r + 7, 7 * c:7 * c + 7]
             idx = torch.as_tensor(ts, device=dev)
             q0 = scores(base, xx, idx)
-            real = prob[idx]
+            real = prob[idx - 1]
             ev = kl(real, q0)
             out = {"t": ts, "g": off[e] + ts, "event_kl": ev.cpu().numpy(), "cover_real": (real @ cover[cell]).cpu().numpy(),
                    "cover_noevent": (q0 @ cover[cell]).cpu().numpy()}
@@ -96,7 +96,7 @@ def main():
            "copy_kl_mean_by": {"moved": float(copy_kl[moved].mean()), "still": float(copy_kl[~moved].mean()),
                                "day": float(copy_kl[~night].mean()), "night": float(copy_kl[night].mean())},
            "clocks": {}}
-    gpos = np.concatenate([off[e] + np.arange(1, int(L["ep_T"][e]) + 1) for e in range(len(eps))])
+    gpos = np.concatenate([off[e] + np.arange(2, int(L["ep_T"][e]) + 1) for e in range(len(eps))])
     is_moved = np.zeros(off[-1], bool); is_moved[gpos] = moved
     is_night = np.zeros(off[-1], bool); is_night[gpos] = night
     for name, parts in rows.items():
