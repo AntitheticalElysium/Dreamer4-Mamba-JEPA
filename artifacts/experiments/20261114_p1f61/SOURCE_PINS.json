@@ -1,5 +1,5 @@
 {
-  "prepared_at_utc": "2026-11-14T11:37:17.783652+00:00",
+  "prepared_at_utc": "2026-11-14T12:37:29.342739+00:00",
   "torch": "2.13.0+cu130",
   "files": {
     "artifacts/craftax_support_v2/manifest.json": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
@@ -66,16 +66,17 @@
     "artifacts/experiments/20261113_token_forecast_gate/d1.py": "2bce9c8154537a6823cdaac647add15ff1c314ba0cd29dc8778f022a4cec7c03",
     "artifacts/experiments/20261113_token_forecast_gate/gate.py": "729f1d03a65bf8b72ca3cc2496d1813f32d75292b29e1707f91951ba0627b53f",
     "artifacts/experiments/20261113_token_forecast_gate/gate2.py": "6aad9309341f74efc451872091cd731066690270681e2189ecb74d6676e2a4a5",
-    "artifacts/experiments/20261114_p1f61/PLAN.md": "3eed38fd68709951f069cfe4e7d2090f5943e4f857edd07ba4e57ebbe0910f28",
-    "artifacts/experiments/20261114_p1f61/checks.json": "59da86126cf458ca917756028f965f1e59eb04f8ad4986664bb35852e359e32e",
-    "artifacts/experiments/20261114_p1f61/checks.py": "52bec7d0c2205a9debdfc23a88802fc2dd542d767a910f7b44283f521a066527",
+    "artifacts/experiments/20261114_p1f61/PLAN.md": "23cb42e99bac3b92a9b178f94ce8822e6db6ad336eedc9f7e97806138eb53324",
+    "artifacts/experiments/20261114_p1f61/checks.json": "f675e381ec5c23370e13037aafbf76a8de62ad245434770937075d2e512486bc",
+    "artifacts/experiments/20261114_p1f61/checks.py": "168cd06dd60e3645ad0f9d93e1b62ee9e518fbc4f66157e0702d5b9cb15f8f9a",
     "artifacts/experiments/20261114_p1f61/eval_checks.json": "d32c9b2243eea681eda041c1e4a43efea92e375d33c677db18a00587884b9ea8",
     "artifacts/experiments/20261114_p1f61/evaluation.py": "7ef1a550b1fad83ac4e1b8c0a090ad584fc635a4af61212f5aae7f056a8316f9",
     "artifacts/experiments/20261114_p1f61/pin_sources.py": "d38fdf17a6c6f536cfc46218b8e3c18a3db0ec67a0a23d814dacffe91e7efb63",
-    "artifacts/experiments/20261114_p1f61/readout.py": "b36b534864fbbd05dc513ebcdef8938137a8dcbcec2e2b084f2129c04529ce93",
+    "artifacts/experiments/20261114_p1f61/readout.py": "4f12f6c98e7548e37c8d5794f378d75a0c720b2753a6f15504411f4cca094073",
+    "artifacts/experiments/20261114_p1f61/reference.py": "5d1e4981b462959d91625740692547bd08806fe3274a59bd3b6d8bee083b201f",
     "artifacts/experiments/20261114_p1f61/run.py": "e7b0651def55d4d17b326597ac5982117e00565831dcef7affbc67dd53072147",
-    "artifacts/experiments/20261114_p1f61/stages.py": "7eb6c16406ec87f02175c8f6fa9de04d4a1c74667fb770417d2b75e8fc5dcd4e",
-    "artifacts/experiments/20261114_p1f61/train.py": "b2e27e838e1095d7a9142256f769019b4411707363b18b239ca692a3d97dd59f",
+    "artifacts/experiments/20261114_p1f61/stages.py": "f87778452c2b205392a55e713b17f7e69a0cb8b05f74339a33c319e8b7155c99",
+    "artifacts/experiments/20261114_p1f61/train.py": "d9276e2003e991dec8330a9a3b142c905e76c84cc475306afb49f62bf02c016a",
     "saccade/chooser.py": "eedaaaaad45c5cd0ef6d5f53be445ef7be46c4d52302f4e780557742a1a8ebde",
     "saccade/data.py": "1177c951165cdbd5af10636ec52026f4e8638a022e31ae0ceab47744ad1e8b06",
     "saccade/eval/__init__.py": "14c4d8a9b20ed4826c9b537ae1934fff44db4ff912540f233570c9bc450be099",
@@ -89,6 +90,6 @@
     "saccade/eval/s1.py": "9f43a7a3e5135845848e2f5d27901b445c574d0a949bd7b2463a9dffc7031802",
     "saccade/m0.yaml": "9aeb2de10fc7754ed1c9f73f67e8c7f2825f235f079a2818773572d4a8799d74",
     "saccade/model.py": "899afae71240a4738ec6375d88e9b8e021ac46c99b1471f6e482659553e032f3",
-    "saccade/train.py": "4b7ebacf6ab888b890cee32df1e1d414be61a67e0c37eae77b8ab0909f3e3484"
+    "saccade/train.py": "079574b32083ba87ffa5cc1b94f321e54c1802518e4c5e406d7204db926ba9f3"
   }
 }

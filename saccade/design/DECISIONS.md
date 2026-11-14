@@ -24,8 +24,9 @@ functions). The `edm` config section keeps its name so F4's checkpoints' configu
 User 11-14 night, after F6's negative and the G1-alone test (`artifacts/experiments/20261114_learnability/`): the token
 forecaster is removed and TSP's forecast mode is not restored (`heads.forecast.tsp: false`); the reward forecast reads
 the belief predicted before frame t - d + 1 for d = 1..8, Dreamer 4's MTP (section 3.3: L = 8, unweighted sum, one
-output layer per distance; distance 1 keeps F5's layer), `reward_distances: 8`, its own init seed. Bundled by the user's
-choice. The aim is the sleep clock, priced 2-8 steps ahead (currency EDA); food and drink are not expected to move.
+output layer per distance; distance 1 keeps F5's layer), `reward_distances: 8`, its own init seed, weighted
+L1 + mean(L2..L8) (`reward_ahead_reduction: mean`; Codex's review and LOSSES principle 1: Dreamer 4's raw sum is
+scale-neutral only under its per-term RMS normalisation). Bundled by the user's choice. The aim is the sleep clock, priced 2-8 steps ahead (currency EDA); food and drink are not expected to move.
 Plan, preflight and readings: `artifacts/experiments/20261114_p1f61/PLAN.md`; m0.yaml stays the HUD-Change recipe.
 
 ## 2026-11-11 — P1-F5 recipe (pending its run): forecast modes, change map removed

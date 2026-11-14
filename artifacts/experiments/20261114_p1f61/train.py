@@ -11,7 +11,8 @@ from saccade import train as TR
 HERE = Path(__file__).resolve().parent
 F5 = importlib.import_module("artifacts.experiments.20261111_p1f5.train_p1f5")
 WORLD_SEED, C = F5.WORLD_SEED, F5.C
-AHEAD = {"tsp": False, "reward_distances": 8, "reward_init_seed": 615003}   # Dreamer 4 section 3.3: L = 8
+AHEAD = {"tsp": False, "reward_distances": 8, "reward_init_seed": 615003,   # Dreamer 4 section 3.3: L = 8
+         "reward_ahead_reduction": "mean"}   # L1 + mean(L2..L8) (Codex review; LOSSES principle 1), not Eq. 9's raw sum
 
 
 def recipe(_canonical_cfg=None):

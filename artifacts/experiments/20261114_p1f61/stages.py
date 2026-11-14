@@ -24,6 +24,19 @@ F5 = "artifacts.experiments.20261111_p1f5"
 F6 = HERE.parent / "20261113_p1f6"
 
 
+def phase_test(gen, sim, h, perms=10000, seed=110711):
+    """Codex 11-14: does the world wake THIS scene at its own time? Per scene, the 1-Wasserstein distance between the
+    generated and the simulator wake-time samples (no wake = H + 1); real pairing against generated samples shuffled
+    across scenes of the same cohort. p = share of shuffles at least as close as the real pairing."""
+    g, s = np.sort(np.minimum(gen, h + 1), 1).astype(float), np.sort(np.minimum(sim, h + 1), 1).astype(float)
+    score = lambda gg: float(np.abs(gg - s).mean())
+    real = score(g)
+    rng = np.random.default_rng(seed)
+    null = np.array([score(g[rng.permutation(len(g))]) for _ in range(perms)])
+    return {"real_w1": real, "shuffled_w1_mean": float(null.mean()), "shuffled_w1_5th": float(np.percentile(null, 5)),
+            "p_shuffle_at_least_as_close": float((1 + (null <= real).sum()) / (1 + perms)), "permutations": perms}
+
+
 def sleep_split(checkpoint, readings):
     import torch
     from craftax.craftax_classic.constants import Achievement
@@ -52,7 +65,8 @@ def sleep_split(checkpoint, readings):
                      "early_wake": AN.interval(g < s.min(1, keepdims=True)),
                      "late_or_no_wake": AN.interval(g > s.max(1, keepdims=True)),
                      "restricted_wait_ratio": {"mean": float(gw.mean() / sw.mean()),
-                                               "ci95": np.percentile(gw[boot].mean(1) / sw[boot].mean(1), [2.5, 97.5]).tolist()}}
+                                               "ci95": np.percentile(gw[boot].mean(1) / sw[boot].mean(1), [2.5, 97.5]).tolist()},
+                     "phase_test": phase_test(g, s, h)}
     (readings / "followups/sleep_split.json").write_text(json.dumps(res, indent=1) + "\n")
     print("sleep_split", {k: res[k]["restricted_wait_ratio"]["mean"] for k in ("all", "wake_up_not_yet_paid")}, flush=True)
 

@@ -106,10 +106,13 @@ def known_answer(cfg):
         res[dist] = {"pairs": len(pairs), "excluded_episode_start": int(sum(
             bool(valid[i, j] and not first[i, j]) for i in range(ep.shape[0]) for j in range(P, ep.shape[1]))) - len(pairs),
             "term": got, "belief_grad_norm": reach}
-    total = terms["reward_forecast_1"]
+    ahead = 0
     for k in res:                                                        # the trainer's order of addition
-        total = total + terms[f"reward_forecast_{k}"]
-    assert torch.equal(total, terms["reward_forecast"]), "the grouped reward forecast is not the unweighted sum"
+        ahead = ahead + terms[f"reward_forecast_{k}"]
+    if cfg["heads"]["forecast"].get("reward_ahead_reduction", "sum") == "mean":
+        ahead = ahead / (cfg["heads"]["forecast"]["reward_distances"] - 1)
+    total = terms["reward_forecast_1"] + ahead
+    assert torch.equal(total, terms["reward_forecast"]), "the grouped reward forecast is not distance 1 plus the declared combination"
     return res
 
 

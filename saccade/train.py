@@ -181,12 +181,16 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=No
                 terms["reward_forecast_1"] = rf                          # frame t's reward from the belief predicted before
                 ha = model.outcome.features(b_pred, None)                # frame t - d + 1 (prefix rows: the cache, detached),
                 seg = first.long().cumsum(1)                             # only when no episode starts in [t - d + 1, t]
+                ahead = 0
                 for d in range(2, fcfg["reward_distances"] + 1):
                     s = slice(P - d + 1, L - d + 1)
                     ok = nf & (seg[:, P:] == seg[:, s]) & ~first[:, s] & t["valid"][:, s]
                     ld = -model.outcome.ahead_logp(ha[:, s][ok], t["reward"][:, P:][ok], d).mean() if ok.any() else ha.sum() * 0
-                    terms[f"reward_forecast_{d}"] = ld       # logged per distance; only the sum is grouped
-                    rf = rf + ld
+                    terms[f"reward_forecast_{d}"] = ld       # logged per distance; only the combination is grouped
+                    ahead = ahead + ld
+                if fcfg.get("reward_ahead_reduction", "sum") == "mean":  # P1-F6.1 review (Codex): distance 1 at full weight,
+                    ahead = ahead / (fcfg["reward_distances"] - 1)       # distances 2-8 together one term's worth (LOSSES 1)
+                rf = rf + ahead
             terms.update(reward_forecast=rf,
                          cont_forecast=F.binary_cross_entropy_with_logits(model.outcome.cont_logit(hf, r).float(), alive))
     terms.update(g1=g1, tsp=tsp, rec=rec, reward=reward, cont=cont,
