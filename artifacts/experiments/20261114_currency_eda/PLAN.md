@@ -41,3 +41,12 @@ fact about F6's tokens:
   Consequence = that cost for the due member's digit cell; foil = the summed cost over the cells whose code the
   brightness edit changes. Reading: foil against consequence per pair, per K. This prices the target only; it does
   not show that a model trained on such codes would learn the timer.
+
+## 3. Share of a code likelihood (`share_codes.py`, added after readings 1-2; GPU, F6 checkpoint 10)
+
+Reading 2 prices one event. The share question (F6 dissection: food / drink / energy changes are 0.9-1.2% of the
+squared-error terms) needs the whole loss. For K = 64 and 256, a forecaster that knows each cell's change rate by
+frame class (moved, still by day / dusk-dawn / night, asleep: what the action and the cache tell it) but no timer:
+per frame, the loss is the sum over cells of -log p(change or not) plus, for a changed cell, -log p(its new code |
+cell). Fitted on the fit episodes, read on the test episodes. Reported: the share of the total test loss at the HUD
+digit cells on frames where that digit changed (food, drink, energy; health separately), by frame class.

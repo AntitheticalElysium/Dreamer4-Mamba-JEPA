@@ -68,13 +68,12 @@ def main():
         y[ok] = reward_class(reward[ao[ep[ok]] + t[ok] + n_ - 1])
         ll = {}
         for name, X in variants.items():
-            m = lgb.LGBMClassifier(objective="multiclass", n_estimators=600, learning_rate=0.05, num_leaves=31,
-                                   min_child_samples=50, subsample=0.8, subsample_freq=1, colsample_bytree=0.8,
-                                   n_jobs=6, verbose=-1, random_state=0)
-            m.fit(X[fit], y[fit], eval_set=[(X[val], y[val])], callbacks=[lgb.early_stopping(30, verbose=False)])
-            p = m.predict_proba(X[te])
-            col = {c: i for i, c in enumerate(m.classes_)}
-            ll[name] = -np.log(np.clip(np.array([p[i, col[c]] if c in col else 1e-9 for i, c in enumerate(y[te])]), 1e-9, 1))
+            params = dict(objective="multiclass", num_class=6, learning_rate=0.05, num_leaves=31, min_data_in_leaf=50,
+                          bagging_fraction=0.8, bagging_freq=1, feature_fraction=0.8, num_threads=6, verbose=-1, seed=0)
+            m = lgb.train(params, lgb.Dataset(X[fit], y[fit]), num_boost_round=600,
+                          valid_sets=[lgb.Dataset(X[val], y[val])], callbacks=[lgb.early_stopping(30, verbose=False)])
+            p = m.predict(X[te], num_iteration=m.best_iteration)
+            ll[name] = -np.log(np.clip(p[np.arange(len(te)), y[te]], 1e-9, 1))
         out = {"class_shares": np.bincount(y[te], minlength=6).tolist(), "log_loss": {k: float(v.mean()) for k, v in ll.items()},
                "recover_gain_over_visible": gain(ll["visible_only"] - ll["base"], np.ones(len(te), bool)), "gains": {}}
         for k in COUNTERS:
