@@ -694,7 +694,8 @@ class TSP(nn.Module):
         self.tsp = nn.Sequential(mlp([dp + dv + h["position_dim"] + h["belief_dim"], h["hidden"], h["hidden"]]), nn.GELU())
         self.rec = nn.Sequential(mlp([dg + dv + h["position_dim"], h["hidden"], h["hidden"]]), nn.GELU())
         self.split = (dp, dv)
-        if cfg["heads"].get("forecast") and not cfg["heads"]["forecast"].get("tokens"):   # the token forecast replaces this mode
+        fc = cfg["heads"].get("forecast")
+        if fc and not fc.get("tokens") and fc.get("tsp", True):          # the token forecast replaces this mode; tsp: false drops it
             self.mask = nn.Parameter(torch.zeros(dp + dv))                # zero init: no random draw
 
     def predict(self, belief, p, v, cells):
@@ -765,6 +766,16 @@ class Outcome(nn.Module):
                              * torch.expm1(((self.edges[:-1] + self.edges[1:]) / 2).abs()))
         if cfg["heads"].get("forecast"):
             self.mask = nn.Parameter(torch.zeros(W))                      # forecast mode's percept stand-in, no draw
+        n = (cfg["heads"].get("forecast") or {}).get("reward_distances", 1)
+        if n > 1:                                                        # Dreamer 4 MTP (Eq. 9): one output layer per further
+            with torch.random.fork_rng(devices=[]):                      # distance, its own draws (every other parameter and
+                torch.random.default_generator.manual_seed(cfg["heads"]["forecast"]["reward_init_seed"])   # the RNG keep F5's)
+                self.ahead = nn.ModuleList(nn.Linear(h["hidden"], self.bins) for _ in range(n - 1))
+
+    def ahead_logp(self, h: Tensor, r: Tensor, d: int) -> Tensor:
+        """Forecast mode at distance d >= 2: log P(bin of r) from that distance's output layer (distance 1 keeps the
+        reactive head's layer, as in F5)."""
+        return self.ahead[d - 2](h).float().log_softmax(-1).gather(-1, self.bin_of(r)[..., None])[..., 0]
 
     def features(self, belief, embed):
         """embed = None is the forecast mode (P1-F5): the outcome from the belief predicted before the percept."""

@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "checkpoint_sha256": "561edfb89fcfd6e95443eaf0ae7deba172788a72690d90abf874910ec70aaede",
+  "fixture": "checks/fixture/ckpt_04.pt: a copy of the preflight's 4-update straight run (checks/smoke_*/straight), outside run/",
+  "stages": {
+    "s1": true,
+    "native_pairs": true,
+    "consequences": true,
+    "interface": true,
+    "recursion_4": true,
+    "natural_thirst": true
+  },
+  "fixture_only": true,
+  "full_queue_only": [
+    "belief_probe",
+    "belief_path_probe",
+    "clocks",
+    "trajectory",
+    "movement",
+    "mining",
+    "sleep",
+    "sleep_split",
+    "entities",
+    "compare"
+  ],
+  "sleep_split_known_answer": "on F6's archived sleep draws: awake by step 12 0.422 and wait ratio 2.44 (F6's sleep stage), 0.46 on the 25 not-yet-paid starts (Codex)"
+}

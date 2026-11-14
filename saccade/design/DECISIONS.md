@@ -20,6 +20,14 @@ trace bitwise; F4's checkpoint gives bitwise identical monitor and S1 one-step s
 earlier recipes and the experiment scripts written against them run from commit fa6edd1a (they import the removed
 functions). The `edm` config section keeps its name so F4's checkpoints' configurations read unchanged.
 
+## 2026-11-14 — P1-F6.1 recipe (pending Codex's review): no visual forecast, reward forecast at distances 1-8
+User 11-14 night, after F6's negative and the G1-alone test (`artifacts/experiments/20261114_learnability/`): the token
+forecaster is removed and TSP's forecast mode is not restored (`heads.forecast.tsp: false`); the reward forecast reads
+the belief predicted before frame t - d + 1 for d = 1..8, Dreamer 4's MTP (section 3.3: L = 8, unweighted sum, one
+output layer per distance; distance 1 keeps F5's layer), `reward_distances: 8`, its own init seed. Bundled by the user's
+choice. The aim is the sleep clock, priced 2-8 steps ahead (currency EDA); food and drink are not expected to move.
+Plan, preflight and readings: `artifacts/experiments/20261114_p1f61/PLAN.md`; m0.yaml stays the HUD-Change recipe.
+
 ## 2026-11-11 — P1-F5 recipe (pending its run): forecast modes, change map removed
 User 11-11, after the research pass and the change-map forecast gate (`artifacts/experiments/20261111_change_forecast_gate/`,
 `artifacts/experiments/20261111_p1f5/PLAN.md`). Three changes bundled in one run by the user's choice ("less clean

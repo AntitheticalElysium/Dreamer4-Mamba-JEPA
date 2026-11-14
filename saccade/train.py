@@ -161,22 +161,33 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=No
         alive = (~t["terminated"][:, P:][nf]).float()
         reward = -model.outcome.reward_logp(h, r).mean()
         cont = F.binary_cross_entropy_with_logits(model.outcome.cont_logit(h, r).float(), alive)
-        if cfg["heads"].get("forecast"):                                 # P1-F5: training-only forecast modes, no frame-t input
+        if fcfg := cfg["heads"].get("forecast"):                         # P1-F5: training-only forecast modes, no frame-t input
             if forecast_windows is None:                                 # other callers: a deterministic gaze-independent draw
-                forecast_windows = np.random.default_rng([cfg["heads"]["forecast"]["seed"], int(update or 0)]).integers(49, size=tuple(nf.shape))
+                forecast_windows = np.random.default_rng([fcfg["seed"], int(update or 0)]).integers(49, size=tuple(nf.shape))
             if model.token_forecast is not None:                         # change form, every cell, in place of TSP's forecast:
                 with torch.autocast(dev.type, enabled=False):            # observed previous tokens + head(belief), plain MSE,
                     prev = torch.cat([Pp.p, Pc.p], 1)[:, P - 1:L - 1].detach().float()   # both token sets detached (fp32 head)
                     tf = prev + model.token_forecast(bp.float())
                     terms["token_forecast"] = (tf - Pc.p.detach().float()).square()[nf].mean()
-            else:
+            elif fcfg.get("tsp", True):                                  # P1-F6.1 (tsp: false): no visual forecast at all
                 fx = C.CENTRES.to(dev)[torch.as_tensor(forecast_windows, device=dev)]   # one window per frame, gaze-independent
                 fc = M.window(fx)
                 mf = model.pixels.mean(model.tsp.predict(bp, None, None, fc))
                 yf = M.cell_pixels(M.crop(t["frames"][:, P:], fx)).float() / 127.5 - 1
                 terms["tsp_forecast"] = (mf.float() - yf).square()[nf].mean()
             hf = model.outcome.features(bp, None)[nf]
-            terms.update(reward_forecast=-model.outcome.reward_logp(hf, r).mean(),
+            rf = -model.outcome.reward_logp(hf, r).mean()
+            if fcfg.get("reward_distances", 1) > 1:                      # P1-F6.1, Dreamer 4 MTP (Eq. 9, unweighted sum):
+                terms["reward_forecast_1"] = rf                          # frame t's reward from the belief predicted before
+                ha = model.outcome.features(b_pred, None)                # frame t - d + 1 (prefix rows: the cache, detached),
+                seg = first.long().cumsum(1)                             # only when no episode starts in [t - d + 1, t]
+                for d in range(2, fcfg["reward_distances"] + 1):
+                    s = slice(P - d + 1, L - d + 1)
+                    ok = nf & (seg[:, P:] == seg[:, s]) & ~first[:, s] & t["valid"][:, s]
+                    ld = -model.outcome.ahead_logp(ha[:, s][ok], t["reward"][:, P:][ok], d).mean() if ok.any() else ha.sum() * 0
+                    terms[f"reward_forecast_{d}"] = ld       # logged per distance; only the sum is grouped
+                    rf = rf + ld
+            terms.update(reward_forecast=rf,
                          cont_forecast=F.binary_cross_entropy_with_logits(model.outcome.cont_logit(hf, r).float(), alive))
     terms.update(g1=g1, tsp=tsp, rec=rec, reward=reward, cont=cont,
                  noise=noise)                                            # noise reaches only the scale network: outside the groups
@@ -189,7 +200,7 @@ def groups(terms: dict) -> dict:
     continuation before the frame)."""
     g = {"G1": terms["g1"], "G2": terms.get("change", 0) + terms["tsp"] + terms["rec"], "G3": terms["reward"] + terms["cont"]}
     if "reward_forecast" in terms:
-        g["G4"] = terms.get("tsp_forecast", terms.get("token_forecast")) + terms["reward_forecast"] + terms["cont_forecast"]
+        g["G4"] = terms.get("tsp_forecast", terms.get("token_forecast", 0)) + terms["reward_forecast"] + terms["cont_forecast"]
     return g
 
 
