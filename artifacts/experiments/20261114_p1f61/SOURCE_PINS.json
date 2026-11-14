@@ -1,5 +1,5 @@
 {
-  "prepared_at_utc": "2026-11-14T12:37:29.342739+00:00",
+  "prepared_at_utc": "2026-11-14T13:02:39.935249+00:00",
   "torch": "2.13.0+cu130",
   "files": {
     "artifacts/craftax_support_v2/manifest.json": "a87ae28635e111fc47afe5e598a838943c0f951af1d2080d67b312eeb6b30574",
@@ -66,7 +66,7 @@
     "artifacts/experiments/20261113_token_forecast_gate/d1.py": "2bce9c8154537a6823cdaac647add15ff1c314ba0cd29dc8778f022a4cec7c03",
     "artifacts/experiments/20261113_token_forecast_gate/gate.py": "729f1d03a65bf8b72ca3cc2496d1813f32d75292b29e1707f91951ba0627b53f",
     "artifacts/experiments/20261113_token_forecast_gate/gate2.py": "6aad9309341f74efc451872091cd731066690270681e2189ecb74d6676e2a4a5",
-    "artifacts/experiments/20261114_p1f61/PLAN.md": "23cb42e99bac3b92a9b178f94ce8822e6db6ad336eedc9f7e97806138eb53324",
+    "artifacts/experiments/20261114_p1f61/PLAN.md": "75af0af51070748d259c89d8f05188fe64b953ff31a5f29c4a19c834936a6a87",
     "artifacts/experiments/20261114_p1f61/checks.json": "f675e381ec5c23370e13037aafbf76a8de62ad245434770937075d2e512486bc",
     "artifacts/experiments/20261114_p1f61/checks.py": "168cd06dd60e3645ad0f9d93e1b62ee9e518fbc4f66157e0702d5b9cb15f8f9a",
     "artifacts/experiments/20261114_p1f61/eval_checks.json": "d32c9b2243eea681eda041c1e4a43efea92e375d33c677db18a00587884b9ea8",

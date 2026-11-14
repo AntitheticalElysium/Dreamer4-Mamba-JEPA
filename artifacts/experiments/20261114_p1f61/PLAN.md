@@ -156,12 +156,13 @@ the encoder points to the share (or to the removed token head; the bundle cannot
 
 ## Schedule and launch
 
-Segment 1 trains to checkpoint 3 (7,500 updates, about 4-5 h) and then reads it: `readout.py` (trajectory, registration,
+Segment 1 trains to checkpoint 3 (7,500 updates, about 4-5 h) and reads it: `readout.py` (trajectory, registration,
 trace, budget, ahead) at checkpoints 1-3, and the sleep stage with its split at checkpoint 3 into `readings/early_03/`.
-**Then it stops for review (Codex): the user decides whether to continue.** In F6 neither recovery nor cooldown was drawn
-timed by checkpoint 3 (pairs 0.005 / 0.000 and 0.067 / 0.037), so a null in generation there is not a failure; the
-heads' readout, the belief probe and the guards are the early reads. Continuing is `run.py` (F5's and F6's one-shot
-worker): it resumes exactly to the full budget, applies the fixed checkpoint rule and runs `evaluation.py`. The saccade
+Segment 2 follows in the same service without waiting (user, 11-15: the run continues automatically; Codex had proposed
+a stop): `run.py`, F5's and F6's one-shot worker, resumes exactly to the full budget, applies the fixed checkpoint rule
+and runs `evaluation.py`. The checkpoint-3 readings are reviewed while segment 2 trains; the user can stop it then. In F6
+neither recovery nor cooldown was drawn timed by checkpoint 3 (pairs 0.005 / 0.000 and 0.067 / 0.037), so a null in
+generation there is not a failure; the heads' readout, the belief probe and the guards are the early reads. The saccade
 sources must not change between segments (resume checks their hashes; `run.py` checks `SOURCE_PINS.json`).
 
     systemd-run --user --unit=saccade-p1f61 -p MemoryMax=24G -E MAMBA_DETERMINISTIC=1 -E JAX_PLATFORMS=cpu \
@@ -169,10 +170,5 @@ sources must not change between segments (resume checks their hashes; `run.py` c
       --working-directory="$PWD" bash -c 'set -e; X=artifacts.experiments.20261114_p1f61; D=artifacts/experiments/20261114_p1f61
         .venv/bin/python -u -m $X.train $D/run --updates 7500 >> $D/training.log 2>&1
         for k in 1 2 3; do .venv/bin/python -u -m $X.readout $k >> $D/early.log 2>&1; done
-        for s in sleep sleep_split; do .venv/bin/python -u -m $X.stages $s $D/run/ckpt_03.pt $D/readings/early_03 >> $D/early.log 2>&1; done'
-
-Continuation, after review only:
-
-    systemd-run --user --unit=saccade-p1f61-full -p MemoryMax=24G -E MAMBA_DETERMINISTIC=1 -E JAX_PLATFORMS=cpu \
-      -E OMP_NUM_THREADS=2 -E MKL_NUM_THREADS=2 -E PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
-      --working-directory="$PWD" "$PWD/.venv/bin/python" -u -m artifacts.experiments.20261114_p1f61.run
+        for s in sleep sleep_split; do .venv/bin/python -u -m $X.stages $s $D/run/ckpt_03.pt $D/readings/early_03 >> $D/early.log 2>&1; done
+        .venv/bin/python -u -m $X.run'
