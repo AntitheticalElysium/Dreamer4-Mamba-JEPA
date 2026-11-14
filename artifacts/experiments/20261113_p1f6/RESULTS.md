@@ -123,6 +123,46 @@ Share of each digit change the head predicts at checkpoint 10 (checkpoint 2): he
 asleep 0.53 (0.08), health up awake 0.07 (0.005); food, drink and energy changes 0.000-0.005 (0.00). All food, drink
 and energy changes together are 0.9% of the term.
 
+### 5b. What decides each term's share (second pass, `share_*.json`, `p1f5_share_*.json`, `align_10.json`, `light_10.json`)
+
+Per term on the checkpoint's own next training chunk (8 streams x 64 frames; instrumented terms equal
+`train.p1_losses` exactly). "Pull" is the norm of one frame's term differentiated by that frame's predicted belief.
+F6, checkpoint 10 (checkpoint 2 in brackets):
+
+| Term | value | pull per frame, mean | median | share of pull in the top 5% of frames | value with another frame's belief / true |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| Reward forecast | 0.055 (0.120) | 0.086 (0.087) | 0.0006 (0.0066) | 0.70 (0.61) | 13.8 (2.9) |
+| Reward (reactive) | 0.0009 (0.026) | 0.0021 (0.037) | 1e-6 (0.0004) | 0.93 (0.80) | 8,824 (58) |
+| Token forecast | 0.098 (0.072) | 0.0033 (0.0025) | 0.0023 (0.0006) | 0.19 (0.38) | 1.15 (1.17) |
+| G1 | 0.0020 (0.011) | 0.0009 (0.0006) | 0.0004 (0.0004) | 0.29 (0.23) | 2.47 (1.20) |
+| TSP (reactive) | 0.0009 (0.0068) | 0.0002 (0.0016) | 0.0002 (0.0012) | 0.14 (0.16) | 1.14 (1.10) |
+
+F5's TSP forecast in the token forecast's place: pull 0.039 mean / 0.025 median, value x2.86 with another frame's
+belief (checkpoint 10). Frames with a non-zero reward (1-10 of 64 per stream) carry 46-57% of the reward forecast's
+pull. The frames' pulls add at 0.20-0.39 of their summed norms for every term but the reactive reward (0.89), against
+0.12 for random directions.
+
+- **Reduction.** Every term is a mean over frames; the reward terms are one categorical log-loss per frame, the
+  token forecast a mean over 1,296 numbers, G1 over 1,880 numbers and the noise levels, TSP over 1,323 pixel values.
+  The gradient is linear in this choice: summed over its numbers, the token forecast's gradient into the belief
+  would be 1,296 x 0.032 = 41 against the reward forecast's 2.3. Dreamer sums the observation loss over pixels, which
+  is why HarmonyDream reports the opposite imbalance there (observation loss two orders above the reward loss).
+- **Harmoniser.** One multiplier per group, driven by the group's loss value, not by any gradient; the two G4 terms
+  share it. Its multipliers at checkpoint 10 are 1 / 0.384, 0.373, 0.388, 0.511; at its own stationary point
+  (sigma = (L + sqrt(L^2 + 4L)) / 2) they would be 1 / 0.047, 0.039, 0.030, 0.447: G1, G2 and G3 sit 8-13x below
+  the weight the harmoniser is heading for, G4 is at it.
+- **Surprise.** The reward forecast's pull is concentrated in a few frames with a large log-loss; on the median
+  frame the token forecast pulls harder than the reward forecast (0.0023 against 0.0006).
+- **Dependence on the belief.** The reward heads' values multiply by 14 and by thousands under another frame's
+  belief; the token forecast's, TSP's and G1's by 1.15, 1.14 and 2.5: their other inputs (the present tokens, the
+  cache) carry most of what they predict.
+
+Moved frames (all DEV, 107,654 awake moved transitions, overlapping map cells): copying the same cell 0.255, F6's head
+0.247, copying the cell the recorded displacement points to 0.133 (Codex's reading, `../20261114_f6_balance_audit/`,
+reproduced). Still frames (awake, player not moving, no entity in view, terrain unchanged), map error per cell from
+copying: day 0.0009, dusk and dawn 0.0010, night 0.101 (5,840 frames; the head 0.100): the night's darkness noise
+alone moves the tokens a hundred times more than a quiet day frame, and no history predicts it.
+
 ## 6. What this does not establish
 
 - Whether a reward-sized, scroll-free request in the same currency would form a pixel clock. The arm delivered a
