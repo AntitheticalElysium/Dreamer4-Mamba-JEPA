@@ -39,3 +39,13 @@ target), coarse tokens by the chooser's own `coarse`, inputs by its own `inputs`
 
 Pass for designing a training arm: share at least 10% and the +3/255 foil winning in at most 10% of each clock's events.
 Either failure is reported as a failure of this target, not of the idea of a gaze teacher.
+
+## Fair denominator (proposed 11-15 after the user's challenge; not run)
+
+The share bar used KL to the previous frame's gaze distribution, which counts change a forecaster gets without memory
+(RESULTS.md, corrected). Proposed correction of the instrument, same bar: fit a small forecaster of the gaze
+distribution from exactly the chooser's inputs (the last 8 frames' coarse tokens and outcomes, and the action into the
+frame), on 4/5 of DEV episodes, soft cross-entropy; read on the held-out fifth its KL to the real distribution, overall
+and by moved / still and day / night. Share = the four pixel clocks' summed price (as measured) over that held-out KL.
+Pass at 10%, as before. Its own limit: the forecaster's capacity bounds how much of the predictable change it removes,
+so the share it gives is a lower bound on the share a better memoryless forecaster would leave.
