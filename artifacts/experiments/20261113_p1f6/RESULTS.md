@@ -163,6 +163,32 @@ reproduced). Still frames (awake, player not moving, no entity in view, terrain 
 copying: day 0.0009, dusk and dawn 0.0010, night 0.101 (5,840 frames; the head 0.100): the night's darkness noise
 alone moves the tokens a hundred times more than a quiet day frame, and no history predicts it.
 
+### 5c. The denoiser as the memory's teacher (third pass, `g1map_*.json`, `g1pull_10.json`)
+
+Monitor protocol on DEV (3,000 uniform target frames plus 300 of each digit event; 8 context frames, the target at
+each of the 8 signal levels; instrumented loss equal to `shortcut_loss` to 3e-8). Checkpoint 10 unless stated.
+
+- **It uses the memory, at low signal levels.** With the window's beliefs replaced by those of a window >= 32 frames
+  away, its error at pure noise multiplies by 4.9 on map cells, 6.3 on HUD digit cells, 4.1 on the glimpse and 20 on
+  the lighting (asleep frames: map x20); from signal level 0.625 up the ratio is 1.0-1.2 for the map. At checkpoint
+  2 the ratios are 2.2, 1.5, 1.4 and 2.5. Its pull on the window's belief vectors by level (unweighted): 0.0047,
+  0.0045, 0.0043, 0.0027, 0.0008, 0.0003, 0.00005, 0.00002. The ramp (0.1 at pure noise to 0.89) leaves 27% of that
+  pull as trained (sum 0.0047 against 0.0174).
+- **It removes self-caused change, not night noise.** Map error at pure noise on moved frames 0.052 against 0.258
+  for copying the previous frame, and 0.036 on still awake frames (the token head: 0.247 against 0.255 on moved
+  frames). Still awake frames at night are 14% of frames and 31% of the trained term (day: 30% of frames, 12%); their
+  map error stays 0.017 at signal level 0.75, where a day frame's is 0.0005.
+- **Events at the digit's cell, share of the change predicted at pure noise (true belief / another window's):**
+  health down 0.70 / 0.06, health up 0.56 / 0.34, food down 0.15 / 0.15, drink down 0.12 / 0.14, energy down awake
+  0.10 / 0.11, energy up asleep 0.16 / 0.06. The 0.10-0.15 on the pixel clocks is the same with either belief.
+- **Share of the trained term:** food, drink and energy changes together 1.2% (health changes 0.3%); all HUD digit
+  cells 2.4%; map cells 81%; the glimpse 14%.
+
+Belief-gradient shares that weighting rules would give on the measured raw norms (checkpoint 10; arithmetic, no
+training; reward forecast / reward / token forecast / G1 / TSP): as trained 90% / 8% / 1.2% / 0.6% / 0.1%; the
+harmoniser at its stationary point 49% / 48% / 0.7% / 2.4% / 0.3%; every term summed over its numbers 3% / 0.2% /
+60% / 33% / 3%; every term divided by its value 19% / 78% / 0.1% / 2.5% / 0.7%.
+
 ## 6. What this does not establish
 
 - Whether a reward-sized, scroll-free request in the same currency would form a pixel clock. The arm delivered a
