@@ -215,10 +215,34 @@ def g1_arm(model, cfg, Ldev, ydev, okdev, fold, out, updates=2000, evals=(1000, 
             X = encode_dev(model, model.belief, cfg, Ldev)
             res["evals"][u] = probe(X, ydev, okdev, fold)
             print("g1", u, json.dumps(res["evals"][u]), flush=True)
+            run = HERE / "g1_run/run"                                      # F6's own readings need the adapted world
+            run.mkdir(parents=True, exist_ok=True)
+            torch.save({"model": model.state_dict(), "cfg": cfg}, run / f"ckpt_{evals.index(u) + 1:02d}.pt")
             model.train()
     out.write_text(json.dumps(res, indent=1) + "\n")
 
 
+def reference(cfg_out):
+    """F6's checkpoint-10 belief, unchanged, read by the same probe (the reference for the G1 arm)."""
+    ck, model, cfg, _ = DZ.load(10)
+    model.eval()
+    Ldev = dict(np.load(S.LABELS / "s0_dev_labels.npz"))
+    ydev, okdev = events(Ldev)
+    fold = np.repeat(np.arange(len(Ldev["ep_T"])) % 5, Ldev["ep_T"] + 1)
+    res = {"arm": "reference", "checkpoint_sha256": TR.file_sha256(ck), "probe": probe(encode_dev(model, model.belief, cfg, Ldev), ydev, okdev, fold)}
+    cfg_out.write_text(json.dumps(res, indent=1) + "\n")
+    print(json.dumps(res), flush=True)
+
+
 if __name__ == "__main__":
     assert os.environ.get("MAMBA_DETERMINISTIC") == "1"
-    main(sys.argv[1])
+    if sys.argv[1] == "reference":
+        reference(HERE / "reference.json")
+    elif sys.argv[1] == "g1_readings":                                    # F6's own clock readings on the adapted world
+        TJ = importlib.import_module("artifacts.experiments.20261111_p1f5.trajectory")
+        TJ.HERE, TJ.OUT = HERE / "g1_run", HERE / "g1_run/readings"
+        TJ.OUT.mkdir(parents=True, exist_ok=True)
+        for k in (1, 2):
+            TJ.checkpoint(k)
+    else:
+        main(sys.argv[1])

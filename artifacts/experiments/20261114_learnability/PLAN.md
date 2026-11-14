@@ -40,3 +40,20 @@ logistic probe per event on bp, fitted on 4/5 of DEV episodes, AP on the other 1
   in this regime); A3 near A0 with A2 above it means dilution inside the term, which no between-term weight fixes.
 - A5 against A0: what the denoiser's own request does with the whole budget.
 A fine-tuning result from F6's checkpoint is not a from-scratch training result; the budget is bounded.
+
+## Revision (user, 11-14 night, before any arm finished)
+
+The user's question was only whether a larger, even equal, share of the loss for the denoiser and the other world-model
+objectives would make a difference. Arms that use simulator event labels as training targets (A1, A4) or score only
+the HUD digit cells (A2) cannot become part of Saccade and were stopped (A1 had logged updates 750 and 1,500, kept
+in `events.log` as one fact: the belief can learn the energy clocks from its inputs when a loss asks for them; it says
+nothing about a recipe). A3 (the token forecast alone) was dropped with the token forecaster.
+
+Kept, because it answers the question at its extreme: **A5, G1 with the entire loss budget** (every other loss off),
+continued from F6 checkpoint 10. Claim: G1's request for the clocks is too weak because of its share. Competing
+explanation: G1's own objective prices the clocks at about 1% of itself, so even all of the budget teaches them
+little. A5 now saves the adapted world at 1,000 and 2,000 updates and runs F6's own readings on it
+(`trajectory.py`: exact-history pairs drawn natively, due against not due, for recovery, cooldown, energy and hunger;
+the belief probe), against F6's checkpoint 10 and the unchanged F6 belief under the same linear probe
+(`reference`). If even the whole budget forms no pixel clock in generation, a rebalanced joint run is not worth
+running; if it does, an equal-share joint run is the next test.
