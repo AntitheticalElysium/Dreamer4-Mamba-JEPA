@@ -43,5 +43,11 @@ currency; the reward forecast priced the recovery counter at 0.068 nats per elig
 when it taught it. Each pixel clock here gets roughly a quarter to a third of that.
 
 Limits: F6's final chooser (trained 25.6M frames) stands for a chooser that would co-evolve from scratch; the price is a
-first-order bound (a forecaster that knew the timing exactly); the share's denominator counts all of the gaze target's
-frame-to-frame change, predictable or not.
+first-order bound (a forecaster that knew the timing exactly).
+
+**The share's denominator is too harsh, so the verdict is premature (user's challenge, 11-15).** It counts all of the
+gaze target's frame-to-frame change, including change any forecaster gets without memory: the contingency term is an
+exact function of the last 8 frames and the action (the chooser's head with the taken action against NOOP), and where
+scroll reveals new terrain follows the action. The 3.8% is therefore not like-for-like with the horizon EDA's 1.2-1.8%,
+whose denominator removed transport. The fair denominator is what a forecaster with the last 8 frames and the action
+still misses (the gaze analogue of the transport baseline); not yet measured.
