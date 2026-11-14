@@ -57,3 +57,18 @@ little. A5 now saves the adapted world at 1,000 and 2,000 updates and runs F6's 
 the belief probe), against F6's checkpoint 10 and the unchanged F6 belief under the same linear probe
 (`reference`). If even the whole budget forms no pixel clock in generation, a rebalanced joint run is not worth
 running; if it does, an equal-share joint run is the next test.
+
+## Result (A5, 11-14 21:22)
+
+G1 alone with every update for 2,000 updates (belief and denoiser trainable) **forms no pixel clock**. Belief probe
+(AP; prevalence in brackets), reference F6 checkpoint 10 / after 1,000 / after 2,000 updates: food drop .037 / .037 /
+.037 (.034), drink drop .047 / .048 / .047 (.041), energy drop awake .035 / .037 / .039 (.027), energy rise asleep
+.170 / .169 / .176 (.083). F6's own native exact-history pairs on the adapted world at 2,000 updates (due / not due,
+drawn): hunger .154 / .154 (F6 .160 / .159), energy .007 / .007 (F6 .014 / .013), so no timing either way. G1's loss
+fell only from .00420 to .00386. The reward-requested clocks decay once the reward forecast is off: recovery probe .541
+-> .326 -> .280, recovery drawn .192 / .000 (F6 .466 / .000); cooldown is unchanged (.911 / .053, F6 .912 / .048) and
+the zombie reads stay at .94-.99. Reading: the competing explanation holds. Giving the denoiser the entire budget does
+not form the pixel clocks within this budget, so a rebalanced or equal-share joint run is not worth running; the
+denoiser's objective itself does not ask for them strongly enough. Bounded by fine-tuning from F6 (about 1M frames per
+1,000 updates here) and by the frozen perception. Saved worlds `g1_run/run/ckpt_0{1,2}.pt` (not in git), readings in
+`g1_run/readings/`, probe in `g1.json`, reference in `reference.json`.

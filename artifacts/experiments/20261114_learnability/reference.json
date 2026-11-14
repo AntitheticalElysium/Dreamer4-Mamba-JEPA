@@ -1,0 +1,31 @@
+{
+ "arm": "reference",
+ "checkpoint_sha256": "a848e5f5dbda1b5685c86ecec9656487baca2416ac1f13034f8ad4c8a80d78d2",
+ "probe": {
+  "food_down": {
+   "ap": 0.03717658020692114,
+   "prevalence": 0.033761405158229875,
+   "test_rows": 46799
+  },
+  "drink_down": {
+   "ap": 0.04706211542602764,
+   "prevalence": 0.04126235399820306,
+   "test_rows": 44520
+  },
+  "energy_down_awake": {
+   "ap": 0.03549411476161256,
+   "prevalence": 0.026534418446931163,
+   "test_rows": 47184
+  },
+  "energy_up_asleep": {
+   "ap": 0.16956351415904183,
+   "prevalence": 0.08293115335368856,
+   "test_rows": 10153
+  },
+  "recovery": {
+   "ap": 0.5407080423918311,
+   "prevalence": 0.03316663521419136,
+   "test_rows": 21196
+  }
+ }
+}
