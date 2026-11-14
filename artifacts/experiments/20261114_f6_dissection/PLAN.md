@@ -63,3 +63,7 @@ Known-answer check: the instrumented terms equal `train.p1_losses`' terms on the
 `share.py align` (verification of Codex's alignment reading, `../20261114_f6_balance_audit/`, on all DEV): on awake
 moved frames, token error on overlapping map cells for copying the same cell, F6's head, and copying the cell the
 recorded displacement points to.
+
+`share.py light` (added after the factor table; a data fact, checkpoint 10, all DEV): on awake frames where the player
+did not move, the map cells' copy and head error by light level, with and without entities in view. With no entity and
+unchanged terrain, the remaining error is what no history predicts (night noise, lighting drift).

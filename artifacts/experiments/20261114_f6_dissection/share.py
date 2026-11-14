@@ -143,8 +143,45 @@ def align(k):
     path.write_text(json.dumps(res, indent=1) + "\n")
 
 
+@torch.no_grad()
+def light(k):
+    """Still-frame map error by daylight: how much of the term is change no history predicts (night noise, lighting)?
+    Copy error and head error per map cell on awake frames where the player did not move, split by the frame's light
+    level and by whether any entity is in view before or after (entity-free still frames change only by lighting,
+    night noise or terrain edits)."""
+    path = OUT / f"light_{k:02d}.json"
+    if path.exists():
+        return
+    ckp, model, cfg, _ = DZ.load(k)
+    model.eval()
+    L = dict(np.load(S.LABELS / "s0_dev_labels.npz"))
+    off = np.r_[0, np.cumsum(L["ep_T"] + 1)]
+    G = importlib.import_module("saccade.eval.gates")
+    grids = G.episode_grids(L)
+    acc = {}
+    for e, r in enumerate(S.encode(model, L, cfg)):
+        prev, tgt = r["p"][:-1, :63].float().to(DEV), r["p"][1:, :63].float().to(DEV)
+        pred = prev + model.token_forecast(r["bp"][1:].float().to(DEV))[:, :63]
+        cp, hd = (prev - tgt).square().mean((-1, -2)).cpu().numpy(), (pred - tgt).square().mean((-1, -2)).cpu().numpy()
+        a, b = off[e], off[e + 1]
+        pos, sleep, lt = L["s_pos"][a:b].astype(int), L["s_sleep"][a:b].astype(bool), L["s_light"][a:b]
+        still = (pos[1:] == pos[:-1]).all(-1) & ~sleep[:-1] & ~sleep[1:]
+        ent = (grids[e]["grid"][:-1] > 0).any((1, 2)) | (grids[e]["grid"][1:] > 0).any((1, 2))
+        view_same = (L["s_view"][a:b][1:] == L["s_view"][a:b][:-1]).all((1, 2))
+        for name, m in (("day", lt[1:] >= .99), ("dusk_dawn", (lt[1:] < .99) & (lt[1:] >= .5)), ("night", lt[1:] < .5)):
+            for en, me in (("entities", ent), ("no_entities_same_terrain", ~ent & view_same)):
+                q = still & m & me
+                z = acc.setdefault(f"{name}/{en}", [0, 0., 0.])
+                z[0] += int(q.sum()); z[1] += float(cp[q].sum()); z[2] += float(hd[q].sum())
+    res = {"checkpoint": k, "still_awake_map_error_per_cell": {n: {"frames": v[0], "copy": v[1] / max(v[0], 1), "head": v[2] / max(v[0], 1)}
+                                                                 for n, v in acc.items()}}
+    print(k, json.dumps(res), flush=True)
+    OUT.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(res, indent=1) + "\n")
+
+
 if __name__ == "__main__":
     assert os.environ.get("MAMBA_DETERMINISTIC") == "1"
     mode, ks = sys.argv[1], [int(x) for x in sys.argv[2:]]
     for k in ks or ((2, 10) if mode == "factors" else (10,)):
-        {"factors": factors, "align": align}[mode](k)
+        {"factors": factors, "align": align, "light": light}[mode](k)
