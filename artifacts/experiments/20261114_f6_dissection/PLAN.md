@@ -37,3 +37,29 @@ head fitted on the same frozen belief):
 
 Not established by these: whether a larger dose would have formed the clocks (a training question), and the cause of
 the head's lag (learning rate, joint non-stationarity or capacity are not separated here).
+
+## Second pass (user, 11-14 afternoon): what decides each loss's share of the belief's gradient
+
+Question (user): why does the reward exert more pressure than the other terms, and what decides the share? No
+intervention is selected here. Frozen readings on F6 (checkpoints 2, 10) and F5 (control), `share.py`.
+
+A term's gradient into the belief is, per frame, (how wrong the prediction is, in the term's units) x (how much the
+head's prediction moves when the belief moves), summed over frames (where per-frame gradients can add or cancel),
+times the term's weight (its reduction, e.g. a mean over 1,296 numbers against one categorical, and its group's
+harmoniser multiplier). Each factor is read separately on the checkpoint's own next training chunk (8 streams, 64 new
+frames, as `dose.py batch`), per term (G1, reactive TSP, reward, reward forecast, token or TSP forecast):
+
+1. **Per-frame pull on the belief vector:** norm of d(frame's term)/d(predicted belief of that frame): mean, median,
+   and the share of the total carried by the top 5% of frames (is the pull spread out or concentrated on a few
+   surprising frames?). For the reward terms, the share carried by frames with a non-zero reward.
+2. **Addition across frames:** norm of the summed per-frame pulls over the sum of their norms (1 = all frames pull
+   the belief vector the same way, 1/sqrt(frames) = random directions).
+3. **How much the term depends on the belief at all:** the term's value with each frame's belief replaced by the
+   belief of a frame half a chunk away, over its true value.
+4. **Weights, by arithmetic:** the reduction of each term and the harmoniser's multiplier, with the multiplier its
+   stationary point would give (L = sigma^2 / (1 + sigma)).
+Known-answer check: the instrumented terms equal `train.p1_losses`' terms on the same chunk and seed.
+
+`share.py align` (verification of Codex's alignment reading, `../20261114_f6_balance_audit/`, on all DEV): on awake
+moved frames, token error on overlapping map cells for copying the same cell, F6's head, and copying the cell the
+recorded displacement points to.
