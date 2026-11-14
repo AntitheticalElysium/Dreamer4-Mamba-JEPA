@@ -25,6 +25,8 @@ head fitted on the same frozen belief):
    carried Mamba state and cache from the checkpoint; 64 new frames, one stream at a time, eight streams), raw and
    divided by its group's sigma, with the cosine of each term to the weighted total. The stream's prior fixations are
    used (the chooser's trace cannot be replayed outside the run); stated as a limit.
+   Control, added after F6's table was read (same instrument, `DOSE_RUN=artifacts.experiments.20261111_p1f5.train_p1f5`):
+   F5's checkpoints 1, 2 and 10, where the TSP forecast holds the token forecast's place.
 3. **What the token forecast's loss pays for (`lossmap.py`, checkpoints 2 and 10, all DEV).** Claim: most of the
    term is error the head cannot remove (scene scroll when the player moves: the next token of a cell is another
    cell's previous token, which a head reading only that cell's previous token and the belief cannot supply), so the

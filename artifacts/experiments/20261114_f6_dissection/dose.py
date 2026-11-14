@@ -16,7 +16,8 @@ from saccade import data as D, model as M, train as TR
 
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "readings"
-F6 = importlib.import_module("artifacts.experiments.20261113_p1f6.train")
+F6 = importlib.import_module(os.environ.get("DOSE_RUN", "artifacts.experiments.20261113_p1f6.train"))   # batch: also F5's launcher (control)
+TAG = "" if "p1f6" in F6.__name__ else F6.__name__.split(".")[2].split("_", 1)[1] + "_"
 G3 = importlib.import_module("artifacts.experiments.20261113_token_forecast_gate.gate3")
 G, G2, CR, TJ, NP, DEV = G3.G, G3.G2, G3.CR, G3.TJ, G3.NP, G3.DEV
 mse = G3.mse
@@ -56,7 +57,7 @@ def pairs(k):
             dx = (x[0] - x[1])[slot]
             e["token_kappa"] = float(((out[0] - out[1])[slot] * dx).sum() / dx.square().sum().clamp(min=1e-12))
             e["consequence_price"] = float(mse(x[0], x[1]))                # the due / not-due target difference, as the term prices it
-            if float(sep_r.detach().abs()) > 0 or name in ("recovery", "cooldown"):
+            if name in ("recovery", "cooldown"):                           # the reward-priced clocks: energy / hunger pay no reward
                 gl, gs = grad(loss_r.float()), grad(sep_r.float())
                 e.update(reward_gsep=float(gs.norm()), reward_gloss=float(gl.norm()), reward_rate=float(-(gs @ gl)))
             per.append(e)
@@ -73,7 +74,7 @@ def pairs(k):
 
 
 def batch(k):
-    path = OUT / f"batch_{k:02d}.json"
+    path = OUT / f"{TAG}batch_{k:02d}.json"
     if path.exists():
         return
     ckp, model, cfg, params = load(k)
@@ -91,7 +92,9 @@ def batch(k):
     boot = TR.bootstrap_rows(cfg, F6.WORLD_SEED, update)
     sigma = dict(zip(model.harmoniser.groups, model.harmoniser.log_sigma.detach().exp().tolist()))
     group = {"g1": "G1", "tsp": "G2", "rec": "G2", "reward": "G3", "cont": "G3", "token_forecast": "G4",
-             "reward_forecast": "G4", "cont_forecast": "G4"}
+             "tsp_forecast": "G4", "reward_forecast": "G4", "cont_forecast": "G4"}
+    fc = "token_forecast" if model.token_forecast is not None else "tsp_forecast"
+    group.pop("tsp_forecast" if fc == "token_forecast" else "token_forecast")
     torch.manual_seed(0)
     per = []
     for r in range(8):
@@ -104,8 +107,8 @@ def batch(k):
         per.append({"loss": {n: float(terms[n]) for n in group}, "norm": {n: float(g[n].norm()) for n in group},
                     "weighted_norm": {n: float(g[n].norm() / sigma[group[n]]) for n in group},
                     "cos_to_total": {n: cos(g[n], total) for n in group}, "total_norm": float(total.norm()),
-                    "cos_token_reward_forecast": cos(g["token_forecast"], g["reward_forecast"]),
-                    "cos_token_g1": cos(g["token_forecast"], g["g1"])})
+                    "cos_token_reward_forecast": cos(g[fc], g["reward_forecast"]),
+                    "cos_token_g1": cos(g[fc], g["g1"])})
         del terms, g, total
         torch.cuda.empty_cache()
     med = lambda f: {n: float(np.median([f(q)[n] for q in per])) for n in group}

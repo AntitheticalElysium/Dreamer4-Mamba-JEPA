@@ -1,0 +1,774 @@
+{
+ "hud": {
+  "day/cows/persisting": {
+   "n": 5809,
+   "gen_exact": 0.4503356860044758,
+   "gen_near": 0.879841625064555,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/all/persisting": {
+   "n": 12463,
+   "gen_exact": 0.4855171307068924,
+   "gen_near": 0.838000481425018,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/all/persisting_still": {
+   "n": 6679,
+   "gen_exact": 0.7051953885312172,
+   "gen_near": 0.9061236712082648,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/all/persisting_moved": {
+   "n": 5784,
+   "gen_exact": 0.23184647302904565,
+   "gen_near": 0.7593360995850622,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/skeletons/persisting": {
+   "n": 1802,
+   "gen_exact": 0.32963374028856823,
+   "gen_near": 0.7214206437291898,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/arrows/persisting": {
+   "n": 834,
+   "gen_exact": 0.11750599520383694,
+   "gen_near": 0.381294964028777,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/cows/entering": {
+   "n": 527,
+   "gen_exact": 0.003795066413662239,
+   "gen_near": 0.04933586337760911,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/all/entering": {
+   "n": 1094,
+   "gen_exact": 0.019195612431444242,
+   "gen_near": 0.07861060329067641,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/zombies/persisting": {
+   "n": 4018,
+   "gen_exact": 0.6826779492284719,
+   "gen_near": 0.9245893479342957,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/skeletons/entering": {
+   "n": 290,
+   "gen_exact": 0.017241379310344827,
+   "gen_near": 0.08620689655172414,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/arrows/spawned": {
+   "n": 326,
+   "gen_exact": 0.03680981595092025,
+   "gen_near": 0.1165644171779141,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/all/spawned": {
+   "n": 425,
+   "gen_exact": 0.02823529411764706,
+   "gen_near": 0.10352941176470588,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/skeletons/spawned": {
+   "n": 10,
+   "gen_exact": 0.0,
+   "gen_near": 0.0,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/zombies/entering": {
+   "n": 259,
+   "gen_exact": 0.05405405405405406,
+   "gen_near": 0.13513513513513514,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/cows/spawned": {
+   "n": 77,
+   "gen_exact": 0.0,
+   "gen_near": 0.03896103896103896,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/arrows/entering": {
+   "n": 18,
+   "gen_exact": 0.0,
+   "gen_near": 0.0,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/zombies/spawned": {
+   "n": 12,
+   "gen_exact": 0.0,
+   "gen_near": 0.25,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/invented_per_frame": {
+   "zombies": 0.02358667165855485,
+   "cows": 0.056682890303257204,
+   "skeletons": 0.025833021340321977,
+   "arrows": 0.04634968176712841
+  },
+  "day/generated_per_frame": {
+   "zombies": 0.3105204043429427,
+   "cows": 0.45039311119430925,
+   "skeletons": 0.1281168101834519,
+   "arrows": 0.06858854361662299
+  },
+  "night/cows/persisting": {
+   "n": 2961,
+   "gen_exact": 0.3519081391421817,
+   "gen_near": 0.6879432624113475,
+   "real_exact": 0.9081391421816953,
+   "real_near": 0.9108409321175278
+  },
+  "night/all/persisting": {
+   "n": 8767,
+   "gen_exact": 0.37310368427056007,
+   "gen_near": 0.6397855594844303,
+   "real_exact": 0.8973423063761834,
+   "real_near": 0.9004220371848979
+  },
+  "night/all/persisting_still": {
+   "n": 4331,
+   "gen_exact": 0.5319787577926576,
+   "gen_near": 0.6815977834218425,
+   "real_exact": 0.8898637728007388,
+   "real_near": 0.8935580697298545
+  },
+  "night/zombies/persisting": {
+   "n": 4092,
+   "gen_exact": 0.48704789833822093,
+   "gen_near": 0.7258064516129032,
+   "real_exact": 0.9181329423264907,
+   "real_near": 0.9222873900293255
+  },
+  "night/all/persisting_moved": {
+   "n": 4436,
+   "gen_exact": 0.2179891794409378,
+   "gen_near": 0.5989630297565374,
+   "real_exact": 0.904643823264202,
+   "real_near": 0.9071235347159603
+  },
+  "night/skeletons/persisting": {
+   "n": 1105,
+   "gen_exact": 0.18914027149321266,
+   "gen_near": 0.43800904977375565,
+   "real_exact": 0.832579185520362,
+   "real_near": 0.8343891402714932
+  },
+  "night/arrows/spawned": {
+   "n": 185,
+   "gen_exact": 0.02702702702702703,
+   "gen_near": 0.10270270270270271,
+   "real_exact": 0.7567567567567568,
+   "real_near": 0.7567567567567568
+  },
+  "night/all/spawned": {
+   "n": 222,
+   "gen_exact": 0.02702702702702703,
+   "gen_near": 0.1036036036036036,
+   "real_exact": 0.7837837837837838,
+   "real_near": 0.7837837837837838
+  },
+  "night/arrows/persisting": {
+   "n": 609,
+   "gen_exact": 0.04433497536945813,
+   "gen_near": 0.19376026272577998,
+   "real_exact": 0.8226600985221675,
+   "real_near": 0.8226600985221675
+  },
+  "night/cows/spawned": {
+   "n": 33,
+   "gen_exact": 0.030303030303030304,
+   "gen_near": 0.09090909090909091,
+   "real_exact": 0.9090909090909091,
+   "real_near": 0.9090909090909091
+  },
+  "night/skeletons/entering": {
+   "n": 160,
+   "gen_exact": 0.03125,
+   "gen_near": 0.05,
+   "real_exact": 0.69375,
+   "real_near": 0.7
+  },
+  "night/all/entering": {
+   "n": 773,
+   "gen_exact": 0.0129366106080207,
+   "gen_near": 0.05821474773609314,
+   "real_exact": 0.7800776196636481,
+   "real_near": 0.7904269081500647
+  },
+  "night/zombies/entering": {
+   "n": 311,
+   "gen_exact": 0.006430868167202572,
+   "gen_near": 0.06109324758842444,
+   "real_exact": 0.7813504823151125,
+   "real_near": 0.8006430868167203
+  },
+  "night/arrows/entering": {
+   "n": 10,
+   "gen_exact": 0.0,
+   "gen_near": 0.0,
+   "real_exact": 0.8,
+   "real_near": 0.8
+  },
+  "night/cows/entering": {
+   "n": 292,
+   "gen_exact": 0.010273972602739725,
+   "gen_near": 0.06164383561643835,
+   "real_exact": 0.8253424657534246,
+   "real_near": 0.8287671232876712
+  },
+  "night/zombies/spawned": {
+   "n": 4,
+   "gen_exact": 0.0,
+   "gen_near": 0.25,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "night/invented_per_frame": {
+   "zombies": 0.08261851015801354,
+   "cows": 0.09857035364936043,
+   "skeletons": 0.026787057938299472,
+   "arrows": 0.052069224981188864
+  },
+  "night/generated_per_frame": {
+   "zombies": 0.5307750188111362,
+   "cows": 0.4141459744168548,
+   "skeletons": 0.10142964635063959,
+   "arrows": 0.06892400300978178
+  }
+ },
+ "f4": {
+  "day/cows/persisting": {
+   "n": 5809,
+   "gen_exact": 0.4336374591151661,
+   "gen_near": 0.8738164916508866,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/all/persisting": {
+   "n": 12463,
+   "gen_exact": 0.4848752306828211,
+   "gen_near": 0.8401668940062585,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/all/persisting_still": {
+   "n": 6679,
+   "gen_exact": 0.7001048061086989,
+   "gen_near": 0.9124120377301991,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/all/persisting_moved": {
+   "n": 5784,
+   "gen_exact": 0.23634163208852005,
+   "gen_near": 0.7567427385892116,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/skeletons/persisting": {
+   "n": 1802,
+   "gen_exact": 0.3568257491675916,
+   "gen_near": 0.7663706992230854,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/arrows/persisting": {
+   "n": 834,
+   "gen_exact": 0.11630695443645084,
+   "gen_near": 0.28177458033573144,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/cows/entering": {
+   "n": 527,
+   "gen_exact": 0.011385199240986717,
+   "gen_near": 0.04743833017077799,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/all/entering": {
+   "n": 1094,
+   "gen_exact": 0.018281535648994516,
+   "gen_near": 0.06855575868372943,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/zombies/persisting": {
+   "n": 4018,
+   "gen_exact": 0.692882030861125,
+   "gen_near": 0.9405176704828273,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/skeletons/entering": {
+   "n": 290,
+   "gen_exact": 0.027586206896551724,
+   "gen_near": 0.07931034482758621,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/arrows/spawned": {
+   "n": 326,
+   "gen_exact": 0.03680981595092025,
+   "gen_near": 0.11349693251533742,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/all/spawned": {
+   "n": 425,
+   "gen_exact": 0.02823529411764706,
+   "gen_near": 0.09647058823529411,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/skeletons/spawned": {
+   "n": 10,
+   "gen_exact": 0.0,
+   "gen_near": 0.0,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/zombies/entering": {
+   "n": 259,
+   "gen_exact": 0.023166023166023165,
+   "gen_near": 0.10424710424710425,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/cows/spawned": {
+   "n": 77,
+   "gen_exact": 0.0,
+   "gen_near": 0.03896103896103896,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/arrows/entering": {
+   "n": 18,
+   "gen_exact": 0.0,
+   "gen_near": 0.0,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/zombies/spawned": {
+   "n": 12,
+   "gen_exact": 0.0,
+   "gen_near": 0.08333333333333333,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/invented_per_frame": {
+   "zombies": 0.02530887308124298,
+   "cows": 0.05630849868962935,
+   "skeletons": 0.028603519281168104,
+   "arrows": 0.038187944590041184
+  },
+  "day/generated_per_frame": {
+   "zombies": 0.3190565331336578,
+   "cows": 0.4456757768625983,
+   "skeletons": 0.13620366903781356,
+   "arrows": 0.06065144140771247
+  },
+  "night/cows/persisting": {
+   "n": 2961,
+   "gen_exact": 0.32556568726781493,
+   "gen_near": 0.6572104018912529,
+   "real_exact": 0.8777440054035799,
+   "real_near": 0.8807835190813914
+  },
+  "night/all/persisting": {
+   "n": 8767,
+   "gen_exact": 0.37162085091821606,
+   "gen_near": 0.6276947644576252,
+   "real_exact": 0.8795483061480552,
+   "real_near": 0.8852515113493784
+  },
+  "night/all/persisting_still": {
+   "n": 4331,
+   "gen_exact": 0.5222812283537289,
+   "gen_near": 0.6765181251443084,
+   "real_exact": 0.8656199492034172,
+   "real_near": 0.8727776495035788
+  },
+  "night/zombies/persisting": {
+   "n": 4092,
+   "gen_exact": 0.5017106549364614,
+   "gen_near": 0.719208211143695,
+   "real_exact": 0.89613880742913,
+   "real_near": 0.9051808406647116
+  },
+  "night/all/persisting_moved": {
+   "n": 4436,
+   "gen_exact": 0.22452660054102797,
+   "gen_near": 0.5800270513976555,
+   "real_exact": 0.8931469792605952,
+   "real_near": 0.8974301172227231
+  },
+  "night/skeletons/persisting": {
+   "n": 1105,
+   "gen_exact": 0.19366515837104073,
+   "gen_near": 0.465158371040724,
+   "real_exact": 0.8552036199095022,
+   "real_near": 0.857918552036199
+  },
+  "night/arrows/spawned": {
+   "n": 185,
+   "gen_exact": 0.03783783783783784,
+   "gen_near": 0.10270270270270271,
+   "real_exact": 0.7621621621621621,
+   "real_near": 0.7621621621621621
+  },
+  "night/all/spawned": {
+   "n": 222,
+   "gen_exact": 0.036036036036036036,
+   "gen_near": 0.0990990990990991,
+   "real_exact": 0.7882882882882883,
+   "real_near": 0.7882882882882883
+  },
+  "night/arrows/persisting": {
+   "n": 609,
+   "gen_exact": 0.04433497536945813,
+   "gen_near": 0.16420361247947454,
+   "real_exact": 0.8210180623973727,
+   "real_near": 0.8226600985221675
+  },
+  "night/cows/spawned": {
+   "n": 33,
+   "gen_exact": 0.030303030303030304,
+   "gen_near": 0.06060606060606061,
+   "real_exact": 0.9090909090909091,
+   "real_near": 0.9090909090909091
+  },
+  "night/skeletons/entering": {
+   "n": 160,
+   "gen_exact": 0.0,
+   "gen_near": 0.01875,
+   "real_exact": 0.7125,
+   "real_near": 0.7125
+  },
+  "night/all/entering": {
+   "n": 773,
+   "gen_exact": 0.00646830530401035,
+   "gen_near": 0.040103492884864166,
+   "real_exact": 0.7529107373868047,
+   "real_near": 0.759379042690815
+  },
+  "night/zombies/entering": {
+   "n": 311,
+   "gen_exact": 0.012861736334405145,
+   "gen_near": 0.05787781350482315,
+   "real_exact": 0.7331189710610932,
+   "real_near": 0.7427652733118971
+  },
+  "night/arrows/entering": {
+   "n": 10,
+   "gen_exact": 0.0,
+   "gen_near": 0.0,
+   "real_exact": 0.8,
+   "real_near": 0.8
+  },
+  "night/cows/entering": {
+   "n": 292,
+   "gen_exact": 0.003424657534246575,
+   "gen_near": 0.03424657534246575,
+   "real_exact": 0.7945205479452054,
+   "real_near": 0.8013698630136986
+  },
+  "night/zombies/spawned": {
+   "n": 4,
+   "gen_exact": 0.0,
+   "gen_near": 0.25,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "night/invented_per_frame": {
+   "zombies": 0.051015801354401806,
+   "cows": 0.052219714070729874,
+   "skeletons": 0.02091798344620015,
+   "arrows": 0.04770504138449962
+  },
+  "night/generated_per_frame": {
+   "zombies": 0.4996237772761475,
+   "cows": 0.35033860045146725,
+   "skeletons": 0.09857035364936043,
+   "arrows": 0.06606471030850264
+  }
+ },
+ "tuples": 20000,
+ "f6": {
+  "day/cows/persisting": {
+   "n": 5809,
+   "gen_exact": 0.4014460320192804,
+   "gen_near": 0.8275090377001205,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/all/persisting": {
+   "n": 12463,
+   "gen_exact": 0.4426703041001364,
+   "gen_near": 0.8036588301372062,
+   "real_exact": 0.9998395249939822,
+   "real_near": 0.9998395249939822
+  },
+  "day/all/persisting_still": {
+   "n": 6679,
+   "gen_exact": 0.6475520287468184,
+   "gen_near": 0.8782751908968408,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/all/persisting_moved": {
+   "n": 5784,
+   "gen_exact": 0.20608575380359612,
+   "gen_near": 0.7174965421853389,
+   "real_exact": 0.9996542185338866,
+   "real_near": 0.9996542185338866
+  },
+  "day/skeletons/persisting": {
+   "n": 1802,
+   "gen_exact": 0.30410654827968925,
+   "gen_near": 0.7136514983351832,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/arrows/persisting": {
+   "n": 834,
+   "gen_exact": 0.03357314148681055,
+   "gen_near": 0.2733812949640288,
+   "real_exact": 0.9976019184652278,
+   "real_near": 0.9976019184652278
+  },
+  "day/cows/entering": {
+   "n": 527,
+   "gen_exact": 0.0056925996204933585,
+   "gen_near": 0.07400379506641366,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/all/entering": {
+   "n": 1094,
+   "gen_exact": 0.02102376599634369,
+   "gen_near": 0.0886654478976234,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/zombies/persisting": {
+   "n": 4018,
+   "gen_exact": 0.6493280238924838,
+   "gen_near": 0.9196117471378795,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/skeletons/entering": {
+   "n": 290,
+   "gen_exact": 0.02413793103448276,
+   "gen_near": 0.0896551724137931,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/arrows/spawned": {
+   "n": 326,
+   "gen_exact": 0.02147239263803681,
+   "gen_near": 0.12576687116564417,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/all/spawned": {
+   "n": 425,
+   "gen_exact": 0.01647058823529412,
+   "gen_near": 0.11058823529411765,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/skeletons/spawned": {
+   "n": 10,
+   "gen_exact": 0.0,
+   "gen_near": 0.0,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/zombies/entering": {
+   "n": 259,
+   "gen_exact": 0.05019305019305019,
+   "gen_near": 0.11969111969111969,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/cows/spawned": {
+   "n": 77,
+   "gen_exact": 0.0,
+   "gen_near": 0.05194805194805195,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/arrows/entering": {
+   "n": 18,
+   "gen_exact": 0.0,
+   "gen_near": 0.05555555555555555,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/zombies/spawned": {
+   "n": 12,
+   "gen_exact": 0.0,
+   "gen_near": 0.16666666666666666,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "day/invented_per_frame": {
+   "zombies": 0.02366154998128042,
+   "cows": 0.06739049045301385,
+   "skeletons": 0.028828154249344814,
+   "arrows": 0.03010108573567952
+  },
+  "day/generated_per_frame": {
+   "zombies": 0.31096967427929617,
+   "cows": 0.43728940471733435,
+   "skeletons": 0.1301385248970423,
+   "arrows": 0.04110819917633845
+  },
+  "night/cows/persisting": {
+   "n": 2961,
+   "gen_exact": 0.29922323539344814,
+   "gen_near": 0.6119554204660588,
+   "real_exact": 0.8861870989530564,
+   "real_near": 0.8888888888888888
+  },
+  "night/all/persisting": {
+   "n": 8767,
+   "gen_exact": 0.33877038895859474,
+   "gen_near": 0.5941599178738451,
+   "real_exact": 0.8658606136648797,
+   "real_near": 0.8706513060339911
+  },
+  "night/all/persisting_still": {
+   "n": 4331,
+   "gen_exact": 0.4795659201108289,
+   "gen_near": 0.6416531978757792,
+   "real_exact": 0.8519972292773031,
+   "real_near": 0.8591549295774648
+  },
+  "night/zombies/persisting": {
+   "n": 4092,
+   "gen_exact": 0.4638318670576735,
+   "gen_near": 0.7033235581622679,
+   "real_exact": 0.8702346041055719,
+   "real_near": 0.8780547409579668
+  },
+  "night/all/persisting_moved": {
+   "n": 4436,
+   "gen_exact": 0.20130748422001804,
+   "gen_near": 0.5477908025247971,
+   "real_exact": 0.8793958521190262,
+   "real_near": 0.8818755635707844
+  },
+  "night/skeletons/persisting": {
+   "n": 1105,
+   "gen_exact": 0.16199095022624435,
+   "gen_near": 0.4244343891402715,
+   "real_exact": 0.8443438914027149,
+   "real_near": 0.8461538461538461
+  },
+  "night/arrows/spawned": {
+   "n": 185,
+   "gen_exact": 0.032432432432432434,
+   "gen_near": 0.08108108108108109,
+   "real_exact": 0.7081081081081081,
+   "real_near": 0.7081081081081081
+  },
+  "night/all/spawned": {
+   "n": 222,
+   "gen_exact": 0.02702702702702703,
+   "gen_near": 0.07657657657657657,
+   "real_exact": 0.7432432432432432,
+   "real_near": 0.7432432432432432
+  },
+  "night/arrows/persisting": {
+   "n": 609,
+   "gen_exact": 0.011494252873563218,
+   "gen_near": 0.08210180623973727,
+   "real_exact": 0.7766830870279147,
+   "real_near": 0.7766830870279147
+  },
+  "night/cows/spawned": {
+   "n": 33,
+   "gen_exact": 0.0,
+   "gen_near": 0.030303030303030304,
+   "real_exact": 0.9090909090909091,
+   "real_near": 0.9090909090909091
+  },
+  "night/skeletons/entering": {
+   "n": 160,
+   "gen_exact": 0.01875,
+   "gen_near": 0.05,
+   "real_exact": 0.65625,
+   "real_near": 0.65625
+  },
+  "night/all/entering": {
+   "n": 773,
+   "gen_exact": 0.009055627425614488,
+   "gen_near": 0.06080206985769728,
+   "real_exact": 0.7335058214747736,
+   "real_near": 0.7373868046571799
+  },
+  "night/zombies/entering": {
+   "n": 311,
+   "gen_exact": 0.00964630225080386,
+   "gen_near": 0.08038585209003216,
+   "real_exact": 0.7106109324758842,
+   "real_near": 0.7170418006430869
+  },
+  "night/arrows/entering": {
+   "n": 10,
+   "gen_exact": 0.0,
+   "gen_near": 0.0,
+   "real_exact": 0.7,
+   "real_near": 0.7
+  },
+  "night/cows/entering": {
+   "n": 292,
+   "gen_exact": 0.003424657534246575,
+   "gen_near": 0.04794520547945205,
+   "real_exact": 0.8013698630136986,
+   "real_near": 0.8047945205479452
+  },
+  "night/zombies/spawned": {
+   "n": 4,
+   "gen_exact": 0.0,
+   "gen_near": 0.25,
+   "real_exact": 1.0,
+   "real_near": 1.0
+  },
+  "night/invented_per_frame": {
+   "zombies": 0.0598946576373213,
+   "cows": 0.05041384499623777,
+   "skeletons": 0.029194883370955604,
+   "arrows": 0.02949586155003762
+  },
+  "night/generated_per_frame": {
+   "zombies": 0.49902182091798347,
+   "cows": 0.32866817155756206,
+   "skeletons": 0.10188111361926261,
+   "arrows": 0.03897667419112114
+  }
+ }
+}
