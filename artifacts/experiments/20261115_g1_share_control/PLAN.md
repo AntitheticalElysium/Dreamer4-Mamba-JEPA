@@ -28,3 +28,9 @@ the reward heads stop dominating Mamba.
 
 Bounded: a continuation of a reward-shaped world, not training from scratch; one seed. A supported claim motivates
 designing a G1 share floor at Mamba (its own reviewed arm); an unsupported one says a floor would buy little for G1.
+
+## Stopped (user, 11-15, before any result)
+
+Stopped during its first 250 updates; nothing was read. The user: a G1 share at Mamba belongs in an actual overnight
+run from scratch, not a continuation of a reward-shaped world; the learnability A5 arm (G1 with the whole budget) was
+already the extreme of this question.
