@@ -205,3 +205,23 @@ awake energy, on the stand-still pairs): check 15's natural-frame catalogue on t
 against zeroed recency, same rows and seeds; no bars. Also from the labels (DEV, awake): the probability that the digit
 drops at the next frame given frames since its last change peaks at 0.96 for awake energy (30 frames, 97% of drops),
 0.83 for drink (20) and 0.73 for food (25), so the readable cue is sharpest for the clock not yet used.
+
+## Checks 17-18: two limits on checks 13-16b (user 11-16: "if the previous experiment was confounded ... feel free to run it")
+
+**Check 17: do the exact-history pairs understate timing because the edit moves the due drop off the episode's
+schedule?** (`schedule_pairs.py`) On natural frames F6.1 draws energy drops before an episode's first sleep at 0.135
+(food 0.186) and after one at 0.008 (food 0.022): it times an episode's first drops from elapsed time. Every energy
+and food pair is an 8 -> 7 drop early in an episode (due at step ~50 / ~45), where the counter edit has moved it off the
+unedited schedule (energy's second drop falls at step 62, food's at 52), and the recency fine-tune draws them at 0.008
+/ 0.13 against 0.22 / 0.11 on natural frames. New pairs, otherwise `dissect.build_clock`: the due branch keeps the
+recorded state (its drop falls on the schedule), the delayed branch has the counter lowered by 8, so the frames since
+the digit's last change are 30 / 22 (energy) and 25 / 17 (food) as in the old pairs; 32 pairs each, read like check 16
+on F6.1 and the recency fine-tune. Fixed before results: **schedule conflict** if F6.1's drawn due rate on the
+on-schedule energy pairs is at least 0.05 and three times its old-pair rate (0.007) with due minus delayed above zero
+(95% lower bound); otherwise the old pairs' understatement is not this, reported as is.
+
+**Check 18: does the recency use keep growing?** (`recency_long.py`) Check 16 rerun to 6,000 updates (reads at 2,000,
+4,000, 6,000 on the four banks; the 2,000 read compared with check 16's), then check 16b's natural catalogue at
+6,000. Fixed before results: **still learning** if the natural drawn rate at awake energy drops rises by at least 0.10
+over check 16b's 0.222; **plateau** if it ends within 0.05 of it; between, reported as is. The same for drink (0.274)
+and food (0.114), and the action-cued classes reported beside them as the cost.
