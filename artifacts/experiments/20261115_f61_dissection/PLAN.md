@@ -90,3 +90,16 @@ Result (`mining_check.json`): the stored frames equal the recorded ones on all 4
 is 0.0408 for F6.1 (one pair over 0.04; median 0.012, 99th percentile 0.032) and 0.0398 for F6 (none over), with
 tokens up to 2.4 in magnitude, where bf16's spacing is about 0.016. Numerical, as claimed. **Check 5b**
 (`mining_rerun.py`): the stage's own code with the pre-check recorded, F6.1, beside F6's queue result.
+
+## Check 7: does the denoiser's use lag the belief? (check 3's reader on the checkpoint-3 rollouts, CPU)
+
+The early readings saved checkpoint 3's quiet-bank rollouts (`../20261114_p1f61/readings/early_03/`, and F6's in
+`reference_f6/ckpt_03/`). If drawn timing improves from checkpoint 3 to 10 while the belief's phase grows little, the
+denoiser's use lags the belief (as recovery's did in F5 and F6.1) rather than being capped.
+
+## Check 8: each clock event's size in the denoiser's currency (`token_share.py`, CPU)
+
+The user asked whether the use failure is the loss share. Within G1, an event is priced by its token change. F6.1's
+periphery tokens on held-out DEV: the squared change at the digit's cell, over the whole frame, and the cell's share
+of the frame's change, at events and at eligible frames without one, for the four pixel clocks and recovery. (Sleep
+dims the map, not the HUD: Craftax renders the inventory after the sleep tint.)
