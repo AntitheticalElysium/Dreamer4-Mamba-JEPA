@@ -137,3 +137,14 @@ F6's tokens through a fitted scalar (0.11 / 0.21 / 0.06). Here the per-cell scal
 change (F6.1), two time constants (8, 32), a shared label-free next-change predictor; AP at the after_reset clock
 events of DEV fold 4, full-prefix traces against traces started 8 frames back. High full and low short: our tokens
 carry what a slow trace needs.
+
+## Check 12: access or incentive? (`traces_ft.py`; user 11-15: run it, no control)
+
+A substitution test, not a design: perfect, cheap per-cell recency (check 11's traces of each cell's own token change,
+time constants 8 and 32, through the previous frame) as a zero-initialised additive input to that periphery cell's
+denoiser token; the denoiser alone fine-tuned on G1 alone from F6.1 checkpoint 10, 2,000 updates (as the SWAX
+fine-tune, full window). Read with one generated frame on the exact-history pairs (awake energy 32, food 24, recovery
+32, asleep onset 32), each branch's own memory and traces, and traces exchanged; update 0 (inert input) reproduces F6.1.
+Fixed before results: **access** if at 2,000 updates the drawn due change on the awake energy and food pairs is at
+least 0.10 with due minus delayed above zero (95% lower bound) and a positive trace effect; **incentive** if the due
+change stays below 0.05 with no separation. Anything else is reported as is.
