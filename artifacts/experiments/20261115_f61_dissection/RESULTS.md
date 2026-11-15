@@ -139,8 +139,11 @@ frame), frozen F6.1, one generated frame, 32 draws per cell, common random numbe
 | 7 (trained) | 0.032 | 0.033 | 0.000 [-0.002, 0.002] | -0.001 [-0.002, 0.000] |
 | 4 (stressed) | 0.272 | 0.266 | +0.003 [0.000, 0.008] | +0.003 [0.000, 0.009] |
 
-At the due step memory has no effect, current or cached; weakening the cache raises digit changes eightfold (+0.24
-[0.15, 0.33]) without timing them. Not recursion, not a cache that hides a memory effect: the learned conditional
-does not use memory at the due step. Free-running timing (rank 0.82) is carried by overdue states: on the quiet bank it
+**Retracted as a reading of the denoiser (check 10b, `swap_belief.json`):** F6.1's own probe does not tell these
+pairs' branches apart either (logit due minus delayed -0.008 [-0.029, 0.007]). The pairs were built by editing the hidden
+fatigue mid-sleep, so both branches share their sleep onset, and in natural play the phase is the steps since onset
+(mod 11): the belief rightly saw one scene. A zero memory effect was therefore expected and says nothing about the
+denoiser's use of memory. What stands: a stressed cache raises untimed digit changes eightfold (+0.24 [0.15, 0.33]).
+Check 10c rebuilds the pairs with natural histories (sleep onsets 2 steps apart). Free-running timing (rank 0.82) is carried by overdue states: on the quiet bank it
 holds in the 15 scenes with no sleep onset inside the 8-frame cache (0.74; 0.37 in the 17 with one), as the hazard
 ramps after the due step (check 3). The memory route responds only once the belief's signal is large.

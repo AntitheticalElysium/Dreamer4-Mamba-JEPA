@@ -23,10 +23,13 @@ from saccade import data as D, model as M, train as TR
 DS = importlib.import_module("artifacts.experiments.20261111_p1f5.dissect")
 TJ = importlib.import_module("artifacts.experiments.20261111_p1f5.trajectory")
 HERE = Path(__file__).resolve().parent
-BANK = HERE / "run/swap/asleep_bank.pt"
+BANK = HERE / "run/swap/onset_bank.pt"                                  # check 10c; the fatigue-edit bank: asleep_bank.pt
 CKPT = (HERE.parent / "20261114_p1f61/run/ckpt_10.pt").resolve()
-SPEC = dict(field="player_fatigue", values=(-5., -3.), col=3, sign=+1, steps=30, search=(12, 28), seed=111515,
-            select=lambda b: (b[:, 3] <= 6) & (b[:, 0] >= 5) & (b[:, 1] >= 3) & (b[:, 2] >= 3), margin=35)
+SPEC = dict(actions=([6] + [0] * 39, [0, 0, 6] + [0] * 37), col=3, sign=+1, steps=40, search=(14, 36), seed=111515,
+            select=lambda b: (b[:, 3] <= 6) & (b[:, 0] >= 5) & (b[:, 1] >= 3) & (b[:, 2] >= 3), margin=45)
+# Check 10c: natural histories. A mid-sleep fatigue edit (check 10) leaves the sleep onset shared, and in natural play the
+# phase is the steps since onset (mod 11), so the belief rightly saw both branches as one scene (check 10b). Here one
+# branch takes SLEEP at step 0, the other at step 2: onsets and every rise 2 steps apart, both physically consistent.
 CELLS = [(c, m, s) for s in (7, 4) for c in (0, 1) for m in (0, 1)]       # branch 0 is due
 
 
@@ -45,7 +48,7 @@ def build(n=32):
         lo, hi = off[e:e + 2]
         b = L["s_body"][lo:hi]
         ts = np.arange(T + 1)
-        idx = np.flatnonzero((ts >= 12) & (ts <= T - k["margin"]) & k["select"](b) & L["s_sleep"][lo:hi].astype(bool))
+        idx = np.flatnonzero((ts >= 12) & (ts <= T - k["margin"]) & k["select"](b) & ~L["s_sleep"][lo:hi].astype(bool))
         if not len(idx):
             continue
         t = int(idx[0])
@@ -53,7 +56,7 @@ def build(n=32):
         state = D.RP.advance_to(sh, sl, t)
         orig = D.RP.episode_fields(sh, sl)
         assert np.array_equal(np.asarray(render(state)), orig["observations"][t].numpy())
-        states = [state.replace(**{k["field"]: jnp.asarray(v, getattr(state, k["field"]).dtype)}) for v in k["values"]]
+        states = [state, state]
         frames, rewards, term, body, asleep = ([[], []] for _ in range(5))
         keys = jax.random.split(jax.random.PRNGKey(k["seed"] + e), 50)
         for s in range(k["steps"]):
@@ -62,7 +65,7 @@ def build(n=32):
                 frames[br].append(np.asarray(render(st)))
                 body[br].append([int(st.player_health), int(st.player_food), int(st.player_drink), int(st.player_energy)])
                 asleep[br].append(bool(st.is_sleeping))
-                _, nxt, r, d, _ = step(keys[s], st, jnp.asarray(0, jnp.int32))
+                _, nxt, r, d, _ = step(keys[s], st, jnp.asarray(k["actions"][br][s], jnp.int32))
                 states[br] = nxt
                 rewards[br].append(float(r))
                 term[br].append(bool(d))
@@ -72,7 +75,7 @@ def build(n=32):
         for s in range(*k["search"]):
             if (np.sign(digit[:, s + 1] - digit[:, s]) == k["sign"]).tolist() != [True, False]:
                 continue
-            if not asleep[:, :s + 2].all() or not np.array_equal(frames[0, s - 7:s + 1], frames[1, s - 7:s + 1]):
+            if not asleep[:, 3:s + 2].all() or not np.array_equal(frames[0, s - 7:s + 1], frames[1, s - 7:s + 1]):
                 continue
             if not np.array_equal(rewards[0, s - 8:s], rewards[1, s - 8:s]) or not np.array_equal(term[0, s - 8:s], term[1, s - 8:s]):
                 continue
@@ -86,7 +89,7 @@ def build(n=32):
             continue
         s, resets = found
         bank.append({"e": e, "t0": t, "end": s, "frames": frames[:, :s + 2], "reward": rewards[:, :s + 1], "term": term[:, :s + 1],
-                     "digit": digit[:, :s + 2], "col": k["col"], "last_event": resets,
+                     "digit": digit[:, :s + 2], "col": k["col"], "last_event": resets, "actions": np.asarray(k["actions"])[:, :s + 1],
                      "prefix_frames": orig["observations"][:t].numpy(), "prefix_actions": orig["actions_taken"][:t].numpy(),
                      "prefix_reward": orig["rewards"][:t].numpy(), "prefix_term": orig["terminated"][:t].numpy()})
         print("pair", len(bank), "episode", e, "t0", t, "step", s, "last rises", resets, "digit", digit[:, s:s + 2].tolist(), flush=True)
@@ -103,13 +106,14 @@ def cell_rises(model, cfg, row, i, reader):
     old_f, old_a, old_r, old_d = prefix
     n = len(old_f)
     f = np.concatenate([np.repeat(old_f[None], 2, 0), frames[:, :q + 1]], 1)
-    a = np.r_[old_a, np.zeros(q + 1, dtype=np.int64)]
+    a = np.concatenate([np.repeat(old_a[None], 2, 0), row["actions"][:, :q + 1]], 1)    # each branch's own actions
     rw = np.column_stack([np.repeat(np.r_[0., old_r][None], 2, 0), rewards[:, :q]])
     td = np.column_stack([np.repeat(np.r_[False, old_d][None], 2, 0), terms[:, :q]])
     dev = DS.DEV
     fix = torch.as_tensor(np.repeat(D.fixation_prior(np.random.default_rng(12000 + i), (len(f[0]),))[None], 2, 0), device=dev)
     query = torch.as_tensor(D.fixation_prior(np.random.default_rng(15000 + i), ()), device=dev)
-    act = torch.as_tensor(np.repeat(a[None], 2, 0), device=dev)
+    act = torch.as_tensor(a, device=dev)
+    assert torch.equal(act[0, -9:], act[1, -9:])
     prev = torch.cat([act.new_full((2, 1), -1), act[:, :-1]], 1)
     out = {}
     with TR.autocast(dev, cfg):
