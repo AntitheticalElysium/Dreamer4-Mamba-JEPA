@@ -34,3 +34,16 @@ price.
   earned, 48 scenes (one per episode), for F6.1 and F6 at checkpoint 10; F6.1's sleep_split readings (phase test
   against the cohort shuffle, awake by step 8-48 against the simulator, early and late wakes, wait ratio). No bar: the
   phase advantage and its p beside F6's on the same scenes.
+
+## Check 3: where the late waking comes from (`hazard.py`, CPU, saved rollouts)
+
+F6.1 draws the phase on first sleeps (phase advantage 1.31 steps against F6's 0.46) and wakes at once after drawing
+energy 9 (224 / 224 transitions, F6 0.50), yet late or missing wakes rose (0.91 against F6's 0.775).
+
+- **Claim:** the remaining lateness is the asleep energy rise drawn too rarely (an under-drawn hazard, as in F4-F6).
+- **Competing explanation:** the rise is drawn at a consistent but shifted step (a timed clock with an offset).
+- **Separating reading:** per scene the simulator's rise step (deterministic in the fatigue phase), per draw the first
+  generated energy 9; the generated rise hazard at energy 8 before, at, 1-3 and 4+ steps after the due step; the rank
+  correlation of the scenes' generated and true rise steps; F6.1, F6 and F5 on the same 32 quiet-bank scenes, and F6.1
+  and F6 on the repeat-sleep bank of check 2. A timed world rises near the due step; an under-drawn one spreads its
+  rises after it.
