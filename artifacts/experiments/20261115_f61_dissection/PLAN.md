@@ -103,3 +103,13 @@ The user asked whether the use failure is the loss share. Within G1, an event is
 periphery tokens on held-out DEV: the squared change at the digit's cell, over the whole frame, and the cell's share
 of the frame's change, at events and at eligible frames without one, for the four pixel clocks and recovery. (Sleep
 dims the map, not the HUD: Craftax renders the inventory after the sleep tint.)
+
+## Check 9: still learning at checkpoint 10? (`trend.py`, GPU) and check 10: memory or cache? (`swap.py`)
+
+User 11-15: "run them directly". Check 9: the quiet bank at F6.1 checkpoints 5 and 8 beside 3 and 10 (check 3's
+reader). Check 10 (Codex's swap, with a cache arm): asleep exact-history pairs (F5's builder, asleep start, fatigue -5 /
+-3, the previous rise 2 steps apart beyond the 8-frame window); on frozen F6.1 one generated frame per cell, common
+random numbers: cached memory from branch c, current memory from branch m, cache context signal trained (7) or
+stressed (4). Readings: native due minus delayed; the current- and cached-memory effects; the stress effect on the due
+cell. Rise follows memory on clean prefixes -> the free-running delay is recursion; only under stress -> the cache
+holds it back; neither -> a weak learned conditional.
