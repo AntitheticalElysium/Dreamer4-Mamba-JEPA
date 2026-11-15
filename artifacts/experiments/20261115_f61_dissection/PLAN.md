@@ -72,3 +72,16 @@ episode to within 0.04. It passed for F5 and F6 with the same bank and code.
 - **Separating reading:** per pair, the stored frame against the recorded frame (exact), and the largest token
   difference with its distribution and the tokens' scale, for F6.1 and F6. If it is numerical, the stage is rerun with
   the pre-check reported rather than asserted, as a dissection reading, never by editing the pinned queue.
+
+## Check 6: sampler or learned conditional? (`sampler_steps.py`, GPU)
+
+Check 4 shows a use failure: along F6.1's rollouts the belief expects the rise at the due step (0.61) while the
+denoiser draws it 0.05 of the time.
+
+- **Claim:** the learned conditional under-draws the change (the denoiser was never taught to turn this belief state
+  into the digit change; the clock is about 1% of G1's price).
+- **Competing explanation:** the few-step sampler (K = 4) under-draws a low-probability, single-cell flip that more
+  evaluations would draw.
+- **Separating reading:** the same quiet-bank generation for F6.1 with K = 8 (the only allowed value above 4,
+  k_max = 8), same scenes and seeds; check 3's hazard at, before and after the due step and the rank correlation,
+  beside the K = 4 queue run. F4's readings were step-invariant at 8 for other events (`../20261107_f4_followups`).
