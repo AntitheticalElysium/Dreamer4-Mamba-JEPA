@@ -184,3 +184,18 @@ the sampler expresses the conditional      check 14: expected change against dra
 
 Bounds: one seed, one fine-tune length (2,000 updates; the map's norm was still growing linearly at the end), linear
 projection probes of a token change, simulator labels for selection only.
+
+## Check 16: input form or incentive? (`recency_ft.py`; after check 14: the traces separate the pairs, the denoiser's conditional ignores them)
+
+Check 13 put the traces' due-minus-delayed difference at the digit's cell at 2-3% of log(1 + trace)'s spread over
+cells: present, but nearly invisible to a linear map that every cell shares. Check 12 rerun with that one change: each
+periphery cell's exact recency (frames since its own token last changed by more than 1, capped at 63; unknown before
+any change) through a zero-initialised embedding, a lookup the denoiser can read at any value. Same fine-tune (G1 only,
+denoiser only, 2,000 updates from F6.1), same pair reads and seeds, then check 14's expectation read. The recency at
+the due frame is recorded per pair (it must differ between the branches for the test to bear).
+
+Fixed before results: **form** if at 2,000 updates the drawn due change on the awake energy and food pairs is at least
+0.10 with due minus delayed above zero (95% lower bound) and a positive recency effect (check 12's trace-effect
+reading); **incentive** if the due change stays below 0.05 with no separation and the first-step expectation shows no
+separation either. Anything else is reported as is. A learned use at the first step that the drawn rate does not show
+is the sampler, reported beside it.
