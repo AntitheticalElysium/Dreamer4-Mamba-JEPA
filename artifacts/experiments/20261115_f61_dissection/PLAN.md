@@ -59,3 +59,16 @@ energy 9 (224 / 224 transitions, F6 0.50), yet late or missing wakes rose (0.91 
   its DEV beliefs from check 1) read on those beliefs, while the draw is still asleep at energy 8, before, at, 1-3 and
   4+ steps after the due step, beside the drawn rise rate at the same steps; F6.1 and F6, both banks. The repeat-sleep
   bank's runs are check 2's (same generation, the recording does not change it).
+
+## Check 5: why the mining stage stopped (`mining_check.py`, GPU)
+
+The queue's `mining` stage (the coal and wood DO / NOOP pairs, F6's coal and iron guard) failed its own pre-check: a
+pair's frame-(t-1) periphery tokens recomputed from the bank's stored frame must match S1's encoding of the recorded
+episode to within 0.04. It passed for F5 and F6 with the same bank and code.
+
+- **Claim:** a numerical tolerance exceeded by F6.1's tokens (batch-2 against batch-512 bf16 arithmetic), not a
+  mismatch of inputs.
+- **Competing explanation:** a real input mismatch (the stored frame or fixation differs from the recorded one).
+- **Separating reading:** per pair, the stored frame against the recorded frame (exact), and the largest token
+  difference with its distribution and the tokens' scale, for F6.1 and F6. If it is numerical, the stage is rerun with
+  the pre-check reported rather than asserted, as a dissection reading, never by editing the pinned queue.
