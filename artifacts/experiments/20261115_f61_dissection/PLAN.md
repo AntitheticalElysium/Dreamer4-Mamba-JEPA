@@ -85,3 +85,8 @@ denoiser draws it 0.05 of the time.
 - **Separating reading:** the same quiet-bank generation for F6.1 with K = 8 (the only allowed value above 4,
   k_max = 8), same scenes and seeds; check 3's hazard at, before and after the due step and the rank correlation,
   beside the K = 4 queue run. F4's readings were step-invariant at 8 for other events (`../20261107_f4_followups`).
+
+Result (`mining_check.json`): the stored frames equal the recorded ones on all 402 pairs; the largest token difference
+is 0.0408 for F6.1 (one pair over 0.04; median 0.012, 99th percentile 0.032) and 0.0398 for F6 (none over), with
+tokens up to 2.4 in magnitude, where bf16's spacing is about 0.016. Numerical, as claimed. **Check 5b**
+(`mining_rerun.py`): the stage's own code with the pre-check recorded, F6.1, beside F6's queue result.

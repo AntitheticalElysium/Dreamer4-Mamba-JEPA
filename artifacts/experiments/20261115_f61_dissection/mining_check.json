@@ -1,0 +1,26 @@
+{
+ "pairs": 402,
+ "stored_frame_equals_recorded": 1.0,
+ "F6.1": {
+  "max_abs_diff": {
+   "max": 0.040756307542324066,
+   "median": 0.011936038732528687,
+   "p99": 0.03239413432776928
+  },
+  "pairs_over_0.04": 1,
+  "first_failing_pair": 194,
+  "token_abs_max_median": 2.423828125,
+  "token_abs_max_max": 2.443359375
+ },
+ "F6": {
+  "max_abs_diff": {
+   "max": 0.03979220986366272,
+   "median": 0.01221621036529541,
+   "p99": 0.03439414262771608
+  },
+  "pairs_over_0.04": 0,
+  "first_failing_pair": null,
+  "token_abs_max_median": 2.369140625,
+  "token_abs_max_max": 2.39453125
+ }
+}
