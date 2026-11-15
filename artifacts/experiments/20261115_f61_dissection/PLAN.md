@@ -20,3 +20,17 @@ from F6's 0.180 to 0.471 over all asleep frames (`trajectory/belief_probe_10.jso
   `after_reset` asleep cohort); the five events on the natural, steady8 and after_reset rows beside them. F6.1 minus F6
   per-row loss with episode-bootstrap intervals. No bar: a dissection reading. CPU encodings (reference scan) differ
   from the GPU readings in the last digits; F6 and F6.1 are encoded the same way.
+
+## Check 2: waking on time on repeat sleeps (`sleep_paid.py`; simulator build on CPU, generation on GPU)
+
+F6.1's primary sleep bank has 32 scenes, of which only 7 had WAKE_UP already earned, so its plan reads that cohort as
+descriptive. In DEV, 1,978 of 2,995 wakes happen after WAKE_UP has paid, where the reward forecast has nothing to
+price.
+
+- **Claim (F6.1's competing explanation (b)):** repeat sleeps stay untimed in generation.
+- **Competing explanation:** the phase the belief learned on first sleeps is general, and the denoiser draws repeat
+  wakes on time too.
+- **Separating reading:** the quiet bank's own construction and generation, restricted to scenes with WAKE_UP already
+  earned, 48 scenes (one per episode), for F6.1 and F6 at checkpoint 10; F6.1's sleep_split readings (phase test
+  against the cohort shuffle, awake by step 8-48 against the simulator, early and late wakes, wait ratio). No bar: the
+  phase advantage and its p beside F6's on the same scenes.
