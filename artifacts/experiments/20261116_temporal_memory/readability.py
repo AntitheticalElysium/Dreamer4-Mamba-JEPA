@@ -82,13 +82,14 @@ def check_scan():
         torch.set_default_dtype(torch.float32)
         F_ours = scan(ev, s)
         assert np.allclose(F[:, 0, 0].numpy(), F_ours[:, k:-k], rtol=1e-6, atol=1e-9), name
-        assert np.allclose(til[:, 0, 0].numpy(), (F_ours @ post)[:, k:-k], rtol=1e-5, atol=1e-8), name
+        ref = til[:, 0, 0].numpy()                  # scale-relative: Post weights reach 1.9e6 (k = 16), paper_8_k8's inverse
+        assert np.allclose(ref, (F_ours @ post)[:, k:-k], rtol=1e-5, atol=1e-8 * np.abs(ref).max()), name   # ~1e9
 
 
 def logistic(Xtr, ytr, Xte):
     mu, sd = Xtr.mean(0), Xtr.std(0)
     sd = np.where(sd > 1e-3 * sd.max(), sd, 1.0)
-    A, B = (torch.as_tensor((z - mu) / sd) for z in (Xtr, Xte))
+    A, B = (torch.as_tensor(((z - mu) / sd).astype(np.float64)) for z in (Xtr, Xte))
     y = torch.as_tensor(ytr, dtype=torch.float64)
     w = torch.zeros(A.shape[1] + 1, dtype=torch.float64, requires_grad=True)
     opt = torch.optim.LBFGS([w], max_iter=500, tolerance_grad=1e-9, line_search_fn="strong_wolfe")
