@@ -79,29 +79,44 @@ within (split, asleep); same chooser, inputs, capacity, split, budget and batch 
 decide each event: 99.97% food and drink, 100% both energy clocks). The shuffled arm reproduces fair.py (held-out KL
 0.3128 against 0.3140).
 
-- **Knowing the phase helps, and at the events.** Held-out KL 0.3128 -> 0.2917 nats per frame (gain 0.021, 6.7%;
-  still 0.028 against moved 0.008, day 0.028 against night 0.007). The gap was still growing at the last epoch
-  (training cross-entropy gap 0.008, 0.015, 0.018, 0.021 over the four epochs).
-- **Per flip, about half of the first-order price is memory value.** Gain at event frames when only that clock's
-  counter is shuffled, against the flip's first-order KL on the same frames: food 0.117 / 0.313 (37%), drink 0.130 /
-  0.288 (45%), awake energy 0.108 / 0.250 (43%), asleep energy rise 0.242 / 0.424 (57%); recovery 0.303 / 0.657 (46%).
-  Competing explanation (a) is half right: how far a flip pulls the eye depends on the rest of the frame, which exact
-  phase does not give. Gains at eligible frames without an event are positive (0.004-0.023), not the loss a "look at the
+- **Knowing all four counters helps the forecast.** Held-out KL 0.3128 -> 0.2917 nats per frame (gain 0.021, 6.7%;
+  still 0.028 against moved 0.008, day 0.028 against night 0.007); the gap was still growing at the last epoch
+  (training cross-entropy gap 0.008, 0.015, 0.018, 0.021 over the four epochs). **This is not a measure of long
+  memory** (Codex): 6,739 of the 10,153 held-out eligible asleep rows already show sleep onset or an energy rise inside
+  the eight-frame history, so part of the gain is phase the small forecaster did not read from its own window. The
+  strict cohorts below isolate older history.
+- **Per-clock readings from this run are not identified.** Each came from shuffling one counter at test time in the
+  arm trained with all four, which makes it confidently wrong (a shuffled "due" predicts a pull that does not come):
+  the four single-counter gains sum to 0.045, 2.1 times the retrained true-vs-shuffled gap. The fixed primary reading
+  (R = 1.15 against the 0.5 bar) rests on that measure and overstates; rescaling the single-counter gains to the
+  joint gap (my R = 0.54 and per-counter values) does not identify each clock's contribution either (Codex), and is
+  withdrawn. The same artefact applies to the event-frame shares (gain at events against the flip's first-order KL:
+  food 37%, drink 45%, awake energy 43%, asleep rise 57%, recovery 46%), which are upper readings. What does hold
+  from this run: gains at eligible frames without an event are positive (0.004-0.023), not the loss a "look at the
   digit more often" head would show.
-- **Primary, as fixed: R = 1.15** (hunger 1.06, thirst 1.19, fatigue 1.18; recover 1.42): passes the 0.5 bar. **But the
-  fixed measure overstates.** Shuffling one counter at test time makes the trained arm confidently wrong (a shuffled
-  "due" predicts a pull that does not come), so the four single-counter gains sum to 0.045, 2.1 times the retrained
-  true-vs-shuffled gap (0.021), which has no such artefact. Conservative readings: event frames only, R = 0.45; the
-  single-counter gains rescaled to the retrained gap, R = 0.54 (hunger 0.0042, thirst 0.0051, fatigue 0.0064 nats per
-  frame; recover 0.0053). The drop bar (0.25) is cleared under every reading; the 0.5 bar only nominally.
-- **Memory share (like-for-like with the shuffled arm's loss): about 5%** for the pixel clocks (0.0157 of 0.3128,
-  rescaled; 10.7% by the overstating single-counter sum), 1.7% for recover.
 
-Context, read after the bars: the same kind of quantity (log-loss gain from adding a hidden counter's phase, retrained
-with and without) was measured for the reward forecast on the same DEV fifth (`../20261114_currency_eda/`, section 1):
-recovery 0.068 nats per frame at distance 1; fatigue 0.006-0.009 at distances 2-8; hunger and thirst at most 0.0017.
-Per pixel clock the gaze currency's memory value (0.004-0.006) is therefore about F6.1's multi-distance offer for
-fatigue, which formed the asleep-rise trace by its checkpoint 3 (belief AP 0.363 against F6's 0.214; phase test
-p = 0.0002 before WAKE_UP has paid, none after), and 2.5-25 times what any reward distance offers for hunger or thirst;
-it is a tenth to a fifteenth of what recovery had when it was learned. Loss values, not gradients into Mamba: the dose into
-Mamba is not measured (GPU).
+## Strict cohorts (Codex, CPU, 11-15; `../NOTEBOOK.md`, "Adversarial audit of the gaze-phase oracle" and "Gaze forecast and the awake resource clocks")
+
+Separate matched refits, one clock phase at a time, on held-out frames whose last eight frames show no change of the
+relevant digit (so any gain needs older history); phase either exact or reconstructed from rendered history before
+the target frame; baselines with the phase shuffled within strata and held at zero; F6's frozen final chooser;
+intervals resample held-out episodes (one training seed per arm, so retraining variability is open).
+
+| Cohort | Rows | Phase input | Gaze KL saved per row (nats) |
+| :--- | ---: | :--- | ---: |
+| Repeat sleep (WAKE_UP already paid, 8 asleep frames, constant energy) | 909 | from visible history | 0.0364 [0.0266, 0.0464] |
+| Awake, drink unchanged 8 frames | 3,436 | from visible history | 0.0079 [0.0051, 0.0108] |
+| Awake, food unchanged 8 frames | 3,880 | from visible history | 0.0046 [0.0014, 0.0079] |
+| Awake, energy unchanged 8 frames | 4,339 | from visible history | 0.0038 [0.0013, 0.0063] |
+
+- Sleep: 0.118 on the 213 rises, 0.011 [0.008, 0.015] on the 696 non-rises; against the zero baseline 0.039. In this
+  cohort the last rise was 8-11 steps before the target (the last four steps of the 11-step asleep cycle; event rate
+  23%), so the memory needed is just past the
+  eight-frame window.
+- Non-drops, full KL: drink 0.0046 [0.0028, 0.0064]; food 0.0004 [-0.0015, 0.0022]; energy 0.0018 [-0.0006, 0.0041].
+- Awake energy carries its value before the first sleep (0.0110 [0.0059, 0.0166], 1,651 rows), where steps since the
+  episode began is an equally good cue; after sleep the full gain is -0.0006 [-0.0030, 0.0017] (2,688 rows), only the
+  digit-coverage part survives (0.0017 [0.0007, 0.0027]).
+- These gains are in the fitted head's loss. A nat saved here has no known conversion to the gradient that reaches
+  Mamba under this loss, or to the reward forecast's (Codex), so comparisons with the reward forecast's counter gains
+  (`../20261114_currency_eda/`, section 1) are not made; the dose into Mamba has to be measured.
