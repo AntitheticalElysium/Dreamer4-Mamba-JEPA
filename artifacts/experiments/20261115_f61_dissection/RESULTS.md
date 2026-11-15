@@ -237,3 +237,28 @@ probability of the change), beside the final frame and the drawn rate (both repr
 **Not learned.** The fine-tuned denoiser's own probability is the same with its own and with exchanged traces, so the
 sampler is not what hides a learned use. Where the probability is graded (asleep onset 0.08), the few-step sampler
 then roughly halves it (final 0.045, drawn 0.034); where it is sharp (recovery 0.65), the sampler keeps it.
+
+## Check 16: given a readable form, the denoiser uses the timing (`recency_ft.py`, `recency_ft.json`, `recency_expect.json`, `recency_pairs.json`)
+
+Check 12 with each cell's exact recency (frames since its token last changed by more than 1) through a zero-initialised
+embedding. On the pairs the due frame sits 30 / 22 frames after the energy digit's last change (due / delayed), food
+25 / 17, recovery 25 / 17, asleep onset 10 / 7.1. Update 0 reproduces F6.1 exactly.
+
+| Pairs | Drawn due / delayed, F6.1 | 1,000 updates | 2,000 updates | Recency effect at 2,000 [95%] | First step due / delayed at 2,000 (F6.1) |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| Awake energy | 0.007 / 0.007 | 0.002 / 0.000 | 0.008 / 0.000 | +0.008 [0.004, 0.013] | 0.040 / 0.005 (0.009 / 0.009) |
+| Food | 0.089 / 0.089 | 0.112 / 0.051 | 0.130 / 0.000 | +0.130 [0.105, 0.152] | 0.152 / 0.009 (0.101 / 0.101) |
+| Recovery | 0.643 / 0.000 | 0.578 / 0.000 | 0.746 / 0.000 | +0.121 [0.071, 0.172] | 0.723 / -0.011 (0.647 / 0.002) |
+| Asleep onset | 0.034 / 0.017 | 0.069 / 0.051 | 0.041 / 0.003 | +0.020 [0.012, 0.029] | 0.093 / 0.068 (0.081 / 0.071) |
+
+G1 0.00362 at 2,000 (the trace fine-tune 0.00372, F6.1's monitor 0.00383); the embedding's norm was still growing
+(1.83).
+
+**Food: form** (the fixed bar: due 0.130 >= 0.10, due minus delayed above zero, positive recency effect). **Awake
+energy: as is**: a learned use at the first step (0.040 against 0.005, due minus delayed 0.035 [0.032, 0.038]) that
+the sampler cuts to a drawn 0.008, far below what the cue allows (the label hazard at 30 frames since the last change
+is 0.96). Check 12's null was the form of the input, not the absence of an incentive: G1 does reward timing once the
+timing is readable, and it rewards it for every clock here, recovery included. What remains is how far and how fast
+the learned probability approaches the cue's (energy 0.04 against 0.96, food 0.15 against 0.73, after 2,000
+updates and still rising), and the few-step sampler, which keeps sharp probabilities (recovery 0.72 to 0.75) and cuts
+graded ones (energy 0.040 to 0.008, asleep onset 0.093 to 0.041).
