@@ -52,3 +52,24 @@ more information than the hand-made recency. But under the linear input map the 
 around 20-30 frames are about 24 frames wide (k 8) and give up most of the exact clocks' readability. A fine-tune
 replacing the recency with them would mostly measure that Weber cost, unless the denoiser's later layers do the
 sharpening. Not run; for the discussion.
+
+## Measurement 2: the SSM's eigenvalue structure decides time readability (`ssm_bases.py`, `ssm_bases.json`)
+
+Measurement 1's rows, readers and references; fixed bases from their papers on each digit cell's event train. AP,
+linear / nonlinear:
+
+| Code | Dimensions | Food drop | Drink drop | Awake energy drop | Asleep energy rise |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| Exact recency (reference) | 64 | 0.69 / 0.69 | 0.78 / 0.78 | 0.94 / 0.95 | 0.71 / 0.73 |
+| HiPPO-LegT (LMU), theta 64 | 64 | 0.77 / 0.86 | 0.83 / 0.93 | 0.91 / 0.93 | 0.72 / 0.75 |
+| S4D-Lin (complex: damped Fourier) | 64 (32 complex) | 0.76 / 0.85 | 0.78 / 0.87 | 0.90 / 0.94 | 0.63 / 0.73 |
+| S4D-Real (real decays) | 64 | 0.30 / 0.89 | 0.28 / 0.94 | 0.15 / 0.94 | 0.30 / 0.76 |
+| HiPPO-LegT, theta 64 | 16 | 0.52 / 0.87 | 0.54 / 0.89 | 0.73 / 0.93 | 0.44 / 0.74 |
+| Laplace F (measurement 1, real) | 80 | 0.28 / 0.88 | 0.28 / 0.93 | 0.17 / 0.94 | 0.30 / 0.78 |
+
+At equal size, step and discretisation, S4D-Lin and S4D-Real differ only in their eigenvalues: rotating modes make the
+awake energy clock linearly readable at 0.90, real decays at 0.15, with the same information in both (nonlinear
+0.94). The Legendre window memory reaches the hand-made recency's level (0.91 against 0.94) and exceeds it on food and
+drink, where it keeps more than the last change. Real-decay codes (S4D-Real, Laplace F, CogRNN's inverse) are
+readable only through a nonlinear reader. Mamba-1 is a diagonal of real decays and Mamba-2 a single real decay per
+head (Mamba-3's own account): the family whose state needs a nonlinear decoder for elapsed time.
