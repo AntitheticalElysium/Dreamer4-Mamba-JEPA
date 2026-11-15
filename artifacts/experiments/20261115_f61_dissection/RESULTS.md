@@ -262,3 +262,53 @@ timing is readable, and it rewards it for every clock here, recovery included. W
 the learned probability approaches the cue's (energy 0.04 against 0.96, food 0.15 against 0.73, after 2,000
 updates and still rising), and the few-step sampler, which keeps sharp probabilities (recovery 0.72 to 0.75) and cuts
 graded ones (energy 0.040 to 0.008, asleep onset 0.093 to 0.041).
+
+## Check 15: which single-cell changes G1 draws (`use_check.py catalogue`, `catalogue.json`; DEV fold 4, 128 events per class)
+
+The first run's two trace arms were void (autocast kept the trace map's zero bf16 copy from the F6.1 arm for the whole
+episode block; own and zeroed traces came out bitwise identical); fixed in `2e35418a` and rerun, with the F6.1 arm
+reproducing run 1 bitwise. F6.1's first-step probability at the event's cell and its drawn rate (at the event / on
+frames without it):
+
+| Where the cue lies | Class (Craftax inventory order) | First step | Drawn | Quiet |
+| :--- | :--- | ---: | ---: | ---: |
+| Action, in the window | wood +1 / placing sapling / crafting (5 tools) / placing table or stone | 0.91 / 0.83 / 0.73-0.85 / 0.62-0.76 | 0.90 / 0.80 / 0.74-0.84 / 0.59-0.75 | <= 0.07 |
+| Action, in the window | stone +1 / drink +1 | 0.69 / 0.59 | 0.61 / 0.53 | 0.02 / 0.03 |
+| Action, rare | coal +1 / iron +1 | 0.25 / 0.15 | 0.20 / 0.12 | 0.02 |
+| Action, chance or hidden | sapling +1 (grass, p = 0.1) / food +1 (cow's hidden health) | 0.03 / 0.12 | 0.04 / 0.06 | 0.00 / 0.02 |
+| Partly hidden | damage | 0.64 | 0.64 | 0.02 |
+| Memory (reward-priced) | recovery | 0.48 | 0.47 | 0.04 |
+| Older history only | food / drink / awake energy drop; asleep rise | 0.07 / 0.06 / 0.06; 0.09 | 0.04 / 0.03 / 0.03; 0.06 | 0.01-0.05 |
+
+G1 learns small single-cell changes, many of them: what it draws tracks how predictable the change is from what the
+denoiser reads (the window, the action, the memory), not the size of the change. The clock drops are the only
+deterministic changes whose cue lies only in older history, and they are the ones not drawn.
+
+The trace fine-tune (fixed rerun) used its traces around the player's cell (cells 30-32 and 40 lead; map 0.0018 per
+cell against HUD digits 0.0013), where tokens change all the time, and not on the clock events (own against zeroed
+traces: energy drawn 0.030 / 0.029, food 0.048 / 0.047); check 13's predictor scores those events at 0.18-0.19 against
+0.04 on quiet frames.
+
+## Check 16b: the recency fine-tune on natural frames (`recency_catalogue.py`, `recency_catalogue.json`)
+
+| Class | F6.1 drawn (quiet) | Recency 2,000 drawn [95%] (quiet) | First step | Cue's hazard (labels) |
+| :--- | ---: | ---: | ---: | ---: |
+| Awake energy drop | 0.032 (0.011) | 0.222 [0.193, 0.250] (0.001) | 0.170 | 0.96 at 30 frames |
+| after_reset | 0.006 (0.008) | 0.211 (0.002) | 0.181 | |
+| Drink drop | 0.034 (0.047) | 0.274 [0.227, 0.324] (0.020) | 0.206 | 0.83 at 20 |
+| Food drop | 0.042 (0.025) | 0.114 [0.087, 0.144] (0.014) | 0.122 | 0.73 at 25 |
+| Asleep rise | 0.056 (0.030) | 0.046 (0.009) | 0.109 | |
+| Recovery | 0.472 (0.041) | 0.395 [0.329, 0.463] (0.026) | 0.363 | |
+
+The recency acts on the HUD digits (0.10 per cell against 0.015 on the map; drink, food, energy lead). The action-cued
+classes move within about 0.05 either way (stone pickaxe 0.84 to 0.80, placing sapling 0.80 to 0.91). On natural
+frames the use is far larger than on the stand-still pairs (awake energy drawn 0.22 against 0.008 there; first step
+0.17 against 0.04): the pairs understate it, for a reason not measured. Recovery fell on natural frames (0.47 to 0.40)
+while rising on its pairs (0.64 to 0.75).
+
+**Synthesis (checks 12-16b).** The traces carried the timing (check 13), but in a form whose gap was 2-3% of the input's
+spread: the shared map learned to use them where changes are frequent and the loss is large, not for the clocks
+(checks 14, 15). The same information as an exact per-cell recency is learned within 2,000 G1 updates and drawn on
+natural frames at 4-8 times F6.1's rate with fewer false alarms (check 16, 16b). The denoiser does not lack an
+incentive; it lacked a readable input. What remains: the drawn rates sit far below the cues' hazards and were still
+rising; one seed; a fine-tune from F6.1; the recency is hand-made (label-free and per cell, but not learned).
