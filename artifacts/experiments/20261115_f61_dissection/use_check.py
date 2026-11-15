@@ -139,8 +139,9 @@ def load(trained=True):
     for p in model.parameters():
         p.requires_grad_(False)
     TF.install(model.denoiser)
-    model.eval()
-    base = {k: v.clone() for k, v in model.denoiser.state_dict().items()}
+    model.denoiser.trace_proj.requires_grad_(False)                     # autocast caches the bf16 copy of a weight that
+    model.eval()                                                        # requires grad for a whole block: a state dict
+    base = {k: v.clone() for k, v in model.denoiser.state_dict().items()}   # loaded inside it was ignored (catalogue run 1)
     sd = torch.load(TF.OUT / "denoiser_2000.pt", map_location=DS.DEV, weights_only=False)["denoiser"]
     return model, cfg, base, sd
 
@@ -376,6 +377,11 @@ def catalogue(events=128, quiet=64, batch=8):
                               "p_trace_event": float(np.mean([r["p_trace"] for r in ev])),
                               "p_trace_quiet": float(np.mean([r["p_trace"] for r in no])) if no else None}
             print(arm, name, json.dumps(res[arm][name]), flush=True)
+    first = TF.OUT / "catalogue_rows_cachebug.pt"                     # run 1: its F6.1 arm (no trace map) was unaffected
+    if first.exists():
+        old = torch.load(first, weights_only=False)["f61"]
+        res["f61_vs_run1_max_abs"] = float(max(np.abs(np.array(a["kappa"]) - np.array(b["kappa"])).max() for a, b in zip(old, rec["f61"])))
+        assert len(old) == len(rec["f61"]) and res["f61_vs_run1_max_abs"] < 1e-4, res["f61_vs_run1_max_abs"]
     (HERE / "catalogue.json").write_text(json.dumps(res, indent=1) + "\n")
     torch.save(rec, TF.OUT / "catalogue_rows.pt")
 
