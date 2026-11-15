@@ -129,3 +129,34 @@ memory, commit 878f985, vendored as `cogrnn_kabir2025.py`).
   denoiser, rather than a denoiser-private input or a replacement for Mamba.
 - Frame: the screen-keyed record is right for content stationary on the screen; world-anchored timing needs the
   world-keyed store (I1).
+
+## 5. Second round (user 11-16: should SSMs not excel here; integrate with Mamba or a separate system?)
+
+**What an SSM's state can make readable depends on its transitions.**
+- Mamba-3 (Lahoti et al., ICLR 2026, arXiv 2603.15569, read in source): "S4 used complex-valued NPLR matrices, Mamba
+  reduced this to a diagonal of reals, and Mamba-2 further simplified it to a single scaled identity matrix"; the
+  restriction to real non-negative eigenvalues "cannot represent rotational hidden state dynamics"; Mamba-3 restores
+  complex states as data-dependent rotary embeddings on B and C, and solves parity and modular arithmetic where Mamba-2
+  fails. Grazzi et al. (ICLR 2025, 2411.12537): positive real eigenvalues cannot solve parity; complex ones are needed to
+  count modulo 3.
+- HiPPO (Gu et al. 2020, 2008.07669, source): LegT keeps a Legendre projection of the last theta steps, from which the
+  window is reconstructed linearly; its LMU form is "exactly the LMU update equation". Voelker & Eliasmith 2018 (Neural
+  Computation, abstract): the same delay network gives an account of time cells.
+- S4D (Gu et al. 2022, 2206.11893, source): S4D-Lin A_n = -1/2 + i pi n gives "damped Fourier basis functions";
+  S4D-Real A_n = -(n+1) is S4's real spectrum.
+- Our measurement 2: at equal size and step, the complex basis reads the awake energy clock linearly at 0.90, the real
+  one at 0.15, with the same information in both (nonlinear 0.94).
+
+**Where the memory sits in SSM world models.**
+- Po et al. (ICCV 2025, 2505.20171, source): Mamba layers inside the generator, interleaved with frame-local attention
+  (window 10 frames); "a separate scan is performed for each token block", each block its own state, block sizes
+  varying across layers. Ablation (maze reasoning, SSIM): full 0.855; without block-wise scan 0.845; block size 1 only
+  0.766; without the long-context training 0.809. Without that training "our model falls into a local minimum and
+  generates frames without looking at distant context". Retrieval: Mamba2 + frame local attention 0.735 SSIM against
+  0.898 for theirs ("limited state-space expressivity").
+- SlotSSM (Jiang et al., NeurIPS 2024, abstract): modular slot states with independent transitions, interacting only
+  through self-attention. ConvSSM (Smith et al., NeurIPS 2023, abstract): tensor-valued (per-location) SSM states with
+  convolutional transitions; long-horizon Moving-MNIST, DMLab, Minecraft, Habitat.
+- Our own design already plans per-record slots of the working state (RECORDS v3, "SlotSSM-style").
+- Route starvation (research pass 11-11): SWAX (Cabannes 2025) and Po et al. both found a local route (window, cache)
+  leaves the recurrent memory unsupervised unless training removes the shortcut part of the time.

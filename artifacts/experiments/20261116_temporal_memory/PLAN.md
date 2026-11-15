@@ -100,3 +100,8 @@ Readings fixed before results (two init seeds; a difference counts only if it ho
 - References from measurements 1-2: the exact recency (linear 0.94 on energy) and the Laplace record (nonlinear 0.93).
 - The generic log-loss over all cells is reported beside each arm, to see whether an arm's clocks come at the generic
   task's expense.
+Implementation notes before the run (smoke test): per-cell memories are computed in thirds of the cells with gradients
+accumulated (cells are independent in them: equal to one pass up to bf16 rounding, max relative difference 1.6e-3),
+the digit-only objective on its four cells only; the token cache's memmap shape fixed (NumPy 2 wrote np.int64 into
+the header). Parameters: global arms 2.0-2.4M, per-cell arms 0.15M (one 64-wide stack shared by 81 cells, each with
+its own state). About 1.45 s per update for all seven; seeds 1 and 2 run one after the other.

@@ -45,7 +45,7 @@ def tokens():
     dev = G.S.episodes(L)
     for name, eps in (("train", sp["train"]), ("fold4", [dev[e] for e in range(len(dev)) if e % 5 == 4])):
         off = np.r_[0, np.cumsum([e.T + 1 for e in eps])]
-        p = np.lib.format.open_memmap(RUN / f"arch_{name}_p.npy", "w+", np.float16, (off[-1], N, TOK))
+        p = np.lib.format.open_memmap(RUN / f"arch_{name}_p.npy", "w+", np.float16, (int(off[-1]), N, TOK))
         a = np.zeros(off[-1], np.int64)
         for i, e in enumerate(eps):
             f = G.D.RP.episode_fields(e.shard, e.slot)
@@ -124,8 +124,8 @@ class Head(nn.Module):
         self.cell = nn.Embedding(N, 16)
         self.mlp = nn.Sequential(nn.Linear(32 + TOK + 16, 64), nn.GELU(), nn.Linear(64, 1))
 
-    def forward(self, f, x):                                            # [L, N, 32], [L, N, 16]
-        return self.mlp(torch.cat([f, x, self.cell.weight.expand(x.shape[0], -1, -1)], -1))[..., 0]
+    def forward(self, f, x, cells):                                     # [L, n, 32], [L, n, 16], n cell indices
+        return self.mlp(torch.cat([f, x, self.cell.weight[cells].expand(x.shape[0], -1, -1)], -1))[..., 0]
 
 
 class Global(nn.Module):
@@ -143,16 +143,16 @@ class Global(nn.Module):
             self.qcell = nn.Embedding(N, 16)
         self.head = Head()
 
-    def forward(self, x, act, seg):
+    def forward(self, x, act, seg, cells):
         b = self.stack((self.inp(x.flatten(-2)) + self.act(act))[None], seg)[0]          # [L, 256]
         if self.readout == "direct":
-            f = self.read(b).unflatten(-1, (N, 32))
+            f = self.read(b).unflatten(-1, (N, 32))[:, cells]
         else:
             mt = self.mem(b).unflatten(-1, (4, 256))                                     # [L, 4, 256]
-            q = self.query(torch.cat([x, self.qcell.weight.expand(x.shape[0], -1, -1)], -1))
-            w = torch.softmax(q @ mt.transpose(1, 2) / 16.0, -1)                         # [L, N, 4]
+            q = self.query(torch.cat([x[:, cells], self.qcell.weight[cells].expand(x.shape[0], -1, -1)], -1))
+            w = torch.softmax(q @ mt.transpose(1, 2) / 16.0, -1)                         # [L, n, 4]
             f = self.read(w @ mt)
-        return self.head(f, x)
+        return self.head(f, x[:, cells], cells)
 
 
 class PerCell(nn.Module):
@@ -164,23 +164,31 @@ class PerCell(nn.Module):
         self.inp, self.cell, self.act = nn.Linear(TOK, 64), nn.Embedding(N, 64), nn.Embedding(ACTIONS, 64)
         self.stack, self.read, self.head = Stack(64, 16, kind), nn.Linear(64, 32), Head()
 
-    def forward(self, x, act, seg):
-        u = self.inp(x) + self.cell.weight + self.act(act)[:, None]                     # [L, N, 64]
+    def forward(self, x, act, seg, cells):                              # cells are independent: any subset is exact
+        u = self.inp(x[:, cells]) + self.cell.weight[cells] + self.act(act)[:, None]    # [L, n, 64]
         h = self.stack(u.transpose(0, 1).contiguous(), seg).transpose(0, 1)
-        return self.head(self.read(h), x)
+        return self.head(self.read(h), x[:, cells], cells)
 
 
 ARMS = {"G2": (lambda: Global("m2", "direct"), "all"), "G2K": (lambda: Global("m2", "memory"), "all"),
         "P2": (lambda: PerCell("m2"), "all"), "G3": (lambda: Global("m3", "direct"), "all"),
         "P3": (lambda: PerCell("m3"), "all"), "G2_digits": (lambda: Global("m2", "direct"), "digits"),
         "P2_digits": (lambda: PerCell("m2"), "digits")}
+ALL = list(range(N))
 
 
-def loss_of(logit, tgt, ok, target):
-    l = F.binary_cross_entropy_with_logits(logit.float(), tgt, reduction="none")
+def groups(model, target):
+    """Cell groups per pass: per-cell memories in thirds (memory; the gradient summed over groups is the full one),
+    the digit-only objective on its four cells; global memories in one pass."""
     if target == "digits":
-        l = l[:, DIGITS]
-    return (l * ok[:, None]).sum() / (ok.sum() * l.shape[1]).clamp(min=1)
+        return [DIGITS]
+    return [ALL[i:i + 27] for i in range(0, N, 27)] if isinstance(model, PerCell) else [ALL]
+
+
+def loss_of(logit, tgt, ok, cells):
+    """Sum of log-losses over these cells' valid frames, divided by (valid frames x the objective's cell count)."""
+    l = F.binary_cross_entropy_with_logits(logit.float(), tgt[:, cells], reduction="none")
+    return (l * ok[:, None]).sum()
 
 
 @torch.no_grad()
@@ -198,7 +206,7 @@ def evaluate(model, fold4):
         k = max(k, e + 1)
         x, act, seg, tgt, ok = (z.to(DEV) for z in pack(p, off, action, range(e, k)))
         with torch.autocast("cuda", dtype=torch.bfloat16):
-            logit = model(x, act, seg).float()
+            logit = torch.cat([model(x, act, seg, c).float() for c in groups(model, "all")], 1)
         l = F.binary_cross_entropy_with_logits(logit, tgt, reduction="none")
         nll += float((l * ok[:, None]).sum()); nll_d += float((l[:, DIGITS] * ok[:, None]).sum()); cnt += int(ok.sum())
         probs.append(torch.sigmoid(logit[:, DIGITS]).cpu().numpy())
@@ -243,13 +251,16 @@ def train(seed):
         for name, (_, target) in ARMS.items():
             for g in opts[name].param_groups:
                 g["lr"] = lr
-            with torch.autocast("cuda", dtype=torch.bfloat16):
-                loss = loss_of(models[name](x, act, seg), tgt, ok, target)
             opts[name].zero_grad(set_to_none=True)
-            loss.backward()
+            denom, total = ok.sum() * (len(DIGITS) if target == "digits" else N), 0.0
+            for c in groups(models[name], target):                      # gradients accumulate over cell groups
+                with torch.autocast("cuda", dtype=torch.bfloat16):
+                    loss = loss_of(models[name](x, act, seg, c), tgt, ok, c) / denom
+                loss.backward()
+                total += float(loss)
             torch.nn.utils.clip_grad_norm_(models[name].parameters(), CLIP)
             opts[name].step()
-            losses[name] = float(loss)
+            losses[name] = total
         if u % 100 == 0:
             out["log"].append({"update": u, "sec": time.time() - t0, **losses})
             print(json.dumps(out["log"][-1]), flush=True)
