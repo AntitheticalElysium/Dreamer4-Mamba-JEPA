@@ -48,6 +48,8 @@ def run():
             log.clear()
             SL.HERE, SL.CKPT = d, ck
             SL.run()
+            n = len(torch.load(d / "bank.pt", map_location="cpu", weights_only=False)["rows"])
+            assert len(log) == -(-n // 8) * SL.H, (len(log), n)           # only the generation steps were recorded
             torch.save(torch.stack(log), d / "beliefs.pt")              # [batches x steps, rows, width], batch-major
             print(bank, name, len(log), flush=True)
 
