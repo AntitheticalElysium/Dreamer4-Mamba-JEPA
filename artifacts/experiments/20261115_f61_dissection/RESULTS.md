@@ -204,3 +204,36 @@ minus delayed at tau 8 / 32: energy -0.011 / -0.009, food -0.019 / -0.009, recov
 of the cell's trace input. The evidence reached the denoiser's input, and G1 did not teach it to draw timing from it
 in 2,000 updates. Bounds: one seed; a fine-tune from F6.1's denoiser (its learned conditional may resist a new input);
 whether the trace difference on these pairs is itself separable was not read (check 11 read natural rows).
+
+## Check 13: the traces separate the pairs (`use_check.py separable`, `separable.json`)
+
+Check 11's next-change predictor refitted (APs reproduced exactly: 0.3057 / 0.3377 / 0.4489), on both branches at the
+due transition:
+
+| Bank | P(change) due / delayed | Due minus delayed [95%] | Due above delayed | 8-frame traces | log(1 + trace) gap, in spreads (tau 8 / 32) |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| Awake energy (32) | 0.320 / 0.046 | 0.274 [0.269, 0.277] | 32 / 32 | 0.008 / 0.008 | 0.017 / 0.016 |
+| Food (24) | 0.177 / 0.045 | 0.132 [0.127, 0.137] | 24 / 24 | 0.010 / 0.010 | 0.030 / 0.018 |
+| Recovery (32) | 0.071 / 0.068 | 0.003 [0.001, 0.006] | 0.64 | 0.008 / 0.008 | 0.29 / 0.12 |
+| Asleep onset (32) | 0.055 / 0.021 | 0.034 [0.020, 0.048] | 32 / 32 | 0.011 / 0.016 | 0.16 / 0.03 |
+
+**Separable** (fixed bar met on awake energy and food). The timing is in the traces on every pair. But the gap in the
+form check 12 fed the denoiser is 2-3% of that input's spread over cells: a digit change 22-30 frames back has
+decayed to a few hundredths beside the map cells' scroll changes. (Recovery's timing is not in the traces at all: the
+health digit's history does not set the recover counter.)
+
+## Check 14: the denoiser's conditional never used them (`use_check.py expect`, `expect.json`)
+
+The first sampler step's prediction at the digit's cell, projected on the due branch's true change (its own
+probability of the change), beside the final frame and the drawn rate (both reproduce check 12 exactly):
+
+| Bank | F6.1: first step due / delayed | F6.1 final / drawn (due) | Traces 2,000: first step due / delayed | First-step trace effect [95%] | Drawn (due) |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| Awake energy | 0.009 / 0.009 | 0.001 / 0.007 | 0.015 / 0.015 | -0.0000 [-0.0001, -0.0000] | 0.002 |
+| Food | 0.101 / 0.101 | 0.089 / 0.089 | 0.076 / 0.076 | 0.0000 [-0.0001, 0.0002] | 0.064 |
+| Recovery | 0.647 / 0.002 | 0.644 / 0.643 | 0.654 / -0.010 | -0.002 [-0.003, -0.001] | 0.662 |
+| Asleep onset | 0.081 / 0.071 | 0.045 / 0.034 | 0.075 / 0.063 | -0.0005 [-0.0006, -0.0004] | 0.016 |
+
+**Not learned.** The fine-tuned denoiser's own probability is the same with its own and with exchanged traces, so the
+sampler is not what hides a learned use. Where the probability is graded (asleep onset 0.08), the few-step sampler
+then roughly halves it (final 0.045, drawn 0.034); where it is sharp (recovery 0.65), the sampler keeps it.
