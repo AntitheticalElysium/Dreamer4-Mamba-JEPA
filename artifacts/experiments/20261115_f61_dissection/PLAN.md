@@ -47,3 +47,15 @@ energy 9 (224 / 224 transitions, F6 0.50), yet late or missing wakes rose (0.91 
   correlation of the scenes' generated and true rise steps; F6.1, F6 and F5 on the same 32 quiet-bank scenes, and F6.1
   and F6 on the repeat-sleep bank of check 2. A timed world rises near the due step; an under-drawn one spreads its
   rises after it.
+
+## Check 4: does the belief expect the rise the denoiser draws late? (`rollout_belief.py`; generation on GPU)
+
+- **Claim:** along the world's own rollouts the predicted belief still expects the rise at the due step, and the
+  denoiser does not draw it (a use failure, like F4's zombie hits: the belief knew, generation did not follow).
+- **Competing explanation:** the belief loses the phase along its own rollouts (the generated frames do not carry what
+  the recorded ones did), so the denoiser draws what the belief expects.
+- **Separating reading:** the banks' own generation, unchanged, with each per-step belief output recorded (bitwise
+  equal to the queue's run on the quiet bank, the known answer); the world's own asleep-rise probe (learnable.probe on
+  its DEV beliefs from check 1) read on those beliefs, while the draw is still asleep at energy 8, before, at, 1-3 and
+  4+ steps after the due step, beside the drawn rise rate at the same steps; F6.1 and F6, both banks. The repeat-sleep
+  bank's runs are check 2's (same generation, the recording does not change it).
