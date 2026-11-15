@@ -23,3 +23,66 @@ per eligible frame; F6.1 minus F6 with episode-bootstrap 95% intervals.
 - **Awake pixel clocks: nothing, in either world.** Food, drink and awake energy drops add at most 0.0009 nats beyond
   time and light (natural, steady8, after_reset), F6.1 minus F6 within +-0.0005 everywhere. Recovery, the
   reward-priced reference: 0.070 against 0.061 (F6.1 minus F6 0.009 [0.006, 0.011]).
+
+## Check 2: waking on repeat sleeps (`sleep_paid.py`, `sleep_paid.json`; 48 quiet scenes with WAKE_UP already earned, 357 eligible episodes)
+
+| Checkpoint 10 | Phase advantage (steps) | Real / shuffled W1 | p | Wait ratio | Awake by 8 / 12 / 16 (simulator 0.63 / 1 / 1) | Early / late or none |
+| :--- | ---: | ---: | ---: | ---: | :--- | :--- |
+| F6.1 | 0.82 | 7.28 / 8.10 | 0.0001 | 1.96 [1.73, 2.28] | 0.23 / 0.47 / 0.73 | 0.086 / 0.859 |
+| F6 | 0.34 | 15.12 / 15.46 | 0.018 | 2.98 [2.62, 3.44] | 0.23 / 0.33 / 0.44 | 0.135 / 0.823 |
+
+Repeat sleeps are timed too, though less than first sleeps (F6.1's quiet bank, not yet paid: advantage 1.31 steps,
+real W1 5.41): the general part of the belief's phase (check 1) reaches generation. F6.1's competing explanation (b)
+("repeat sleeps stay untimed") is rejected in its strong form. Late or missing wakes remain the rule in both worlds.
+
+## Check 3: where the late waking comes from (`hazard.py`, `hazard.json`)
+
+Generated energy-rise hazard per asleep step at energy 8, by step relative to the scene's due step (the phase's own rise
+step; on the repeat bank the earliest over the simulator's draws, 4 of 48 scenes having an interrupted draw):
+
+| Bank, world | Before due | At due | 1-3 after | 4+ after | Rank corr., generated vs true rise step | Median generated / true rise step |
+| :--- | ---: | ---: | ---: | ---: | ---: | :--- |
+| Quiet, F6.1 | 0.009 | 0.049 | 0.107 | 0.142 | 0.82 | 11 / 5.1 |
+| Quiet, F6 | 0.038 | 0.072 | 0.043 | 0.085 | 0.28 | 11.75 / 5.1 |
+| Quiet, F5 | 0.030 | 0.050 | 0.047 | 0.053 | 0.34 | 15 / 5.1 |
+| Repeat, F6.1 | 0.017 | 0.049 | 0.080 | 0.134 | 0.61 | 11.25 / 5.1 |
+| Repeat, F6 | 0.029 | 0.049 | 0.038 | 0.063 | 0.48 | 15.5 / 5.1 |
+
+F6.1 is a timed clock with a late, smeared release: it almost never rises early and orders the scenes correctly, but
+releases the rise only about 5% of the time at the due step and 11-14% per step after it (a flat hazard matching the
+mean wait would be 0.16). F5 and F6 are near-flat hazards.
+
+## Check 4: the belief expects the rise the denoiser does not draw (`rollout_belief.py`, `rollout_belief.json`)
+
+Along each world's own rollouts (generation bitwise equal to the queue's run: the known answer holds), the world's own
+asleep-rise probe on the belief predicted before each generated frame, while the draw is still asleep at energy 8
+(step 0, whose belief is the recorded prefix's, excluded); on DEV fold 4 the same probe gives 0.27 at true rises and
+0.07 elsewhere (F6: 0.12 / 0.08).
+
+| Bank, world | Belief P(rise) before / at / 1-3 after / 4+ after due | Drawn rise, same steps |
+| :--- | :--- | :--- |
+| Quiet, F6.1 | 0.050 / 0.613 / 0.838 / 0.763 | 0.010 / 0.052 / 0.107 / 0.142 |
+| Repeat, F6.1 | 0.139 / 0.381 / 0.500 / 0.609 | 0.017 / 0.045 / 0.080 / 0.134 |
+| Quiet, F6 | 0.088 / 0.164 / 0.239 / 0.427 | 0.043 / 0.079 / 0.043 / 0.085 |
+| Repeat, F6 | 0.089 / 0.114 / 0.125 / 0.211 | 0.032 / 0.045 / 0.038 / 0.063 |
+
+**A use failure, as claimed.** F6.1's belief keeps the phase along its own rollouts (a 12-fold rise in expectation at
+the due step, staying high after it), and the denoiser turns that expectation into the digit change at about a tenth
+of its strength. The competing explanation (the belief loses the phase along generated frames) is rejected: the
+expectation rises at the due step in generation as it does on recorded frames.
+
+## Check 6: sampler or learned conditional (`sampler_steps.py`, `sampler_steps.json`; F6.1, quiet bank, same seeds)
+
+| Sampler | Before due | At due | 1-3 after | 4+ after | Rank corr. | Median generated rise step |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| K = 4 (trained recipe) | 0.009 | 0.049 | 0.107 | 0.142 | 0.82 | 11 |
+| K = 8 | 0.015 | 0.064 | 0.139 | 0.154 | 0.82 | 9.5 |
+
+Doubling the evaluations raises the release by about a quarter and leaves it far below the belief's expectation: the
+learned conditional is the main cause, the few-step sampler a minor one.
+
+## Check 5: why the mining stage stopped (`mining_check.py`, `mining_check.json`)
+
+Numerical: the stored frames equal the recorded ones on all 402 pairs; the largest token difference is 0.0408 for
+F6.1 (one pair over the stage's 0.04; median 0.012, 99th percentile 0.032) and 0.0398 for F6 (none over), at token
+magnitudes up to 2.4 where bf16's spacing is 0.016. The stage reran with the pre-check recorded (check 5b, below).

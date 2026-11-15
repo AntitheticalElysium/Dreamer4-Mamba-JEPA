@@ -1,0 +1,103 @@
+{
+ "known_answer_quiet_bank_equals_queue": true,
+ "F6.1": {
+  "dev_fold4": {
+   "mean_p_at_rises": 0.26982834935188293,
+   "mean_p_elsewhere": 0.06812138855457306
+  },
+  "quiet_bank": {
+   "before_due": {
+    "at_risk": 1079,
+    "belief_p_rise": 0.04965283344026122,
+    "drawn_rise": 0.010194624652455977
+   },
+   "at_due": {
+    "at_risk": 212,
+    "belief_p_rise": 0.6127359218333127,
+    "drawn_rise": 0.05188679245283019
+   },
+   "1-3_after": {
+    "at_risk": 635,
+    "belief_p_rise": 0.8376790425908847,
+    "drawn_rise": 0.10708661417322834
+   },
+   "4+_after": {
+    "at_risk": 1127,
+    "belief_p_rise": 0.7630747630729439,
+    "drawn_rise": 0.1419698314108252
+   }
+  },
+  "repeat_sleep_bank": {
+   "before_due": {
+    "at_risk": 1588,
+    "belief_p_rise": 0.13919901640461735,
+    "drawn_rise": 0.01700251889168766
+   },
+   "at_due": {
+    "at_risk": 309,
+    "belief_p_rise": 0.3811952580477813,
+    "drawn_rise": 0.045307443365695796
+   },
+   "1-3_after": {
+    "at_risk": 934,
+    "belief_p_rise": 0.4996345561427489,
+    "drawn_rise": 0.08029978586723768
+   },
+   "4+_after": {
+    "at_risk": 1825,
+    "belief_p_rise": 0.6088419392623313,
+    "drawn_rise": 0.1336986301369863
+   }
+  }
+ },
+ "F6": {
+  "dev_fold4": {
+   "mean_p_at_rises": 0.12354746460914612,
+   "mean_p_elsewhere": 0.08053252846002579
+  },
+  "quiet_bank": {
+   "before_due": {
+    "at_risk": 982,
+    "belief_p_rise": 0.0884673470176487,
+    "drawn_rise": 0.04276985743380855
+   },
+   "at_due": {
+    "at_risk": 177,
+    "belief_p_rise": 0.16438536367005546,
+    "drawn_rise": 0.07909604519774012
+   },
+   "1-3_after": {
+    "at_risk": 560,
+    "belief_p_rise": 0.23922465025846448,
+    "drawn_rise": 0.04285714285714286
+   },
+   "4+_after": {
+    "at_risk": 1935,
+    "belief_p_rise": 0.4269829025525763,
+    "drawn_rise": 0.08527131782945736
+   }
+  },
+  "repeat_sleep_bank": {
+   "before_due": {
+    "at_risk": 1492,
+    "belief_p_rise": 0.08859131171807506,
+    "drawn_rise": 0.03150134048257373
+   },
+   "at_due": {
+    "at_risk": 287,
+    "belief_p_rise": 0.11376954770877386,
+    "drawn_rise": 0.04529616724738676
+   },
+   "1-3_after": {
+    "at_risk": 894,
+    "belief_p_rise": 0.12507659610844232,
+    "drawn_rise": 0.03803131991051454
+   },
+   "4+_after": {
+    "at_risk": 3964,
+    "belief_p_rise": 0.21145463024391056,
+    "drawn_rise": 0.06306760847628658
+   }
+  }
+ }
+}
