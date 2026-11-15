@@ -122,3 +122,25 @@ On the frame where it happens, a clock event is a fifth to a half of what change
 is the same size as the awake energy drop on a frame with a fifth of the change (the map is dimmed and static asleep;
 the HUD is rendered after the sleep tint, so it is not). The earlier "about 1%" was the share over all frames, set by
 rarity, not by the size of the event where it occurs.
+
+## Check 9: the use plateaued by checkpoint 8 (`trend.py`, `trend.json`)
+
+Quiet bank, F6.1: rank correlation 0.26 / 0.61 / 0.81 / 0.82 at checkpoints 3 / 5 / 8 / 10; release at the due step
+0.044 / 0.042 / 0.070 / 0.049. The ordering was learned by checkpoint 8; the due-step release never moved. A longer
+run of this recipe is not expected to fix it.
+
+## Check 10: on clean histories the rise ignores memory; the clean cache suppresses it (`swap.py`, `swap.json`)
+
+32 asleep exact-history pairs (identical last 8 frames; the previous rise 10 vs 8 steps back; branch 0 due at the next
+frame), frozen F6.1, one generated frame, 32 draws per cell, common random numbers:
+
+| Cache context signal | Due (c0 m0) | Delayed (c1 m1) | Current-memory effect | Cached-memory effect |
+| :--- | ---: | ---: | :--- | :--- |
+| 7 (trained) | 0.032 | 0.033 | 0.000 [-0.002, 0.002] | -0.001 [-0.002, 0.000] |
+| 4 (stressed) | 0.272 | 0.266 | +0.003 [0.000, 0.008] | +0.003 [0.000, 0.009] |
+
+At the due step memory has no effect, current or cached; weakening the cache raises digit changes eightfold (+0.24
+[0.15, 0.33]) without timing them. Not recursion, not a cache that hides a memory effect: the learned conditional
+does not use memory at the due step. Free-running timing (rank 0.82) is carried by overdue states: on the quiet bank it
+holds in the 15 scenes with no sleep onset inside the 8-frame cache (0.74; 0.37 in the 17 with one), as the hazard
+ramps after the due step (check 3). The memory route responds only once the belief's signal is large.
