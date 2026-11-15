@@ -147,3 +147,19 @@ denoiser's use of memory. What stands: a stressed cache raises untimed digit cha
 Check 10c rebuilds the pairs with natural histories (sleep onsets 2 steps apart). Free-running timing (rank 0.82) is carried by overdue states: on the quiet bank it
 holds in the 15 scenes with no sleep onset inside the 8-frame cache (0.74; 0.37 in the 17 with one), as the hazard
 ramps after the due step (check 3). The memory route responds only once the belief's signal is large.
+
+## Check 11: F6.1's own tokens feed a slow trace that times the awake clocks (`token_trace.py`, `token_trace.json`)
+
+Per cell, the squared token change filtered at time constants 8 and 32; a shared label-free next-change predictor (no
+episode step); AP at the after_reset clock events (DEV fold 4; digit steady 8 frames, an earlier sleep or intake):
+
+| | Food | Drink | Awake energy |
+| :--- | ---: | ---: | ---: |
+| Traces over the full history | 0.306 | 0.338 | 0.449 |
+| Traces started 8 frames back | 0.050 | 0.067 | 0.034 |
+| Time-and-light reader (gaze test) | 0.213 | 0.241 | 0.043 |
+| F6.1's belief, linear probe (check 1) | 0.052 | 0.072 | 0.044 |
+
+The information is in F6.1's tokens, and a one-step objective uses it once a per-cell recency code exists; it never
+reaches the belief. Codex's fitted luminance write on F6 tokens reached 0.11 / 0.21 / 0.06; the cell's own token change
+is the better generic scalar.
