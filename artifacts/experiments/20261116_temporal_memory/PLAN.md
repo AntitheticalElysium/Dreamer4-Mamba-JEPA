@@ -105,3 +105,6 @@ accumulated (cells are independent in them: equal to one pass up to bf16 roundin
 the digit-only objective on its four cells only; the token cache's memmap shape fixed (NumPy 2 wrote np.int64 into
 the header). Parameters: global arms 2.0-2.4M, per-cell arms 0.15M (one 64-wide stack shared by 81 cells, each with
 its own state). About 1.45 s per update for all seven; seeds 1 and 2 run one after the other.
+Amendment (user 11-16, before any reading): one seed. Compute goes to iteration; the second seed is dropped. The
+readings' "both seeds" clause becomes: seed 1 at 3,000 updates; a difference within 0.1 of its 0.2 bar is reported as
+unresolved, not as a finding (check 18 measured run-to-run spread up to 0.12 on 2,000-update pair reads).
