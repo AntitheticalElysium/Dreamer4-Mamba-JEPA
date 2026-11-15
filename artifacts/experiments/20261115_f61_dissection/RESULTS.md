@@ -163,3 +163,18 @@ episode step); AP at the after_reset clock events (DEV fold 4; digit steady 8 fr
 The information is in F6.1's tokens, and a one-step objective uses it once a per-cell recency code exists; it never
 reaches the belief. Codex's fitted luminance write on F6 tokens reached 0.11 / 0.21 / 0.06; the cell's own token change
 is the better generic scalar.
+
+## Fine-tune: SWAX's stochastic short window on the denoiser (`swax_ft.py`, `swax_ft.json`; 2,000 updates, G1 only)
+
+| | F6.1 | 1,000 updates | 2,000 updates (bar) |
+| :--- | ---: | ---: | ---: |
+| Swap, due / delayed rise (trained cache) | 0.034 / 0.017 | 0.069 / 0.059 | 0.060 / 0.031 (due >= 0.10) |
+| Current-memory effect | +0.012 [0.006, 0.019] | +0.008 [0.003, 0.015] | +0.024 [0.009, 0.042] (> 0.019) |
+| Quiet bank: before / at / 1-3 after / 4+ after due | 0.009 / 0.049 / 0.107 / 0.142 | 0.006 / 0.052 / 0.097 / 0.123 | 0.014 / 0.059 / 0.161 / 0.184 (before <= 0.02) |
+| Rank correlation | 0.82 | 0.78 | 0.81 |
+| Monitor G1 (guard: within 10% of 0.00383) | 0.00383 | 0.00407 | 0.00374 |
+
+**Below the fixed bar.** Memory's effect doubled and the overdue release rose by half, with no early rises and G1
+unharmed, but the release at the due step barely moved (0.049 to 0.059; the bar asked for a due rise of at least 0.10 on
+the swap, reached 0.060). A forced reliance on memory softens the cache shortcut without making the denoiser draw the
+change when it is due.
