@@ -148,3 +148,39 @@ fine-tune, full window). Read with one generated frame on the exact-history pair
 Fixed before results: **access** if at 2,000 updates the drawn due change on the awake energy and food pairs is at
 least 0.10 with due minus delayed above zero (95% lower bound) and a positive trace effect; **incentive** if the due
 change stays below 0.05 with no separation. Anything else is reported as is.
+
+## Checks 13-15: why the denoiser does not draw the awake clocks from the traces (`use_check.py`; user 11-15: "run that check ... why doesn't the denoiser use it? Are there other examples of small pixel changes that are learnt by G1?")
+
+Check 12 gave the denoiser per-cell traces and the drawn due change did not move. Three links separate the causes:
+
+```text
+traces on these pairs carry the timing     check 13 (CPU)
+denoiser's conditional uses them           check 14: its expected change before sampling
+the sampler expresses the conditional      check 14: expected change against drawn rate
+```
+
+- **Check 13 (separable).** Check 11's label-free next-change predictor refitted line for line (its three full-trace
+  APs reproduced to 0.002 before use), scored on both branches of every exact-history pair at the due transition
+  (features through the last given frame, the digit's cell). Also the input's own scale: the due-minus-delayed
+  difference of log(1 + trace) at the cell in units of that feature's spread over training cells. Reading:
+  **separable** when the predictor's due-minus-delayed probability has a pair-bootstrap 95% lower bound above zero
+  (awake energy, food); its due probability is what a denoiser using the traces as well as the predictor could draw.
+- **Check 14 (expect).** The same pairs and four cells as check 12, the physical stage of `model.sample` with its noise
+  (the drawn frames reproduce check 12's reader rates exactly at update 0 and 2,000, asserted), recording the
+  denoiser's prediction at each of the 4 sampler steps. The expected change at the digit's cell is the projection of
+  (prediction - last frame) on the due branch's true change; at the first step (pure noise) it is the denoiser's
+  conditional mean, i.e. its own probability of the change. F6.1 and the trace fine-tune at 2,000. Reading: **learned
+  use** when the fine-tune's first-step due-minus-delayed (own traces) has its 95% lower bound above zero on awake energy
+  or food; then **sampler** if the drawn rate stays below half the first-step expectation; **not learned** otherwise.
+- **Check 15 (catalogue, no bars).** On natural DEV fold-4 frames (128 events per class, 9 frames of history or more),
+  F6.1's first-step expectation and drawn rate at the event's cell, and the drawn change rate (squared token change
+  above 1, check 11's threshold) on 128 eligible frames without the event. Classes: the clock drops (all and
+  after_reset), the asleep rise, recovery, damage, food and drink intake, and every inventory count change with at
+  least 30 events (its cell measured as the HUD cell with the largest mean token change at those events). Each class is
+  tagged by where its cue lies (in the last 8 frames and the action, or older). The trace fine-tune on the same rows
+  with its own and with zeroed traces, and where the traces act (squared change of the first-step prediction per cell
+  group, own minus zeroed). Check 13's predictor scores each clock row, so the denoiser's expectation sits beside the
+  probability the traces allow.
+
+Bounds: one seed, one fine-tune length (2,000 updates; the map's norm was still growing linearly at the end), linear
+projection probes of a token change, simulator labels for selection only.
