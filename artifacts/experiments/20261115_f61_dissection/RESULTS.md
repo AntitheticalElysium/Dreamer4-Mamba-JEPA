@@ -178,3 +178,29 @@ is the better generic scalar.
 unharmed, but the release at the due step barely moved (0.049 to 0.059; the bar asked for a due rise of at least 0.10 on
 the swap, reached 0.060). A forced reliance on memory softens the cache shortcut without making the denoiser draw the
 change when it is due.
+
+## Check 12: access or incentive? (`traces_ft.py`, `traces_ft.json`; instrument check `traces_check.py`)
+
+Per-cell recency traces (check 11's, tau 8 / 32) as a zero-initialised input to each periphery cell's denoiser token;
+denoiser fine-tuned on G1 alone from F6.1, 2,000 updates. One generated frame on the exact-history pairs; due / delayed
+are each branch's own memory and traces (32 draws per pair).
+
+| Bank | update 0 (= F6.1) | 1,000 | 2,000 | Trace effect at 2,000 | Memory effect at 2,000 |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| Awake energy (32) | 0.007 / 0.007 | 0.003 / 0.003 | 0.002 / 0.003 | -0.001 [-0.003, 0.000] | 0.000 |
+| Food (24) | 0.089 / 0.089 | 0.076 / 0.074 | 0.064 / 0.064 | 0.000 [0.000, 0.000] | 0.000 |
+| Recovery (32) | 0.643 / 0.000 | 0.490 / 0.000 | 0.662 / 0.000 | -0.001 [-0.003, 0.000] | +0.664 [0.530, 0.788] |
+| Asleep onset (32) | 0.034 / 0.017 | 0.075 / 0.074 | 0.016 / 0.012 | +0.000 [-0.001, 0.003] | +0.003 [0.000, 0.007] (was +0.018) |
+
+G1 0.00372 at 2,000 (SWAX fine-tune 0.00374); the map's weight norm grew steadily to 0.25.
+
+**Incentive, not access.** Awake energy stays below 0.05 with no separation. Food draws at a rate that is timing-blind
+(0.064 in both branches and in both exchanges, above 0.05, so "as is" under the bar). The trace effect is zero on every
+bank, and on the asleep onset the drawn rise and memory's share both fell (memory +0.018 to +0.003).
+
+Instrument check (`traces_check.py`, denoiser at 2,000): the branches' traces do differ at the HUD cell (mean due
+minus delayed at tau 8 / 32: energy -0.011 / -0.009, food -0.019 / -0.009, recovery -0.23 / -0.11, asleep onset
+-0.14 / -0.02). After the trained map, that difference is 14% (energy), 23% (food), 58% (recovery) and 27% (asleep)
+of the cell's trace input. The evidence reached the denoiser's input, and G1 did not teach it to draw timing from it
+in 2,000 updates. Bounds: one seed; a fine-tune from F6.1's denoiser (its learned conditional may resist a new input);
+whether the trace difference on these pairs is itself separable was not read (check 11 read natural rows).
