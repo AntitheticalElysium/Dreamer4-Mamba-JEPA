@@ -157,7 +157,7 @@ def run():
                               "cached_memory_effect": ci((g(0, 0) + g(0, 1) - g(1, 0) - g(1, 1)) / 2)}
     res["stress_effect_on_due"] = ci(rate["c0m0s4"] - rate["c0m0s7"])
     res["per_pair"] = rows
-    (HERE / "swap.json").write_text(json.dumps(res, indent=1) + "\n")
+    (HERE / "swap_onset.json").write_text(json.dumps(res, indent=1) + "\n")
     print(json.dumps({k: v for k, v in res.items() if k != "per_pair"}, indent=1), flush=True)
 
 
