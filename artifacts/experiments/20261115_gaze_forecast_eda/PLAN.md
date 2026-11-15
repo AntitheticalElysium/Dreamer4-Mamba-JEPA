@@ -49,3 +49,38 @@ frame), on 4/5 of DEV episodes, soft cross-entropy; read on the held-out fifth i
 and by moved / still and day / night. Share = the four pixel clocks' summed price (as measured) over that held-out KL.
 Pass at 10%, as before. Its own limit: the forecaster's capacity bounds how much of the predictable change it removes,
 so the share it gives is a lower bound on the share a better memoryless forecaster would leave.
+
+## Oracle phase (proposed by Codex 11-15; run on CPU with the user's go for CPU tests)
+
+The fair share's numerator is the flip's effect on the eye (the same frame with the digit reverted, rerun through the
+chooser), not what remembering the clock would save a forecaster; a better memoryless forecaster could even raise the
+ratio while lowering memory's value (Codex). This measures memory's value directly.
+
+- **Claim.** Knowing the clocks' phase, which a belief with memory could carry, lowers the gaze-forecast loss beyond the
+  8-frame forecaster by a large part of the first-order price.
+- **Competing explanations.** (a) How far a flip pulls the eye depends on the rest of the frame, so knowing *when*
+  buys little of the price; (b) the last 8 frames already carry the predictable part (a flip seen recently means none
+  is due); (c) the gain is "look at the digit more often", not timing.
+- **Separating control (`oracle.py`).** fair.py's forecaster, same chooser, inputs, capacity, episode split, budget and
+  batch order, with one extra input: the simulator's four hidden counters (hunger, thirst, fatigue, recover) at frame
+  t - 1, one-hot over their exact values, from the exact replay (`../20261107_f4_followups/readings/counters_dev.npz`,
+  checked equal to the labels at every state). Known answer, checked before this plan: the counters at t - 1 decide
+  each clock event at t (agreement 99.97% food and drink, 100% both energy clocks). Arm *true* against arm *shuffled*:
+  the counter vectors permuted within (split, asleep at t - 1). Per counter: the true arm with only that counter
+  shuffled the same way at test time. The counters are an evaluation device only.
+
+### Readings (fixed before results)
+
+1. **Primary: recovered fraction** R = the pixel counters' memory value (held-out KL increase when hunger, thirst or
+   fatigue alone is shuffled, summed, per held-out frame) over the four pixel clocks' first-order price per frame
+   (`fair.json`, the same held-out frames). R >= 0.5: the price is mostly memory value, and the next question is the
+   dose into Mamba (a GPU measurement, after F6.1). R < 0.25: drop this target. In between: reported, for the user.
+2. Per clock: the gain at event frames, at eligible frames without an event (a head that only looks at the digit more
+   often loses there), at ineligible frames; R per counter (fatigue against both energy clocks' prices).
+3. Total: shuffled-arm against true-arm held-out KL (all, moved / still, day / night); the shuffled arm against
+   fair.py's 0.314 (expected within a few percent).
+4. Memory share: the pixel counters' value over the shuffled arm's KL (the like-for-like replacement for the 9.3%,
+   for the user's judgement; no bar). Recover, the reward-priced reference, in the same currency.
+
+Bounded: F6's frozen final chooser; the oracle forecaster's capacity and 4-epoch budget (it bounds what a forecaster
+of this size extracts from exact phase, not what Mamba would learn); no gradient into any model.
