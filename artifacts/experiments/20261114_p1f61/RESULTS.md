@@ -20,9 +20,10 @@ pair by 0.0008 (numerical; the stage reran in the dissection with the check reco
    rejected in its strong form, though the forecast heads themselves use the phase only before WAKE_UP has paid.
 3. **The lateness is a use failure in the denoiser** (checks 3, 4, 6). The world orders the scenes correctly (rank
    correlation of drawn and true rise steps 0.82, F6 0.28) and almost never rises early, but releases the rise about
-   5% of the time at the due step and 11-14% per step after it. Along its own rollouts the belief expects the rise at
-   the due step (probability 0.61, 0.05 before it). Doubling the sampler's evaluations lifts the release only by a
-   quarter.
+   5% of the time at the due step and 11-14% per step after it. Along its own rollouts the belief's phase readout rises
+   12-fold at the due step (not a calibrated probability, Codex), so the belief keeps the phase in generation; where
+   the delay enters between belief and frame is not yet located. The use lagged the belief (ordering 0.26 at
+   checkpoint 3, 0.82 at 10). Doubling the sampler's evaluations lifts the release only by a quarter.
 4. **The predicted negatives hold:** food, drink and awake-energy drops stay at their base rates from the belief, add
    nothing beyond elapsed time and lighting (check 1), and the hunger and energy pairs are drawn untimed.
 5. **The reward-priced clocks improve:** recovery read from the belief 0.71 (F6 0.59), drawn due / not due 0.643 /
@@ -120,8 +121,9 @@ that differ in more than this, one seed each: a consistent trend, not an establi
    frame beyond time and light) and weakly on repeat sleeps (0.23 against 0.12; on 8 constant asleep frames +0.011
    nats, F6 none). Awake pixel clocks: nothing beyond time and light in either world.
 2. Check 2: repeat sleeps timed in generation (section 1).
-3. Checks 3, 4, 6: a timed clock with a late, smeared release; the belief expects the rise (0.61 at the due step along
-   its own rollouts, 0.38 on repeat sleeps) that the denoiser draws at 0.05; the learned conditional, not the sampler.
+3. Checks 3, 4, 6, 7: a timed clock with a late, smeared release; the belief's phase readout rises at the due step
+   along its own rollouts while the drawn rise there stays 0.05; the use was learned late (checkpoint 3 to 10); the
+   sampler is a minor factor.
 4. Check 5: the mining pre-check failure is bf16 arithmetic (frames identical on all 402 pairs).
 
 ## 8. What this does not establish
@@ -137,8 +139,9 @@ that differ in more than this, one seed each: a consistent trend, not an establi
 - **A request built a pixel clock in the belief, and the world drew it in order but late.** This is the first pixel
   clock to form, and only where a loss priced it (the reward forecast before WAKE_UP pays), with a weaker general part
   that also times repeat sleeps.
-- **The binding link for that clock is now the denoiser's use of the belief**, not the belief: 0.61 expected against
-  0.05 drawn at the due step. Any request that teaches the belief another clock (the gaze forecast included) should be
+- **The binding link for that clock is now between the belief and the drawn frame**: the phase is readable in the
+  world's own beliefs, the drawn rise at the due step is 0.05, and whether the denoiser's memory path, its cache or
+  recursion holds it back is the next test's question. Any request that teaches the belief another clock (the gaze forecast included) should be
   expected to hit the same wall for single-cell HUD changes unless the denoiser's conditional is addressed.
 - **The encoder's ownership needs a decision before more reward pressure is added:** the reward heads now send 45x
   TSP's gradient into the encoder, alongside falling token rank and coal / iron since F4.

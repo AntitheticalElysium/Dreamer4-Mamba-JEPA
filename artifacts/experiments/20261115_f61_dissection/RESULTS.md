@@ -66,10 +66,13 @@ asleep-rise probe on the belief predicted before each generated frame, while the
 | Quiet, F6 | 0.088 / 0.164 / 0.239 / 0.427 | 0.043 / 0.079 / 0.043 / 0.085 |
 | Repeat, F6 | 0.089 / 0.114 / 0.125 / 0.211 | 0.032 / 0.045 / 0.038 / 0.063 |
 
-**A use failure, as claimed.** F6.1's belief keeps the phase along its own rollouts (a 12-fold rise in expectation at
-the due step, staying high after it), and the denoiser turns that expectation into the digit change at about a tenth
-of its strength. The competing explanation (the belief loses the phase along generated frames) is rejected: the
-expectation rises at the due step in generation as it does on recorded frames.
+**The phase stays readable in the world's own beliefs; where the delay enters is not located.** The probe's score
+rises 12-fold at the due step along F6.1's rollouts and stays high after it, so the competing explanation (the belief
+loses the phase along generated frames) is rejected. The probe's sigmoid is not a calibrated event probability (Codex,
+NOTEBOOK 11-15: on the draws that actually rise at the due step its AP is 0.062 / 0.067 against base rates 0.052 /
+0.042), so "the belief expects 0.61, the denoiser draws 0.05" (my first wording) overstated it: the reading shows a
+due-or-overdue signal reaching generation, and that, at the due step, which draws rise barely depends on it. Whether
+the denoiser's memory path, its cache or recursion holds the release back is the next test's question.
 
 ## Check 6: sampler or learned conditional (`sampler_steps.py`, `sampler_steps.json`; F6.1, quiet bank, same seeds)
 
@@ -91,3 +94,31 @@ magnitudes up to 2.4 where bf16's spacing is 0.016. The stage reran with the pre
 0.067, NOOP/DO 0.019, DO/NOOP 0.001 (F6 0.090 / 0.013 / 0.000, F5 0.055 / 0.002 / 0.001); wood 0.954 / 0.693 / 0.040
 (F6 0.938 / 0.249 / 0.018). Coal's increment is rarely drawn in every world since F5; for wood, F6.1's denoiser draws
 the increment from the DO member's belief even under a NOOP action (0.69 against F6's 0.25).
+
+## Check 7: the use lags the belief (check 3's reader on the checkpoint-3 rollouts)
+
+| Quiet bank | Before / at / 1-3 after / 4+ after due | Rank corr. | No rise in 48 steps |
+| :--- | :--- | ---: | ---: |
+| F6.1 ckpt 3 (belief AP 0.363) | 0.019 / 0.044 / 0.040 / 0.062 | 0.26 | 0.230 |
+| F6.1 ckpt 10 (belief AP 0.471) | 0.009 / 0.049 / 0.107 / 0.142 | 0.82 | 0.016 |
+| F6 ckpt 3 | 0.002 / 0.008 / 0.007 / 0.008 | 0.04 | 0.730 |
+| F6 ckpt 10 | 0.038 / 0.072 / 0.043 / 0.085 | 0.28 | 0.023 |
+
+The world learned to use the belief's phase between checkpoints 3 and 10 (ordering 0.26 to 0.82, the overdue release
+doubling) while the belief's own AP rose only 0.36 to 0.47: the use lags, as recovery's did. The release at the due
+step itself did not move (0.044 to 0.049).
+
+## Check 8: each event's size in the denoiser's currency (`token_share.py`, `token_share.json`; F6.1 tokens, DEV fold 4)
+
+| Event | Frames | Squared token change at the digit's cell | Whole frame | Cell's share of the frame |
+| :--- | ---: | ---: | ---: | ---: |
+| Asleep energy rise | 842 | 6.67 | 29.9 | 0.46 |
+| Awake energy drop | 1,252 | 6.91 | 149.5 | 0.19 |
+| Food drop | 1,580 | 8.72 | 150.4 | 0.21 |
+| Drink drop | 1,837 | 11.45 | 150.1 | 0.24 |
+| Recovery (+1 health) | 703 | 23.07 | 179.4 | 0.25 |
+
+On the frame where it happens, a clock event is a fifth to a half of what changes in G1's token target; the asleep rise
+is the same size as the awake energy drop on a frame with a fifth of the change (the map is dimmed and static asleep;
+the HUD is rendered after the sleep tint, so it is not). The earlier "about 1%" was the share over all frames, set by
+rarity, not by the size of the event where it occurs.
