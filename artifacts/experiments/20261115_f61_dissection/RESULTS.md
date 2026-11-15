@@ -313,3 +313,60 @@ spread: the shared map learned to use them where changes are frequent and the lo
 natural frames at 4-8 times F6.1's rate with fewer false alarms (check 16, 16b). The denoiser does not lack an
 incentive; it lacked a readable input. What remains: the drawn rates sit far below the cues' hazards and were still
 rising; one seed; a fine-tune from F6.1; the recency is hand-made (label-free and per cell, but not learned).
+
+## Check 17: the schedule shift does not explain the pairs (`schedule_pairs.py`, `schedule_pairs.json`)
+
+Drawn due / delayed on the old pairs and on pairs whose due branch is unedited (its drop on the episode's schedule),
+same frames since the last change (energy 30 / 22, food 25 / 17):
+
+| Pairs | Due at episode step | F6.1 | Recency 2,000 (check 16) | 4,000 (check 18) | 6,000 |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| Energy, old | 51 | 0.007 / 0.007 | 0.008 / 0.000 | 0.704 / 0.000 | 0.793 / 0.000 |
+| Energy, on schedule | 62 | 0.017 / 0.016 | 0.028 / 0.000 | 0.958 / 0.000 | 0.982 / 0.000 |
+| Food, old | 46 | 0.089 / 0.089 | 0.130 / 0.000 | 0.930 / 0.000 | 0.995 / 0.008 |
+| Food, on schedule | 52 | 0.075 / 0.074 | 0.107 / 0.000 | 0.942 / 0.000 | 0.996 / 0.008 |
+
+**Not a schedule conflict** (fixed bar: F6.1's on-schedule energy rate 0.017 < 0.05, due minus delayed 0.001 [0.000,
+0.003]). F6.1 is untimed on both kinds of pair; its higher rate on natural early-episode drops (0.135 before a first
+sleep, mostly the 9 -> 8 drop at step 31) is not reproduced on pairs and was not traced further. The recency fine-tune
+draws the on-schedule energy pairs somewhat more (0.958 against 0.704 at 4,000). Memory's effect is 0.000 on every
+bank and checkpoint: these clocks are drawn from the recency input, not from Mamba's memory. The old pairs' low reading
+at 2,000 was the learning stage and run-to-run variation (check 18).
+
+## Check 18: still learning, to most of the cue (`recency_long.py`, `recency_long.json`, `recency_long_catalogue.json`)
+
+Check 16 rerun to 6,000 updates. Its 2,000 read is a second run (kernel nondeterminism only; update 0 reproduces
+exactly) and differs from check 16's by up to 0.124: energy 0.132 against 0.008, food 0.086 against 0.130, asleep
+onset 0.004 against 0.041. A single run's pair read at an intermediate stage is not a reliable level; the direction
+(delayed at 0, positive recency effect on energy and food) held in both.
+
+| Pairs (due / delayed) | F6.1 | 2,000 (run 2) | 4,000 | 6,000 |
+| :--- | ---: | ---: | ---: | ---: |
+| Awake energy | 0.007 / 0.007 | 0.132 / 0.000 | 0.704 / 0.000 | 0.793 / 0.000 |
+| Food | 0.089 / 0.089 | 0.086 / 0.000 | 0.930 / 0.000 | 0.995 / 0.008 |
+| Recovery | 0.643 / 0.000 | 0.705 / 0.000 | 0.722 / 0.000 | 0.775 / 0.000 |
+| Asleep onset | 0.034 / 0.017 | 0.004 / 0.000 | 0.370 / 0.080 | 0.588 / 0.067 |
+
+G1 0.00387 / 0.00361 / 0.00349 / 0.00345 / 0.00334 / 0.00324 at 1,000-6,000 (F6.1's monitor 0.00383).
+
+Natural frames at 6,000 (check 15's rows and seeds), drawn at the event [95%] (quiet frames):
+
+| Class | F6.1 | Recency 2,000 (check 16b) | Recency 6,000 | Same, recency zeroed |
+| :--- | ---: | ---: | ---: | ---: |
+| Awake energy drop | 0.032 (0.011) | 0.222 (0.001) | 0.797 [0.739, 0.852] (0.001) | 0.011 |
+| after_reset | 0.006 | 0.211 | 0.913 [0.879, 0.942] (0.000) | |
+| Drink drop | 0.034 (0.047) | 0.274 (0.020) | 0.560 [0.490, 0.627] (0.026) | 0.015 |
+| Food drop | 0.042 (0.025) | 0.114 (0.014) | 0.601 [0.534, 0.665] (0.029) | 0.040 |
+| Asleep rise | 0.056 (0.030) | 0.046 (0.009) | 0.403 [0.354, 0.451] (0.029) | 0.241 |
+| Recovery | 0.472 | 0.395 | 0.478 | 0.412 |
+| Damage | 0.641 | 0.624 | 0.672 | 0.656 |
+| Drink +1 / stone +1 | 0.526 / 0.613 | 0.577 / 0.584 | 0.858 / 0.854 | 0.667 / 0.738 |
+| Coal +1 / iron +1 | 0.199 / 0.117 | 0.194 / 0.101 | 0.668 / 0.457 | 0.418 / 0.322 |
+
+**Still learning** (fixed bar: awake energy +0.575 over check 16b's 0.222; drink +0.29, food +0.49). With a readable
+per-cell recency and G1 alone (denoiser only; encoder and belief frozen), the denoiser draws the awake clocks on time
+at 0.56-0.80 on natural frames (0.91 after a reset) and the sleep rise at 0.40, with false alarms at or below 0.03,
+and no class lost ground. Zeroing the recency puts the clocks back at F6.1's level, so they come from it; the
+action-cued gains (coal 0.20 to 0.67, iron 0.12 to 0.46) are partly there with it zeroed (0.42 / 0.32), so part of them
+is the extra G1-only denoiser training itself. Separating that needs a plain G1 fine-tune of the same length (not run;
+zeroed recency is an off-distribution input, not that control).
