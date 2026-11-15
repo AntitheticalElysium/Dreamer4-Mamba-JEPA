@@ -86,3 +86,8 @@ learned conditional is the main cause, the few-step sampler a minor one.
 Numerical: the stored frames equal the recorded ones on all 402 pairs; the largest token difference is 0.0408 for
 F6.1 (one pair over the stage's 0.04; median 0.012, 99th percentile 0.032) and 0.0398 for F6 (none over), at token
 magnitudes up to 2.4 where bf16's spacing is 0.016. The stage reran with the pre-check recorded (check 5b, below).
+
+**Check 5b** (`mining_rerun.py`, `mining_rerun.json`; the stage's own code with the pre-check recorded): coal DO/DO
+0.067, NOOP/DO 0.019, DO/NOOP 0.001 (F6 0.090 / 0.013 / 0.000, F5 0.055 / 0.002 / 0.001); wood 0.954 / 0.693 / 0.040
+(F6 0.938 / 0.249 / 0.018). Coal's increment is rarely drawn in every world since F5; for wood, F6.1's denoiser draws
+the increment from the DO member's belief even under a NOOP action (0.69 against F6's 0.25).
