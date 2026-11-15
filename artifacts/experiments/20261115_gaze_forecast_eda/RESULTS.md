@@ -102,6 +102,6 @@ with and without) was measured for the reward forecast on the same DEV fifth (`.
 recovery 0.068 nats per frame at distance 1; fatigue 0.006-0.009 at distances 2-8; hunger and thirst at most 0.0017.
 Per pixel clock the gaze currency's memory value (0.004-0.006) is therefore about F6.1's multi-distance offer for
 fatigue, which formed the asleep-rise trace by its checkpoint 3 (belief AP 0.363 against F6's 0.214; phase test
-p = 0.0002 before WAKE_UP has paid, none after), and 3-25 times what any reward distance offers for hunger or thirst;
-it is about a tenth of what recovery had when it was learned. Loss values, not gradients into Mamba: the dose into
+p = 0.0002 before WAKE_UP has paid, none after), and 2.5-25 times what any reward distance offers for hunger or thirst;
+it is a tenth to a fifteenth of what recovery had when it was learned. Loss values, not gradients into Mamba: the dose into
 Mamba is not measured (GPU).
