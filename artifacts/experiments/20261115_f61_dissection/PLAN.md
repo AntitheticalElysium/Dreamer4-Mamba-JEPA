@@ -113,3 +113,19 @@ random numbers: cached memory from branch c, current memory from branch m, cache
 stressed (4). Readings: native due minus delayed; the current- and cached-memory effects; the stress effect on the due
 cell. Rise follows memory on clean prefixes -> the free-running delay is recursion; only under stress -> the cache
 holds it back; neither -> a weak learned conditional.
+
+## Check 10c result and the fine-tune (`swax_ft.py`; user 11-15: run it, no control)
+
+10c (natural onsets 2-3 steps apart, `swap_onset.json`, `swap_belief_onset.json`): the belief separates the branches
+(logit +1.30 [0.47, 2.25], 25 / 32 pairs); the drawn rise follows memory weakly (due 0.034 against delayed 0.017;
+current-memory effect +0.012 [0.006, 0.019], cached +0.006 [0.001, 0.012]); a stressed cache raises it 2.6x and doubles
+the memory effect (due 0.089, delayed 0.043). A soft cache shortcut: the clean local context outweighs memory.
+
+Fine-tune: SWAX's stochastic short window (Cabannes et al. 2025, section 4.4: the short window per batch with p = 0.5,
+none in the last 10% of training, evaluated at the long window; long windows leave the recurrent memory
+under-trained). Ours: from F6.1 checkpoint 10, the denoiser alone on G1 alone, 2,000 updates (F6.1's streams, carry,
+cache; AdamW 1e-4, 100 warm-up, clip 1; as learnable.g1_arm with the belief frozen), temporal window 0 with p = 0.5
+before update 1,800, else 4. Fixed before results: memory use is improved if, at 2,000 updates, the swap's native due
+rise (trained cache) is at least 3x F6.1's (>= 0.10) with a current-memory effect above F6.1's interval (> 0.019), and
+the quiet bank's due-step release rises without the before-due rate exceeding 0.02; the monitor's G1 within 10% of
+F6.1's 0.00383 (guard).

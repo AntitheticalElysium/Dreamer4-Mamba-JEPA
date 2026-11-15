@@ -139,8 +139,8 @@ def cell_rises(model, cfg, row, i, reader):
     return out
 
 
-def run():
-    model, cfg = DS.NP.IF.load(CKPT)
+def run(ckpt=CKPT, out="swap_onset.json"):
+    model, cfg = DS.NP.IF.load(ckpt)
     assert cfg["edm"]["shortcut"]["context_signal"] == 7
     reader = TJ.readers(model, cfg, slots=(66,))[66][0]
     bank = torch.load(BANK, map_location="cpu", weights_only=False)
@@ -149,7 +149,7 @@ def run():
     rate = {k: np.array([r[k] for r in rows]) for k in keys}
     ix = np.random.default_rng(1111).integers(len(rows), size=(10000, len(rows)))
     ci = lambda d: [float(d.mean()), *np.quantile(d[ix].mean(1), [.025, .975]).tolist()]
-    res = {"pairs": len(rows), "draws": DS.DRAWS, "checkpoint_sha256": TR.file_sha256(CKPT), "rate": {k: float(v.mean()) for k, v in rate.items()}}
+    res = {"pairs": len(rows), "draws": DS.DRAWS, "checkpoint_sha256": TR.file_sha256(ckpt), "rate": {k: float(v.mean()) for k, v in rate.items()}}
     for s in (7, 4):
         g = lambda c, m: rate[f"c{c}m{m}s{s}"]
         res[f"signal_{s}"] = {"native_due_minus_delayed": ci(g(0, 0) - g(1, 1)),
@@ -157,7 +157,7 @@ def run():
                               "cached_memory_effect": ci((g(0, 0) + g(0, 1) - g(1, 0) - g(1, 1)) / 2)}
     res["stress_effect_on_due"] = ci(rate["c0m0s4"] - rate["c0m0s7"])
     res["per_pair"] = rows
-    (HERE / "swap_onset.json").write_text(json.dumps(res, indent=1) + "\n")
+    (HERE / out).write_text(json.dumps(res, indent=1) + "\n")
     print(json.dumps({k: v for k, v in res.items() if k != "per_pair"}, indent=1), flush=True)
 
 
