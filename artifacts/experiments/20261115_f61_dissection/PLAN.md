@@ -199,3 +199,9 @@ Fixed before results: **form** if at 2,000 updates the drawn due change on the a
 reading); **incentive** if the due change stays below 0.05 with no separation and the first-step expectation shows no
 separation either. Anything else is reported as is. A learned use at the first step that the drawn rate does not show
 is the sampler, reported beside it.
+
+**Check 16b** (`recency_catalogue.py`, added after check 16's 1,000-update read: recency used for food, not yet for
+awake energy, on the stand-still pairs): check 15's natural-frame catalogue on the recency fine-tune at 2,000, own
+against zeroed recency, same rows and seeds; no bars. Also from the labels (DEV, awake): the probability that the digit
+drops at the next frame given frames since its last change peaks at 0.96 for awake energy (30 frames, 97% of drops),
+0.83 for drink (20) and 0.73 for food (25), so the readable cue is sharpest for the clock not yet used.
