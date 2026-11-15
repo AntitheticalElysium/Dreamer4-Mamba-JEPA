@@ -129,3 +129,11 @@ before update 1,800, else 4. Fixed before results: memory use is improved if, at
 rise (trained cache) is at least 3x F6.1's (>= 0.10) with a current-memory effect above F6.1's interval (> 0.019), and
 the quiet bank's due-step release rises without the before-due rate exceeding 0.02; the monitor's G1 within 10% of
 F6.1's 0.00383 (guard).
+
+## Check 11: can F6.1's own tokens feed a generic slow trace? (`token_trace.py`, CPU)
+
+Codex's analytic traces time the awake clocks from coarse pixels (post-sleep AP 0.42 / 0.39 / 0.44) but weakly from
+F6's tokens through a fitted scalar (0.11 / 0.21 / 0.06). Here the per-cell scalar is the cell's own squared token
+change (F6.1), two time constants (8, 32), a shared label-free next-change predictor; AP at the after_reset clock
+events of DEV fold 4, full-prefix traces against traces started 8 frames back. High full and low short: our tokens
+carry what a slow trace needs.
