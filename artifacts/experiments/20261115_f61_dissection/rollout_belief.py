@@ -80,7 +80,7 @@ def read():
                     zz = (bel[i * h + s][:m * k] - p["mu"]) / p["sd"]
                     prob[start:start + m, :, s + 1] = torch.sigmoid(zz @ p["w"][:-1] + p["w"][-1]).reshape(m, k).numpy()
             prob = prob[:, :, :h]
-            dd = HZ.first(b[..., 0] >= 9, h)[:, 0]
+            dd = HZ.first(b[..., 0] >= 9, h).min(1)                       # the phase's own rise step (hazard.py)
             live = a[..., 3].astype(bool) & ~a[..., 2].astype(bool)
             at8 = np.ones(a.shape[:3], bool)
             at8[:, :, 1:] = np.cumprod(live[:, :, :-1] & (a[:, :, :-1, 0] < 9) & (a[:, :, :-1, 1] > .5), 2).astype(bool)

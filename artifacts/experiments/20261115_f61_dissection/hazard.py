@@ -27,16 +27,16 @@ def first(mask, h):
 def read(path):
     z = torch.load(path, map_location="cpu", weights_only=False)
     a, b, h = z["generated"], z["truth"], z["H"]
-    d = first(b[..., 0] >= 9, h)                                       # [scenes, draws]
-    assert (d == d[:, :1]).all(), "the simulator's rise step should not vary across draws"
-    d = d[:, 0]
+    d_all = first(b[..., 0] >= 9, h)                                   # [scenes, draws]
+    varying = int((d_all != d_all[:, :1]).any(1).sum())                # a draw interrupted before its rise (e.g. woken)
+    d = d_all.min(1)                                                   # the phase's own rise step: the earliest
     live = a[..., 3].astype(bool) & ~a[..., 2].astype(bool)
     g = first(live & (a[..., 0] >= 9), h)                              # first generated energy 9
     at8 = np.ones(a.shape[:3], bool)                                   # still at 8 before step k (the source is at 8)
     at8[:, :, 1:] = np.cumprod(live[:, :, :-1] & (a[:, :, :-1, 0] < 9) & (a[:, :, :-1, 1] > .5), 2).astype(bool)
     rise = live & (a[..., 0] >= 9)
     rel = np.arange(h)[None, None] - d[:, None, None]
-    out = {"scenes": len(d), "draws": int(a.shape[1]), "true_rise_step_mean": float(d.mean()),
+    out = {"scenes": len(d), "draws": int(a.shape[1]), "scenes_with_varying_simulator_rise": varying, "true_rise_step_mean": float(d.mean()),
            "generated_rise_step_median_of_scene_medians": float(np.median(np.median(np.minimum(g, h + 1), 1))),
            "hazard_per_step_at_8": float(rise[at8].mean()),
            "needed_flat_hazard": float(1 / (d.mean() + 1)),
