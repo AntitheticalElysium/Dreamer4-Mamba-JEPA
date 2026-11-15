@@ -194,16 +194,17 @@ are each branch's own memory and traces (32 draws per pair).
 
 G1 0.00372 at 2,000 (SWAX fine-tune 0.00374); the map's weight norm grew steadily to 0.25.
 
-**Incentive, not access.** Awake energy stays below 0.05 with no separation. Food draws at a rate that is timing-blind
-(0.064 in both branches and in both exchanges, above 0.05, so "as is" under the bar). The trace effect is zero on every
-bank, and on the asleep onset the drawn rise and memory's share both fell (memory +0.018 to +0.003).
+**The "incentive" reading of the bar does not stand: checks 13-16 show the null was the input's form.** Awake energy
+stays below 0.05 with no separation. Food draws at a rate that is timing-blind (0.064 in both branches and in both
+exchanges, above 0.05, so "as is" under the bar). The trace effect is zero on every bank, and on the asleep onset the
+drawn rise and memory's share both fell (memory +0.018 to +0.003). The traces do separate these pairs (check 13), and
+the same fine-tune with each cell's exact recency in their place learns the timing (checks 16, 16b).
 
 Instrument check (`traces_check.py`, denoiser at 2,000): the branches' traces do differ at the HUD cell (mean due
 minus delayed at tau 8 / 32: energy -0.011 / -0.009, food -0.019 / -0.009, recovery -0.23 / -0.11, asleep onset
 -0.14 / -0.02). After the trained map, that difference is 14% (energy), 23% (food), 58% (recovery) and 27% (asleep)
 of the cell's trace input. The evidence reached the denoiser's input, and G1 did not teach it to draw timing from it
-in 2,000 updates. Bounds: one seed; a fine-tune from F6.1's denoiser (its learned conditional may resist a new input);
-whether the trace difference on these pairs is itself separable was not read (check 11 read natural rows).
+in 2,000 updates. Bounds: one seed; a fine-tune from F6.1's denoiser (its learned conditional may resist a new input).
 
 ## Check 13: the traces separate the pairs (`use_check.py separable`, `separable.json`)
 
