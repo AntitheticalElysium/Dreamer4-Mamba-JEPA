@@ -62,11 +62,46 @@ the same held-out frames (they match the GPU run within a few percent).
 - **What a memoryless forecaster still misses: KL 0.314 nats per frame**, against 0.739 for copying the previous
   frame's distribution on the same frames (moved 0.375, still 0.281, day 0.376, night 0.186). It removes 57% of what
   copying misses.
-- **Pixel-clock share: 9.3%** of that remainder (food 2.7%, drink 2.9%, awake energy 1.7%, asleep energy rise 2.0%;
-  recovery 2.5%), against 3.9% with the copy denominator on the same frames. **Just under the 10% bar, and a lower
-  bound:** a better memoryless forecaster (larger, trained to convergence) would leave less, raising the share.
+- **Pixel-clock ratio: 9.3%** of that remainder (food 2.7%, drink 2.9%, awake energy 1.7%, asleep energy rise 2.0%;
+  recovery 2.5%), against 3.9% with the copy denominator on the same frames.
 - The forecaster does not anticipate the events: its KL at event frames is 0.37-0.47, above its 0.31 mean.
 
-Reading: by the letter of the fixed bar this target still fails (9.3% < 10%), but the corrected share is five to twenty
-times the 0.4-1.8% of the earlier currencies, the bar was set to demand an order-of-magnitude jump rather than from a
-known learning threshold, and the instrument bounds the share from below. Left to the user's judgement.
+Reading: the denominator is now like-for-like, but the numerator is not memory's value (Codex, 11-15). It is how far
+the flip moves the eye (the same frame with the digit reverted, rerun through the chooser), not how much forecast error
+knowing the clock's phase would remove. So the 9.3% is neither a share of memory-learnable signal nor a lower bound on
+one: a better memoryless forecaster that anticipated some flips would raise the ratio while lowering memory's value.
+The 9.3%-vs-10% comparison is therefore beside the point; memory's value is measured directly below.
+
+## Oracle phase (`oracle.py`, `oracle.json`; Codex's test, run 11-15 on CPU)
+
+fair.py's forecaster with the simulator's exact hidden counters at t - 1 as an extra input, true against shuffled
+within (split, asleep); same chooser, inputs, capacity, split, budget and batch order. Known answer held (the counters
+decide each event: 99.97% food and drink, 100% both energy clocks). The shuffled arm reproduces fair.py (held-out KL
+0.3128 against 0.3140).
+
+- **Knowing the phase helps, and at the events.** Held-out KL 0.3128 -> 0.2917 nats per frame (gain 0.021, 6.7%;
+  still 0.028 against moved 0.008, day 0.028 against night 0.007). The gap was still growing at the last epoch
+  (training cross-entropy gap 0.008, 0.015, 0.018, 0.021 over the four epochs).
+- **Per flip, about half of the first-order price is memory value.** Gain at event frames when only that clock's
+  counter is shuffled, against the flip's first-order KL on the same frames: food 0.117 / 0.313 (37%), drink 0.130 /
+  0.288 (45%), awake energy 0.108 / 0.250 (43%), asleep energy rise 0.242 / 0.424 (57%); recovery 0.303 / 0.657 (46%).
+  Competing explanation (a) is half right: how far a flip pulls the eye depends on the rest of the frame, which exact
+  phase does not give. Gains at eligible frames without an event are positive (0.004-0.023), not the loss a "look at the
+  digit more often" head would show.
+- **Primary, as fixed: R = 1.15** (hunger 1.06, thirst 1.19, fatigue 1.18; recover 1.42): passes the 0.5 bar. **But the
+  fixed measure overstates.** Shuffling one counter at test time makes the trained arm confidently wrong (a shuffled
+  "due" predicts a pull that does not come), so the four single-counter gains sum to 0.045, 2.1 times the retrained
+  true-vs-shuffled gap (0.021), which has no such artefact. Conservative readings: event frames only, R = 0.45; the
+  single-counter gains rescaled to the retrained gap, R = 0.54 (hunger 0.0042, thirst 0.0051, fatigue 0.0064 nats per
+  frame; recover 0.0053). The drop bar (0.25) is cleared under every reading; the 0.5 bar only nominally.
+- **Memory share (like-for-like with the shuffled arm's loss): about 5%** for the pixel clocks (0.0157 of 0.3128,
+  rescaled; 10.7% by the overstating single-counter sum), 1.7% for recover.
+
+Context, read after the bars: the same kind of quantity (log-loss gain from adding a hidden counter's phase, retrained
+with and without) was measured for the reward forecast on the same DEV fifth (`../20261114_currency_eda/`, section 1):
+recovery 0.068 nats per frame at distance 1; fatigue 0.006-0.009 at distances 2-8; hunger and thirst at most 0.0017.
+Per pixel clock the gaze currency's memory value (0.004-0.006) is therefore about F6.1's multi-distance offer for
+fatigue, which formed the asleep-rise trace by its checkpoint 3 (belief AP 0.363 against F6's 0.214; phase test
+p = 0.0002 before WAKE_UP has paid, none after), and 3-25 times what any reward distance offers for hunger or thirst;
+it is about a tenth of what recovery had when it was learned. Loss values, not gradients into Mamba: the dose into
+Mamba is not measured (GPU).

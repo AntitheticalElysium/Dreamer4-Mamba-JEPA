@@ -1,0 +1,167 @@
+{
+ "known_answer": {
+  "food_down": 0.9997560231777981,
+  "drink_down": 0.9997300768410283,
+  "energy_down_awake": 1.0,
+  "energy_up_asleep": 1.0
+ },
+ "test_frames": 58103,
+ "train_log": {
+  "shuffled": [
+   {
+    "epoch": 0,
+    "train_cross_entropy": 3.674919177286373
+   },
+   {
+    "epoch": 1,
+    "train_cross_entropy": 3.588627215004362
+   },
+   {
+    "epoch": 2,
+    "train_cross_entropy": 3.556678312905827
+   },
+   {
+    "epoch": 3,
+    "train_cross_entropy": 3.5286333541198793
+   }
+  ],
+  "true": [
+   {
+    "epoch": 0,
+    "train_cross_entropy": 3.6669671426895487
+   },
+   {
+    "epoch": 1,
+    "train_cross_entropy": 3.573801555495331
+   },
+   {
+    "epoch": 2,
+    "train_cross_entropy": 3.538803308400061
+   },
+   {
+    "epoch": 3,
+    "train_cross_entropy": 3.5079583104846392
+   }
+  ]
+ },
+ "kl_shuffled": {
+  "all": 0.31276705861091614,
+  "moved": 0.3661760687828064,
+  "still": 0.28418219089508057,
+  "day": 0.373516321182251,
+  "night": 0.18682821094989777
+ },
+ "kl_true": {
+  "all": 0.29172012209892273,
+  "moved": 0.357888787984848,
+  "still": 0.25630617141723633,
+  "day": 0.34585678577423096,
+  "night": 0.17948979139328003
+ },
+ "gain_total": {
+  "all": 0.02104692906141281,
+  "moved": 0.008287258446216583,
+  "still": 0.027875998988747597,
+  "day": 0.027659524232149124,
+  "night": 0.007338401861488819
+ },
+ "fair_forecaster_kl": 0.3140355348587036,
+ "counters": {
+  "hunger": {
+   "all": 0.009032716043293476,
+   "moved": 0.004439971409738064,
+   "still": 0.01149078831076622,
+   "day": 0.011796686798334122,
+   "night": 0.003302742727100849
+  },
+  "thirst": {
+   "all": 0.010811228305101395,
+   "moved": 0.008701451122760773,
+   "still": 0.011940396390855312,
+   "day": 0.01419239491224289,
+   "night": 0.0038017446640878916
+  },
+  "fatigue": {
+   "all": 0.01356904674321413,
+   "moved": 0.0054193707183003426,
+   "still": 0.017930813133716583,
+   "day": 0.017241939902305603,
+   "night": 0.00595478992909193
+  },
+  "recover": {
+   "all": 0.011322680860757828,
+   "moved": 0.006559307686984539,
+   "still": 0.013872073031961918,
+   "day": 0.013628768734633923,
+   "night": 0.006541939917951822
+  }
+ },
+ "clocks": {
+  "food_down": {
+   "counter": "hunger",
+   "events": 1580,
+   "eligible": 46799,
+   "gain_at_events": 0.11705636233091354,
+   "gain_at_eligible_no_event": 0.0051682014018297195,
+   "gain_at_ineligible": 0.009392954409122467,
+   "gain_per_frame_from_events": 0.0031831238884478807,
+   "gain_per_frame_from_eligible_no_event": 0.004022182896733284,
+   "first_order_price_per_frame": 0.008505787253552418
+  },
+  "drink_down": {
+   "counter": "thirst",
+   "events": 1837,
+   "eligible": 44520,
+   "gain_at_events": 0.1297900527715683,
+   "gain_at_eligible_no_event": 0.0067524840123951435,
+   "gain_at_ineligible": 0.0074743544682860374,
+   "gain_per_frame_from_events": 0.004103476647287607,
+   "gain_per_frame_from_eligible_no_event": 0.0049604373052716255,
+   "first_order_price_per_frame": 0.009097725309078675
+  },
+  "energy_down_awake": {
+   "counter": "fatigue",
+   "events": 1252,
+   "eligible": 47184,
+   "gain_at_events": 0.10799980908632278,
+   "gain_at_eligible_no_event": 0.004426185041666031,
+   "gain_at_ineligible": 0.041201841086149216,
+   "gain_per_frame_from_events": 0.0023271734826266766,
+   "gain_per_frame_from_eligible_no_event": 0.0034990194253623486,
+   "first_order_price_per_frame": 0.005388382275081728
+  },
+  "energy_up_asleep": {
+   "counter": "fatigue",
+   "events": 842,
+   "eligible": 10153,
+   "gain_at_events": 0.24213378131389618,
+   "gain_at_eligible_no_event": 0.022951314225792885,
+   "gain_at_ineligible": 0.007733594626188278,
+   "gain_per_frame_from_events": 0.0035088832955807447,
+   "gain_per_frame_from_eligible_no_event": 0.0036779458168894053,
+   "first_order_price_per_frame": 0.006139555211144168
+  },
+  "recovery": {
+   "counter": "recover",
+   "events": 703,
+   "eligible": 21196,
+   "gain_at_events": 0.3026502728462219,
+   "gain_at_eligible_no_event": 0.006673444528132677,
+   "gain_at_ineligible": 0.008355045691132545,
+   "gain_per_frame_from_events": 0.003661826951429248,
+   "gain_per_frame_from_eligible_no_event": 0.002353732008486986,
+   "first_order_price_per_frame": 0.007946425144400054
+  }
+ },
+ "recovered_fraction": {
+  "pixel_clocks": 1.1469731522313975,
+  "hunger": 1.0619494438355472,
+  "thirst": 1.1883441121609601,
+  "fatigue": 1.1770576271277535,
+  "recover": 1.4248773070916125
+ },
+ "memory_share_of_shuffled_kl": {
+  "pixel_clocks": 0.10683027566907209,
+  "recover": 0.03620164128231708
+ }
+}
