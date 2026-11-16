@@ -108,3 +108,15 @@ its own state). About 1.45 s per update for all seven; seeds 1 and 2 run one aft
 Amendment (user 11-16, before any reading): one seed. Compute goes to iteration; the second seed is dropped. The
 readings' "both seeds" clause becomes: seed 1 at 3,000 updates; a difference within 0.1 of its 0.2 bar is reported as
 unresolved, not as a finding (check 18 measured run-to-run spread up to 0.12 on 2,000-update pair reads).
+
+## Measurement 4 (user 11-16, test 1 of the integration): does the readable record need the hand-made event? (`ssm_tokens.py`)
+
+Measurement 2 fed the bases a thresholded event train (squared token change > 1), the last hand-made piece. Here the
+same fixed bases receive, per digit cell, (a) the graded squared token change (no threshold) and (b) the cell's raw
+16-channel token (no designed feature: one record per channel, as a structured SSM head would receive it). Same rows,
+readers and references as measurements 1-2.
+- `lin_x`, `legt_x`: S4D-Lin (32 complex modes) and HiPPO-LegT (N 64, theta 64) of the graded change: 64 features.
+- `lin_tok`, `legt_tok`: the same bases on each of the 16 token channels: 1,024 features.
+Reading fixed before results: linear AP on the awake energy drop at or above 0.71 (three quarters of the exact
+recency's 0.94) means the threshold is not needed for linear readability; nonlinear AP is reported beside it. This
+chooses the input of the integrated test (test 2): raw token if it passes, graded change if only that passes.
