@@ -186,7 +186,7 @@ class Mamba3Carry:
 
 class FunctionalMamba3(nn.Module):
     """Official Mamba-3 (Lahoti et al., ICLR 2026; installed mamba_ssm 2.3.2 modules/mamba3.py, SISO) with
-    FunctionalMamba2's carry (P1-F7, user 11-16). The module's forward exposes no initial state; its kernel does
+    FunctionalMamba2's carry (P1.5, user 11-16). The module's forward exposes no initial state; its kernel does
     (mamba3_siso_combined: Input_States, return_final_states, cu_seqlens), so this is the module's own forward, line for
     line, with state passing. seq_idx is LOCAL as FunctionalMamba2's: each stream's chunk is split at its episode starts
     into variable-length segments; the segment with index 0 continues the carried state, every other starts at zero.
@@ -278,7 +278,7 @@ class Belief(nn.Module):
         self.outcome_in = nn.Linear(2, W)
         self.action = nn.Embedding(cfg["data"]["actions"], W)
         self.norms = nn.ModuleList([nn.RMSNorm(W, eps=b["norm_eps"]) for _ in range(b["layers"])])
-        mixer = FunctionalMamba3 if b.get("mixer") == "mamba3" else FunctionalMamba2   # P1-F7: Mamba-3 (user 11-16)
+        mixer = FunctionalMamba3 if b.get("mixer") == "mamba3" else FunctionalMamba2   # P1.5: Mamba-3 (user 11-16)
         self.mixers = nn.ModuleList([mixer(b) for _ in range(b["layers"])])
         self.final_norm = nn.RMSNorm(W, eps=b["norm_eps"])
         self.memory_out = nn.Linear(W, self.K * Wd)
@@ -289,7 +289,7 @@ class Belief(nn.Module):
             self.spatial_fusion = SpatialFusion(pc["periphery"]["token_dim"], pc["fovea"]["token_dim"],
                                                 pc["lighting"]["dim"], fusion["hidden"], pc["periphery"]["tanh_clamp"])
         self.record_in = None
-        if r := cfg.get("record"):                                       # P1-F7: Mamba reads the spatial history (the split,
+        if r := cfg.get("record"):                                       # P1.5: Mamba reads the spatial history (the split,
             with torch.random.fork_rng(devices=[]):                      # user 11-16): per cell to a token's width, then
                 torch.random.default_generator.manual_seed(r["init_seed"])   # beside the flattened percept
                 c = pc["periphery"]["token_dim"]
@@ -299,7 +299,7 @@ class Belief(nn.Module):
         return tuple(m.initial(batch, device) for m in self.mixers)
 
     def percept_embed(self, P: Percept, record: Tensor | None = None) -> Tensor:
-        """With the spatial history (P1-F7), `record` [.., 81, dim] is its state after this percept's frame."""
+        """With the spatial history (P1.5), `record` [.., 81, dim] is its state after this percept's frame."""
         cells = window(P.fix)
         fine = self.spatial_fusion(P, cells)
         canvas = fine.new_zeros(*fine.shape[:-2], N, fine.shape[-1]).scatter(-2, cells[..., None].expand_as(fine), fine)
@@ -509,7 +509,7 @@ class Denoiser(nn.Module):
 
     def embed(self, x, memory, fix: Tensor):
         """x = (p, g, v) [B, T, ...] -> tokens [B, T, n, W] and spatial RoPE angles. memory: the memory tokens, or with
-        the spatial history (P1-F7) the pair (memory tokens, record [B, T, 81, dim] through the previous frame), whose
+        the spatial history (P1.5) the pair (memory tokens, record [B, T, 81, dim] through the previous frame), whose
         read is added to each periphery cell's token."""
         p, g, v = x
         record = None
@@ -694,7 +694,7 @@ def sample(den: Denoiser, shapes, prev_action, memory, fix, cache, cfg, gen=None
     the finest step; `choose(p, v) -> fix` may set the fixation between the two stages (TEACHING 14), and is then
     returned beside the frame."""
     ladder, e, d = shortcut_ladder(cfg)
-    m0 = memory[0] if isinstance(memory, tuple) else memory             # P1-F7: (memory tokens, spatial history)
+    m0 = memory[0] if isinstance(memory, tuple) else memory             # P1.5: (memory tokens, spatial history)
     k, dev, B = den.k_max, m0.device, m0.shape[0]
     clamp = cfg["perception"]["periphery"]["tanh_clamp"]
     randn = lambda shp: torch.randn(shp, device=dev, generator=gen)
@@ -913,7 +913,7 @@ class TokenForecast(nn.Module):
 
 class Harmoniser(nn.Module):
     """HarmonyDream: sum over groups of L_g / sigma_g + log(1 + sigma_g), sigma_g learned (LOSSES principle 4). With a
-    fixed-point rate (P1-F7, user 11-16; the learned sigma was rate-limited, 10-31 / 11-16): sigma_g is set, at every
+    fixed-point rate (P1.5, user 11-16; the learned sigma was rate-limited, 10-31 / 11-16): sigma_g is set, at every
     training call, to the objective's stationary point for the group's running mean loss mu_g, sigma^2 = mu (1 + sigma)
     (HarmonyDream App. B), mu_g an exponential running mean at that rate (DreamerV3's normalisers: rate 0.01,
     danijar/dreamerv3 configs.yaml), started at the first loss; no gradient reaches sigma."""
@@ -940,7 +940,7 @@ class Harmoniser(nn.Module):
 
 
 class Record(nn.Module):
-    """Spatial history (P1-F7, user 11-16; 20261116_temporal_memory, tests 2-3): per periphery cell, a fixed S4D-Lin
+    """Spatial history (P1.5, user 11-16; 20261116_temporal_memory, tests 2-3): per periphery cell, a fixed S4D-Lin
     record of every channel of its own coarse token (Gu et al. 2022, S4D: A_n = -1/2 + i pi n for n < modes, B = 1,
     the S4D listing's bilinear step at dt), reset at episode starts; features = real then imaginary parts (channel-major,
     then mode). Built from stop-gradient tokens: a denoiser input (LOSSES principle 7a). No parameters."""
@@ -975,7 +975,7 @@ class Record(nn.Module):
 
 
 class GazeForecast(nn.Module):
-    """The gaze forecast (P1-F7, user 11-16; 20261115_gaze_learnability): the chooser's window distribution forecast
+    """The gaze forecast (P1.5, user 11-16; 20261115_gaze_learnability): the chooser's window distribution forecast
     from the chooser's own inputs and a linear map of the belief predicted before the frame (gaze.py's Gaze: fair.py's
     forecaster on the chooser head's trunk, a score per cell, a window's logit the sum of its nine cells' plus a bias)."""
 
@@ -1009,9 +1009,9 @@ class M0(nn.Module):
             with torch.random.fork_rng(devices=[]):                      # its own draws: every other parameter and the
                 torch.random.default_generator.manual_seed(cfg["heads"]["forecast"]["tokens"]["init_seed"])   # training RNG keep F5's
                 self.token_forecast = TokenForecast(cfg)
-        self.record = Record(cfg) if cfg.get("record") else None         # P1-F7: spatial history (no parameters)
+        self.record = Record(cfg) if cfg.get("record") else None         # P1.5: spatial history (no parameters)
         self.gaze_forecast = None
-        if gz := cfg["heads"].get("gaze_forecast"):                      # P1-F7: its own draws, as token_forecast's
+        if gz := cfg["heads"].get("gaze_forecast"):                      # P1.5: its own draws, as token_forecast's
             with torch.random.fork_rng(devices=[]):
                 torch.random.default_generator.manual_seed(gz["init_seed"])
                 self.gaze_forecast = GazeForecast(cfg)

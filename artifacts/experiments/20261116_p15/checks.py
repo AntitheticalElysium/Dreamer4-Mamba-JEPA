@@ -1,8 +1,8 @@
-"""P1-F7 pre-launch checks (PLAN.md), GPU:
+"""P1.5 pre-launch checks (PLAN.md), GPU:
 
-    MAMBA_DETERMINISTIC=1 python -m artifacts.experiments.20261116_p1f7.checks mamba3      the Mamba-3 wrapper
-    MAMBA_DETERMINISTIC=1 python -m artifacts.experiments.20261116_p1f7.checks units       record, routing, harmoniser, gaze
-    MAMBA_DETERMINISTIC=1 python -m artifacts.experiments.20261116_p1f7.checks throughput  run-scale cost, route on / off
+    MAMBA_DETERMINISTIC=1 python -m artifacts.experiments.20261116_p15.checks mamba3      the Mamba-3 wrapper
+    MAMBA_DETERMINISTIC=1 python -m artifacts.experiments.20261116_p15.checks units       record, routing, harmoniser, gaze
+    MAMBA_DETERMINISTIC=1 python -m artifacts.experiments.20261116_p15.checks throughput  run-scale cost, route on / off
 """
 import importlib
 import json
@@ -17,7 +17,7 @@ import torch
 from saccade import chooser as C, data as D, model as M, train as TR
 
 HERE = Path(__file__).resolve().parent
-P7 = importlib.import_module("artifacts.experiments.20261116_p1f7.train")
+P7 = importlib.import_module("artifacts.experiments.20261116_p15.train")
 DEV = torch.device("cuda")
 OUT = {}
 

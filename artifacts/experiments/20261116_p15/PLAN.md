@@ -1,4 +1,4 @@
-# P1-F7 (2026-11-16 night; the run the user called "P1.5")
+# P1.5 (2026-11-16 night; named by the user: far enough along to warrant P1.5 on the way to P2)
 
 From scratch, F6.1's recipe and schedule (25.6M frames, world seed 1), with five changes agreed by the user on 11-16
 (bundled by the user's choice: one run, readings by component afterwards; ablations later). Launcher: `train.py`.

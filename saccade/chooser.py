@@ -165,7 +165,7 @@ class Controller:
             rows["probability"][ci] = prob.gather(1, choice[:, None]).squeeze(1).cpu().numpy()
             cs.append(float(c.mean())); ss.append(float(s.mean())); entropy.append(float(-(prob * prob.log()).sum(-1).mean()))
             teacher.append(prob)
-        self.teacher = torch.cat(teacher) if teacher else torch.zeros(0, 49, device=self.device)   # P1-F7: per row of ids,
+        self.teacher = torch.cat(teacher) if teacher else torch.zeros(0, 49, device=self.device)   # P1.5: per row of ids,
         chosen = torch.as_tensor(rows["window"].astype(np.int64), device=self.device)           # the gaze forecast's target
         chunk["fixation"][:, prefix:] = self.centres[chosen].reshape(*chunk["fixation"][:, prefix:].shape).cpu().numpy()
         assert np.array_equal(chunk["fixation"][:, :prefix], original[:, :prefix])

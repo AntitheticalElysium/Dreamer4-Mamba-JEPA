@@ -159,3 +159,26 @@ Readings against the bars fixed before results (at 4,000 by the amendment):
   0.46 at 6,000), with quiet false changes at or below 0.05. Zeroing the record (`traces_zero`) makes every class fire
   on quiet frames (0.15-0.51): the adapted denoiser depends on it everywhere, so zeroing is no longer a clean control.
   Part of every gain over F6.1 may be the extra G1-only training itself (the plain-G1 control is still not run).
+
+## Test 3: the same record through a nonlinear per-cell read (`record_mlp_ft.py`; `record_mlp_ft.json`, `record_mlp_catalogue_4000.json`, `record_mlp_schedule.json`)
+
+4,000 updates (the machine's restart stopped the first launch at update 0; a logging fix stopped the second at 100;
+neither produced a reading). Against test 2 (linear read) at 4,000, natural DEV frames drawn at the event [95%]
+(quiet false changes), and pairs (due / delayed):
+
+| Reading | Linear read (test 2) | MLP read (test 3) |
+| :--- | ---: | ---: |
+| Natural awake energy drop | 0.221 [0.183, 0.261] (0.007) | 0.307 [0.264, 0.351] (0.006) |
+| Natural drink / food drop | 0.302 / 0.219 | 0.288 / 0.221 |
+| Natural asleep rise | 0.202 (0.051) | 0.149 (0.039) |
+| Coal / iron / stone +1, damage, recovery | 0.778 / 0.697 / 0.821, 0.694, 0.441 | 0.789 / 0.715 / 0.830, 0.678, 0.444 |
+| Energy pairs, original / on-schedule | 0.024 / 0.000; 0.097 / 0.002 | 0.036 / 0.000; 0.167 / 0.002 |
+| Hunger pairs, original / on-schedule | 0.083 / 0.007; 0.130 / 0.007 | 0.219 / 0.023; 0.258 / 0.024 |
+| G1 at 1,000 / 2,000 / 3,000 / 4,000 | 0.00340 / 0.00292 / 0.00276 / 0.00270 | 0.00341 / 0.00295 / 0.00276 / 0.00270 |
+
+Against the bars fixed before results: no unlock (natural awake energy 0.307 < 0.42; on-schedule energy pairs 0.165 <
+0.5); "no difference" (both within 0.1 of test 2: +0.086, +0.070). By the tie-break agreed with the user (linear
+unless the MLP shows broader gains), the linear read is integrated: G1 and every broad class are equal, natural food
+and drink equal, the natural asleep rise lower with the MLP. The MLP is ahead on two clock readings (natural awake
+energy, its interval clear of the linear one's; hunger pairs +0.12), so the read's form helps the awake clocks a
+little at this budget without being what limits them.

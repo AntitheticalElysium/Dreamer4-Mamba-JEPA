@@ -1,4 +1,4 @@
-"""P1-F7 (user 11-16; the run the user called P1.5): F6.1's recipe plus the spatial history, route by role, the
+"""P1.5 (user 11-16): F6.1's recipe plus the spatial history, route by role, the
 harmoniser at its fixed point, the gaze forecast and Mamba-3 (PLAN.md). From scratch, F5's schedule; resumable;
 --updates stops early, --steps fixes the chunk length (the throughput checks)."""
 import argparse
@@ -27,7 +27,7 @@ def recipe(route_by_role=True):
 
 def check_recipe(cfg):
     assert READ in ("linear", "mlp"), "the record's read is set from test 3's verdict"
-    assert cfg in (recipe(), recipe(False)), "P1-F7 recipe differs from F6.1 plus the declared changes"
+    assert cfg in (recipe(), recipe(False)), "P1.5 recipe differs from F6.1 plus the declared changes"
     return cfg
 
 

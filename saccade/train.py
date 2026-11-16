@@ -65,7 +65,7 @@ def encoder_diagnostics(model, chunk, carry, cache, targets, cfg, bootstrap=None
 
     Reusing the full retained training graph for six extra backwards exceeded the 6 GB device budget.
     The bounded recomputation uses the same pre-update parameters and incoming history, not a new data draw.
-    P1-F7: that stream's spatial-history state and gaze rows (gaze_rows) when the recipe has them.
+    P1.5: that stream's spatial-history state and gaze rows (gaze_rows) when the recipe has them.
     """
     n = cfg["data"]["context_prefix"] + 64
     bounded = {k: v[:1, :n] for k, v in chunk.items()}
@@ -76,7 +76,7 @@ def encoder_diagnostics(model, chunk, carry, cache, targets, cfg, bootstrap=None
 
 
 def gaze_rows(controller, rows, steps, limit=None):
-    """P1-F7: the gaze forecast's inputs for the streams `rows` (sorted): the chooser's inputs and teacher distribution
+    """P1.5: the gaze forecast's inputs for the streams `rows` (sorted): the chooser's inputs and teacher distribution
     of their eligible new frames (Controller.prepare, before the world's update) and their local flat rows [len(rows) *
     steps]; `limit` keeps the first frames of each stream (encoder_diagnostics' bounded chunk)."""
     xx, _, ids = controller.pending
@@ -132,7 +132,7 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=No
     detached; never replayed through Mamba), these streams' bootstrap rows (bootstrap_rows), the update index (the
     bootstrap start) and, with heads.forecast, the TSP forecast's window index per new frame [B, T] (forecast_windows).
     Returns (loss terms, new carry, new cache).
-    P1-F7: with the spatial history (model.record), `record` [B, 81, dim] is its state after the frame before chunk
+    P1.5: with the spatial history (model.record), `record` [B, 81, dim] is its state after the frame before chunk
     frame 0, and a 4th value is returned, the state after chunk frame T - 1 (the frame before the next chunk's frame 0).
     With heads.gaze_forecast, `gaze` = (the chooser's inputs, its window distribution, local flat rows [B * T]) of these
     streams' eligible new frames. With losses.route_by_role the reward, continuation, forecast and gaze heads read a
@@ -226,7 +226,7 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=No
                 rf = rf + ahead
             terms.update(reward_forecast=rf,
                          cont_forecast=F.binary_cross_entropy_with_logits(model.outcome.cont_logit(hf, r).float(), alive))
-        if model.gaze_forecast is not None:                              # P1-F7: the chooser's distribution, before frame t
+        if model.gaze_forecast is not None:                              # P1.5: the chooser's distribution, before frame t
             xx, q, rows = gaze                                           # (gaze.py's loss: cross-entropy to the teacher)
             logit = model.gaze_forecast(xx, bpd.reshape(-1, bpd.shape[-1])[rows])
             terms["gaze_forecast"] = -(q * logit.float().log_softmax(-1)).sum(-1).mean() if len(rows) else logit.sum() * 0
@@ -243,7 +243,7 @@ def groups(terms: dict) -> dict:
     g = {"G1": terms["g1"], "G2": terms.get("change", 0) + terms["tsp"] + terms["rec"], "G3": terms["reward"] + terms["cont"]}
     if "reward_forecast" in terms:
         g["G4"] = terms.get("tsp_forecast", terms.get("token_forecast", 0)) + terms["reward_forecast"] + terms["cont_forecast"]
-    if "gaze_forecast" in terms:                                         # P1-F7: its own group (a task of its own,
+    if "gaze_forecast" in terms:                                         # P1.5: its own group (a task of its own,
         g["G5"] = terms["gaze_forecast"]                                 # HarmonyDream's grouping; nats per frame)
     return g
 
@@ -309,7 +309,7 @@ def _monitor(model: M.M0, cfg, episodes, n_windows=None) -> dict:
                 model.perception(c["frames"][:, a:a + 512], c["fixation"][:, a:a + 512]).parts()
                 for a in range(0, ep.T + 1, 512)])), c["fixation"])
             toks.append(Pe.p[0, ::8].reshape(-1, Pe.p.shape[-1]).float())
-            rin = rst = None                                             # P1-F7: the spatial history from the episode's start
+            rin = rst = None                                             # P1.5: the spatial history from the episode's start
             if model.record is not None:
                 start = torch.zeros(Pe.p.shape[:2], dtype=torch.bool, device=dev); start[:, 0] = True
                 rin, rst = model.record.scan(Pe.p, start, model.record.zero(1, dev))
@@ -364,7 +364,7 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
     st = {"frames": 0, "update": 0, "next_ckpt": 1}
     carry = model.belief.initial(d["streams"], dev)
     cache = torch.zeros(d["streams"], P + 1, W, device=dev)
-    record = model.record.zero(d["streams"], dev) if model.record is not None else None   # P1-F7: spatial history
+    record = model.record.zero(d["streams"], dev) if model.record is not None else None   # P1.5: spatial history
     latest = out_dir / "latest.pt"
     if latest.exists():
         ck = torch.load(latest, weights_only=False, map_location=dev)
@@ -394,7 +394,7 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
             fw = np.random.default_rng([cfg["heads"]["forecast"]["seed"], world_seed, st["update"]]).integers(49, size=(d["streams"], S))
         logs = []
         route_norms = None
-        gazing = model.gaze_forecast is not None                         # P1-F7
+        gazing = model.gaze_forecast is not None                         # P1.5
         if at_checkpoint:
             diagnostic_carry = M.carry_rows(carry, [0])
             diagnostic_cache = cache[:1].clone()
