@@ -100,7 +100,8 @@ def generate(model, cfg, row, slot, reader, routes, event):
     out = {}
     with TR.autocast(DEV, cfg):
         p = model.perception(torch.as_tensor(f, device=DEV), fix)
-        inputs = model.belief.tokens(model.belief.percept_embed(p), torch.as_tensor(rw, device=DEV, dtype=torch.float32),
+        reads, rin, last = S.history(model, p.p, keep=range(n + q - 7, n + q + 1))   # P1.5: rides with the belief stream b
+        inputs = model.belief.tokens(S.embed(model, p, reads), torch.as_tensor(rw, device=DEV, dtype=torch.float32),
                                      torch.as_tensor(td, device=DEV), act)
         y, _ = model.belief(inputs, model.belief.initial(2, DEV))
         bp = torch.cat([torch.zeros_like(y[:, :1]), y[:, 1::2][:, :-1]], 1)
@@ -111,11 +112,12 @@ def generate(model, cfg, row, slot, reader, routes, event):
             cache = model.denoiser.new_cache()
             for t in range(n + q - 7, n + q + 1):
                 cache = M.context_pass(model.denoiser, tuple(z[v:v + 1, t:t + 1] for z in p.parts()),
-                                       prev[v:v + 1, t:t + 1], model.belief.memory(bp[b:b + 1, t:t + 1]),
+                                       prev[v:v + 1, t:t + 1], S.cond(model.belief.memory(bp[b:b + 1, t:t + 1]),
+                                                                    S.at(rin, np.s_[b:b + 1, t - n - q + 7:t - n - q + 8])),
                                        fix[v:v + 1, t:t + 1], cache, cfg, rng)
             cache = {"t": cache["t"], "kv": [tuple(z.expand(DRAWS, *z.shape[1:]) for z in kv) for kv in cache["kv"]]}
             z = M.sample(model.denoiser, [tuple(x.shape[2:]) for x in p.parts()], act.new_zeros(DRAWS, 1),
-                         model.belief.memory(y[b:b + 1, -1:]).expand(DRAWS, -1, -1, -1),
+                         S.cond(model.belief.memory(y[b:b + 1, -1:]).expand(DRAWS, -1, -1, -1), S.at(last, np.s_[[b] * DRAWS, None])),
                          query[None, None].expand(DRAWS, 1, -1), cache, cfg,
                          torch.Generator(device=DEV).manual_seed(16000 + i))
             digits = reader(torch.cat([z[0][:, 0, slot], z[2][:, 0]], 1).float())["y"].argmax(-1).cpu().numpy()

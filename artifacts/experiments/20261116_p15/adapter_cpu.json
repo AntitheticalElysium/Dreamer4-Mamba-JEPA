@@ -1,0 +1,80 @@
+{
+ "episodes": [
+  3,
+  7
+ ],
+ "ep_T": [
+  182,
+  261
+ ],
+ "check": {
+  "history_chunked_reads": 5.413899657469301e-07,
+  "history_chunked_kept": 0.0,
+  "history_chunked_state": 0.0,
+  "encode_states_vs_stored_tokens": 9.395930828759447e-05,
+  "before": 6.627419497817755e-05,
+  "window": 2.9516111681004986e-05,
+  "window_zero_before_episode": 0.0,
+  "embed_vs_percept_embed": 0.0,
+  "dependence_denoiser_record_at_t_unchanged": 0.0,
+  "dependence_read_after_t_changed": 0.008879706263542175,
+  "futures_context_record": 2.972655238409061e-05,
+  "futures_draw_record": 2.5621249733376317e-05,
+  "futures_generated_frame_is_drawn": 0.0,
+  "futures_head_generated_read": 0.0,
+  "futures_head_recorded_read": 0.0,
+  "futures_recorded_frame_is_t": 0.0,
+  "guard_refuses_tokens_alone": true,
+  "tolerances": {
+   "exact": [
+    [
+     "history_chunked_reads",
+     "history_chunked_kept",
+     "history_chunked_state",
+     "embed_vs_percept_embed",
+     "futures_generated_frame_is_drawn",
+     "futures_head_generated_read",
+     "futures_head_recorded_read",
+     "futures_recorded_frame_is_t"
+    ],
+    1e-05
+   ],
+   "against stored fp16 tokens (a wrong frame is O(1))": [
+    [
+     "encode_states_vs_stored_tokens",
+     "before",
+     "window",
+     "futures_context_record",
+     "futures_draw_record"
+    ],
+    0.01
+   ]
+  },
+  "passed": true
+ },
+ "one_step_record_world_ok": [
+  [
+   8,
+   81,
+   16
+  ],
+  [
+   8,
+   9,
+   64
+  ],
+  [
+   8,
+   8
+  ],
+  [
+   8
+  ],
+  [
+   8
+  ]
+ ],
+ "old_world_encode_bitwise": true,
+ "old_world_one_step_bitwise": true,
+ "old_world_futures_bitwise": true
+}

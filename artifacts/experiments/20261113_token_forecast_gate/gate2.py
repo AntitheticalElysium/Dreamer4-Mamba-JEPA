@@ -147,9 +147,9 @@ def d1_features(model, cfg, enc, L_, k):
         for a in range(0, len(rows), 2048):
             j = rows[a:a + 2048]
             at = {dt: {key: torch.stack([enc[int(T["ep"][x])][key][int(T["t"][x]) + dt] for x in j]).to(DEV)
-                       for key in ("p", "g", "v", "fix", "b")} for dt in (-1, 0)}
-            x = {dt: model.belief.percept_embed(M.Percept(at[dt]["p"].float(), at[dt]["g"].float(), at[dt]["v"].float(),
-                                                          at[dt]["fix"])).float() for dt in (-1, 0)}
+                       for key in ("p", "g", "v", "fix", "b") + (("reads",) if "reads" in enc[0] else ())} for dt in (-1, 0)}
+            x = {dt: S.embed(model, M.Percept(at[dt]["p"].float(), at[dt]["g"].float(), at[dt]["v"].float(), at[dt]["fix"]),
+                             at[dt].get("reads")).float() for dt in (-1, 0)}   # P1.5: Mamba's input holds the record's read
             feats["p"].append((at[0]["p"].float() - at[-1]["p"].float()).abs().flatten(1).cpu())
             feats["x"].append((x[0] - x[-1]).abs().cpu())
             feats["b"].append((at[0]["b"].float() - at[-1]["b"].float()).abs().cpu())

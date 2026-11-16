@@ -2,7 +2,7 @@
 import os
 os.environ.setdefault('JAX_PLATFORMS','cpu')
 os.environ.setdefault('PYTORCH_CUDA_ALLOC_CONF','expandable_segments:True')
-import importlib,json,sys
+import dataclasses,importlib,json,sys
 from pathlib import Path
 import numpy as np
 import torch
@@ -93,45 +93,50 @@ def run(smoke=False):
     dims=[tuple(enc[0][p].shape[1:]) for p in ('p','g','v')]
     results=[];shams=[];part_records=[]
     for start in range(0,len(rows),8):
-        batch=rows[start:start+8];eidx=list(range(start,start+len(batch)));cs=[];bs=[]
+        batch=rows[start:start+8];eidx=list(range(start,start+len(batch)));cs=[];bs=[];rl=[]
         for ei,r in zip(eidx,batch):
             en=enc[ei];t=r['t0'];n=t+1
             take=lambda key:en[key][:n].to(dev)[None]
             with TR.autocast(dev,cfg):
                 pp=M.Percept(*(take(p).float() for p in ('p','g','v')),take('fix'))
                 act=take('action').clone();act[:,-1]=0
-                yy,cc=model.belief(model.belief.tokens(model.belief.percept_embed(pp),take('reward'),take('terminated'),act),model.belief.initial(1,dev))
+                reads,_,last=S.history(model,pp.p)   # P1.5: the record from the episode start, carried with Mamba's
+                yy,cc=model.belief(model.belief.tokens(S.embed(model,pp,reads),take('reward'),take('terminated'),act),model.belief.initial(1,dev))
             err=float((yy[0,-2].float()-en['b'][t].to(dev).float()).square().mean().sqrt())
             assert err<.03,('corrected prefix sham',err)
             if int(en['action'][t])==0:
                 err2=float((yy[0,-1].float()-en['bp'][t+1].to(dev).float()).square().mean().sqrt())
                 assert err2<.03,('predicted prefix sham',err2)
-            shams.append(err);cs.append(cc);bs.append(yy[:,-1].float())
-        carry=tuple(M.MambaCarry(torch.cat([c[i].conv for c in cs]).repeat_interleave(k,0),torch.cat([c[i].ssm for c in cs]).repeat_interleave(k,0)) for i in range(len(cs[0])))
+            shams.append(err);cs.append(cc);bs.append(yy[:,-1].float());rl.append(last)
+        carry=tuple(type(cs[0][i])(*(torch.cat([getattr(c[i],f.name) for c in cs]).repeat_interleave(k,0) for f in dataclasses.fields(cs[0][i]))) for i in range(len(cs[0])))   # Mamba-2 or -3
+        rs=None if rl[0] is None else torch.cat(rl).repeat_interleave(k,0)
+        rin=S.window(model,enc,[(ei,r['t0']) for ei,r in zip(eidx,batch)],7)
+        ri=lambda dt:None if rin is None else rin[:,7+dt].repeat_interleave(k,0)[:,None]
         bp=torch.cat(bs).repeat_interleave(k,0);B=len(bp)
         prior=lambda key,dt:torch.stack([enc[ei][key][r['t0']+dt] for ei,r in zip(eidx,batch)]).repeat_interleave(k,0).to(dev)
         cache=model.denoiser.new_cache();gen=torch.Generator(device=dev).manual_seed(110711+start)
         with TR.autocast(dev,cfg):
             for dt in range(-7,1):
                 cache=M.context_pass(model.denoiser,tuple(prior(p,dt).float()[:,None] for p in ('p','g','v')),prior('prev_action',dt)[:,None],
-                    model.belief.memory(prior('bp',dt).float())[:,None],prior('fix',dt)[:,None],cache,cfg,gen)
+                    S.cond(model.belief.memory(prior('bp',dt).float())[:,None],ri(dt)),prior('fix',dt)[:,None],cache,cfg,gen)
         fixations=D.fixation_prior(np.random.default_rng(110711+start),(h,B))
         alive=torch.ones(B,device=dev,dtype=torch.bool);out=[];raw=[]
         action=torch.zeros(B,1,device=dev,dtype=torch.long)
         for step in range(h):
             fix=torch.as_tensor(fixations[step],device=dev)
             with TR.autocast(dev,cfg):
-                p,g,v=tuple(t[:,0].float() for t in M.sample(model.denoiser,dims,action,model.belief.memory(bp)[:,None],fix[:,None],cache,cfg,gen))
+                p,g,v=tuple(t[:,0].float() for t in M.sample(model.denoiser,dims,action,S.cond(model.belief.memory(bp)[:,None],S.at(rs,np.s_[:,None])),fix[:,None],cache,cfg,gen))
                 ee=energy(torch.cat([p[:,66],v],-1))['y'].softmax(-1)
                 ss=sleep(torch.cat([p[:,31],v,p[:,:63].mean(1)],-1))['y'].softmax(-1)[:,1]
-                percept=M.Percept(p,g,v,fix);emb=model.belief.percept_embed(percept)
+                reads,_,rs_next=S.history(model,p,state=rs)
+                percept=M.Percept(p,g,v,fix);emb=S.embed(model,percept,reads)
                 feat=model.outcome.features(bp,emb).float();reward=model.outcome.sample_reward(feat,gen)
                 done=torch.rand(B,device=dev,generator=gen)>torch.sigmoid(model.outcome.cont_logit(feat,reward).float())
                 out.append(torch.stack([ee.argmax(-1).float(),(ss>.5).float(),done.float(),alive.float(),ee.max(-1).values,ss],-1).cpu())
                 raw.append(tuple(t.half().cpu() for t in (p,g,v)))
-                cache=M.context_pass(model.denoiser,tuple(t[:,None] for t in (p,g,v)),action,model.belief.memory(bp)[:,None],fix[:,None],cache,cfg,gen)
+                cache=M.context_pass(model.denoiser,tuple(t[:,None] for t in (p,g,v)),action,S.cond(model.belief.memory(bp)[:,None],S.at(rs,np.s_[:,None])),fix[:,None],cache,cfg,gen)
                 y,carry=model.belief(model.belief.tokens(emb[:,None],reward[:,None],done[:,None],action),carry)
-                bp=y[:,-1].float();alive &= ~done
+                bp=y[:,-1].float();alive &= ~done;rs=rs_next
         results.append(torch.stack(out,1).reshape(len(batch),k,h,6))
         part_records.append(raw)
         print('native scenes',start+len(batch),'/',len(rows),flush=True)

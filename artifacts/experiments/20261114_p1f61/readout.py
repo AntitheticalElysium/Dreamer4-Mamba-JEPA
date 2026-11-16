@@ -34,8 +34,11 @@ def budget(ck, out):
     """Each loss term's gradient into Mamba's module (belief) and into the encoder (perception), raw and divided by
     its group's sigma, with its cosine to the weighted total, on the checkpoint's own next training chunk (8 streams
     x 64 new frames, one stream at a time; medians), as ../20261114_f6_dissection/dose.py batch but for any recipe.
-    The grouped reward forecast is split into distance 1 and the rest ("reward_forecast_ahead")."""
-    from saccade import data as D, model as M
+    The grouped reward forecast is split into distance 1 and the rest ("reward_forecast_ahead"). P1.5: the carry of
+    either mixer, the checkpoint's record state, and the gaze forecast's teacher from the checkpoint's chooser head on a
+    copy of the chunk (the budget's fixations stay the stream's, as before)."""
+    import copy, dataclasses, tempfile
+    from saccade import chooser as C, data as D, model as M
     model, cfg = NP.IF.load(ck)
     for prm in model.parameters():
         prm.requires_grad_(True)
@@ -47,17 +50,25 @@ def budget(ck, out):
     streams = D.Streams(train, d["streams"], P, seed=1, targets_offsets=D.frame_offsets(train))
     streams.load_state(state["streams"])
     chunk = streams.next(64)
-    carry = tuple(M.MambaCarry(c.conv.to(dev), c.ssm.to(dev)) for c in state["carry"])
+    carry = tuple(type(c)(*(getattr(c, f.name).to(dev) for f in dataclasses.fields(c))) for c in state["carry"])
     cache, update = state["cache"].to(dev), state["state"]["update"]
+    record = None if state.get("record") is None else state["record"].to(dev)
+    ctl = None
+    if model.gaze_forecast is not None:
+        ctl = C.Controller(model, cfg, tempfile.mkdtemp(), dev)
+        ctl.head.load_state_dict(state["fixation_controller"]["head"]); ctl.gaze.set_state(state["fixation_controller"]["gaze_rng"].cpu())
+        ctl.prepare(copy.deepcopy(chunk), streams)
     boot = TR.bootstrap_rows(cfg, 1, update)
     sigma = dict(zip(model.harmoniser.groups, model.harmoniser.log_sigma.detach().exp().tolist()))
-    group = lambda n: "G1" if n == "g1" else "G2" if n in ("tsp", "rec") else "G3" if n in ("reward", "cont") else "G4"
+    group = lambda n: "G1" if n == "g1" else "G2" if n in ("tsp", "rec") else "G3" if n in ("reward", "cont") else \
+        "G5" if n == "gaze_forecast" else "G4"
     sets = {"belief": list(model.belief.parameters()), "encoder": list(model.perception.parameters())}
     torch.manual_seed(0)
     per = []
     for r in range(8):
         rows = np.array([r])
-        terms, _, _ = TR.p1_losses(model, D.select(chunk, rows), M.carry_rows(carry, rows), cache[rows], None, cfg, boot[rows], update, None)
+        terms = TR.p1_losses(model, D.select(chunk, rows), M.carry_rows(carry, rows), cache[rows], None, cfg, boot[rows], update, None,
+                             None if record is None else record[rows], None if ctl is None else TR.gaze_rows(ctl, rows, 64))[0]
         grouped = [n for n in terms if n != "noise" and not n.startswith("reward_forecast_")]   # per-distance terms are parts
         shown = [n for n in grouped if n != "reward_forecast"] + (
             ["reward_forecast_1", "reward_forecast_ahead"] if "reward_forecast_1" in terms else ["reward_forecast"])

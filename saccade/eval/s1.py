@@ -37,6 +37,88 @@ STRATA = ((1, 4), (5, 8), (9, 16), (17, 64))
 SIDES = ("top", "bottom", "left", "right")
 
 
+# ---- the spatial history (P1.5) in every evaluation: the record starts where the belief starts (zero beside its
+# initial carry) and is carried where the belief's carry is carried. Without a record (every earlier world) these
+# reduce to the calls they replace, bit for bit. ----
+
+@torch.no_grad()
+def history(model, p, first=None, state=None, keep=(), chunk=512):
+    """p [B, T, 81, C] periphery tokens from `state` (None: zero) with resets at `first` [B, T] -> (Mamba's read of the
+    record after every frame [B, T, W], for the frames `keep` the record through the frame before each [B, len(keep),
+    81, dim] (the denoiser's), the state after the last frame); (None, None, None) without a record."""
+    if model.record is None:
+        return None, None, None
+    if p.dim() == 3:                                                     # one frame [B, 81, C]: reads [B, W]
+        reads, kept, state = history(model, p[:, None], None if first is None else first[:, None], state, keep, chunk)
+        return reads[:, 0], kept, state
+    B, T = p.shape[:2]
+    state = model.record.zero(B, p.device) if state is None else state
+    first = torch.zeros(B, T, dtype=torch.bool, device=p.device) if first is None else first
+    reads, kept = [], {}
+    for a in range(0, T, chunk):
+        rin, rst = model.record.scan(p[:, a:a + chunk], first[:, a:a + chunk], state)
+        reads.append(model.belief.record_in(rst))
+        kept.update({j: rin[:, j - a] for j in keep if a <= j < a + chunk})
+        state = rst[:, -1]
+    return torch.cat(reads, 1), torch.stack([kept[j] for j in keep], 1) if len(keep) else None, state
+
+
+def embed(model, P, reads=None, alone=False):
+    """Belief.percept_embed with Mamba's read of the record (history's first output) added after it, as percept_embed
+    adds it; without a record, percept_embed itself (which raises for a world with one: no silent bypass). `alone`:
+    the percept's own embedding, the record left out (a no-history control)."""
+    if reads is None and not alone:
+        return model.belief.percept_embed(P)
+    keep, model.belief.record_in = model.belief.record_in, None
+    try:
+        emb = model.belief.percept_embed(P)
+    finally:
+        model.belief.record_in = keep
+    return emb if alone else emb + reads
+
+
+def cond(m, rin=None, at=...):
+    """The denoiser's conditioning: memory tokens m (as computed before), with the record through the previous frame
+    (history's second output, or its state) when the world has one; `at` (np.s_[...]) indexes both alike. A world
+    with a record refuses m alone at the denoiser under the evaluation's guard (p15/evaluation.py)."""
+    return m[at] if rin is None else (m[at], rin[at])
+
+
+def at(x, i):
+    return None if x is None else x[i]
+
+
+EVERY = 64                                                               # encode keeps the record before every 64th frame (~1.8 GB on dev)
+
+
+@torch.no_grad()
+def before(model, enc, pairs):
+    """The record through frame j - 1 of episode e for each (e, j) of `pairs` (from the episode's start; enc: encode's
+    per-episode records) -> [n, 81, dim] fp32 on DEV; None without a record."""
+    if model.record is None:
+        return None
+    state = torch.stack([enc[e]["record_every"][j // EVERY] for e, j in pairs]).to(DEV)
+    left = [j % EVERY for _, j in pairs]
+    for k in range(max(left)):                                           # at most 63 frames, rows advanced while they last
+        p = torch.stack([enc[e]["p"][j - n + k] if k < n else enc[e]["p"][0] for (e, j), n in zip(pairs, left)]).to(DEV)
+        nxt = model.record.scan(p[:, None].float(), torch.zeros(len(pairs), 1, dtype=torch.bool, device=DEV), state)[1][:, 0]
+        state = torch.where(torch.tensor([k < n for n in left], device=DEV)[:, None, None], nxt, state)
+    return state
+
+
+@torch.no_grad()
+def window(model, enc, pairs, P):
+    """For each (e, t): the record through the previous frame at frames t - P .. t [n, P + 1, 81, dim] (the denoiser's
+    for P context frames and the frame drawn), zero at frames before the episode; None without a record."""
+    if model.record is None:
+        return None
+    pad = [max(0, P - t) for _, t in pairs]
+    p = torch.stack([torch.cat([enc[e]["p"][:1].expand(n, -1, -1) * 0, enc[e]["p"][max(0, t - P):t + 1]])
+                     for (e, t), n in zip(pairs, pad)]).to(DEV).float()
+    first = torch.tensor([[k < n for k in range(P + 1)] for n in pad], device=DEV)
+    return model.record.scan(p, first, before(model, enc, [(e, max(0, t - P)) for e, t in pairs]))[0]
+
+
 def episodes(L):
     return [D.Episode(int(s), int(o), int(T), "") for s, o, T in zip(L["ep_shard"], L["ep_slot"], L["ep_T"])]
 
@@ -61,7 +143,8 @@ def encode(model, L, cfg, untrained=None, windows=None):
         with TR.autocast(DEV, cfg):
             parts = [model.perception(c["frames"][:, a:a + 512], c["fixation"][:, a:a + 512]) for a in range(0, ep.T + 1, 512)]
             P = M.Percept(*(torch.cat(z, 1) for z in zip(*[p.parts() for p in parts])), c["fixation"])
-            emb = model.belief.percept_embed(P)
+            reads, every, _ = history(model, P.p, keep=range(0, ep.T + 1, EVERY))
+            emb = embed(model, P, reads)
             y, _ = model.belief(model.belief.tokens(emb, c["reward"], c["terminated"], c["action"]), model.belief.initial(1, DEV))
             b, bp = y[:, 0::2], torch.cat([torch.zeros_like(y[:, :1]), y[:, 1::2][:, :-1]], 1)
             h = model.outcome.features(bp, emb)
@@ -83,6 +166,8 @@ def encode(model, L, cfg, untrained=None, windows=None):
             with TR.autocast(DEV, cfg):
                 U = [untrained(c["frames"][:, a:a + 512], c["fixation"][:, a:a + 512]) for a in range(0, ep.T + 1, 512)]
             rec["p_u"], rec["v_u"] = torch.cat([u.p for u in U], 1)[0].half().cpu(), torch.cat([u.v for u in U], 1)[0].half().cpu()
+        if reads is not None:                                            # Mamba's read of the record after each frame;
+            rec["reads"], rec["record_every"] = reads[0].half().cpu(), every[0].cpu()   # the record before every 64th
         out.append(rec)
         if e % 200 == 0:
             print(f"encoded {e}/{len(L['ep_T'])}", flush=True)
@@ -371,6 +456,7 @@ def one_step(model, enc, cfg, n_tuples, rng):
         valid = torch.stack([torch.as_tensor(np.r_[np.zeros(max(0, P - ts[i]), bool), np.ones(min(P, ts[i]) + 1, bool)]) for i in chunk]).to(DEV)
         prev_a, fix, bp = win("prev_action"), win("fix"), win("bp").float()
         mem = model.belief.memory(bp)
+        rin = window(model, enc, [(eps_[i], ts[i]) for i in chunk], P)
         x = [torch.empty((B, 1, *d), device=DEV) for d in dims]         # the system's own sampler (decision 1's cascade):
         nctx = valid[:, :-1].sum(1)                                      # the real context committed frame by frame,
         for k_ctx in nctx.unique().tolist():                             # grouped by its length (no padded frames)
@@ -379,12 +465,12 @@ def one_step(model, enc, cfg, n_tuples, rng):
             with TR.autocast(DEV, cfg):
                 for dt in range(P - k_ctx, P):
                     cache = M.context_pass(model.denoiser, tuple(a[r, dt:dt + 1] for a in x0), prev_a[r, dt:dt + 1],
-                                           mem[r, dt:dt + 1], fix[r, dt:dt + 1], cache, cfg, gen)
-                for a, b in zip(x, M.sample(model.denoiser, dims, prev_a[r, P:], mem[r, P:], fix[r, P:], cache, cfg, gen)):
+                                           cond(mem, rin, np.s_[r, dt:dt + 1]), fix[r, dt:dt + 1], cache, cfg, gen)
+                for a, b in zip(x, M.sample(model.denoiser, dims, prev_a[r, P:], cond(mem, rin, np.s_[r, P:]), fix[r, P:], cache, cfg, gen)):
                     a[r] = b.float()
         Pg = M.Percept(x[0][:, 0], x[1][:, 0], x[2][:, 0], fix[:, -1])
         with TR.autocast(DEV, cfg):
-            h = model.outcome.features(bp[:, -1], model.belief.percept_embed(Pg))
+            h = model.outcome.features(bp[:, -1], embed(model, Pg, history(model, Pg.p, state=at(rin, np.s_[:, P]))[0]))
             r = model.outcome.sample_reward(h.float(), gen)
             term = torch.rand(B, device=DEV, generator=gen) > torch.sigmoid(model.outcome.cont_logit(h, r).float())
         for k, v in zip(("p", "g", "v", "r", "term"), (Pg.p, Pg.g, Pg.v, r, term)):

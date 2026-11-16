@@ -74,16 +74,18 @@ def main(ckpt_path=None, out_path=None):
         prev = torch.cat([act.new_full((1, 1), -1), act[:, :-1]], 1)
         with TR.autocast(dev, cfg):
             P = model.perception(torch.as_tensor(frames[:t + 1], device=dev)[None], fix)
-            y, _ = model.belief(model.belief.tokens(model.belief.percept_embed(P), rw, td, act), model.belief.initial(1, dev))
+            reads, rin, last = S.history(model, P.p, keep=range(t - 7, t + 1))   # P1.5: from the episode start
+            y, _ = model.belief(model.belief.tokens(S.embed(model, P, reads), rw, td, act), model.belief.initial(1, dev))
             bp = torch.cat([torch.zeros_like(y[:, :1]), y[:, 1::2][:, :-1]], 1)
             cache = model.denoiser.new_cache()
             gen = torch.Generator(device=dev).manual_seed(24004)
             for s in range(t - 7, t + 1):
                 cache = M.context_pass(model.denoiser, tuple(z[:, s:s + 1] for z in P.parts()), prev[:, s:s + 1],
-                                       model.belief.memory(bp[:, s:s + 1]), fix[:, s:s + 1], cache, cfg, gen)
+                                       S.cond(model.belief.memory(bp[:, s:s + 1]), S.at(rin, np.s_[:, s - t + 7:s - t + 8])),
+                                       fix[:, s:s + 1], cache, cfg, gen)
             cache = {'t': cache['t'], 'kv': [tuple(z.expand(K, *z.shape[1:]) for z in kv) for kv in cache['kv']]}
             xs = M.sample(model.denoiser, [tuple(z.shape[2:]) for z in P.parts()], act[:, -1:].expand(K, -1),
-                          model.belief.memory(y[:, -1:]).expand(K, -1, -1, -1),
+                          S.cond(model.belief.memory(y[:, -1:]).expand(K, -1, -1, -1), S.at(last, np.s_[[0] * K, None])),
                           torch.as_tensor(query, device=dev)[None, None].expand(K, 1, -1),
                           cache, cfg, torch.Generator(device=dev).manual_seed(24005))
             real = model.perception(torch.as_tensor(frames[t:t + 2], device=dev),

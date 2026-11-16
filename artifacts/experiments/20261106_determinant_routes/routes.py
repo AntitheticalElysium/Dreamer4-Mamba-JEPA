@@ -155,13 +155,16 @@ def pair_state(model, cfg, enc, r):
         Ps = model.perception(torch.as_tensor(r["successor"], device=dev), fx.expand(2, -1))
         rep = lambda z: z.to(dev)[None].expand(3, *z.shape)
         hist = M.Percept(*(rep(E[k][:t - 1]).float() for k in ("p", "g", "v")), rep(E["fix"][:t - 1]))
-        e2 = bel.percept_embed(P2)                                       # members; the sham repeats the natural frame
-        emb = torch.cat([bel.percept_embed(hist), torch.cat([e2, e2[:1]])[:, None]], 1)
+        reads, _, last = S.history(model, hist.p)                        # P1.5: the record from the episode start, then
+        reads2, _, after = S.history(model, P2.p, state=S.at(last, np.s_[:2]))   # after each member's frame t - 1
+        e2 = S.embed(model, P2, reads2)                                  # members; the sham repeats the natural frame
+        emb = torch.cat([S.embed(model, hist, reads), torch.cat([e2, e2[:1]])[:, None]], 1)
         act = rep(E["action"][:t]).clone()
         act[:, t - 1] = torch.as_tensor([*r["actions"], r["recorded_action"]], device=dev)
         y, _ = bel(bel.tokens(emb, rep(E["reward"][:t]), rep(E["terminated"][:t]), act), bel.initial(3, dev))
         b, bp = y[:, 2 * (t - 1)].float(), y[:, 2 * (t - 1) + 1].float()
-    caches = {}
+    caches = {} if after is None else {"record": after}                  # P1.5: frame t's draw reads a member's record
+    rw = S.window(model, enc, [(e, t - 1)], CV.P - 1)                    # through frame t - 1; the context, the shared one
     for level, x_last in ((cfg["edm"]["inference_context_sigma"], P2), (CTX_STRESS, P2), ("sham", None)):
         c2 = copy.deepcopy(cfg)
         if level == CTX_STRESS:
@@ -175,7 +178,8 @@ def pair_state(model, cfg, enc, r):
                     x = tuple(E[k][f].to(dev).float()[None, None] for k in ("p", "g", "v")) if f < t - 1 or x_last is None else \
                         tuple(z[m:m + 1, None].float() for z in x_last.parts())
                     cache = M.context_pass(den, x, E["prev_action"][f].to(dev)[None, None],
-                                           bel.memory(E["bp"][f].to(dev).float()[None])[:, None], E["fix"][f].to(dev)[None, None],
+                                           S.cond(bel.memory(E["bp"][f].to(dev).float()[None])[:, None],
+                                                  S.at(rw, np.s_[:, f - t + CV.P:f - t + CV.P + 1])), E["fix"][f].to(dev)[None, None],
                                            cache, c2, gen)
             out.append(cache)
         caches[level] = out

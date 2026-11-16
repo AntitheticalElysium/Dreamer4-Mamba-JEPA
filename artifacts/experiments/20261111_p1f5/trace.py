@@ -17,6 +17,7 @@ import numpy as np
 import torch
 
 from saccade import train as TR
+from saccade.eval import s1 as S
 
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "readings/dissection"
@@ -30,7 +31,7 @@ def curve(model, cfg, row):
     p, rw, td, act = CR.belief_inputs(model, cfg, row)
     n = len(prefix[0])
     with TR.autocast(DEV, cfg):
-        y, _ = model.belief(model.belief.tokens(model.belief.percept_embed(p), rw, td, act), model.belief.initial(2, DEV))
+        y, _ = model.belief(model.belief.tokens(S.embed(model, p, S.history(model, p.p)[0]), rw, td, act), model.belief.initial(2, DEV))
     b = y[:, 0::2].float()                                                   # corrected belief after each frame
     seg = b[:, n:n + q + 1]                                                  # branch steps 0..q
     d = (seg[0] - seg[1]).norm(dim=-1) / seg.square().mean(-1).mean(0).sqrt().clamp(min=1e-9) / seg.shape[-1] ** .5

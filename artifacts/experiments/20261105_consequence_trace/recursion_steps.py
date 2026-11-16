@@ -12,7 +12,7 @@ import os
 os.environ.setdefault('JAX_PLATFORMS','cpu')
 os.environ.setdefault('MAMBA_DETERMINISTIC','1')
 os.environ.setdefault('PYTORCH_CUDA_ALLOC_CONF','expandable_segments:True')
-import argparse, importlib, json, time
+import argparse, dataclasses, importlib, json, time
 from pathlib import Path
 import numpy as np
 import torch
@@ -66,42 +66,45 @@ def main():
         rr=rows[st:st+16];br=[r for r in rr for _ in range(K)]
         take=lambda k,dt:torch.stack([enc[new_of[e]][k][t+dt] for e,t in br]).to(DEV)
         # Rebuild every full real prefix once, retaining the native Mamba carry after action at t0.
-        cs=[];bs=[]
+        cs=[];bs=[];rl=[]
         for e,t in rr:
             en=enc[new_of[e]]
             with TR.autocast(DEV,cfg):
                 pp=M.Percept(*(en[k][:t+1].to(DEV).float()[None] for k in ('p','g','v')),en['fix'][:t+1].to(DEV)[None])
-                emb=model.belief.percept_embed(pp)
+                reads,_,last=S.history(model,pp.p)   # P1.5: the record from the episode start, carried with Mamba's
+                emb=S.embed(model,pp,reads)
                 x=model.belief.tokens(emb, en['reward'][:t+1].to(DEV)[None],
                                       en['terminated'][:t+1].to(DEV)[None],en['action'][:t+1].to(DEV)[None])
                 y,c=model.belief(x,model.belief.initial(1,DEV))
-            cs.append(c);bs.append(y[:,-1].float())
+            cs.append(c);bs.append(y[:,-1].float());rl.append(last)
             ref=en['bp'][t+1].to(DEV).float()
             prefix_errors.append(float((y[0,-1].float()-ref).square().mean().sqrt()))
-        carry=tuple(M.MambaCarry(torch.cat([c[l].conv for c in cs]).repeat_interleave(K,0),
-                                  torch.cat([c[l].ssm for c in cs]).repeat_interleave(K,0))
-                    for l in range(len(cs[0])))
+        carry=tuple(type(cs[0][l])(*(torch.cat([getattr(c[l],f.name) for c in cs]).repeat_interleave(K,0)
+                                     for f in dataclasses.fields(cs[0][l]))) for l in range(len(cs[0])))   # Mamba-2 or -3
         initial_bp=torch.cat(bs).repeat_interleave(K,0)
+        initial_rs=None if rl[0] is None else torch.cat(rl).repeat_interleave(K,0)
+        rin=S.window(model,enc,[(new_of[e],t) for e,t in rr],7)
+        ri=lambda dt:None if rin is None else rin[:,7+dt].repeat_interleave(K,0)[:,None]
         cache=model.denoiser.new_cache()
         with TR.autocast(DEV,cfg):
             g=torch.Generator(device=DEV).manual_seed(611240+st)
             for dt in range(-7,1):
                 cache=M.context_pass(model.denoiser,tuple(take(k,dt).float()[:,None] for k in ('p','g','v')),
-                    take('prev_action',dt)[:,None],model.belief.memory(take('bp',dt).float())[:,None],
+                    take('prev_action',dt)[:,None],S.cond(model.belief.memory(take('bp',dt).float())[:,None],ri(dt)),
                     take('fix',dt)[:,None],cache,cfg,g)
         dims=[tuple(enc[0][k].shape[1:]) for k in ('p','g','v')]
         results={}
         for mode in ('teacher','free','replay'):
             g=torch.Generator(device=DEV).manual_seed(611250+st)
-            cc=cache;bp=initial_bp.clone();state=carry
+            cc=cache;bp=initial_bp.clone();state=carry;rs=initial_rs
             alive=torch.ones(len(br),device=DEV,dtype=torch.bool);records=[]
             for j in range(1,17):
                 fix=take('fix',j);pa=take('prev_action',j)
                 with TR.autocast(DEV,cfg):
                     parts=tuple(x[:,0].float() for x in M.sample(model.denoiser,dims,pa[:,None],
-                        model.belief.memory(bp)[:,None],fix[:,None],cc,cfg,g))
+                        S.cond(model.belief.memory(bp)[:,None],S.at(rs,np.s_[:,None])),fix[:,None],cc,cfg,g))
                     actual=tuple(take(k,j).float() for k in ('p','g','v'))
-                    h=model.outcome.features(bp,model.belief.percept_embed(M.Percept(*parts,fix))).float()
+                    h=model.outcome.features(bp,S.embed(model,M.Percept(*parts,fix),S.history(model,parts[0],state=rs)[0])).float()
                     prob=model.outcome.bin_logp(h).exp()
                     d=T.marginal_death(model.outcome,h,prob)
                     r=model.outcome.sample_reward(h,g)
@@ -117,11 +120,13 @@ def main():
                     if mode=='teacher':
                         context_parts=actual
                         next_bp=take('bp',j+1).float() if j<16 else bp
+                        next_rs=S.history(model,actual[0],state=rs)[2]
                     else:
                         evidence=actual if mode=='replay' else parts
                         r_in=take('reward',j).float() if mode=='replay' else r
                         d_in=take('terminated',j) if mode=='replay' else done
-                        embed=model.belief.percept_embed(M.Percept(*evidence,fix))[:,None]
+                        reads,_,next_rs=S.history(model,evidence[0],state=rs)
+                        embed=S.embed(model,M.Percept(*evidence,fix),reads)[:,None]
                         yy,state=model.belief(model.belief.tokens(embed,r_in[:,None],d_in[:,None],take('action',j)[:,None]),state)
                         next_bp=yy[:,-1].float();context_parts=evidence
                         if mode=='replay' and j<16:
@@ -130,8 +135,8 @@ def main():
                             assert err.max()<.03,('real_replay',float(err.max()))
                         alive=alive & ~d_in
                     cc=M.context_pass(model.denoiser,tuple(a[:,None] for a in context_parts),pa[:,None],
-                        model.belief.memory(bp)[:,None],fix[:,None],cc,cfg,g)
-                    bp=next_bp
+                        S.cond(model.belief.memory(bp)[:,None],S.at(rs,np.s_[:,None])),fix[:,None],cc,cfg,g)
+                    bp=next_bp;rs=next_rs
             results[mode]={k:np.stack([r[k] for r in records],1) for k in records[0]}
         # With identical real start/cache/randomness, the first forecast in both modes must agree exactly.
         for k in results['teacher']:

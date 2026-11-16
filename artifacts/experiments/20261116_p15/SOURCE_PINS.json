@@ -1,5 +1,5 @@
 {
-  "prepared_at_utc": "2026-11-16T10:40:57.658420+00:00",
+  "prepared_at_utc": "2026-11-16T11:04:20.612632+00:00",
   "torch": "2.13.0+cu130",
   "files": {
     "artifacts/eda/replay.py": "8b1260907be37a02041eda713c4891e179bcc0dacecf10326bff393b0a41639b",
@@ -25,7 +25,7 @@
     "saccade/eval/after_p1.py": "128278cb60e74a3c3ae39e226e66c1d57403e4ac0ecd5f20e2abd0a54d4c4966",
     "saccade/eval/gates.py": "a81d816b188ec4b56d4dc98a5cb3934ec21c142fde7ca229a8e833ee01a134c2",
     "saccade/eval/probe.py": "30c6e190a936b4ae2836f6b0b310427f5d135e7079195f85d1cf3fa81cd3e151",
-    "saccade/eval/s1.py": "9f43a7a3e5135845848e2f5d27901b445c574d0a949bd7b2463a9dffc7031802",
+    "saccade/eval/s1.py": "3f57cc8bae955fdd102d610a5a953a3cc4a169e21f585b09cff1dfb87cda127c",
     "saccade/m0.yaml": "9aeb2de10fc7754ed1c9f73f67e8c7f2825f235f079a2818773572d4a8799d74",
     "saccade/model.py": "55967070ec6c64b1cf7eba74fc699322d3cb230d6a0adc8fe88bf97ca36370e3",
     "saccade/train.py": "18bc629e3d2f13d91a53a74fca6aae34e17f52b269dc2c290c2f1b75b9985e02"

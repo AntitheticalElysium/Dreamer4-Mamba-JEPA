@@ -78,7 +78,7 @@ def mining(checkpoint, out):
                 rates = []
                 for action, memory in rt.COND:
                     xs = rf.sample(model, cfg, shapes, r["actions"][action], bp[memory:memory + 1],
-                                   fx, caches[lo][action], rt.K, r["j"])
+                                   fx, caches[lo][action], rt.K, r["j"], rf.S.at(caches.get("record"), np.s_[memory:memory + 1]))
                     rates.append(float((read(xs[0][:, 0, slot], xs[2][:, 0]) == count + 1).float().mean()))
                 rows.append(rates)
                 episode.append(r["e"])

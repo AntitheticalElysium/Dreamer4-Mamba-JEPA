@@ -110,6 +110,30 @@ failed smoke stops the queue before any reading; training and selection stand.
       -E OMP_NUM_THREADS=2 -E MKL_NUM_THREADS=2 -E PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
       --working-directory="$PWD" .venv/bin/python -u -m artifacts.experiments.20261116_p15.run
 
+Launched 11-16 21:41 (AEDT). The evaluation adapter, written during training:
+- **Rule.** The record starts where a tool's belief starts (zero beside the initial carry) and is carried where the
+  belief's carry is carried, so no tool needs data it did not already read. Helpers in `saccade/eval/s1.py`:
+  `history` (the scan: Mamba's read after each frame, the denoiser's record through the previous frame at chosen
+  frames, the state), `embed` (percept_embed plus that read; `alone=True` leaves it out for a no-history control),
+  `cond` (memory tokens with the record, one index for both), `before` / `window` (from encode's record state kept
+  every 64 frames, ~1.8 GB on DEV). Each tool's call sites (16 files) pass them; the hand-built Mamba-2 carries
+  (recursion_steps, the sleep tool, the budget) are built generically for either mixer; the budget passes the
+  record state and the gaze forecast's teacher (the checkpoint's chooser head on a copy of the chunk).
+- **Meaning kept per tool.** belief_probe's "percept_and_action" is a no-history control: record left out.
+  belief_path_probe's and d1's "Mamba's input" include its read. In route swaps (dissect, mining) the record rides
+  with the belief member.
+- **Guard** (`evaluation.py --tool`): every tool runs with the denoiser refusing memory tokens alone; Mamba's side
+  already raises.
+- **Order.** `evaluation.py` runs the adapter check on the selected checkpoint (`eval_checks.json`): Codex's
+  placement test on interface.futures' real calls against a contiguous scan; then the smoke pass of F5's tools; then
+  the full queue (F6.1's steps; F6.1 is the comparison arm, labelled p15 beside f61).
+- **CPU evidence** (`adapter_cpu.py`, `adapter_cpu.json`; Mamba-2 reference world, fresh init; GPU busy):
+  - record world: check passed; context and draw records 3e-5 of a contiguous scan (fp16 stored tokens); the heads'
+    reads exact; dependence and guard pass.
+  - record-free world: encode, one_step and futures bit for bit the committed code's.
+- `saccade/eval/s1.py` is in the seal (the worker's import closure): re-sealed after this edit (`pin_sources.py`);
+  the trainer's own hashes (model, train, data, chooser, m0.yaml) are untouched.
+
 ## Readings after the run (fixed before results; one seed)
 
 Against F6.1 (and test 2 / 3 for the record):

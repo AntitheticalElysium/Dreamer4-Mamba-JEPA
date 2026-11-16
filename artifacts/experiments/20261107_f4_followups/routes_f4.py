@@ -31,10 +31,11 @@ def setup():
     return model, cfg, L, S.encode(model, L, cfg)
 
 
-def sample(model, cfg, shapes, action, bp, fx, cache, n, seed):
-    """n futures of one member's inputs (exp 3's call: common random numbers through the seed)."""
+def sample(model, cfg, shapes, action, bp, fx, cache, n, seed, record=None):
+    """n futures of one member's inputs (exp 3's call: common random numbers through the seed). P1.5: `record`, the
+    member's record through the previous frame (pair_state's caches["record"]), rides with its belief."""
     a = torch.full((n, 1), action, device=CV.DEV, dtype=torch.long)
-    mem = model.belief.memory(bp)[:, None].expand(n, -1, -1, -1)
+    mem = S.cond(model.belief.memory(bp)[:, None].expand(n, -1, -1, -1), S.at(record, np.s_[[0] * n, None]))
     with TR.autocast(CV.DEV, cfg):
         return M.sample(model.denoiser, shapes, a, mem, fx.expand(n, -1)[:, None], RT.stack(cache, n), cfg,
                         torch.Generator(device=CV.DEV).manual_seed(seed))
@@ -87,7 +88,8 @@ def movement():
         A, B = (FZ.A_.vector(Ps.p[m].float(), Ps.v[m].float(), "sleep") for m in (0, 1))
         f = []
         for m in (0, 1):
-            xs = sample(model, cfg, shapes, r["actions"][m], bp[m:m + 1], fx, caches[lo][m], K_MOVE, r["j"])
+            xs = sample(model, cfg, shapes, r["actions"][m], bp[m:m + 1], fx, caches[lo][m], K_MOVE, r["j"],
+                        S.at(caches.get("record"), np.s_[m:m + 1]))
             f.append((((FZ.A_.vector(xs[0][:, 0].float(), xs[2][:, 0].float(), "sleep") - A) * (B - A)).sum(-1) / (B - A).square().sum()).cpu().numpy())
         rows.append({"e": r["e"], "j": r["j"], "d": float((B - A).norm()), "f": np.stack(f)})
     moved = np.array([(x["f"] < 0.5).mean(1) for x in rows])            # [pairs, member]

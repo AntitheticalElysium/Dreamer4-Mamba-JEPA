@@ -94,7 +94,7 @@ def heads(model, cfg, row, slot):
     act = torch.as_tensor(np.repeat(a[None], 2, 0), device=DEV)
     with TR.autocast(DEV, cfg):
         p = model.perception(torch.as_tensor(f, device=DEV), fix)
-        inputs = model.belief.tokens(model.belief.percept_embed(p), torch.as_tensor(rw, device=DEV, dtype=torch.float32),
+        inputs = model.belief.tokens(S.embed(model, p, S.history(model, p.p)[0]), torch.as_tensor(rw, device=DEV, dtype=torch.float32),
                                      torch.as_tensor(td, device=DEV), act)
         y, _ = model.belief(inputs, model.belief.initial(2, DEV))
         b = y[:, -1:]                                                          # the generating (post-action) belief

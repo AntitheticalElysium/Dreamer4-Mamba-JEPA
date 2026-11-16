@@ -31,7 +31,7 @@ def main(ckpt, out):
         def percept(j):                                                  # frame t - 1's embedding + the action: no history
             P = M.Percept(*(torch.stack([enc[int(T["ep"][x])][k][int(T["t"][x]) - 1] for x in j]).float().to(CV.DEV) for k in ("p", "g", "v")),
                           torch.stack([enc[int(T["ep"][x])]["fix"][int(T["t"][x]) - 1] for x in j]).to(CV.DEV))
-            emb = torch.cat([model.belief.percept_embed(M.Percept(*(z[a:a + 4096] for z in P.parts()), P.fix[a:a + 4096])).float().cpu()
+            emb = torch.cat([S.embed(model, M.Percept(*(z[a:a + 4096] for z in P.parts()), P.fix[a:a + 4096]), alone=True).float().cpu()   # P1.5: record left out
                              for a in range(0, len(j), 4096)])
             return torch.cat([emb, torch.nn.functional.one_hot(torch.as_tensor(T["action"][j]), 17).float()], 1).double().detach()
     q, body, rng = DC.quiet(L, T), T["body"], np.random.default_rng(2114)
