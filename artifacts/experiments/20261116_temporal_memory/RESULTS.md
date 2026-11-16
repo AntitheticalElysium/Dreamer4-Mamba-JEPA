@@ -73,3 +73,39 @@ awake energy clock linearly readable at 0.90, real decays at 0.15, with the same
 drink, where it keeps more than the last change. Real-decay codes (S4D-Real, Laplace F, CogRNN's inverse) are
 readable only through a nonlinear reader. Mamba-1 is a diagonal of real decays and Mamba-2 a single real decay per
 head (Mamba-3's own account): the family whose state needs a nonlinear decoder for elapsed time.
+
+## Measurement 3: learned memories form the clocks only when the objective asks for them (`architecture.py`, `architecture_seed1.json`)
+
+Seed 1 (the plan's amendment), 3,000 updates, 12.3M frames, every memory from scratch on the same batches. AP at the
+clock events of DEV fold 4 from each model's own head (base rates 0.049 / 0.067 / 0.037 / 0.243), and the generic
+next-change log-loss over all cells:
+
+| Arm | Objective | Food | Drink | Awake energy | Asleep rise | All-cell log-loss |
+| :--- | :--- | ---: | ---: | ---: | ---: | ---: |
+| G2: belief form, global Mamba-2 | all cells | 0.049 | 0.066 | 0.038 | 0.316 | 0.202 |
+| G2K: G2 read through 4 memory tokens | all cells | 0.048 | 0.064 | 0.039 | 0.302 | 0.199 |
+| G3: global Mamba-3 | all cells | 0.048 | 0.066 | 0.039 | 0.338 | 0.205 |
+| P2: per-cell Mamba-2 | all cells | 0.051 | 0.068 | 0.034 | 0.237 | 0.256 |
+| P3: per-cell Mamba-3 | all cells | 0.050 | 0.068 | 0.048 | 0.253 | 0.255 |
+| G2_digits | digit cells only | 0.063 | 0.085 | 0.451 | 0.972 | (not trained) |
+| P2_digits | digit cells only | 0.181 | 0.187 | 0.196 | 0.270 | (not trained) |
+
+Awake energy over training (1,000 / 2,000 / 3,000): G2 0.034 / 0.037 / 0.038 (flat); G2_digits 0.123 / 0.347 / 0.451;
+P2_digits 0.036 / 0.061 / 0.196.
+
+Readings against the bars fixed before results:
+- Compression (P2 above G2 by > 0.2): not supported (0.034 against 0.038).
+- Interface (G2K below G2 by > 0.2): not supported, and not informative: neither formed the clocks, so the memory
+  tokens had nothing to lose here.
+- Rotations (Mamba-3 above Mamba-2 by > 0.2): not supported, global or per cell.
+- Incentive (digits-only above all-cell by > 0.2): supported for the global memory (+0.41 energy, +0.66 asleep rise);
+  for the per-cell memory +0.16 energy, +0.13 / +0.12 food / drink: within 0.1 of the bar, unresolved.
+
+Under a generic objective over all cells, no memory structure tested here forms the awake clocks within 12.3M frames,
+and nothing trends (G2 flat from 1,000 to 3,000 updates). Asked through the digit cells alone, the global belief-form
+memory learns them (energy 0.45 and rising, asleep rise 0.97); the per-cell one learns food and drink faster (0.18 /
+0.19 against 0.06 / 0.09) and energy slower. Per-cell arms have 0.15M parameters against 2.4M (declared), and a worse
+generic loss (0.256 against 0.202: a cell alone does not see its neighbours, the scroll). Together with checks 16-18
+(a fixed readable record lets G1 alone draw the clocks), the limit is learning the memory under a diluted objective,
+not reading it: when the record exists, the generic objective suffices to read it; when the memory must be learned,
+the generic objective does not shape it, whatever its structure here.
