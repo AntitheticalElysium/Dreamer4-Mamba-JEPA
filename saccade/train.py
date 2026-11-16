@@ -59,18 +59,32 @@ def encoder_grad_norms(model, terms):
     return result
 
 
-def encoder_diagnostics(model, chunk, carry, cache, targets, cfg, bootstrap=None, update=None, forecast_windows=None):
+def encoder_diagnostics(model, chunk, carry, cache, targets, cfg, bootstrap=None, update=None, forecast_windows=None,
+                        record=None, gaze=None):
     """One stream, at most 64 new frames, after training backward. Preserve RNG and accumulated .grad.
 
     Reusing the full retained training graph for six extra backwards exceeded the 6 GB device budget.
     The bounded recomputation uses the same pre-update parameters and incoming history, not a new data draw.
+    P1-F7: that stream's spatial-history state and gaze rows (gaze_rows) when the recipe has them.
     """
     n = cfg["data"]["context_prefix"] + 64
     bounded = {k: v[:1, :n] for k, v in chunk.items()}
     with torch.random.fork_rng(devices=[cache.device.index]):
         fw = None if forecast_windows is None else forecast_windows[:1, :n - cfg["data"]["context_prefix"]]
-        terms, _, _ = p1_losses(model, bounded, carry, cache, targets, cfg, bootstrap[:1], update, fw)
+        terms = p1_losses(model, bounded, carry, cache, targets, cfg, bootstrap[:1], update, fw, record, gaze)[0]
         return encoder_grad_norms(model, terms)
+
+
+def gaze_rows(controller, rows, steps, limit=None):
+    """P1-F7: the gaze forecast's inputs for the streams `rows` (sorted): the chooser's inputs and teacher distribution
+    of their eligible new frames (Controller.prepare, before the world's update) and their local flat rows [len(rows) *
+    steps]; `limit` keeps the first frames of each stream (encoder_diagnostics' bounded chunk)."""
+    xx, _, ids = controller.pending
+    r = torch.as_tensor(rows, device=ids.device)
+    sid, tid = ids // steps, ids % steps
+    keep = torch.isin(sid, r) & (tid < (limit or steps))
+    local = torch.searchsorted(r, sid[keep]) * (limit or steps) + tid[keep]
+    return tuple(z[ids[keep]] for z in xx), controller.teacher[keep], local
 
 
 def bootstrap_rows(cfg, world_seed, update) -> np.ndarray:
@@ -111,12 +125,19 @@ def tensors(chunk: dict, device) -> dict:
     return {k: torch.as_tensor(v, device=device) for k, v in chunk.items() if k != "target"}
 
 
-def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=None, update=None, forecast_windows=None):
+def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=None, update=None, forecast_windows=None,
+              record=None, gaze=None):
     """One microbatch of streams: chunk arrays [B, P + T, ...] (prefix = context only), carried Mamba state, cache =
     predicted beliefs [B, P + 1, W] of the prefix frames and of chunk frame 0 (computed in the previous chunk,
     detached; never replayed through Mamba), these streams' bootstrap rows (bootstrap_rows), the update index (the
     bootstrap start) and, with heads.forecast, the TSP forecast's window index per new frame [B, T] (forecast_windows).
-    Returns (loss terms, new carry, new cache)."""
+    Returns (loss terms, new carry, new cache).
+    P1-F7: with the spatial history (model.record), `record` [B, 81, dim] is its state after the frame before chunk
+    frame 0, and a 4th value is returned, the state after chunk frame T - 1 (the frame before the next chunk's frame 0).
+    With heads.gaze_forecast, `gaze` = (the chooser's inputs, its window distribution, local flat rows [B * T]) of these
+    streams' eligible new frames. With losses.route_by_role the reward, continuation, forecast and gaze heads read a
+    second Mamba pass over detached percepts: their gradients reach Mamba and its input maps, never the encoder
+    (Dreamer 4's frozen tokenizer; IRIS); G1 and TSP keep the attached pass."""
     P = cfg["data"]["context_prefix"]
     dev = cache.device
     t = tensors(chunk, dev)
@@ -126,18 +147,30 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=No
         Pc = model.perception(t["frames"][:, P:], fix[:, P:])
         with torch.no_grad():
             Pp = model.perception(t["frames"][:, :P], fix[:, :P])
-        emb = model.belief.percept_embed(Pc)
+        rin = rst = new_record = None
+        if model.record is not None:
+            rin, rst = model.record.scan(torch.cat([Pp.p, Pc.p.detach()], 1), first, record)
+            new_record, rst = rst[:, L - P - 1], rst[:, P:]              # carried; Mamba reads the state after each new frame
+        emb = model.belief.percept_embed(Pc, rst)
         x = model.belief.tokens(emb, t["reward"][:, P:], t["terminated"][:, P:], t["action"][:, P:])
         seq = first[:, P:].long().cumsum(1).repeat_interleave(2, 1)
-        y, carry = model.belief(x, carry, seq)
+        y, carry_out = model.belief(x, carry, seq)
         nxt = y[:, 1::2]                                                 # predicted belief of frame t + 1
         b_pred = torch.cat([cache.to(nxt.dtype), nxt[:, :-1]], 1) * (~first)[..., None]   # zero belief at resets
         new_cache = torch.cat([b_pred[:, -P:], nxt[:, -1:]], 1).detach().float()
+        emb_d, b_pred_d = emb, b_pred
+        if cfg["losses"].get("route_by_role"):
+            emb_d = model.belief.percept_embed(Pc.replace(*(z.detach() for z in Pc.parts())), rst)
+            y_d, _ = model.belief(model.belief.tokens(emb_d, t["reward"][:, P:], t["terminated"][:, P:], t["action"][:, P:]), carry, seq)
+            b_pred_d = torch.cat([cache.to(y_d.dtype), y_d[:, 1::2][:, :-1]], 1) * (~first)[..., None]
+        carry = carry_out
         x0 = tuple(torch.cat([a, b.detach()], 1) for a, b in zip(Pp.parts(), Pc.parts()))
         sc = cfg["edm"]["shortcut"]                                      # Dreamer 4's shortcut forcing (P1-F4)
-        g1 = M.shortcut_loss(model.denoiser, x0, t["prev_action"], model.belief.memory(b_pred), fix, t["episode"],
+        memory = model.belief.memory(b_pred) if rin is None else (model.belief.memory(b_pred), rin)
+        g1 = M.shortcut_loss(model.denoiser, x0, t["prev_action"], memory, fix, t["episode"],
                              t["valid"], sc, torch.as_tensor(bootstrap, device=dev), update >= sc["bootstrap_start"])[:, P:].mean()
         bp, cells = b_pred[:, P:], M.window(fix[:, P:])
+        bpd = b_pred_d[:, P:]
         pix = M.cell_pixels(M.crop(t["frames"][:, P:], fix[:, P:]))
         assert cfg["heads"]["pixel_decoder"]["mean_loss"] == "faithful"   # LOSSES G2 (10-31): Stirn et al. 2023
         vs = Pc.v.detach()                                               # the scale's lighting input (the mean never reads it)
@@ -156,7 +189,7 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=No
             ok = torch.isfinite(tgt)
             terms["change"] = F.binary_cross_entropy_with_logits(logit.float()[ok], tgt[ok]) if ok.any() else logit.sum() * 0
         nf = ~first[:, P:] & t["valid"][:, P:]
-        h = model.outcome.features(bp, emb)[nf]
+        h = model.outcome.features(bpd, emb_d)[nf]
         r = t["reward"][:, P:][nf]
         alive = (~t["terminated"][:, P:][nf]).float()
         reward = -model.outcome.reward_logp(h, r).mean()
@@ -175,11 +208,11 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=No
                 mf = model.pixels.mean(model.tsp.predict(bp, None, None, fc))
                 yf = M.cell_pixels(M.crop(t["frames"][:, P:], fx)).float() / 127.5 - 1
                 terms["tsp_forecast"] = (mf.float() - yf).square()[nf].mean()
-            hf = model.outcome.features(bp, None)[nf]
+            hf = model.outcome.features(bpd, None)[nf]
             rf = -model.outcome.reward_logp(hf, r).mean()
             if fcfg.get("reward_distances", 1) > 1:                      # P1-F6.1, Dreamer 4 MTP (Eq. 9, unweighted sum):
                 terms["reward_forecast_1"] = rf                          # frame t's reward from the belief predicted before
-                ha = model.outcome.features(b_pred, None)                # frame t - d + 1 (prefix rows: the cache, detached),
+                ha = model.outcome.features(b_pred_d, None)              # frame t - d + 1 (prefix rows: the cache, detached),
                 seg = first.long().cumsum(1)                             # only when no episode starts in [t - d + 1, t]
                 ahead = 0
                 for d in range(2, fcfg["reward_distances"] + 1):
@@ -193,9 +226,14 @@ def p1_losses(model: M.M0, chunk: dict, carry, cache, targets, cfg, bootstrap=No
                 rf = rf + ahead
             terms.update(reward_forecast=rf,
                          cont_forecast=F.binary_cross_entropy_with_logits(model.outcome.cont_logit(hf, r).float(), alive))
+        if model.gaze_forecast is not None:                              # P1-F7: the chooser's distribution, before frame t
+            xx, q, rows = gaze                                           # (gaze.py's loss: cross-entropy to the teacher)
+            logit = model.gaze_forecast(xx, bpd.reshape(-1, bpd.shape[-1])[rows])
+            terms["gaze_forecast"] = -(q * logit.float().log_softmax(-1)).sum(-1).mean() if len(rows) else logit.sum() * 0
     terms.update(g1=g1, tsp=tsp, rec=rec, reward=reward, cont=cont,
                  noise=noise)                                            # noise reaches only the scale network: outside the groups
-    return {k: v.float() for k, v in terms.items()}, carry, new_cache
+    out = ({k: v.float() for k, v in terms.items()}, carry, new_cache)
+    return out if model.record is None else (*out, new_record)
 
 
 def groups(terms: dict) -> dict:
@@ -205,6 +243,8 @@ def groups(terms: dict) -> dict:
     g = {"G1": terms["g1"], "G2": terms.get("change", 0) + terms["tsp"] + terms["rec"], "G3": terms["reward"] + terms["cont"]}
     if "reward_forecast" in terms:
         g["G4"] = terms.get("tsp_forecast", terms.get("token_forecast", 0)) + terms["reward_forecast"] + terms["cont_forecast"]
+    if "gaze_forecast" in terms:                                         # P1-F7: its own group (a task of its own,
+        g["G5"] = terms["gaze_forecast"]                                 # HarmonyDream's grouping; nats per frame)
     return g
 
 
@@ -269,7 +309,11 @@ def _monitor(model: M.M0, cfg, episodes, n_windows=None) -> dict:
                 model.perception(c["frames"][:, a:a + 512], c["fixation"][:, a:a + 512]).parts()
                 for a in range(0, ep.T + 1, 512)])), c["fixation"])
             toks.append(Pe.p[0, ::8].reshape(-1, Pe.p.shape[-1]).float())
-            x = model.belief.tokens(model.belief.percept_embed(Pe), c["reward"], c["terminated"], c["action"])
+            rin = rst = None                                             # P1-F7: the spatial history from the episode's start
+            if model.record is not None:
+                start = torch.zeros(Pe.p.shape[:2], dtype=torch.bool, device=dev); start[:, 0] = True
+                rin, rst = model.record.scan(Pe.p, start, model.record.zero(1, dev))
+            x = model.belief.tokens(model.belief.percept_embed(Pe, rst), c["reward"], c["terminated"], c["action"])
             y, _ = model.belief(x, model.belief.initial(1, dev))
             b_pred = torch.cat([torch.zeros_like(y[:, :1]), y[:, 1::2][:, :-1]], 1)
             for t in (picks[ep_of == i] - off[i] + 1).tolist():                     # target frame t >= 1
@@ -282,7 +326,8 @@ def _monitor(model: M.M0, cfg, episodes, n_windows=None) -> dict:
                 sg = torch.full((len(levels), n), e["shortcut"]["context_signal"], device=dev, dtype=torch.long)
                 sg[:, -1] = levels
                 lv = [(sg, torch.full_like(sg, k.bit_length() - 1))] * 2
-                l = M.shortcut_loss(model.denoiser, x0, rep(c["prev_action"]), model.belief.memory(rep(b_pred)),
+                mem = model.belief.memory(rep(b_pred))
+                l = M.shortcut_loss(model.denoiser, x0, rep(c["prev_action"]), mem if rin is None else (mem, rep(rin)),
                                     rep(c["fixation"]), rep(c["episode"]), rep(c["valid"]), e["shortcut"],
                                     torch.zeros(len(levels), dtype=torch.bool, device=dev), False, lv, noise)
                 losses.append(l[:, -1].float().cpu())
@@ -319,12 +364,13 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
     st = {"frames": 0, "update": 0, "next_ckpt": 1}
     carry = model.belief.initial(d["streams"], dev)
     cache = torch.zeros(d["streams"], P + 1, W, device=dev)
+    record = model.record.zero(d["streams"], dev) if model.record is not None else None   # P1-F7: spatial history
     latest = out_dir / "latest.pt"
     if latest.exists():
         ck = torch.load(latest, weights_only=False, map_location=dev)
         validate_resume(ck, cfg, world_seed, provenance)
         model.load_state_dict(ck["model"]), opt.load_state_dict(ck["opt"]), streams.load_state(ck["streams"])
-        carry, cache, st = ck["carry"], ck["cache"], ck["state"]
+        carry, cache, st, record = ck["carry"], ck["cache"], ck["state"], ck.get("record")
         torch.set_rng_state(ck["rng"]["cpu"].cpu()), torch.cuda.set_rng_state(ck["rng"]["cuda"].cpu())
         controller.load_state(ck["fixation_controller"])
         print(f"resumed at update {st['update']}, frames {st['frames']}", flush=True)
@@ -348,20 +394,27 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
             fw = np.random.default_rng([cfg["heads"]["forecast"]["seed"], world_seed, st["update"]]).integers(49, size=(d["streams"], S))
         logs = []
         route_norms = None
+        gazing = model.gaze_forecast is not None                         # P1-F7
         if at_checkpoint:
             diagnostic_carry = M.carry_rows(carry, [0])
             diagnostic_cache = cache[:1].clone()
+            diagnostic_record = None if record is None else record[:1].clone()
+            diagnostic_gaze = gaze_rows(controller, [0], S, 64) if gazing else None
         for rows in rows_all:
-            terms, c_new, cache_new = p1_losses(model, D.select(chunk, rows), M.carry_rows(carry, rows),
-                                                cache[rows], targets, cfg, boot[rows], st["update"],
-                                                None if fw is None else fw[rows])
+            out = p1_losses(model, D.select(chunk, rows), M.carry_rows(carry, rows), cache[rows], targets, cfg, boot[rows],
+                            st["update"], None if fw is None else fw[rows], None if record is None else record[rows],
+                            gaze_rows(controller, rows, S) if gazing else None)
+            terms, c_new, cache_new = out[:3]
             ((model.harmoniser(groups(terms)) + terms["noise"]) / micro).backward()
             M.carry_put(carry, rows, c_new)
             cache[rows] = cache_new
+            if record is not None:
+                record[rows] = out[3]
             logs.append({k: float(v.detach()) for k, v in terms.items()})
-        del terms, c_new, cache_new
+        del terms, c_new, cache_new, out
         if at_checkpoint:
-            route_norms = encoder_diagnostics(model, chunk, diagnostic_carry, diagnostic_cache, targets, cfg, boot, st["update"], fw)
+            route_norms = encoder_diagnostics(model, chunk, diagnostic_carry, diagnostic_cache, targets, cfg, boot, st["update"],
+                                              fw, diagnostic_record, diagnostic_gaze)
         gn = float(torch.nn.utils.clip_grad_norm_(model.parameters(), o["grad_clip"], error_if_nonfinite=True))
         opt.step()
         controller.learn(int(chunk["valid"][:, P:].sum()))
@@ -378,7 +431,7 @@ def p1(cfg, world_seed, out_dir: Path, updates=None, steps=None, n_episodes=None
             t0, u0 = time.time(), st["update"]
         if checkpoints and st["frames"] >= st["next_ckpt"] * every:
             ck = {"model": model.state_dict(), "opt": opt.state_dict(), "streams": streams.state(), "carry": carry,
-                  "cache": cache, "state": dict(st, next_ckpt=st["next_ckpt"] + 1), "cfg": cfg, "world_seed": world_seed,
+                  "cache": cache, "record": record, "state": dict(st, next_ckpt=st["next_ckpt"] + 1), "cfg": cfg, "world_seed": world_seed,
                   "provenance": provenance,
                   "rng": {"cpu": torch.get_rng_state(), "cuda": torch.cuda.get_rng_state()}}
             ck["fixation_controller"] = controller.state()
