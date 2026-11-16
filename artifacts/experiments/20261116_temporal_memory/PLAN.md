@@ -157,3 +157,20 @@ saved between reads, so the last saved one is 4,000; the stop was made without c
 native read on both banks (`record_schedule.py 4000`). Comparators at 4,000: the recency's pairs (original energy 0.704,
 on-schedule 0.958); its natural catalogue exists only at 2,000 (awake energy 0.22) and 6,000 (0.80), so the natural
 bar is read as absolute. The 2,000 / 4,000 pair reads in `record_ft.json` were seen before this amendment.
+
+## Test 3 (user 11-16): the same record through a nonlinear per-cell read (`record_mlp_ft.py`)
+
+Test 2's linear map into the token limited the clocks by its own bar. Codex proposed, and the user agreed, a matched
+arm: test 2 exactly (record, recipe, data, seeds, reads), with the zero-initialised linear map replaced by a small
+per-cell MLP shared by all cells, before the record is added to the token: Linear(1,024 -> W) -> GELU (the model's
+own activation) -> Linear(W -> W), the last layer zero-initialised (inert at update 0, as the linear arm). W is the
+denoiser width; its parameter count is 1.25x the linear map's. Under the agreed split (user 11-16) this is the
+denoiser's read of the spatial history; Mamba stays global and selective and is not changed here.
+Budget (user 11-16): stop at 4,000, matched to test 2's last checkpoint; pair reads at 2,000 / 4,000, then the natural
+catalogue and check 17's native read at 4,000. The linear architecture stays a candidate whatever this shows.
+
+Readings fixed before results (against test 2 at 4,000):
+- The nonlinear read unlocks the clocks: natural awake energy >= 0.42 (test 2: 0.221; +0.2) with false changes
+  <= 0.03, or on-schedule energy pairs' due-minus-delayed >= 0.5 (test 2: 0.095).
+- No difference: both within 0.1 of test 2. Then the read's form is not what limits the clocks at this budget.
+- G1 and the broad classes (coal, iron, stone, drink +1, damage, recovery) are reported against test 2.
