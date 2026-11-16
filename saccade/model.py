@@ -243,6 +243,15 @@ class FunctionalMamba3(nn.Module):
         if c.is_outproj_norm:
             y = c.norm(y, rearrange(z, "b l h p -> b l (h p)"))
         last = torch.cat([stream[1:] != stream[:-1], torch.tensor([True], device=inputs.device)])   # each stream's last
+        # The kernel casts Angles to bf16 and returns the final angle state in that dtype (angle_dt_fwd allocates it as
+        # the input's), so a carried angle in [0, 2 pi) was rounded to ~0.01-0.025 rad at every chunk boundary
+        # (measured: 0.065 rad after 8 chunks, keys rotated wrongly, chunked != contiguous by 0.3-0.55%). The same
+        # angle kernel on fp32 copies of the bf16 values the main kernel used gives the fp32 state it kept internally.
+        from mamba_ssm.ops.triton.mamba3.angle_dt import angle_dt_fwd
+        with torch.no_grad():
+            _, angle = angle_dt_fwd(flat(angles).to(torch.bfloat16).float(), heads(DT).float().contiguous(),
+                                    init_state=states[0].float().contiguous(), chunk_size=c.chunk_size,
+                                    return_output_state=True, cu_seqlens=cu)
         return c.out_proj(y.to(x.dtype)), Mamba3Carry(angle[last], ssm[last].float(), k[last], v[last])
 
 

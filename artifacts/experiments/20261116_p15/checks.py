@@ -18,7 +18,7 @@ from saccade import chooser as C, data as D, model as M, train as TR
 
 HERE = Path(__file__).resolve().parent
 P7 = importlib.import_module("artifacts.experiments.20261116_p15.train")
-DEV = torch.device("cuda")
+DEV = torch.device("cuda", 0)
 OUT = {}
 
 
@@ -65,6 +65,16 @@ def mamba3():
                 per.append(rel(yb[i:i + 1], yi))
                 per.append(rel(cb.ssm[i:i + 1], ci.ssm))
             res[name]["streams_vs_alone"] = max(per)
+            long = torch.randn(2, 512, b["width"], device=DEV)          # eight chained chunks against one pass
+            yl, cl = w(long, w.initial(2))
+            cc, errs = w.initial(2), []
+            for i in range(8):
+                yi, cc = w(long[:, 64 * i:64 * (i + 1)], cc, torch.zeros(2, 64, dtype=torch.long, device=DEV))
+                errs.append(rel(yi, yl[:, 64 * i:64 * (i + 1)]))
+            d = (cc.angle - cl.angle) % (2 * np.pi)
+            res[name]["chain8_output"] = errs
+            res[name]["chain8_angle_mod_2pi"] = float(torch.minimum(d, 2 * np.pi - d).max())
+            res[name]["chain8_state"] = max(rel(cc.ssm, cl.ssm), rel(cc.k, cl.k), rel(cc.v, cl.v))
     y, _ = w(u, w.initial(3))
     y.square().mean().backward()
     res["grad_finite"] = all(bool(torch.isfinite(p.grad).all()) for p in w.parameters() if p.grad is not None)
@@ -90,6 +100,12 @@ def units():
     res["harmoniser_no_parameters"] = len(list(h.parameters())) == 0
     model = M.M0(cfg).to(DEV)
     model.denoiser.checkpoint = True
+    for m in (*model.denoiser.out, model.denoiser.final_mod, model.denoiser.record_read[2]):   # zero-initialised outputs
+        torch.nn.init.normal_(m.weight, std=0.02)                       # pass no gradient at update 0; G1's route needs them
+    for blk in model.denoiser.blocks:                                    # adaLN-Zero modulations likewise
+        for n, p_ in blk.named_parameters():
+            if p_.abs().sum() == 0 and p_.dim() == 2:
+                torch.nn.init.normal_(p_, std=0.02)
     split = D.load_split(cfg)
     P = cfg["data"]["context_prefix"]
     streams = D.Streams(split["train"][:40], 4, P, seed=3, targets_offsets=D.frame_offsets(split["train"]))

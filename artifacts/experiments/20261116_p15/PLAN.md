@@ -48,7 +48,14 @@ the 70 CPU unit tests pass.
 5. **Mamba-3** (`belief.mixer: mamba3`, chunk 64, mamba_ssm's SISO recommendation). `M.FunctionalMamba3`: the official
    module's forward with state passing (its kernel's Input_States / return_final_states / cu_seqlens), episode starts
    as variable-length segments. Its single-step decode (`step`) is "only tested on H100" and needs CuteDSL; the world
-   never uses it (training, evaluation and imagination run the chunked forward with a carry). Screen evidence
+   never uses it (training, evaluation and imagination run the chunked forward with a carry). A defect found and fixed
+   by the pre-launch check: the kernel casts Angles to bf16 and returns the final angle state in bf16, so the carried
+   rotation angle was re-rounded (~0.01-0.025 rad) at every chunk boundary (0.065 rad after 8 chunks; keys rotated
+   wrongly; chunked against contiguous 0.3-0.55%). The wrapper now recomputes the final angle with the same angle
+   kernel on fp32 copies of the bf16 values the kernel used: carried angle, key and value exact, SSM state 2e-4,
+   outputs 0.4-0.5% per chunk under bf16 without growth (the kernel's own bf16 arithmetic; our Mamba-2 wrapper: 0.2-0.35%
+   under bf16). The module's own inference path never feeds states back into this kernel, so upstream never met it.
+   Screen evidence
    (`20261116_temporal_memory` measurement 3): no cost, no gain on the clocks; the paper: state tracking Mamba-2 lacks.
 
 ## Pre-launch checks (`checks.py`, GPU after test 3; results in `checks.json`)
@@ -62,6 +69,36 @@ the 70 CPU unit tests pass.
   and 256 steps, route by role on and off; F6.1's own logged values beside them. The run launches only if the peak at
   256 steps stays under the 6 GB card's budget (F6.1: 2.4-3.5 GiB) and the time per update keeps 25.6M frames within
   about 14 hours.
+
+Results (`checks.json`; logs beside it). All pass.
+- Mamba-3 (after the angle fix): wrapper = official 0.0; chunked against contiguous 6e-4 fp32, 4.5e-3 bf16; eight
+  chained chunks: angle exact, state 3-4e-4, outputs flat (no growth); resets and streams match; gradients finite.
+- Units: record = test 2's (0.0); harmoniser at its fixed point (0.0), no parameters; gaze rows correct; route by role:
+  encoder gradient exactly 0 for reward, continuation, every forecast distance and the gaze forecast, positive for
+  G1 (0.0022), TSP (0.018) and reconstruction (0.060); every head reaches Mamba (G1 0.006, reward 1.19, continuation
+  0.15, reward forecast 1.28, gaze 0.31). G1 is checked with the denoiser's zero-initialised outputs randomised: at
+  initialisation they pass no gradient (0.0 in the first run, which is why it read false).
+- Throughput (30 updates from scratch, the trainer itself; F6.1's log at comparable points):
+
+  | steps | P1.5 route on | route off | F6.1 | peak GiB on / off / F6.1 |
+  |---|---|---|---|---|
+  | 64 | 2.03 s | 1.99 s | 2.06 (update 25), 2.17 (late) | 3.08 / 2.94 / 2.60 |
+  | 256 | 7.65 s | 7.44 s | 8.0 (steady) | 3.02 / 2.88 / 2.60 |
+
+  Route by role costs 2-3% (the second Mamba pass); the whole bundle runs at F6.1's speed. At F5's schedule (12,500
+  updates at 64 steps, 3,125 at 256): about 13.7 h of training, against 14.5 h at F6.1's logged rates, plus the
+  same monitor and checkpoint overhead. Peak allocated 3.1 GiB (+0.5 over F6.1) on the 6 GB card. Neither grows with
+  run length: the record state is fixed per stream (81 x 1,024), the second pass is per update.
+
+## Launch (after Codex's review; user 11-16)
+
+One segment to the full budget, F6.1's environment; the trainer pins the saccade sources' hashes, so `saccade/` must
+not change during the run (the evaluation adapter is written in this folder).
+
+    systemd-run --user --unit=saccade-p15 -p MemoryMax=24G -E MAMBA_DETERMINISTIC=1 -E JAX_PLATFORMS=cpu \
+      -E OMP_NUM_THREADS=2 -E MKL_NUM_THREADS=2 -E PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
+      --working-directory="$PWD" bash -c 'D=artifacts/experiments/20261116_p15
+        .venv/bin/python -u -m artifacts.experiments.20261116_p15.train $D/run >> $D/training.log 2>&1'
 
 ## Readings after the run (fixed before results; one seed)
 
