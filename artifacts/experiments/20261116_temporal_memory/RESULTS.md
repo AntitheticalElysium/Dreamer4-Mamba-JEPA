@@ -177,8 +177,9 @@ neither produced a reading). Against test 2 (linear read) at 4,000, natural DEV 
 | G1 at 1,000 / 2,000 / 3,000 / 4,000 | 0.00340 / 0.00292 / 0.00276 / 0.00270 | 0.00341 / 0.00295 / 0.00276 / 0.00270 |
 
 Against the bars fixed before results: no unlock (natural awake energy 0.307 < 0.42; on-schedule energy pairs 0.165 <
-0.5); "no difference" (both within 0.1 of test 2: +0.086, +0.070). By the tie-break agreed with the user (linear
-unless the MLP shows broader gains), the linear read is integrated: G1 and every broad class are equal, natural food
+0.5); "no difference" (both within 0.1 of test 2: +0.086, +0.070). The tie-break first proposed (linear unless the MLP
+shows broader gains) was overruled by the user, who chose the MLP for P1.5: ahead on the awake clocks at a fraction
+of the cost (one extra 256-wide layer). Beside it: G1 and every broad class are equal, natural food
 and drink equal, the natural asleep rise lower with the MLP. The MLP is ahead on two clock readings (natural awake
 energy, its interval clear of the linear one's; hunger pairs +0.12), so the read's form helps the awake clocks a
 little at this budget without being what limits them.

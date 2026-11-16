@@ -497,6 +497,13 @@ class Denoiser(nn.Module):
             torch.random.default_generator.manual_seed(e["shortcut"]["init_seed"])   # their own draws
             self.signal_embed = nn.Embedding(self.k_max + 1, nf)
             self.step_embed = nn.Embedding(self.k_max.bit_length(), nf)
+        self.record_read = None
+        if r := cfg.get("record"):                                       # P1.5: the spatial history's read, test 3's per-cell
+            assert r["read"] == "mlp", "the MLP read (test 3, 20261116_temporal_memory; the user's choice 11-16)"   # MLP:
+            with torch.random.fork_rng(devices=[]):                      # its own draws; the last layer zero-initialised
+                torch.random.default_generator.manual_seed(r["read_init_seed"])   # (inert at the start, as in test 3)
+                self.record_read = nn.Sequential(nn.Linear(2 * dims[0] * r["modes"], W), nn.GELU(), nn.Linear(W, W))
+            nn.init.zeros_(self.record_read[2].weight), nn.init.zeros_(self.record_read[2].bias)
 
     def conds(self, code, prev_action):
         """The (physical, glimpse) conditionings from a pair of codes; one code conditions both groups."""

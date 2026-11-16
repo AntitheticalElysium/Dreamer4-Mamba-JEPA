@@ -11,8 +11,8 @@ from saccade import train as TR
 HERE = Path(__file__).resolve().parent
 F61 = importlib.import_module("artifacts.experiments.20261114_p1f61.train")
 WORLD_SEED = F61.WORLD_SEED
-READ = None                                                              # "linear" or "mlp": test 3's verdict (PLAN.md)
-RECORD = {"basis": "s4d_lin", "modes": 32, "dt": 1 / 32, "init_seed": 711601}   # tests 2-3 (20261116_temporal_memory)
+READ = "mlp"                                                             # test 3; the user's choice 11-16 (PLAN.md)
+RECORD = {"basis": "s4d_lin", "modes": 32, "dt": 1 / 32, "init_seed": 711601, "read_init_seed": 711603}   # tests 2-3 (20261116_temporal_memory)
 
 
 def recipe(route_by_role=True):

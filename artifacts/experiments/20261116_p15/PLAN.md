@@ -11,8 +11,9 @@ the 70 CPU unit tests pass.
    cell, a fixed S4D-Lin record of every channel of its own coarse token (S4D, Gu et al. 2022: A_n = -1/2 + i pi n,
    32 modes, B = 1, the S4D listing's bilinear step at dt = 1/32), reset at episode starts, built from stop-gradient
    tokens (a denoiser input, LOSSES 7a). The denoiser adds a read of the record through the previous frame to each
-   cell's token (read: test 3's verdict, `20261116_temporal_memory`, linear or MLP, decided on its fixed bars; the other
-   form is not built); Mamba reads the state after each frame through a per-cell map to the token width and a linear
+   cell's token through test 3's per-cell MLP (Linear -> GELU -> Linear, last layer zero-initialised;
+   `20261116_temporal_memory`): by test 3's bars the two reads tied, but the user chose the MLP (ahead on the awake
+   clocks at a fraction of the cost: one 256-wide layer); the linear form is not built; Mamba reads the state after each frame through a per-cell map to the token width and a linear
    map beside the flattened percept (the user's split: the history feeds both). Evidence: tests 2-3 (clocks partial
    at 4,000 updates, G1 -22% against the recency run at matched updates, coal / iron drawn better); measurements 2 and
    4 (rotating bases make elapsed time linearly readable, 0.90 against 0.15 for real decays).
