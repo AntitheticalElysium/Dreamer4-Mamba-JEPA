@@ -15,11 +15,19 @@ TF, UC = RFT.TF, RFT.UC
 RUN = RFT.HERE / "run/record_mlp"
 
 
+class Read(nn.Sequential):
+    """The per-cell MLP; `weight` is its output layer's (traces_ft.main logs trace_proj.weight's norm)."""
+
+    @property
+    def weight(self):
+        return self[2].weight
+
+
 def install(den):
     """record_ft.install (the same additive path and bootstrap rows), its map replaced by the per-cell MLP."""
     RFT.install(den)
     dev = next(den.parameters()).device
-    den.trace_proj = nn.Sequential(nn.Linear(RFT.D, den.W), nn.GELU(), nn.Linear(den.W, den.W)).to(dev)
+    den.trace_proj = Read(nn.Linear(RFT.D, den.W), nn.GELU(), nn.Linear(den.W, den.W)).to(dev)
     nn.init.zeros_(den.trace_proj[2].weight); nn.init.zeros_(den.trace_proj[2].bias)
 
 
