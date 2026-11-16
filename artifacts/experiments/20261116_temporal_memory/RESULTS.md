@@ -145,8 +145,8 @@ DEV fold-4 frames, drawn at the event (quiet-frame false changes), check 15's ro
 
 Pairs (due / delayed): original energy 0.024 / 0.000, hunger 0.083 / 0.007; on-schedule energy 0.097 / 0.002
 (due-minus-delayed 0.095 [0.075, 0.115]), hunger 0.130 / 0.007; the recency at 4,000: 0.704, 0.930, 0.958, 0.942 due,
-0.000 delayed. G1: 0.00329 / 0.00296 / 0.00265 / 0.00263 / 0.00262 / 0.00259 at 1,000-5,600 updates (recency run:
-0.00387 at 1,000, 0.00349 at 3,000, 0.00324 at 6,000).
+0.000 delayed. G1 at 1,000 / 2,000 / 3,000 / 4,000 / 5,000 updates: 0.00340 / 0.00292 / 0.00276 / 0.00270 / 0.00265
+(0.00259 at 5,600); the recency run: 0.00387 / 0.00361 / 0.00349 / 0.00345 / 0.00334 (0.00324 at 6,000).
 
 Readings against the bars fixed before results (at 4,000 by the amendment):
 - Natural: partial (awake energy 0.221, above 0.2, below 0.60; false changes 0.007).
@@ -154,8 +154,8 @@ Readings against the bars fixed before results (at 4,000 by the amendment):
   the clocks: the timing the record holds (nonlinear readers 0.94-0.97, measurement 4; Codex's audit on the 4,000 map
   0.938) is drawn weakly. The original bank reads lower still (0.024): shifted histories transfer worse for a
   full-history record, as Codex's audit found.
-- The record is used broadly: G1 is lower than the recency run's at every matched update (0.00265 against 0.00349 at
-  3,000-3,400; -24%), action-cued rare events are drawn more often (coal 0.78, iron 0.70 against the recency's 0.67 /
+- The record is used broadly: G1 is lower than the recency run's at every matched update (0.00270 against 0.00345 at
+  4,000; -22%), action-cued rare events are drawn more often (coal 0.78, iron 0.70 against the recency's 0.67 /
   0.46 at 6,000), with quiet false changes at or below 0.05. Zeroing the record (`traces_zero`) makes every class fire
   on quiet frames (0.15-0.51): the adapted denoiser depends on it everywhere, so zeroing is no longer a clean control.
   Part of every gain over F6.1 may be the extra G1-only training itself (the plain-G1 control is still not run).
