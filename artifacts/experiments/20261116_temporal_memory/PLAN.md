@@ -120,3 +120,25 @@ readers and references as measurements 1-2.
 Reading fixed before results: linear AP on the awake energy drop at or above 0.71 (three quarters of the exact
 recency's 0.94) means the threshold is not needed for linear readability; nonlinear AP is reported beside it. This
 chooses the input of the integrated test (test 2): raw token if it passes, graded change if only that passes.
+
+## Test 2 (user 11-16: "launch the second if it's promising"): a principled per-cell record in place of the hand-made recency (`record_ft.py`)
+
+Measurement 4 passed its bar on the raw token (S4D-Lin 0.80, LegT 0.84 linear on awake energy, >= 0.71), so the input
+is each cell's raw 16-channel token: no designed event, threshold or cap. Basis: S4D-Lin (32 complex modes per
+channel, the S4D listing's bilinear step, dt 1/32; measurement 2's definition), the diagonal complex family of
+Mamba-3's heads, rather than the dense LegT. Recipe: check 18's exactly (F6.1 checkpoint 10, denoiser only, G1 only,
+AdamW 1e-4, 100 warm-up, clip 1, F6.1's streams, carry and cache, 6,000 updates, reads at 2,000 / 4,000 / 6,000,
+then check 16b's natural catalogue at 6,000), with the recency replaced by the record: per cell, the state through
+the previous frame (1,024 real features: real and imaginary parts), reset at episode starts, through a
+zero-initialised linear map added to that cell's denoiser token. The dynamics are fixed (a structured head whose
+initialisation is this record and whose dynamics also learn belongs to the belief build; this run asks whether the
+principled record is used like the hand-made one).
+
+Readings fixed before results (against check 18 at 6,000: natural awake energy drawn 0.797, drink 0.560, food 0.601,
+asleep rise 0.403, false alarms <= 0.03; energy pairs 0.793 / 0.000):
+- Works like the recency: natural awake energy drawn >= 0.60 with quiet false alarms <= 0.03, and the energy pairs'
+  due-minus-delayed >= 0.5.
+- Partial: awake energy drawn above 0.2 (F6.1 0.03) but below 0.60.
+- Not used: <= 0.2.
+Food and drink are expected lower than the recency's (measurement 4: linear 0.34 / 0.36 against 0.69 / 0.78); they
+are reported, not barred. The record-zeroed arm of the catalogue checks that the clocks come from the record.

@@ -109,3 +109,20 @@ generic loss (0.256 against 0.202: a cell alone does not see its neighbours, the
 (a fixed readable record lets G1 alone draw the clocks), the limit is learning the memory under a diluted objective,
 not reading it: when the record exists, the generic objective suffices to read it; when the memory must be learned,
 the generic objective does not shape it, whatever its structure here.
+
+## Measurement 4: the readable record needs no hand-made event (`ssm_tokens.py`, `ssm_tokens.json`)
+
+Same rows and readers; fixed bases fed, per digit cell, the graded squared change (no threshold) or the raw
+16-channel token (no designed feature). AP linear / nonlinear (exact recency: 0.69 / 0.78 / 0.94 / 0.71 linear):
+
+| Input, basis | Food | Drink | Awake energy | Asleep rise |
+| :--- | ---: | ---: | ---: | ---: |
+| Graded change, S4D-Lin | 0.50 / 0.70 | 0.58 / 0.80 | 0.52 / 0.90 | 0.57 / 0.76 |
+| Graded change, LegT 64 | 0.62 / 0.86 | 0.67 / 0.87 | 0.63 / 0.97 | 0.73 / 0.84 |
+| Raw token, S4D-Lin (1,024 features) | 0.34 / 0.81 | 0.36 / 0.84 | 0.80 / 0.96 | 0.61 / 0.80 |
+| Raw token, LegT 64 (1,024 features) | 0.49 / 0.91 | 0.51 / 0.87 | 0.84 / 0.98 | 0.75 / 0.90 |
+
+Bar (awake energy linear >= 0.71): passed by both raw-token records, not by the graded change. The raw token carries
+the digit's past values, not only when it changed. Food and drink are less linearly readable from the raw-token
+record than from the recency (0.34-0.51 against 0.69-0.78); the information is there (nonlinear 0.81-0.91). Test 2
+uses the raw token through S4D-Lin.

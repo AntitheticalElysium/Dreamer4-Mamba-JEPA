@@ -29,7 +29,7 @@ def cell_tokens():
             dev = next(model.parameters()).device
             p = torch.cat([G.C.coarse(model.perception, z.to(dev))[0] for z in fr.split(512)]).float().cpu().numpy()
             out[str(e)] = p[:, R.CELLS]
-            assert np.allclose(np.r_[np.zeros((1, 4)), np.square(p[1:] - p[:-1]).sum(-1)][:, R.CELLS], R.X[str(e)], atol=1e-3)
+            assert np.allclose(np.r_[np.zeros((1, 81)), np.square(p[1:] - p[:-1]).sum(-1)][:, R.CELLS], R.X[str(e)], atol=1e-3)
     np.savez(f, **out)
     return out
 
