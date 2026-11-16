@@ -142,3 +142,12 @@ asleep rise 0.403, false alarms <= 0.03; energy pairs 0.793 / 0.000):
 - Not used: <= 0.2.
 Food and drink are expected lower than the recency's (measurement 4: linear 0.34 / 0.36 against 0.69 / 0.78); they
 are reported, not barred. The record-zeroed arm of the catalogue checks that the clocks come from the record.
+Added reading (Codex 11-16, relayed by the user; written at update ~4,700, before the 6,000 results): Codex's CPU audit
+(NOTEBOOK 2026-11-16) found the raw record's natural-frame linear reader ranks the wrong branch in all 32 pairs of both
+energy banks, while tree readers rank them correctly, and on-schedule pairs far easier for the record than the original
+(counter-edited) ones. Check 17's native read on both banks is therefore added for the record arm at 4,000 and 6,000
+(`record_schedule.py`, run when the GPU is free), beside check 17's recency numbers (on-schedule energy 0.958 / 0.982 at
+4,000 / 6,000). Bar: on-schedule energy due-minus-delayed >= 0.5 at 6,000 means the denoiser times schedule-consistent
+histories and the original bank's low rates measure transfer to shifted histories; flat means the read (the linear
+map into the token) is the limit, and the next candidate is a nonlinear local read before mixing (not launched
+without the user's go).
