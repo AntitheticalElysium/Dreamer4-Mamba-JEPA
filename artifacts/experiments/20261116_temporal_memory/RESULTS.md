@@ -126,3 +126,36 @@ Bar (awake energy linear >= 0.71): passed by both raw-token records, not by the 
 the digit's past values, not only when it changed. Food and drink are less linearly readable from the raw-token
 record than from the recency (0.34-0.51 against 0.69-0.78); the information is there (nonlinear 0.81-0.91). Test 2
 uses the raw token through S4D-Lin.
+
+## Test 2: a fixed S4D-Lin record of each cell's raw token, read by G1 (`record_ft.py`; reads at 4,000: `record_catalogue_4000.json`, `record_schedule.json`)
+
+Stopped at update 5,600 (user, to read sooner); bars read at the last saved checkpoint, 4,000 (PLAN amendment). Natural
+DEV fold-4 frames, drawn at the event (quiet-frame false changes), check 15's rows and seeds, against the exact recency:
+
+| Class | F6.1 | Recency 2,000 | Recency 6,000 | Record 4,000 |
+| :--- | ---: | ---: | ---: | ---: |
+| Awake energy drop | 0.032 (0.011) | 0.222 (0.001) | 0.797 (0.001) | 0.221 [0.183, 0.261] (0.007) |
+| Drink drop | 0.034 (0.047) | 0.274 (0.020) | 0.560 (0.026) | 0.302 (0.035) |
+| Food drop | 0.042 (0.025) | 0.114 (0.014) | 0.601 (0.029) | 0.219 (0.021) |
+| Asleep rise | 0.056 (0.030) | 0.046 (0.009) | 0.403 (0.029) | 0.202 (0.051) |
+| Recovery / damage | 0.472 / 0.641 | 0.395 / 0.624 | 0.478 / 0.672 | 0.441 / 0.694 |
+| Drink +1 / stone +1 | 0.526 / 0.613 | 0.577 / 0.584 | 0.858 / 0.854 | 0.789 / 0.821 |
+| Coal +1 / iron +1 | 0.199 / 0.117 | 0.194 / 0.101 | 0.668 / 0.457 | 0.778 / 0.697 |
+| Sapling +1 (chance) | 0.036 | 0.014 | 0.059 | 0.145 (0.004) |
+
+Pairs (due / delayed): original energy 0.024 / 0.000, hunger 0.083 / 0.007; on-schedule energy 0.097 / 0.002
+(due-minus-delayed 0.095 [0.075, 0.115]), hunger 0.130 / 0.007; the recency at 4,000: 0.704, 0.930, 0.958, 0.942 due,
+0.000 delayed. G1: 0.00329 / 0.00296 / 0.00265 / 0.00263 / 0.00262 / 0.00259 at 1,000-5,600 updates (recency run:
+0.00387 at 1,000, 0.00349 at 3,000, 0.00324 at 6,000).
+
+Readings against the bars fixed before results (at 4,000 by the amendment):
+- Natural: partial (awake energy 0.221, above 0.2, below 0.60; false changes 0.007).
+- On-schedule energy pairs: 0.095 < 0.5. By the added reading's rule, the linear map into the token is the limit for
+  the clocks: the timing the record holds (nonlinear readers 0.94-0.97, measurement 4; Codex's audit on the 4,000 map
+  0.938) is drawn weakly. The original bank reads lower still (0.024): shifted histories transfer worse for a
+  full-history record, as Codex's audit found.
+- The record is used broadly: G1 is lower than the recency run's at every matched update (0.00265 against 0.00349 at
+  3,000-3,400; -24%), action-cued rare events are drawn more often (coal 0.78, iron 0.70 against the recency's 0.67 /
+  0.46 at 6,000), with quiet false changes at or below 0.05. Zeroing the record (`traces_zero`) makes every class fire
+  on quiet frames (0.15-0.51): the adapted denoiser depends on it everywhere, so zeroing is no longer a clean control.
+  Part of every gain over F6.1 may be the extra G1-only training itself (the plain-G1 control is still not run).
