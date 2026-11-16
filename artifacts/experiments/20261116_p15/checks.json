@@ -151,5 +151,15 @@
     4.773111343383789
    ]
   }
- }
+ },
+ "criteria": {
+  "mamba3_exact_wrapper": true,
+  "mamba3_carry_angle": true,
+  "mamba3_no_growth": true,
+  "mamba3_grad_finite": true,
+  "units": true,
+  "peak_under_budget": true,
+  "time_within_15h": true
+ },
+ "passed": true
 }

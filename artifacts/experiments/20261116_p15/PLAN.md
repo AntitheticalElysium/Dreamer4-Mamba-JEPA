@@ -90,15 +90,25 @@ Results (`checks.json`; logs beside it). All pass.
   same monitor and checkpoint overhead. Peak allocated 3.1 GiB (+0.5 over F6.1) on the 6 GB card. Neither grows with
   run length: the record state is fixed per stream (81 x 1,024), the second pass is per update.
 
-## Launch (after Codex's review; user 11-16)
+## Launch (Codex reviewed 6693be0a: no training blocker; user: go, evaluation queued as always)
 
-One segment to the full budget, F6.1's environment; the trainer pins the saccade sources' hashes, so `saccade/` must
-not change during the run (the evaluation adapter is written in this folder).
+One service, F2.1's one-shot worker as in F5 / F6 / F6.1 (`run.py`): gate `checks.json` (`passed`, computed from the
+criteria above), sources sealed by `pin_sources.py` (`SOURCE_PINS.json`: the queue's import closure, 27 files,
+checked before training, after it and after evaluation), training to the full budget, F2's fixed checkpoint rule,
+then `evaluation.py` on the selected checkpoint. Budget (Codex): ~15 h through training and checkpoint monitoring
+(active bootstrapping measured 2.00 -> 2.23 s at 64 steps and 7.58 -> 8.39 s at 256; monitor 89.5 s, 3.30 GiB
+allocated, 4.77 GiB reserved).
+
+The evaluation is written during training in this folder and must not modify any sealed file (it wraps the sealed
+tools at run time, as F6.1's `evaluation.py` does F5's queue). Codex's review: the old sampler silently bypasses the
+record if a caller passes only Mamba's memory tokens, so the adapter raises when the record is missing; its smoke
+runs first in the queue (no GPU job beside training) and checks that sampling and cache writes use the record through
+the preceding frame and the outcome heads and belief correction the record updated with the generated frame. A
+failed smoke stops the queue before any reading; training and selection stand.
 
     systemd-run --user --unit=saccade-p15 -p MemoryMax=24G -E MAMBA_DETERMINISTIC=1 -E JAX_PLATFORMS=cpu \
       -E OMP_NUM_THREADS=2 -E MKL_NUM_THREADS=2 -E PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
-      --working-directory="$PWD" bash -c 'D=artifacts/experiments/20261116_p15
-        .venv/bin/python -u -m artifacts.experiments.20261116_p15.train $D/run >> $D/training.log 2>&1'
+      --working-directory="$PWD" .venv/bin/python -u -m artifacts.experiments.20261116_p15.run
 
 ## Readings after the run (fixed before results; one seed)
 
