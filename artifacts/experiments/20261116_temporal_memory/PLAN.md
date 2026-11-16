@@ -151,3 +151,9 @@ energy banks, while tree readers rank them correctly, and on-schedule pairs far 
 histories and the original bank's low rates measure transfer to shifted histories; flat means the read (the linear
 map into the token) is the limit, and the next candidate is a nonlinear local read before mixing (not launched
 without the user's go).
+Amendment (user 11-16, before any 6,000 result): the run was stopped at update 5,600 to read sooner (no checkpoint is
+saved between reads, so the last saved one is 4,000; the stop was made without checking progress, 15 minutes before
+6,000). Every bar above is read at 4,000 instead of 6,000: the natural catalogue (`record_eval.py 4000`) and check 17's
+native read on both banks (`record_schedule.py 4000`). Comparators at 4,000: the recency's pairs (original energy 0.704,
+on-schedule 0.958); its natural catalogue exists only at 2,000 (awake energy 0.22) and 6,000 (0.80), so the natural
+bar is read as absolute. The 2,000 / 4,000 pair reads in `record_ft.json` were seen before this amendment.

@@ -5,6 +5,7 @@ expectation, both energy / hunger banks: original and on-schedule) on the S4D-Li
 """
 import importlib
 import json
+import sys
 
 import torch
 
@@ -22,7 +23,7 @@ if __name__ == "__main__":
     model.eval()
     readers = TJ.readers(model, cfg, slots=(64, 66))
     res = {}
-    for u in (4000, 6000):
+    for u in [int(a) for a in sys.argv[1:]] or (4000, 6000):
         model.denoiser.load_state_dict(torch.load(RFT.RUN / f"denoiser_{u}.pt", map_location=DS.DEV, weights_only=False)["denoiser"])
         res[f"record_{u}"] = {}
         for name, rows, slot, sign in SP.banks():
