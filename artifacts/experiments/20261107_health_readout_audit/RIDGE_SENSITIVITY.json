@@ -1,0 +1,32 @@
+{
+  "1e-06": {
+    "shared": {
+      "heldout_mse": 0.008376969316700358,
+      "stationarity_max": 3.4924596548080444e-09
+    },
+    "health": {
+      "heldout_mse": 0.008778322550085451,
+      "stationarity_max": 1.9972503650933504e-09
+    }
+  },
+  "0.0001": {
+    "shared": {
+      "heldout_mse": 0.008376442609314291,
+      "stationarity_max": 3.259629011154175e-09
+    },
+    "health": {
+      "heldout_mse": 0.008685347689623155,
+      "stationarity_max": 1.2441887520253658e-09
+    }
+  },
+  "0.01": {
+    "shared": {
+      "heldout_mse": 0.008377232175932649,
+      "stationarity_max": 2.3865140974521637e-09
+    },
+    "health": {
+      "heldout_mse": 0.008652005697868299,
+      "stationarity_max": 4.2746250983327627e-10
+    }
+  }
+}

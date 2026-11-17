@@ -1,0 +1,17 @@
+{
+  "identity": {
+    "checkpoint_sha256": "b232d2d7f900700b7ed4fb7c2affae2c1cea1c56bc462fbd806a761dc14b1ead",
+    "smoke": false
+  },
+  "s1": "complete",
+  "native_pairs": "complete",
+  "forecast_scores": "complete",
+  "consequences": "complete",
+  "interface": "complete",
+  "recursion_4": "complete",
+  "natural_thirst": "complete",
+  "belief_probe": "complete",
+  "belief_path_probe": "complete",
+  "native_pairs_f4": "complete",
+  "native_pairs_hud": "complete"
+}

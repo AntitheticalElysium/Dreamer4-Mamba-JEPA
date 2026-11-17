@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "first_update_other_terms_bitwise_equal": true,
+  "endpoint_selected": 2.231095790863037,
+  "dense_selected": 2.1971336603164673,
+  "bad_fork_rms": [
+    0.25255659222602844,
+    0.002148542320355773,
+    0.2609088122844696
+  ],
+  "rebased_fork_rms": [
+    0.00386481243185699,
+    0.002148542320355773,
+    0.0038748893421143293
+  ],
+  "smoke_peak_gib": 2.4984588623046875,
+  "native_guard_histories": {
+    "risky": 442,
+    "adjacent": 2523,
+    "ach_COLLECT_COAL": 48,
+    "ach_COLLECT_IRON": 44
+  },
+  "parent_hunger_reproduces_saved_digit_counts": true
+}

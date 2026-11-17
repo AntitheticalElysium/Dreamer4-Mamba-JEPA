@@ -13,8 +13,9 @@ K = 4 memory tokens, W = 256.
   valid (padding) and episode-start masks, fixations [n, P+T, 2], stream ids.
 - `fixation_prior(rng, shape) -> int [.., 2]`: window centres uniform over the 49 positions of a 3x3 window on the 9x9
   screen (HUD included).
-- `change_targets(split) -> memmap float16 [frames, 7, 9]`: soft change probabilities from the frozen A9b teacher
-  (map rows), precomputed once (build step 2).
+- `change_targets(split) -> memmap float16 [frames, 9, 9, 2]` (11-08 correction): same-position and
+  dominant-translation comparisons at every screen cell, using the frozen observation-derived detector. No semantic
+  masks; geometric validity only. Separate versioned target store, atomically completed, with episode-order checks.
 - `exogenous_windows(split, h) -> [(episode, t0)]`: windows of h consecutive exogenous actions (P2, S2).
 
 ## saccade/model.py — perception, belief, denoiser, heads
@@ -35,7 +36,7 @@ K = 4 memory tokens, W = 256.
 - Reward decoding: `Reward.sample` draws a bin, then emits the bin's train-split mean reward (a buffer computed once
   from the train split and saved with the checkpoint).
 - Heads: `TSP.forward(memory, p_window, v, fix) -> (mean, log_scale)` over the glimpse pixels; `ChangeMap.forward(p_t,
-  p_t1, memory) -> logits [.., 7, 9]`; `Reward.log_prob(r, cond)`, `Reward.sample(cond)` (categorical over the 256
+  p_t1, memory) -> logits [.., 9, 9, 2]`; `Reward.log_prob(r, cond)`, `Reward.sample(cond)` (categorical over the 256
   symlog bins; revised at the overfit check, LOSSES G3); `Continuation.forward(cond, r) -> logit`.
 - Fovea reconstruction: `PixelDecoder` shared by TSP and the fovea (per cell, discretised logistic): TSP feeds it
   (memory, periphery window, v), the reconstruction feeds it the glimpse tokens and v.
@@ -89,7 +90,7 @@ scaled start, evaluation at sigma_hat). EDM coefficients match the reference for
 the clean-space loss weighted by 1/c_out^2 on fixed inputs. Reward: a head with all mass on one bin samples exactly 0
 for a deterministic 0 and exactly 1.0 for a deterministic 1; empirical bin frequencies of many samples agree with
 exp(log_prob). Gradients, tested PER LOSS: the denoising loss reaches the encoder only through the memory tokens,
-never through a denoiser frame input or target; TSP, the change map, the fovea reconstruction and the outcome heads
+never through a denoiser frame input or target; TSP, the change map (before P1-F5), the fovea reconstruction, the outcome heads and their P1-F5 forecast modes
 through their declared routes. A resumed run equals an uninterrupted one; recipe, seed or source mismatches reject.
 S1 regression checks cover tied AP, history sensitivity without target leakage, precision parity, null C2ST, observable
 absence/side targets, the unlock event, reader roundtrip and unmeasured blockers. P2 checks are DEFERRED until P2 is

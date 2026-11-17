@@ -1,0 +1,8 @@
+{
+  "train_endpoint": "complete",
+  "train_dense": "complete",
+  "phase_endpoint": "complete",
+  "phase_dense": "complete",
+  "native_guards": "complete",
+  "complete": true
+}

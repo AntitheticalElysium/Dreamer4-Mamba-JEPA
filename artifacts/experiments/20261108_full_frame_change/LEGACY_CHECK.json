@@ -1,0 +1,13 @@
+{
+  "perception_bitwise": true,
+  "belief_bitwise": true,
+  "samples_bitwise": true,
+  "old_auxiliary_map_max_abs": 0.0625,
+  "new_auxiliary_shape": [
+    1,
+    11,
+    9,
+    9,
+    2
+  ]
+}

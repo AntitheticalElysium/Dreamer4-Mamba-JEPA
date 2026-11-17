@@ -1,0 +1,1819 @@
+{
+  "checkpoint_sha256": "a848e5f5dbda1b5685c86ecec9656487baca2416ac1f13034f8ad4c8a80d78d2",
+  "frames": 30703,
+  "means": {
+    "forecast": {
+      "reward_nll": 0.08785544168416098,
+      "continuation_nll_given_reward": 0.0040855496937375274,
+      "token_mse": 0.09563161834501248,
+      "token_mse_copy_previous": 0.10343797499102164
+    },
+    "reactive": {
+      "reward_nll": 0.01317101529161937,
+      "continuation_nll_given_reward": 1.1166682465536676e-06,
+      "tsp_mse": 0.0010717550209311207
+    }
+  },
+  "episodes": [
+    {
+      "episode": 1,
+      "n": 454,
+      "forecast": {
+        "reward_nll": 0.13093627989292145,
+        "continuation_nll_given_reward": 9.969931852538139e-05,
+        "token_mse": 0.09757902473211288,
+        "token_mse_copy_previous": 0.10455034673213959
+      },
+      "reactive": {
+        "reward_nll": 0.008295848034322262,
+        "continuation_nll_given_reward": 1.4245632229403782e-08,
+        "tsp_mse": 0.0012867262121289968
+      }
+    },
+    {
+      "episode": 14,
+      "n": 164,
+      "forecast": {
+        "reward_nll": 0.006185135804116726,
+        "continuation_nll_given_reward": 0.00010752429807325825,
+        "token_mse": 0.06179208680987358,
+        "token_mse_copy_previous": 0.0736849308013916
+      },
+      "reactive": {
+        "reward_nll": 0.00025355955585837364,
+        "continuation_nll_given_reward": 1.5334223691168547e-12,
+        "tsp_mse": 0.0003123931819573045
+      }
+    },
+    {
+      "episode": 17,
+      "n": 1234,
+      "forecast": {
+        "reward_nll": 0.07914651930332184,
+        "continuation_nll_given_reward": 0.00013729614147450775,
+        "token_mse": 0.10872875899076462,
+        "token_mse_copy_previous": 0.11435125023126602
+      },
+      "reactive": {
+        "reward_nll": 0.0019974415190517902,
+        "continuation_nll_given_reward": 8.164331433135885e-08,
+        "tsp_mse": 0.0013656135415658355
+      }
+    },
+    {
+      "episode": 20,
+      "n": 788,
+      "forecast": {
+        "reward_nll": 0.10053303092718124,
+        "continuation_nll_given_reward": 0.00016804558981675655,
+        "token_mse": 0.11133481562137604,
+        "token_mse_copy_previous": 0.11838164180517197
+      },
+      "reactive": {
+        "reward_nll": 0.011254201643168926,
+        "continuation_nll_given_reward": 2.5504184009150777e-07,
+        "tsp_mse": 0.0010670910123735666
+      }
+    },
+    {
+      "episode": 26,
+      "n": 230,
+      "forecast": {
+        "reward_nll": 0.017730122432112694,
+        "continuation_nll_given_reward": 0.00040965620428323746,
+        "token_mse": 0.07820262759923935,
+        "token_mse_copy_previous": 0.08558448404073715
+      },
+      "reactive": {
+        "reward_nll": 0.013620654121041298,
+        "continuation_nll_given_reward": 2.590471979146969e-07,
+        "tsp_mse": 0.0010496866889297962
+      }
+    },
+    {
+      "episode": 30,
+      "n": 64,
+      "forecast": {
+        "reward_nll": 0.048464659601449966,
+        "continuation_nll_given_reward": 0.0005558140692301095,
+        "token_mse": 0.07970831543207169,
+        "token_mse_copy_previous": 0.09192235767841339
+      },
+      "reactive": {
+        "reward_nll": 0.00029766163788735867,
+        "continuation_nll_given_reward": 1.0281801223754883e-06,
+        "tsp_mse": 0.0003268637228757143
+      }
+    },
+    {
+      "episode": 44,
+      "n": 270,
+      "forecast": {
+        "reward_nll": 0.16177095472812653,
+        "continuation_nll_given_reward": 0.0007859115721657872,
+        "token_mse": 0.11619635671377182,
+        "token_mse_copy_previous": 0.12049047648906708
+      },
+      "reactive": {
+        "reward_nll": 0.03306339308619499,
+        "continuation_nll_given_reward": 1.6027290428155538e-07,
+        "tsp_mse": 0.0013036999152973294
+      }
+    },
+    {
+      "episode": 53,
+      "n": 582,
+      "forecast": {
+        "reward_nll": 0.11191113293170929,
+        "continuation_nll_given_reward": 0.004666812717914581,
+        "token_mse": 0.09836175292730331,
+        "token_mse_copy_previous": 0.10437431931495667
+      },
+      "reactive": {
+        "reward_nll": 0.019867483526468277,
+        "continuation_nll_given_reward": 3.4223720035697625e-07,
+        "tsp_mse": 0.0010638125240802765
+      }
+    },
+    {
+      "episode": 54,
+      "n": 43,
+      "forecast": {
+        "reward_nll": 0.015345695428550243,
+        "continuation_nll_given_reward": 0.0001794499548850581,
+        "token_mse": 0.06967955082654953,
+        "token_mse_copy_previous": 0.08812873810529709
+      },
+      "reactive": {
+        "reward_nll": 0.0005737430183216929,
+        "continuation_nll_given_reward": 2.217854699892996e-08,
+        "tsp_mse": 0.0003455283585935831
+      }
+    },
+    {
+      "episode": 57,
+      "n": 102,
+      "forecast": {
+        "reward_nll": 0.07273279130458832,
+        "continuation_nll_given_reward": 2.721599412325304e-05,
+        "token_mse": 0.0990406945347786,
+        "token_mse_copy_previous": 0.11112257838249207
+      },
+      "reactive": {
+        "reward_nll": 0.02831079065799713,
+        "continuation_nll_given_reward": 1.4941641673926753e-12,
+        "tsp_mse": 0.0004136259376537055
+      }
+    },
+    {
+      "episode": 62,
+      "n": 815,
+      "forecast": {
+        "reward_nll": 0.08680529147386551,
+        "continuation_nll_given_reward": 6.046359703759663e-05,
+        "token_mse": 0.11173304170370102,
+        "token_mse_copy_previous": 0.11787080019712448
+      },
+      "reactive": {
+        "reward_nll": 0.02231208048760891,
+        "continuation_nll_given_reward": 7.109930866278091e-09,
+        "tsp_mse": 0.0012939923908561468
+      }
+    },
+    {
+      "episode": 92,
+      "n": 45,
+      "forecast": {
+        "reward_nll": 0.12524494528770447,
+        "continuation_nll_given_reward": 0.00012848462210968137,
+        "token_mse": 0.042257826775312424,
+        "token_mse_copy_previous": 0.05273103341460228
+      },
+      "reactive": {
+        "reward_nll": 0.0017263763584196568,
+        "continuation_nll_given_reward": 4.713183836269064e-12,
+        "tsp_mse": 0.0003734448691830039
+      }
+    },
+    {
+      "episode": 99,
+      "n": 1077,
+      "forecast": {
+        "reward_nll": 0.08277183026075363,
+        "continuation_nll_given_reward": 0.004403809085488319,
+        "token_mse": 0.09519008547067642,
+        "token_mse_copy_previous": 0.10258257389068604
+      },
+      "reactive": {
+        "reward_nll": 0.007384218741208315,
+        "continuation_nll_given_reward": 1.2019160111620408e-09,
+        "tsp_mse": 0.0013128647115081549
+      }
+    },
+    {
+      "episode": 101,
+      "n": 65,
+      "forecast": {
+        "reward_nll": 0.05951227620244026,
+        "continuation_nll_given_reward": 0.0002632130344863981,
+        "token_mse": 0.06310419738292694,
+        "token_mse_copy_previous": 0.07435246556997299
+      },
+      "reactive": {
+        "reward_nll": 0.0019341290462762117,
+        "continuation_nll_given_reward": 1.4671930337328831e-08,
+        "tsp_mse": 0.00025228998856619
+      }
+    },
+    {
+      "episode": 116,
+      "n": 1792,
+      "forecast": {
+        "reward_nll": 0.040398236364126205,
+        "continuation_nll_given_reward": 4.391365291667171e-05,
+        "token_mse": 0.10438613593578339,
+        "token_mse_copy_previous": 0.11032573878765106
+      },
+      "reactive": {
+        "reward_nll": 0.003415605751797557,
+        "continuation_nll_given_reward": 2.675398569351728e-09,
+        "tsp_mse": 0.0013631557812914252
+      }
+    },
+    {
+      "episode": 133,
+      "n": 189,
+      "forecast": {
+        "reward_nll": 0.11422670632600784,
+        "continuation_nll_given_reward": 3.4198848879896104e-05,
+        "token_mse": 0.06128283590078354,
+        "token_mse_copy_previous": 0.06882815062999725
+      },
+      "reactive": {
+        "reward_nll": 0.0253253486007452,
+        "continuation_nll_given_reward": 2.5299350170371326e-08,
+        "tsp_mse": 0.0006736153736710548
+      }
+    },
+    {
+      "episode": 142,
+      "n": 206,
+      "forecast": {
+        "reward_nll": 0.08420287072658539,
+        "continuation_nll_given_reward": 0.00015015999088063836,
+        "token_mse": 0.10065706074237823,
+        "token_mse_copy_previous": 0.11233071982860565
+      },
+      "reactive": {
+        "reward_nll": 0.03245396912097931,
+        "continuation_nll_given_reward": 8.486818662927203e-15,
+        "tsp_mse": 0.0009692731546238065
+      }
+    },
+    {
+      "episode": 143,
+      "n": 222,
+      "forecast": {
+        "reward_nll": 0.07472088187932968,
+        "continuation_nll_given_reward": 9.320211393060163e-05,
+        "token_mse": 0.07948441803455353,
+        "token_mse_copy_previous": 0.08935140818357468
+      },
+      "reactive": {
+        "reward_nll": 0.043474581092596054,
+        "continuation_nll_given_reward": 2.88979517398813e-12,
+        "tsp_mse": 0.0010811385000124574
+      }
+    },
+    {
+      "episode": 162,
+      "n": 389,
+      "forecast": {
+        "reward_nll": 0.08371303230524063,
+        "continuation_nll_given_reward": 0.011733554303646088,
+        "token_mse": 0.11972573399543762,
+        "token_mse_copy_previous": 0.12636372447013855
+      },
+      "reactive": {
+        "reward_nll": 0.006496527697890997,
+        "continuation_nll_given_reward": 5.6279429117012114e-08,
+        "tsp_mse": 0.0012729903683066368
+      }
+    },
+    {
+      "episode": 165,
+      "n": 375,
+      "forecast": {
+        "reward_nll": 0.2153148353099823,
+        "continuation_nll_given_reward": 0.0005323865916579962,
+        "token_mse": 0.09604132175445557,
+        "token_mse_copy_previous": 0.10273651033639908
+      },
+      "reactive": {
+        "reward_nll": 0.03477359563112259,
+        "continuation_nll_given_reward": 9.90993065386192e-09,
+        "tsp_mse": 0.0012606083182618022
+      }
+    },
+    {
+      "episode": 195,
+      "n": 47,
+      "forecast": {
+        "reward_nll": 0.20538224279880524,
+        "continuation_nll_given_reward": 0.03570932522416115,
+        "token_mse": 0.03799471631646156,
+        "token_mse_copy_previous": 0.048780493438243866
+      },
+      "reactive": {
+        "reward_nll": 0.016022484749555588,
+        "continuation_nll_given_reward": 1.0362362357074772e-10,
+        "tsp_mse": 0.0002617143909446895
+      }
+    },
+    {
+      "episode": 198,
+      "n": 252,
+      "forecast": {
+        "reward_nll": 0.0816974937915802,
+        "continuation_nll_given_reward": 5.8159654145129025e-05,
+        "token_mse": 0.10255927592515945,
+        "token_mse_copy_previous": 0.11184956133365631
+      },
+      "reactive": {
+        "reward_nll": 0.011816870421171188,
+        "continuation_nll_given_reward": 1.6627923482559481e-09,
+        "tsp_mse": 0.001380987698212266
+      }
+    },
+    {
+      "episode": 201,
+      "n": 77,
+      "forecast": {
+        "reward_nll": 0.11557906121015549,
+        "continuation_nll_given_reward": 5.908125240239315e-05,
+        "token_mse": 0.07547097653150558,
+        "token_mse_copy_previous": 0.07816018164157867
+      },
+      "reactive": {
+        "reward_nll": 0.0193613450974226,
+        "continuation_nll_given_reward": 2.874648609429986e-11,
+        "tsp_mse": 0.00048463663551956415
+      }
+    },
+    {
+      "episode": 203,
+      "n": 139,
+      "forecast": {
+        "reward_nll": 0.020915871486067772,
+        "continuation_nll_given_reward": 0.0005111800855956972,
+        "token_mse": 0.04352916404604912,
+        "token_mse_copy_previous": 0.052126213908195496
+      },
+      "reactive": {
+        "reward_nll": 0.00018606139929033816,
+        "continuation_nll_given_reward": 1.2183540398780224e-08,
+        "tsp_mse": 0.0006124158389866352
+      }
+    },
+    {
+      "episode": 204,
+      "n": 88,
+      "forecast": {
+        "reward_nll": 0.03948412090539932,
+        "continuation_nll_given_reward": 1.9009951301995898e-06,
+        "token_mse": 0.05235122889280319,
+        "token_mse_copy_previous": 0.06574879586696625
+      },
+      "reactive": {
+        "reward_nll": 0.0009761716355569661,
+        "continuation_nll_given_reward": 2.123141506354953e-12,
+        "tsp_mse": 0.0003669399011414498
+      }
+    },
+    {
+      "episode": 215,
+      "n": 336,
+      "forecast": {
+        "reward_nll": 0.09182688593864441,
+        "continuation_nll_given_reward": 0.00032053867471404374,
+        "token_mse": 0.1095675379037857,
+        "token_mse_copy_previous": 0.11687983572483063
+      },
+      "reactive": {
+        "reward_nll": 0.008595800027251244,
+        "continuation_nll_given_reward": 2.5166249084662695e-09,
+        "tsp_mse": 0.0009595254086889327
+      }
+    },
+    {
+      "episode": 221,
+      "n": 87,
+      "forecast": {
+        "reward_nll": 0.1380070596933365,
+        "continuation_nll_given_reward": 0.000890626572072506,
+        "token_mse": 0.043327562510967255,
+        "token_mse_copy_previous": 0.051215510815382004
+      },
+      "reactive": {
+        "reward_nll": 0.011881155893206596,
+        "continuation_nll_given_reward": 1.7538923202664591e-07,
+        "tsp_mse": 0.0003943370538763702
+      }
+    },
+    {
+      "episode": 241,
+      "n": 232,
+      "forecast": {
+        "reward_nll": 0.0770193487405777,
+        "continuation_nll_given_reward": 0.00034142527147196233,
+        "token_mse": 0.08566932380199432,
+        "token_mse_copy_previous": 0.0934995487332344
+      },
+      "reactive": {
+        "reward_nll": 0.0010470050619915128,
+        "continuation_nll_given_reward": 5.469543221114925e-12,
+        "tsp_mse": 0.0013213740894570947
+      }
+    },
+    {
+      "episode": 250,
+      "n": 537,
+      "forecast": {
+        "reward_nll": 0.0707331970334053,
+        "continuation_nll_given_reward": 0.001625688630156219,
+        "token_mse": 0.10801400244235992,
+        "token_mse_copy_previous": 0.11441584676504135
+      },
+      "reactive": {
+        "reward_nll": 0.009003419429063797,
+        "continuation_nll_given_reward": 4.3051523457293683e-10,
+        "tsp_mse": 0.0013407397782430053
+      }
+    },
+    {
+      "episode": 254,
+      "n": 274,
+      "forecast": {
+        "reward_nll": 0.20514217019081116,
+        "continuation_nll_given_reward": 1.2678610801231116e-05,
+        "token_mse": 0.13135041296482086,
+        "token_mse_copy_previous": 0.13952508568763733
+      },
+      "reactive": {
+        "reward_nll": 0.06449979543685913,
+        "continuation_nll_given_reward": 1.5474077130761543e-08,
+        "tsp_mse": 0.0014206799678504467
+      }
+    },
+    {
+      "episode": 258,
+      "n": 340,
+      "forecast": {
+        "reward_nll": 0.1070026308298111,
+        "continuation_nll_given_reward": 0.012197131291031837,
+        "token_mse": 0.08751461654901505,
+        "token_mse_copy_previous": 0.09527617692947388
+      },
+      "reactive": {
+        "reward_nll": 0.01284409686923027,
+        "continuation_nll_given_reward": 1.9620911189122126e-06,
+        "tsp_mse": 0.0008046298753470182
+      }
+    },
+    {
+      "episode": 259,
+      "n": 132,
+      "forecast": {
+        "reward_nll": 0.06418701261281967,
+        "continuation_nll_given_reward": 0.0002976918185595423,
+        "token_mse": 0.08550731837749481,
+        "token_mse_copy_previous": 0.09757612645626068
+      },
+      "reactive": {
+        "reward_nll": 0.003039467381313443,
+        "continuation_nll_given_reward": 9.661443867159392e-10,
+        "tsp_mse": 0.00033212496782653034
+      }
+    },
+    {
+      "episode": 263,
+      "n": 310,
+      "forecast": {
+        "reward_nll": 0.10164635628461838,
+        "continuation_nll_given_reward": 0.004341913852840662,
+        "token_mse": 0.11265801638364792,
+        "token_mse_copy_previous": 0.11599910259246826
+      },
+      "reactive": {
+        "reward_nll": 0.002246936084702611,
+        "continuation_nll_given_reward": 9.434791614637561e-09,
+        "tsp_mse": 0.0012617072788998485
+      }
+    },
+    {
+      "episode": 278,
+      "n": 323,
+      "forecast": {
+        "reward_nll": 0.09244657307863235,
+        "continuation_nll_given_reward": 0.0007639407413080335,
+        "token_mse": 0.12802758812904358,
+        "token_mse_copy_previous": 0.13607066869735718
+      },
+      "reactive": {
+        "reward_nll": 0.03655748814344406,
+        "continuation_nll_given_reward": 3.422512691031443e-07,
+        "tsp_mse": 0.0013825870119035244
+      }
+    },
+    {
+      "episode": 281,
+      "n": 169,
+      "forecast": {
+        "reward_nll": 0.19064676761627197,
+        "continuation_nll_given_reward": 4.298854400985874e-05,
+        "token_mse": 0.0965229943394661,
+        "token_mse_copy_previous": 0.10688471049070358
+      },
+      "reactive": {
+        "reward_nll": 0.03455434739589691,
+        "continuation_nll_given_reward": 8.418588048897391e-10,
+        "tsp_mse": 0.0009106849320232868
+      }
+    },
+    {
+      "episode": 285,
+      "n": 298,
+      "forecast": {
+        "reward_nll": 0.11928068101406097,
+        "continuation_nll_given_reward": 0.02000037021934986,
+        "token_mse": 0.10036024451255798,
+        "token_mse_copy_previous": 0.11034951359033585
+      },
+      "reactive": {
+        "reward_nll": 0.03244728222489357,
+        "continuation_nll_given_reward": 9.532592230243608e-05,
+        "tsp_mse": 0.0013669113395735621
+      }
+    },
+    {
+      "episode": 290,
+      "n": 314,
+      "forecast": {
+        "reward_nll": 0.1332668662071228,
+        "continuation_nll_given_reward": 0.0038229618221521378,
+        "token_mse": 0.11086802184581757,
+        "token_mse_copy_previous": 0.11796979606151581
+      },
+      "reactive": {
+        "reward_nll": 0.024185603484511375,
+        "continuation_nll_given_reward": 3.5498601391736884e-08,
+        "tsp_mse": 0.0010992818279191852
+      }
+    },
+    {
+      "episode": 295,
+      "n": 285,
+      "forecast": {
+        "reward_nll": 0.06524071097373962,
+        "continuation_nll_given_reward": 0.00033908753539435565,
+        "token_mse": 0.11461029946804047,
+        "token_mse_copy_previous": 0.12131927162408829
+      },
+      "reactive": {
+        "reward_nll": 0.008431102149188519,
+        "continuation_nll_given_reward": 3.5563820777184674e-09,
+        "tsp_mse": 0.0013415307039394975
+      }
+    },
+    {
+      "episode": 299,
+      "n": 273,
+      "forecast": {
+        "reward_nll": 0.044518616050481796,
+        "continuation_nll_given_reward": 0.00012304380652494729,
+        "token_mse": 0.09770739078521729,
+        "token_mse_copy_previous": 0.1068374291062355
+      },
+      "reactive": {
+        "reward_nll": 0.02177339605987072,
+        "continuation_nll_given_reward": 1.0674821027123471e-08,
+        "tsp_mse": 0.0011272185947746038
+      }
+    },
+    {
+      "episode": 341,
+      "n": 215,
+      "forecast": {
+        "reward_nll": 0.180280864238739,
+        "continuation_nll_given_reward": 0.030750008299946785,
+        "token_mse": 0.09815312176942825,
+        "token_mse_copy_previous": 0.10795490443706512
+      },
+      "reactive": {
+        "reward_nll": 0.042155444622039795,
+        "continuation_nll_given_reward": 4.662910839670076e-07,
+        "tsp_mse": 0.0010956315090879798
+      }
+    },
+    {
+      "episode": 358,
+      "n": 59,
+      "forecast": {
+        "reward_nll": 0.08482243120670319,
+        "continuation_nll_given_reward": 0.0004107672721147537,
+        "token_mse": 0.06913094222545624,
+        "token_mse_copy_previous": 0.0807982012629509
+      },
+      "reactive": {
+        "reward_nll": 0.0025997194461524487,
+        "continuation_nll_given_reward": 1.1314779868598634e-07,
+        "tsp_mse": 0.0004931751172989607
+      }
+    },
+    {
+      "episode": 366,
+      "n": 114,
+      "forecast": {
+        "reward_nll": 0.2916613817214966,
+        "continuation_nll_given_reward": 0.06744445860385895,
+        "token_mse": 0.10466932505369186,
+        "token_mse_copy_previous": 0.11256084591150284
+      },
+      "reactive": {
+        "reward_nll": 0.024040568619966507,
+        "continuation_nll_given_reward": 4.352393432327517e-07,
+        "tsp_mse": 0.000818150001578033
+      }
+    },
+    {
+      "episode": 369,
+      "n": 39,
+      "forecast": {
+        "reward_nll": 0.028359631076455116,
+        "continuation_nll_given_reward": 0.0009815896628424525,
+        "token_mse": 0.08289545029401779,
+        "token_mse_copy_previous": 0.1029997318983078
+      },
+      "reactive": {
+        "reward_nll": 0.005273817107081413,
+        "continuation_nll_given_reward": 9.781315668533352e-08,
+        "tsp_mse": 0.00023782711650710553
+      }
+    },
+    {
+      "episode": 380,
+      "n": 239,
+      "forecast": {
+        "reward_nll": 0.14372579753398895,
+        "continuation_nll_given_reward": 0.003982592839747667,
+        "token_mse": 0.09493723511695862,
+        "token_mse_copy_previous": 0.10282457619905472
+      },
+      "reactive": {
+        "reward_nll": 0.018849510699510574,
+        "continuation_nll_given_reward": 2.5196419528583647e-07,
+        "tsp_mse": 0.0010340430308133364
+      }
+    },
+    {
+      "episode": 381,
+      "n": 103,
+      "forecast": {
+        "reward_nll": 0.06481112539768219,
+        "continuation_nll_given_reward": 4.6174736780812964e-05,
+        "token_mse": 0.08168357610702515,
+        "token_mse_copy_previous": 0.09195379912853241
+      },
+      "reactive": {
+        "reward_nll": 0.0010879606707021594,
+        "continuation_nll_given_reward": 5.790908863545496e-10,
+        "tsp_mse": 0.00033195913420058787
+      }
+    },
+    {
+      "episode": 391,
+      "n": 62,
+      "forecast": {
+        "reward_nll": 0.14108018577098846,
+        "continuation_nll_given_reward": 0.000610928691457957,
+        "token_mse": 0.07543903589248657,
+        "token_mse_copy_previous": 0.08458811789751053
+      },
+      "reactive": {
+        "reward_nll": 0.003088353667408228,
+        "continuation_nll_given_reward": 1.4951100253679517e-12,
+        "tsp_mse": 0.0006367903552018106
+      }
+    },
+    {
+      "episode": 394,
+      "n": 150,
+      "forecast": {
+        "reward_nll": 0.006216785404831171,
+        "continuation_nll_given_reward": 5.671240433002822e-05,
+        "token_mse": 0.08564495295286179,
+        "token_mse_copy_previous": 0.09684354066848755
+      },
+      "reactive": {
+        "reward_nll": 7.104409451130778e-05,
+        "continuation_nll_given_reward": 1.562634841401761e-13,
+        "tsp_mse": 0.0003851441142614931
+      }
+    },
+    {
+      "episode": 401,
+      "n": 272,
+      "forecast": {
+        "reward_nll": 0.048949096351861954,
+        "continuation_nll_given_reward": 0.008305703289806843,
+        "token_mse": 0.10764136910438538,
+        "token_mse_copy_previous": 0.11589839309453964
+      },
+      "reactive": {
+        "reward_nll": 0.0053385719656944275,
+        "continuation_nll_given_reward": 2.6058886604118925e-08,
+        "tsp_mse": 0.00125394226051867
+      }
+    },
+    {
+      "episode": 405,
+      "n": 501,
+      "forecast": {
+        "reward_nll": 0.09048423916101456,
+        "continuation_nll_given_reward": 0.001000967575237155,
+        "token_mse": 0.09912616014480591,
+        "token_mse_copy_previous": 0.10840900987386703
+      },
+      "reactive": {
+        "reward_nll": 0.011711625382304192,
+        "continuation_nll_given_reward": 3.637632914887945e-07,
+        "tsp_mse": 0.0012582492781803012
+      }
+    },
+    {
+      "episode": 408,
+      "n": 247,
+      "forecast": {
+        "reward_nll": 0.14292384684085846,
+        "continuation_nll_given_reward": 0.0025073857977986336,
+        "token_mse": 0.11623350530862808,
+        "token_mse_copy_previous": 0.1261206865310669
+      },
+      "reactive": {
+        "reward_nll": 0.019920628517866135,
+        "continuation_nll_given_reward": 1.226464485526435e-09,
+        "tsp_mse": 0.001301347278058529
+      }
+    },
+    {
+      "episode": 409,
+      "n": 553,
+      "forecast": {
+        "reward_nll": 0.09138167649507523,
+        "continuation_nll_given_reward": 0.0002476534864399582,
+        "token_mse": 0.11343662440776825,
+        "token_mse_copy_previous": 0.12061852216720581
+      },
+      "reactive": {
+        "reward_nll": 0.016041677445173264,
+        "continuation_nll_given_reward": 5.0771991055853505e-09,
+        "tsp_mse": 0.0014966452727094293
+      }
+    },
+    {
+      "episode": 412,
+      "n": 221,
+      "forecast": {
+        "reward_nll": 0.00881236232817173,
+        "continuation_nll_given_reward": 0.00042035552905872464,
+        "token_mse": 0.06576348841190338,
+        "token_mse_copy_previous": 0.07029039412736893
+      },
+      "reactive": {
+        "reward_nll": 0.0013242426794022322,
+        "continuation_nll_given_reward": 1.196387133547245e-15,
+        "tsp_mse": 0.000867856084369123
+      }
+    },
+    {
+      "episode": 418,
+      "n": 337,
+      "forecast": {
+        "reward_nll": 0.10499344021081924,
+        "continuation_nll_given_reward": 0.00011069663742091507,
+        "token_mse": 0.12189076840877533,
+        "token_mse_copy_previous": 0.13157588243484497
+      },
+      "reactive": {
+        "reward_nll": 0.006935860961675644,
+        "continuation_nll_given_reward": 1.1996939441871746e-08,
+        "tsp_mse": 0.001187810325063765
+      }
+    },
+    {
+      "episode": 429,
+      "n": 238,
+      "forecast": {
+        "reward_nll": 0.1455301195383072,
+        "continuation_nll_given_reward": 0.00030247747781686485,
+        "token_mse": 0.1365933120250702,
+        "token_mse_copy_previous": 0.14417031407356262
+      },
+      "reactive": {
+        "reward_nll": 0.02251930721104145,
+        "continuation_nll_given_reward": 2.5577827855727264e-08,
+        "tsp_mse": 0.0015826139133423567
+      }
+    },
+    {
+      "episode": 440,
+      "n": 58,
+      "forecast": {
+        "reward_nll": 0.0521961972117424,
+        "continuation_nll_given_reward": 0.0013315377291291952,
+        "token_mse": 0.0762944146990776,
+        "token_mse_copy_previous": 0.0862485021352768
+      },
+      "reactive": {
+        "reward_nll": 0.0005831817397847772,
+        "continuation_nll_given_reward": 6.1740326393056044e-12,
+        "tsp_mse": 0.0006341157131828368
+      }
+    },
+    {
+      "episode": 442,
+      "n": 202,
+      "forecast": {
+        "reward_nll": 0.19178591668605804,
+        "continuation_nll_given_reward": 0.06178151071071625,
+        "token_mse": 0.09978129714727402,
+        "token_mse_copy_previous": 0.10919138789176941
+      },
+      "reactive": {
+        "reward_nll": 0.024315984919667244,
+        "continuation_nll_given_reward": 1.563315237262941e-07,
+        "tsp_mse": 0.0009743156842887402
+      }
+    },
+    {
+      "episode": 445,
+      "n": 213,
+      "forecast": {
+        "reward_nll": 0.15063172578811646,
+        "continuation_nll_given_reward": 0.00021821963309776038,
+        "token_mse": 0.12105239927768707,
+        "token_mse_copy_previous": 0.12707702815532684
+      },
+      "reactive": {
+        "reward_nll": 0.04487636685371399,
+        "continuation_nll_given_reward": 2.8653671102496503e-10,
+        "tsp_mse": 0.0011754168663173914
+      }
+    },
+    {
+      "episode": 465,
+      "n": 263,
+      "forecast": {
+        "reward_nll": 0.10587713122367859,
+        "continuation_nll_given_reward": 0.0020026471465826035,
+        "token_mse": 0.11772886663675308,
+        "token_mse_copy_previous": 0.12322818487882614
+      },
+      "reactive": {
+        "reward_nll": 0.010725379921495914,
+        "continuation_nll_given_reward": 2.934215501682047e-07,
+        "tsp_mse": 0.0017603083979338408
+      }
+    },
+    {
+      "episode": 470,
+      "n": 106,
+      "forecast": {
+        "reward_nll": 0.08281777799129486,
+        "continuation_nll_given_reward": 9.093093467527069e-06,
+        "token_mse": 0.0450393483042717,
+        "token_mse_copy_previous": 0.056493718177080154
+      },
+      "reactive": {
+        "reward_nll": 0.00023757692542858422,
+        "continuation_nll_given_reward": 6.298072463550852e-08,
+        "tsp_mse": 0.000717229675501585
+      }
+    },
+    {
+      "episode": 474,
+      "n": 186,
+      "forecast": {
+        "reward_nll": 0.0751032903790474,
+        "continuation_nll_given_reward": 0.001552147907204926,
+        "token_mse": 0.08359184116125107,
+        "token_mse_copy_previous": 0.09952827543020248
+      },
+      "reactive": {
+        "reward_nll": 0.0022733143996447325,
+        "continuation_nll_given_reward": 7.961372117115673e-10,
+        "tsp_mse": 0.0005043977289460599
+      }
+    },
+    {
+      "episode": 477,
+      "n": 177,
+      "forecast": {
+        "reward_nll": 0.029684001579880714,
+        "continuation_nll_given_reward": 0.0011826518457382917,
+        "token_mse": 0.03614148497581482,
+        "token_mse_copy_previous": 0.03992660716176033
+      },
+      "reactive": {
+        "reward_nll": 0.00014647041098214686,
+        "continuation_nll_given_reward": 7.004545210520519e-08,
+        "tsp_mse": 0.0005061299889348447
+      }
+    },
+    {
+      "episode": 482,
+      "n": 125,
+      "forecast": {
+        "reward_nll": 0.03704576939344406,
+        "continuation_nll_given_reward": 0.0004603624693118036,
+        "token_mse": 0.0844421461224556,
+        "token_mse_copy_previous": 0.09505344182252884
+      },
+      "reactive": {
+        "reward_nll": 0.036773256957530975,
+        "continuation_nll_given_reward": 5.8890522666721346e-12,
+        "tsp_mse": 0.000568556017242372
+      }
+    },
+    {
+      "episode": 493,
+      "n": 166,
+      "forecast": {
+        "reward_nll": 0.14076276123523712,
+        "continuation_nll_given_reward": 0.029602598398923874,
+        "token_mse": 0.06400173902511597,
+        "token_mse_copy_previous": 0.07316596060991287
+      },
+      "reactive": {
+        "reward_nll": 0.013061964884400368,
+        "continuation_nll_given_reward": 6.329743484911887e-08,
+        "tsp_mse": 0.0003647199191618711
+      }
+    },
+    {
+      "episode": 495,
+      "n": 293,
+      "forecast": {
+        "reward_nll": 0.026637839153409004,
+        "continuation_nll_given_reward": 0.0022984198294579983,
+        "token_mse": 0.08004863560199738,
+        "token_mse_copy_previous": 0.09068785607814789
+      },
+      "reactive": {
+        "reward_nll": 0.0021359887905418873,
+        "continuation_nll_given_reward": 2.3553465493091064e-13,
+        "tsp_mse": 0.0010994392214342952
+      }
+    },
+    {
+      "episode": 497,
+      "n": 194,
+      "forecast": {
+        "reward_nll": 0.08865019679069519,
+        "continuation_nll_given_reward": 0.03352547809481621,
+        "token_mse": 0.052549105137586594,
+        "token_mse_copy_previous": 0.06019949913024902
+      },
+      "reactive": {
+        "reward_nll": 0.02076960727572441,
+        "continuation_nll_given_reward": 2.85119153886626e-06,
+        "tsp_mse": 0.0008131646900437772
+      }
+    },
+    {
+      "episode": 529,
+      "n": 62,
+      "forecast": {
+        "reward_nll": 0.08465144038200378,
+        "continuation_nll_given_reward": 0.00022006592189427465,
+        "token_mse": 0.07921479642391205,
+        "token_mse_copy_previous": 0.08797609061002731
+      },
+      "reactive": {
+        "reward_nll": 0.0016332826344296336,
+        "continuation_nll_given_reward": 4.4323666265055905e-11,
+        "tsp_mse": 0.00030478861299343407
+      }
+    },
+    {
+      "episode": 533,
+      "n": 87,
+      "forecast": {
+        "reward_nll": 0.08830566704273224,
+        "continuation_nll_given_reward": 0.00014488866145256907,
+        "token_mse": 0.09140518307685852,
+        "token_mse_copy_previous": 0.10867336392402649
+      },
+      "reactive": {
+        "reward_nll": 0.0036906562745571136,
+        "continuation_nll_given_reward": 2.1829311691590192e-08,
+        "tsp_mse": 0.00036366144195199013
+      }
+    },
+    {
+      "episode": 543,
+      "n": 157,
+      "forecast": {
+        "reward_nll": 0.1320938616991043,
+        "continuation_nll_given_reward": 0.012169833295047283,
+        "token_mse": 0.04673817381262779,
+        "token_mse_copy_previous": 0.05399441719055176
+      },
+      "reactive": {
+        "reward_nll": 0.04096614941954613,
+        "continuation_nll_given_reward": 5.6793599156890195e-08,
+        "tsp_mse": 0.0006881524459458888
+      }
+    },
+    {
+      "episode": 549,
+      "n": 78,
+      "forecast": {
+        "reward_nll": 0.056502580642700195,
+        "continuation_nll_given_reward": 6.608581315958872e-05,
+        "token_mse": 0.06759235262870789,
+        "token_mse_copy_previous": 0.0770510658621788
+      },
+      "reactive": {
+        "reward_nll": 0.0005553093506023288,
+        "continuation_nll_given_reward": 4.3942409118976483e-14,
+        "tsp_mse": 0.0007650997140444815
+      }
+    },
+    {
+      "episode": 556,
+      "n": 96,
+      "forecast": {
+        "reward_nll": 0.03771556168794632,
+        "continuation_nll_given_reward": 0.004103093408048153,
+        "token_mse": 0.04527533799409866,
+        "token_mse_copy_previous": 0.058705490082502365
+      },
+      "reactive": {
+        "reward_nll": 0.00017358479090034962,
+        "continuation_nll_given_reward": 1.2434642648884164e-08,
+        "tsp_mse": 0.00023522130504716188
+      }
+    },
+    {
+      "episode": 561,
+      "n": 191,
+      "forecast": {
+        "reward_nll": 0.005002597812563181,
+        "continuation_nll_given_reward": 6.32053124718368e-05,
+        "token_mse": 0.04675737023353577,
+        "token_mse_copy_previous": 0.05732767656445503
+      },
+      "reactive": {
+        "reward_nll": 0.00023039671941660345,
+        "continuation_nll_given_reward": 3.6948640058653837e-07,
+        "tsp_mse": 0.0005860005621798337
+      }
+    },
+    {
+      "episode": 579,
+      "n": 181,
+      "forecast": {
+        "reward_nll": 0.12551741302013397,
+        "continuation_nll_given_reward": 0.022268280386924744,
+        "token_mse": 0.04692472890019417,
+        "token_mse_copy_previous": 0.05592574551701546
+      },
+      "reactive": {
+        "reward_nll": 0.0059603918343782425,
+        "continuation_nll_given_reward": 1.2964979134721943e-07,
+        "tsp_mse": 0.0004547061980701983
+      }
+    },
+    {
+      "episode": 589,
+      "n": 127,
+      "forecast": {
+        "reward_nll": 0.14450398087501526,
+        "continuation_nll_given_reward": 0.0016814015107229352,
+        "token_mse": 0.0782843604683876,
+        "token_mse_copy_previous": 0.08370023965835571
+      },
+      "reactive": {
+        "reward_nll": 0.009697268716990948,
+        "continuation_nll_given_reward": 8.703158194123262e-09,
+        "tsp_mse": 0.0006045179907232523
+      }
+    },
+    {
+      "episode": 597,
+      "n": 46,
+      "forecast": {
+        "reward_nll": 0.1429978758096695,
+        "continuation_nll_given_reward": 0.0007595230708830059,
+        "token_mse": 0.09719298034906387,
+        "token_mse_copy_previous": 0.10231219977140427
+      },
+      "reactive": {
+        "reward_nll": 0.0006145926890894771,
+        "continuation_nll_given_reward": 1.5579141709326505e-12,
+        "tsp_mse": 0.0006624015513807535
+      }
+    },
+    {
+      "episode": 606,
+      "n": 192,
+      "forecast": {
+        "reward_nll": 0.030515825375914574,
+        "continuation_nll_given_reward": 0.00012591305130627006,
+        "token_mse": 0.06574857234954834,
+        "token_mse_copy_previous": 0.08013862371444702
+      },
+      "reactive": {
+        "reward_nll": 0.006795214023441076,
+        "continuation_nll_given_reward": 2.9495532771761646e-07,
+        "tsp_mse": 0.0005910874460823834
+      }
+    },
+    {
+      "episode": 617,
+      "n": 109,
+      "forecast": {
+        "reward_nll": 0.09532006084918976,
+        "continuation_nll_given_reward": 1.716088945613592e-06,
+        "token_mse": 0.10202925652265549,
+        "token_mse_copy_previous": 0.11606595665216446
+      },
+      "reactive": {
+        "reward_nll": 0.0048775398172438145,
+        "continuation_nll_given_reward": 3.449111656006476e-12,
+        "tsp_mse": 0.00037098347092978656
+      }
+    },
+    {
+      "episode": 620,
+      "n": 207,
+      "forecast": {
+        "reward_nll": 0.10780506581068039,
+        "continuation_nll_given_reward": 0.0004765592748299241,
+        "token_mse": 0.0820995345711708,
+        "token_mse_copy_previous": 0.08988926559686661
+      },
+      "reactive": {
+        "reward_nll": 0.02704835869371891,
+        "continuation_nll_given_reward": 4.886211968369025e-08,
+        "tsp_mse": 0.0009224024252034724
+      }
+    },
+    {
+      "episode": 625,
+      "n": 418,
+      "forecast": {
+        "reward_nll": 0.09928689152002335,
+        "continuation_nll_given_reward": 0.006568277254700661,
+        "token_mse": 0.12845401465892792,
+        "token_mse_copy_previous": 0.13282009959220886
+      },
+      "reactive": {
+        "reward_nll": 0.00534695852547884,
+        "continuation_nll_given_reward": 1.4172026219227973e-08,
+        "tsp_mse": 0.001394148450344801
+      }
+    },
+    {
+      "episode": 642,
+      "n": 201,
+      "forecast": {
+        "reward_nll": 0.04420692101120949,
+        "continuation_nll_given_reward": 0.00043754998478107154,
+        "token_mse": 0.06301292777061462,
+        "token_mse_copy_previous": 0.06825847923755646
+      },
+      "reactive": {
+        "reward_nll": 0.00011146110773552209,
+        "continuation_nll_given_reward": 2.5338829342039237e-13,
+        "tsp_mse": 0.0007963438401930034
+      }
+    },
+    {
+      "episode": 644,
+      "n": 314,
+      "forecast": {
+        "reward_nll": 0.09800253063440323,
+        "continuation_nll_given_reward": 0.007859860546886921,
+        "token_mse": 0.08277971297502518,
+        "token_mse_copy_previous": 0.09046778082847595
+      },
+      "reactive": {
+        "reward_nll": 0.0033714650198817253,
+        "continuation_nll_given_reward": 1.4132882597550633e-07,
+        "tsp_mse": 0.0009651815635152161
+      }
+    },
+    {
+      "episode": 651,
+      "n": 1141,
+      "forecast": {
+        "reward_nll": 0.07703270018100739,
+        "continuation_nll_given_reward": 5.944193253526464e-05,
+        "token_mse": 0.1099969670176506,
+        "token_mse_copy_previous": 0.11572172492742538
+      },
+      "reactive": {
+        "reward_nll": 0.006230719853192568,
+        "continuation_nll_given_reward": 2.244211927404649e-09,
+        "tsp_mse": 0.0012186298845335841
+      }
+    },
+    {
+      "episode": 661,
+      "n": 209,
+      "forecast": {
+        "reward_nll": 0.025268133729696274,
+        "continuation_nll_given_reward": 8.330891432706267e-05,
+        "token_mse": 0.06697052717208862,
+        "token_mse_copy_previous": 0.07375423610210419
+      },
+      "reactive": {
+        "reward_nll": 0.00015306680870708078,
+        "continuation_nll_given_reward": 3.048576744778958e-13,
+        "tsp_mse": 0.001062632305547595
+      }
+    },
+    {
+      "episode": 675,
+      "n": 85,
+      "forecast": {
+        "reward_nll": 0.10572406649589539,
+        "continuation_nll_given_reward": 4.6839577407808974e-05,
+        "token_mse": 0.053816650062799454,
+        "token_mse_copy_previous": 0.06650783121585846
+      },
+      "reactive": {
+        "reward_nll": 0.05064639076590538,
+        "continuation_nll_given_reward": 9.699591331201727e-16,
+        "tsp_mse": 0.000388777581974864
+      }
+    },
+    {
+      "episode": 685,
+      "n": 71,
+      "forecast": {
+        "reward_nll": 0.3008902668952942,
+        "continuation_nll_given_reward": 0.09643266350030899,
+        "token_mse": 0.08955292403697968,
+        "token_mse_copy_previous": 0.09356729686260223
+      },
+      "reactive": {
+        "reward_nll": 0.09864750504493713,
+        "continuation_nll_given_reward": 8.040696229727473e-06,
+        "tsp_mse": 0.00037482392508536577
+      }
+    },
+    {
+      "episode": 690,
+      "n": 322,
+      "forecast": {
+        "reward_nll": 0.14566966891288757,
+        "continuation_nll_given_reward": 0.00021196661691647023,
+        "token_mse": 0.11516313999891281,
+        "token_mse_copy_previous": 0.11890499293804169
+      },
+      "reactive": {
+        "reward_nll": 0.07513483613729477,
+        "continuation_nll_given_reward": 1.1461424698211431e-08,
+        "tsp_mse": 0.0013102255761623383
+      }
+    },
+    {
+      "episode": 691,
+      "n": 208,
+      "forecast": {
+        "reward_nll": 0.05062609165906906,
+        "continuation_nll_given_reward": 3.139557520626113e-05,
+        "token_mse": 0.08135418593883514,
+        "token_mse_copy_previous": 0.09256990998983383
+      },
+      "reactive": {
+        "reward_nll": 0.012283921241760254,
+        "continuation_nll_given_reward": 2.665648463680975e-13,
+        "tsp_mse": 0.000815009989310056
+      }
+    },
+    {
+      "episode": 695,
+      "n": 65,
+      "forecast": {
+        "reward_nll": 0.10011694580316544,
+        "continuation_nll_given_reward": 8.319918379129376e-06,
+        "token_mse": 0.09303788095712662,
+        "token_mse_copy_previous": 0.10838285088539124
+      },
+      "reactive": {
+        "reward_nll": 0.0043852669186890125,
+        "continuation_nll_given_reward": 9.73369280142522e-13,
+        "tsp_mse": 0.0006547892116941512
+      }
+    },
+    {
+      "episode": 710,
+      "n": 211,
+      "forecast": {
+        "reward_nll": 0.0458967499434948,
+        "continuation_nll_given_reward": 0.0029469369910657406,
+        "token_mse": 0.08584797382354736,
+        "token_mse_copy_previous": 0.09434164315462112
+      },
+      "reactive": {
+        "reward_nll": 0.0074593559838831425,
+        "continuation_nll_given_reward": 4.207346970819259e-10,
+        "tsp_mse": 0.0008739344193600118
+      }
+    },
+    {
+      "episode": 717,
+      "n": 242,
+      "forecast": {
+        "reward_nll": 0.07243891060352325,
+        "continuation_nll_given_reward": 0.021993115544319153,
+        "token_mse": 0.09912118315696716,
+        "token_mse_copy_previous": 0.1059824600815773
+      },
+      "reactive": {
+        "reward_nll": 0.011770159937441349,
+        "continuation_nll_given_reward": 2.457945129208383e-06,
+        "tsp_mse": 0.001270738081075251
+      }
+    },
+    {
+      "episode": 729,
+      "n": 291,
+      "forecast": {
+        "reward_nll": 0.12106329947710037,
+        "continuation_nll_given_reward": 9.433173545403406e-06,
+        "token_mse": 0.12769153714179993,
+        "token_mse_copy_previous": 0.13507720828056335
+      },
+      "reactive": {
+        "reward_nll": 0.024726087227463722,
+        "continuation_nll_given_reward": 1.6298501437361779e-09,
+        "tsp_mse": 0.0015234982129186392
+      }
+    },
+    {
+      "episode": 736,
+      "n": 117,
+      "forecast": {
+        "reward_nll": 0.19629503786563873,
+        "continuation_nll_given_reward": 4.358766454970464e-05,
+        "token_mse": 0.057099271565675735,
+        "token_mse_copy_previous": 0.06767518073320389
+      },
+      "reactive": {
+        "reward_nll": 0.035921335220336914,
+        "continuation_nll_given_reward": 2.3270293678101517e-11,
+        "tsp_mse": 0.0007920028292573988
+      }
+    },
+    {
+      "episode": 759,
+      "n": 41,
+      "forecast": {
+        "reward_nll": 0.0959998220205307,
+        "continuation_nll_given_reward": 0.00019861098553519696,
+        "token_mse": 0.06969168037176132,
+        "token_mse_copy_previous": 0.08288563042879105
+      },
+      "reactive": {
+        "reward_nll": 0.0440124087035656,
+        "continuation_nll_given_reward": 2.0965557916596995e-14,
+        "tsp_mse": 0.00024878737167455256
+      }
+    },
+    {
+      "episode": 761,
+      "n": 63,
+      "forecast": {
+        "reward_nll": 0.17078712582588196,
+        "continuation_nll_given_reward": 0.02086538076400757,
+        "token_mse": 0.09871358424425125,
+        "token_mse_copy_previous": 0.1014014184474945
+      },
+      "reactive": {
+        "reward_nll": 0.003135130275040865,
+        "continuation_nll_given_reward": 4.1478733692201786e-06,
+        "tsp_mse": 0.0003142232308164239
+      }
+    },
+    {
+      "episode": 762,
+      "n": 308,
+      "forecast": {
+        "reward_nll": 0.09811201691627502,
+        "continuation_nll_given_reward": 0.009340423159301281,
+        "token_mse": 0.09565678238868713,
+        "token_mse_copy_previous": 0.10371780395507812
+      },
+      "reactive": {
+        "reward_nll": 0.01238315925002098,
+        "continuation_nll_given_reward": 4.438441010279348e-07,
+        "tsp_mse": 0.0013243600260466337
+      }
+    },
+    {
+      "episode": 774,
+      "n": 149,
+      "forecast": {
+        "reward_nll": 0.12320990860462189,
+        "continuation_nll_given_reward": 0.0007856826414354146,
+        "token_mse": 0.0924641340970993,
+        "token_mse_copy_previous": 0.10355017334222794
+      },
+      "reactive": {
+        "reward_nll": 0.008699402213096619,
+        "continuation_nll_given_reward": 1.5667758757054173e-10,
+        "tsp_mse": 0.0007841961341910064
+      }
+    },
+    {
+      "episode": 793,
+      "n": 223,
+      "forecast": {
+        "reward_nll": 0.04709632694721222,
+        "continuation_nll_given_reward": 0.01617671363055706,
+        "token_mse": 0.08359871804714203,
+        "token_mse_copy_previous": 0.0912468209862709
+      },
+      "reactive": {
+        "reward_nll": 0.017247848212718964,
+        "continuation_nll_given_reward": 1.5195142566426512e-07,
+        "tsp_mse": 0.0009037182899191976
+      }
+    },
+    {
+      "episode": 795,
+      "n": 150,
+      "forecast": {
+        "reward_nll": 0.05630410462617874,
+        "continuation_nll_given_reward": 7.696192915318534e-05,
+        "token_mse": 0.06613947451114655,
+        "token_mse_copy_previous": 0.07987257093191147
+      },
+      "reactive": {
+        "reward_nll": 0.005011348985135555,
+        "continuation_nll_given_reward": 1.2456252695969283e-10,
+        "tsp_mse": 0.0003463986504357308
+      }
+    },
+    {
+      "episode": 799,
+      "n": 103,
+      "forecast": {
+        "reward_nll": 0.11763468384742737,
+        "continuation_nll_given_reward": 0.03243137523531914,
+        "token_mse": 0.040893200784921646,
+        "token_mse_copy_previous": 0.04459236562252045
+      },
+      "reactive": {
+        "reward_nll": 0.013613823801279068,
+        "continuation_nll_given_reward": 2.7776922095767986e-08,
+        "tsp_mse": 0.0010622787522152066
+      }
+    },
+    {
+      "episode": 818,
+      "n": 63,
+      "forecast": {
+        "reward_nll": 0.015554236248135567,
+        "continuation_nll_given_reward": 0.00731506384909153,
+        "token_mse": 0.03497187793254852,
+        "token_mse_copy_previous": 0.0424216128885746
+      },
+      "reactive": {
+        "reward_nll": 7.539190846728161e-05,
+        "continuation_nll_given_reward": 6.057369006384761e-08,
+        "tsp_mse": 0.0003066805365961045
+      }
+    },
+    {
+      "episode": 823,
+      "n": 152,
+      "forecast": {
+        "reward_nll": 0.09575178474187851,
+        "continuation_nll_given_reward": 2.6231824449496344e-05,
+        "token_mse": 0.08200519531965256,
+        "token_mse_copy_previous": 0.09356758743524551
+      },
+      "reactive": {
+        "reward_nll": 0.021144697442650795,
+        "continuation_nll_given_reward": 4.483319937520491e-09,
+        "tsp_mse": 0.000296470447210595
+      }
+    },
+    {
+      "episode": 836,
+      "n": 144,
+      "forecast": {
+        "reward_nll": 0.009982089512050152,
+        "continuation_nll_given_reward": 0.0001599910028744489,
+        "token_mse": 0.06153538450598717,
+        "token_mse_copy_previous": 0.07217055559158325
+      },
+      "reactive": {
+        "reward_nll": 0.00010195093636866659,
+        "continuation_nll_given_reward": 2.1855036891338386e-07,
+        "tsp_mse": 0.00034787715412676334
+      }
+    },
+    {
+      "episode": 838,
+      "n": 254,
+      "forecast": {
+        "reward_nll": 0.04639904573559761,
+        "continuation_nll_given_reward": 0.0032726521603763103,
+        "token_mse": 0.07181219011545181,
+        "token_mse_copy_previous": 0.08054085075855255
+      },
+      "reactive": {
+        "reward_nll": 0.0008741747587919235,
+        "continuation_nll_given_reward": 5.398431810084425e-13,
+        "tsp_mse": 0.0010760556906461716
+      }
+    },
+    {
+      "episode": 840,
+      "n": 896,
+      "forecast": {
+        "reward_nll": 0.043456677347421646,
+        "continuation_nll_given_reward": 2.5207631551893428e-05,
+        "token_mse": 0.10908769071102142,
+        "token_mse_copy_previous": 0.11630283296108246
+      },
+      "reactive": {
+        "reward_nll": 0.004398035816848278,
+        "continuation_nll_given_reward": 9.366400710586475e-11,
+        "tsp_mse": 0.0012661012588068843
+      }
+    },
+    {
+      "episode": 848,
+      "n": 70,
+      "forecast": {
+        "reward_nll": 0.09406094998121262,
+        "continuation_nll_given_reward": 0.0026938205119222403,
+        "token_mse": 0.0569949634373188,
+        "token_mse_copy_previous": 0.06572585552930832
+      },
+      "reactive": {
+        "reward_nll": 0.001426157308742404,
+        "continuation_nll_given_reward": 3.347490687422017e-11,
+        "tsp_mse": 0.00024761719396337867
+      }
+    },
+    {
+      "episode": 866,
+      "n": 135,
+      "forecast": {
+        "reward_nll": 0.032193128019571304,
+        "continuation_nll_given_reward": 0.002073952928185463,
+        "token_mse": 0.06374143064022064,
+        "token_mse_copy_previous": 0.07514683157205582
+      },
+      "reactive": {
+        "reward_nll": 0.000460467126686126,
+        "continuation_nll_given_reward": 2.1195971200427266e-08,
+        "tsp_mse": 0.0004265769093763083
+      }
+    },
+    {
+      "episode": 869,
+      "n": 296,
+      "forecast": {
+        "reward_nll": 0.09493736177682877,
+        "continuation_nll_given_reward": 0.00016007001977413893,
+        "token_mse": 0.112916499376297,
+        "token_mse_copy_previous": 0.11895813047885895
+      },
+      "reactive": {
+        "reward_nll": 0.015680665150284767,
+        "continuation_nll_given_reward": 1.6069785408498287e-14,
+        "tsp_mse": 0.0014408266870304942
+      }
+    },
+    {
+      "episode": 877,
+      "n": 187,
+      "forecast": {
+        "reward_nll": 0.06656120717525482,
+        "continuation_nll_given_reward": 0.000455838831840083,
+        "token_mse": 0.08746939152479172,
+        "token_mse_copy_previous": 0.09613626450300217
+      },
+      "reactive": {
+        "reward_nll": 0.0068487501703202724,
+        "continuation_nll_given_reward": 3.074978938144568e-09,
+        "tsp_mse": 0.0005263284547254443
+      }
+    },
+    {
+      "episode": 895,
+      "n": 208,
+      "forecast": {
+        "reward_nll": 0.0530531071126461,
+        "continuation_nll_given_reward": 0.0013776551932096481,
+        "token_mse": 0.07344365119934082,
+        "token_mse_copy_previous": 0.08053477108478546
+      },
+      "reactive": {
+        "reward_nll": 0.0019000062020495534,
+        "continuation_nll_given_reward": 1.2083199862900074e-07,
+        "tsp_mse": 0.0008101440034806728
+      }
+    },
+    {
+      "episode": 911,
+      "n": 207,
+      "forecast": {
+        "reward_nll": 0.14407707750797272,
+        "continuation_nll_given_reward": 6.836683314759284e-05,
+        "token_mse": 0.12546135485172272,
+        "token_mse_copy_previous": 0.13257059454917908
+      },
+      "reactive": {
+        "reward_nll": 0.02757679671049118,
+        "continuation_nll_given_reward": 4.533779218718337e-08,
+        "tsp_mse": 0.0011590564390644431
+      }
+    },
+    {
+      "episode": 913,
+      "n": 139,
+      "forecast": {
+        "reward_nll": 0.05183262750506401,
+        "continuation_nll_given_reward": 0.0008054645732045174,
+        "token_mse": 0.11910519003868103,
+        "token_mse_copy_previous": 0.13317541778087616
+      },
+      "reactive": {
+        "reward_nll": 0.0016951188445091248,
+        "continuation_nll_given_reward": 4.2917407773240476e-14,
+        "tsp_mse": 0.0009228465496562421
+      }
+    },
+    {
+      "episode": 919,
+      "n": 212,
+      "forecast": {
+        "reward_nll": 0.05919833481311798,
+        "continuation_nll_given_reward": 0.0038900356739759445,
+        "token_mse": 0.060490574687719345,
+        "token_mse_copy_previous": 0.06787896156311035
+      },
+      "reactive": {
+        "reward_nll": 0.01734006404876709,
+        "continuation_nll_given_reward": 3.1289826551983424e-07,
+        "tsp_mse": 0.0009244310786016285
+      }
+    },
+    {
+      "episode": 926,
+      "n": 71,
+      "forecast": {
+        "reward_nll": 0.23713473975658417,
+        "continuation_nll_given_reward": 0.057043854147195816,
+        "token_mse": 0.07685256004333496,
+        "token_mse_copy_previous": 0.08551866561174393
+      },
+      "reactive": {
+        "reward_nll": 0.05502793937921524,
+        "continuation_nll_given_reward": 1.4546930287906434e-05,
+        "tsp_mse": 0.00045307204709388316
+      }
+    },
+    {
+      "episode": 934,
+      "n": 231,
+      "forecast": {
+        "reward_nll": 0.0881587341427803,
+        "continuation_nll_given_reward": 0.025103069841861725,
+        "token_mse": 0.12687622010707855,
+        "token_mse_copy_previous": 0.1340019851922989
+      },
+      "reactive": {
+        "reward_nll": 0.002734269481152296,
+        "continuation_nll_given_reward": 6.825044920333312e-07,
+        "tsp_mse": 0.0013226591981947422
+      }
+    },
+    {
+      "episode": 940,
+      "n": 99,
+      "forecast": {
+        "reward_nll": 0.03329261764883995,
+        "continuation_nll_given_reward": 0.00044366001384332776,
+        "token_mse": 0.048082850873470306,
+        "token_mse_copy_previous": 0.05851362645626068
+      },
+      "reactive": {
+        "reward_nll": 0.0007557452190667391,
+        "continuation_nll_given_reward": 9.633218667204346e-09,
+        "tsp_mse": 0.0006560052279382944
+      }
+    },
+    {
+      "episode": 962,
+      "n": 223,
+      "forecast": {
+        "reward_nll": 0.08391885459423065,
+        "continuation_nll_given_reward": 0.00013407251390162855,
+        "token_mse": 0.08465367555618286,
+        "token_mse_copy_previous": 0.09365905821323395
+      },
+      "reactive": {
+        "reward_nll": 0.005932286381721497,
+        "continuation_nll_given_reward": 1.459584675345127e-10,
+        "tsp_mse": 0.0011283118510618806
+      }
+    },
+    {
+      "episode": 988,
+      "n": 89,
+      "forecast": {
+        "reward_nll": 0.053908105939626694,
+        "continuation_nll_given_reward": 0.0005651704268530011,
+        "token_mse": 0.05797886848449707,
+        "token_mse_copy_previous": 0.065326988697052
+      },
+      "reactive": {
+        "reward_nll": 9.076392598217353e-05,
+        "continuation_nll_given_reward": 3.9647150629207317e-07,
+        "tsp_mse": 0.0002503200084902346
+      }
+    },
+    {
+      "episode": 989,
+      "n": 181,
+      "forecast": {
+        "reward_nll": 0.009877013973891735,
+        "continuation_nll_given_reward": 3.5912220482714474e-05,
+        "token_mse": 0.05227084085345268,
+        "token_mse_copy_previous": 0.06541409343481064
+      },
+      "reactive": {
+        "reward_nll": 5.095117739983834e-05,
+        "continuation_nll_given_reward": 5.269269021113132e-09,
+        "tsp_mse": 0.00038320853491313756
+      }
+    },
+    {
+      "episode": 993,
+      "n": 1149,
+      "forecast": {
+        "reward_nll": 0.0742916390299797,
+        "continuation_nll_given_reward": 0.001696618739515543,
+        "token_mse": 0.09533016383647919,
+        "token_mse_copy_previous": 0.10291708260774612
+      },
+      "reactive": {
+        "reward_nll": 0.009507072158157825,
+        "continuation_nll_given_reward": 8.181044286459382e-09,
+        "tsp_mse": 0.00116933963727206
+      }
+    },
+    {
+      "episode": 1002,
+      "n": 137,
+      "forecast": {
+        "reward_nll": 0.11317352205514908,
+        "continuation_nll_given_reward": 6.614534868276678e-06,
+        "token_mse": 0.07055290788412094,
+        "token_mse_copy_previous": 0.08216095715761185
+      },
+      "reactive": {
+        "reward_nll": 0.0160645991563797,
+        "continuation_nll_given_reward": 1.1933556365306686e-09,
+        "tsp_mse": 0.00034951354609802365
+      }
+    },
+    {
+      "episode": 1006,
+      "n": 143,
+      "forecast": {
+        "reward_nll": 0.18669554591178894,
+        "continuation_nll_given_reward": 0.00027374381897971034,
+        "token_mse": 0.05761415883898735,
+        "token_mse_copy_previous": 0.06715070456266403
+      },
+      "reactive": {
+        "reward_nll": 0.0033074328675866127,
+        "continuation_nll_given_reward": 1.0527725891051887e-07,
+        "tsp_mse": 0.0007390786777250469
+      }
+    }
+  ]
+}

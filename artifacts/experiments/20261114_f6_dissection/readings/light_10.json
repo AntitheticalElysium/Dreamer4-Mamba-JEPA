@@ -1,0 +1,35 @@
+{
+ "checkpoint": 10,
+ "still_awake_map_error_per_cell": {
+  "day/entities": {
+   "frames": 17259,
+   "copy": 0.038000188890848406,
+   "head": 0.03726012002879314
+  },
+  "day/no_entities_same_terrain": {
+   "frames": 4939,
+   "copy": 0.0009119240494646777,
+   "head": 0.0008474296897908989
+  },
+  "dusk_dawn/entities": {
+   "frames": 42168,
+   "copy": 0.03852396760329539,
+   "head": 0.037724200674909385
+  },
+  "dusk_dawn/no_entities_same_terrain": {
+   "frames": 22927,
+   "copy": 0.0009678026618944435,
+   "head": 0.0007784648420156612
+  },
+  "night/entities": {
+   "frames": 32869,
+   "copy": 0.1345089313086869,
+   "head": 0.13366443381206863
+  },
+  "night/no_entities_same_terrain": {
+   "frames": 5840,
+   "copy": 0.10073504534862279,
+   "head": 0.09976116063178231
+  }
+ }
+}

@@ -54,7 +54,7 @@ There is no separate hidden world: simulation runs on the belief (belief-MDP; GE
    logistic mixture first chosen was replaced at the build's overfit check, LOSSES G3); continuation ~ p(c |
    B-_{t+1}, P_{t+1}, r). The critic keeps two-hot. Change map rendered from (B-_{t+1}, B_{t+1}).
 Losses and weights: LOSSES.md. Gradient routes into the encoders: the belief path (memory tokens stay
-differentiable), TSP, the fovea's own reconstruction, the change map, the outcome heads; every denoiser FRAME input
+differentiable), TSP, the fovea's own reconstruction, the change map (before P1-F5), the outcome heads and their P1-F5 forecast modes; every denoiser FRAME input
 and target is stop-gradient (LOSSES principle 7; COLLAPSE.md). No gradient from the fixation head, actor or critic
 into the world.
 
@@ -133,6 +133,11 @@ tokens with EDM x-prediction. JEDI adds tanh clamping, a slower encoder and own-
   beyond Mamba's effective memory; identity through long absences.
 
 ## 8. Build order (bounded learned-loop test)
+11-08 grounding correction: the change auxiliary covers the WHOLE 9x9 observation, with two region-general
+comparison outputs (same-position and dominant-translation), no HUD/player exclusions. Existing F4 weights are a
+historical baseline; the corrected objective has not been trained or shown to improve timers. Targets are
+versioned 9x9x2 arrays in a separate directory; historical 7x9 arrays are rejected. See LOSSES and DECISIONS.
+
 M0 one-step -> M0 rollouts -> M0 actor; then I1 / I2 only on a measured trigger (TEST_SPEC.md). Disabling a structure
 in a trained model measures RELIANCE on it; claiming its BENEFIT needs a matched training comparison (Codex).
 

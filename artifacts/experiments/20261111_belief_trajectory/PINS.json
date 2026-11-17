@@ -1,0 +1,11 @@
+{
+  "artifacts/experiments/20261111_belief_trajectory/trajectory.py": "fba4abb6d974f93ddb1f866d3c41c9821d0f8a3983f8dbcbc5d69f877efdbda5",
+  "artifacts/experiments/20261111_belief_trajectory/gradient.py": "6c3f39a4d197ab62a08c59fd344e5dc73449acecc83597422a5478899576b6d8",
+  "artifacts/experiments/20261111_belief_trajectory/plot.py": "0478372f0dbf3310253ea0fb47a1969a7fbff74eea687e68778f5e86060b72d2",
+  "saccade/model.py": "9524c34b36597289aad6a1e86e7fceb9d7c5d1ffc1f51be9b5d613163305971c",
+  "saccade/train.py": "81194d632be88fa13258a155dc23ac2d4a47aee019de1299b59d8f94b7385354",
+  "artifacts/experiments/20261111_p1_multistep_mamba/trainer.py": "cd7f3c9045b8487b8a448a0b7b0329a7c88b0fc69393c919e412bd210c5d0403",
+  "artifacts/experiments/20261111_p1_multistep_mamba/model_multistep.py": "4092824c6cf30e4b0649cb05b66402a7e93122ef401559577d9ba396001cd7b4",
+  "artifacts/eda/s0/s0_dev_labels.npz": "80ed73c7ffb7882c5952bdab90a7b27a764c7d41239275f8f70c701450eb1d54",
+  "artifacts/experiments/20261107_f4_followups/readings/counters_dev.npz": "4ed9c36653373e59f8e053d775b4fb27e12e9977e05cecc0aa8ba71f3befdb2d"
+}

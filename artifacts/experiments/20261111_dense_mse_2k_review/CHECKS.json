@@ -1,0 +1,30 @@
+{
+  "pins_verified": 19,
+  "identical_loss_and_readout_bytes": true,
+  "identical_training_loop_ast": true,
+  "identical_model_constructor_ast": true,
+  "arms": {
+    "endpoint": {
+      "checked_saved_update": 2000,
+      "prefix_384_log_bitwise_equal": true,
+      "checkpoint_equal_to_384_if_not_advanced": null,
+      "full_stream_and_horizon_replay_equal": true,
+      "adam_steps": [
+        2000
+      ],
+      "median_update_seconds_after_384": 2.2867976427078247,
+      "inference_export_verified": true
+    },
+    "dense": {
+      "checked_saved_update": 2000,
+      "prefix_384_log_bitwise_equal": true,
+      "checkpoint_equal_to_384_if_not_advanced": null,
+      "full_stream_and_horizon_replay_equal": true,
+      "adam_steps": [
+        2000
+      ],
+      "median_update_seconds_after_384": 2.2636314630508423,
+      "inference_export_verified": true
+    }
+  }
+}

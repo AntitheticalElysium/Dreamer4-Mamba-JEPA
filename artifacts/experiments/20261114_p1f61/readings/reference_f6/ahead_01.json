@@ -1,0 +1,60 @@
+{
+ "checkpoint": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261113_p1f6/run/ckpt_01.pt",
+ "sha256": "cee2cbb557f88db7f82e992a86b69e4f77171cf622e8914b3b62330f50106b46",
+ "distances": 1,
+ "asleep_origins": 55700,
+ "with_both_donors": 53527,
+ "distance_1": {
+  "asleep": {
+   "all": {
+    "rows": 53527,
+    "own_nats": 0.1830930858850479,
+    "same_phase_donor_nats": 0.3140844404697418,
+    "other_phase_donor_nats": 0.31415241956710815,
+    "phase_effect": 6.79592922097072e-05,
+    "phase_effect_ci95": [
+     -0.005014088807061525,
+     0.004909970741914779
+    ],
+    "foreign_belief_effect": 0.1309913843870163,
+    "foreign_belief_ci95": [
+     0.12312187596907659,
+     0.13979516360453362
+    ]
+   },
+   "wake_up_not_yet_paid": {
+    "rows": 13352,
+    "own_nats": 0.13177064061164856,
+    "same_phase_donor_nats": 0.20056399703025818,
+    "other_phase_donor_nats": 0.20109789073467255,
+    "phase_effect": 0.0005338884657248855,
+    "phase_effect_ci95": [
+     -0.005797242270542705,
+     0.007036783335157628
+    ],
+    "foreign_belief_effect": 0.06879335641860962,
+    "foreign_belief_ci95": [
+     0.057490923457819795,
+     0.08028215880022632
+    ]
+   },
+   "wake_up_already_paid": {
+    "rows": 40175,
+    "own_nats": 0.20014989376068115,
+    "same_phase_donor_nats": 0.35181254148483276,
+    "other_phase_donor_nats": 0.35172566771507263,
+    "phase_effect": -8.689063542988151e-05,
+    "phase_effect_ci95": [
+     -0.0056604609921048895,
+     0.006159547409291322
+    ],
+    "foreign_belief_effect": 0.151662677526474,
+    "foreign_belief_ci95": [
+     0.14043426015721971,
+     0.16401471618557054
+    ]
+   }
+  },
+  "every_frame_own_nats": 0.17681215703487396
+ }
+}

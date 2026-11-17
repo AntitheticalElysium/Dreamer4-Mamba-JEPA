@@ -1,0 +1,106 @@
+{
+ "legt_16": {
+  "food_down": {
+   "linear": 0.5204442786973932,
+   "nonlinear": 0.8702458912310822,
+   "linear_fraction_of_recency": 0.7520710212839997,
+   "rows": 23838
+  },
+  "drink_down": {
+   "linear": 0.5409915240671352,
+   "nonlinear": 0.8944327911011956,
+   "linear_fraction_of_recency": 0.691275648556166,
+   "rows": 19526
+  },
+  "energy_down_awake": {
+   "linear": 0.7302297845012489,
+   "nonlinear": 0.9334964082425008,
+   "linear_fraction_of_recency": 0.7737536774397124,
+   "rows": 26585
+  },
+  "energy_up_asleep": {
+   "linear": 0.4443802625029427,
+   "nonlinear": 0.7355640964167873,
+   "linear_fraction_of_recency": 0.6250144672379758,
+   "rows": 2510
+  }
+ },
+ "legt_64": {
+  "food_down": {
+   "linear": 0.7698098346664126,
+   "nonlinear": 0.8598161416281175,
+   "linear_fraction_of_recency": 1.1124181631914167,
+   "rows": 23838
+  },
+  "drink_down": {
+   "linear": 0.8348258903285961,
+   "nonlinear": 0.9270772931333219,
+   "linear_fraction_of_recency": 1.066735398051751,
+   "rows": 19526
+  },
+  "energy_down_awake": {
+   "linear": 0.9130098136650859,
+   "nonlinear": 0.932517759514652,
+   "linear_fraction_of_recency": 0.9674279464571724,
+   "rows": 26585
+  },
+  "energy_up_asleep": {
+   "linear": 0.7221267314748889,
+   "nonlinear": 0.7460824587949725,
+   "linear_fraction_of_recency": 1.0156608932380062,
+   "rows": 2510
+  }
+ },
+ "s4d_lin": {
+  "food_down": {
+   "linear": 0.757987509013831,
+   "nonlinear": 0.853227194005869,
+   "linear_fraction_of_recency": 1.095334242988196,
+   "rows": 23838
+  },
+  "drink_down": {
+   "linear": 0.779611077005417,
+   "nonlinear": 0.8731268698091147,
+   "linear_fraction_of_recency": 0.9961822485256012,
+   "rows": 19526
+  },
+  "energy_down_awake": {
+   "linear": 0.8992864196344288,
+   "nonlinear": 0.9412433125633446,
+   "linear_fraction_of_recency": 0.9528865968388086,
+   "rows": 26585
+  },
+  "energy_up_asleep": {
+   "linear": 0.6341977307248234,
+   "nonlinear": 0.7260629643676133,
+   "linear_fraction_of_recency": 0.8919900144977386,
+   "rows": 2510
+  }
+ },
+ "s4d_real": {
+  "food_down": {
+   "linear": 0.2987317135516261,
+   "nonlinear": 0.8949005654364178,
+   "linear_fraction_of_recency": 0.4316839940348758,
+   "rows": 23838
+  },
+  "drink_down": {
+   "linear": 0.2767395113004967,
+   "nonlinear": 0.9380783278003652,
+   "linear_fraction_of_recency": 0.3536160487638752,
+   "rows": 19526
+  },
+  "energy_down_awake": {
+   "linear": 0.1548652403984659,
+   "nonlinear": 0.9438289281004744,
+   "linear_fraction_of_recency": 0.16409567482616583,
+   "rows": 26585
+  },
+  "energy_up_asleep": {
+   "linear": 0.30460844577920737,
+   "nonlinear": 0.7633506598435981,
+   "linear_fraction_of_recency": 0.4284274112053264,
+   "rows": 2510
+  }
+ }
+}

@@ -1,0 +1,106 @@
+{
+ "lin_x": {
+  "food_down": {
+   "linear": 0.5009495343800717,
+   "nonlinear": 0.7010330679786589,
+   "linear_fraction_of_recency": 0.7239000280220619,
+   "rows": 23838
+  },
+  "drink_down": {
+   "linear": 0.5839438372664112,
+   "nonlinear": 0.7997165636972101,
+   "linear_fraction_of_recency": 0.7461598506978105,
+   "rows": 19526
+  },
+  "energy_down_awake": {
+   "linear": 0.520952351660787,
+   "nonlinear": 0.9034389875255284,
+   "linear_fraction_of_recency": 0.5520026797369162,
+   "rows": 26585
+  },
+  "energy_up_asleep": {
+   "linear": 0.5742528453898812,
+   "nonlinear": 0.7618791421696257,
+   "linear_fraction_of_recency": 0.8076783928243697,
+   "rows": 2510
+  }
+ },
+ "legt_x": {
+  "food_down": {
+   "linear": 0.616020241726692,
+   "nonlinear": 0.8643258811428504,
+   "linear_fraction_of_recency": 0.8901836205915624,
+   "rows": 23838
+  },
+  "drink_down": {
+   "linear": 0.6652030399446127,
+   "nonlinear": 0.8719150423905435,
+   "linear_fraction_of_recency": 0.8499923610673443,
+   "rows": 19526
+  },
+  "energy_down_awake": {
+   "linear": 0.6268144456111067,
+   "nonlinear": 0.9651136596505607,
+   "linear_fraction_of_recency": 0.6641744731012117,
+   "rows": 26585
+  },
+  "energy_up_asleep": {
+   "linear": 0.7279919607826344,
+   "nonlinear": 0.8372600922133653,
+   "linear_fraction_of_recency": 1.0239102541577767,
+   "rows": 2510
+  }
+ },
+ "lin_tok": {
+  "food_down": {
+   "linear": 0.34374084339926947,
+   "nonlinear": 0.8131556713084176,
+   "linear_fraction_of_recency": 0.49672469798178776,
+   "rows": 23838
+  },
+  "drink_down": {
+   "linear": 0.3617424004662478,
+   "nonlinear": 0.840919526994169,
+   "linear_fraction_of_recency": 0.4622322187464395,
+   "rows": 19526
+  },
+  "energy_down_awake": {
+   "linear": 0.8041120271136082,
+   "nonlinear": 0.9603813182157435,
+   "linear_fraction_of_recency": 0.8520395240761258,
+   "rows": 26585
+  },
+  "energy_up_asleep": {
+   "linear": 0.6080065759106702,
+   "nonlinear": 0.8044676901093394,
+   "linear_fraction_of_recency": 0.8551525308068266,
+   "rows": 2510
+  }
+ },
+ "legt_tok": {
+  "food_down": {
+   "linear": 0.487232622501685,
+   "nonlinear": 0.9062843644202295,
+   "linear_fraction_of_recency": 0.704078325012739,
+   "rows": 23838
+  },
+  "drink_down": {
+   "linear": 0.5087331112859864,
+   "nonlinear": 0.8709488144973551,
+   "linear_fraction_of_recency": 0.6500560467238943,
+   "rows": 19526
+  },
+  "energy_down_awake": {
+   "linear": 0.8369055182751856,
+   "nonlinear": 0.9828584279584531,
+   "linear_fraction_of_recency": 0.886787606009935,
+   "rows": 26585
+  },
+  "energy_up_asleep": {
+   "linear": 0.7489042044867892,
+   "nonlinear": 0.9019683950611728,
+   "linear_fraction_of_recency": 1.0533230250668277,
+   "rows": 2510
+  }
+ }
+}

@@ -6,7 +6,7 @@ frame t (CURRICULUM §1, alignment): the percept o_t arrives with the reward and
 t-1 -> t (0 / False at an episode's first frame); a_t is the action taken at t (0 at an episode's last frame, which has
 none: its output is never used, the next frame starts a new episode from the zero belief); prev_action = a_{t-1}
 (-1 at a first frame: DreamerV3's reset, a zero action input).
-Usage (project venv): python -m saccade.data targets OUT_DIR   (build step 2: refit the A9b teacher, write targets;
+Usage (project venv): python -m saccade.data targets OUT_DIR   (refit the observation-derived teacher, write full-frame targets;
 needs lightgbm on PYTHONPATH)
 """
 import hashlib, json, sys
@@ -21,6 +21,22 @@ import replay as RP                                                      # noqa:
 
 GRID, CELL = 9, 7
 A9B = ROOT / "artifacts/eda/system_design_v1/a9"
+CHANGE_FORMAT = "full_frame_a9b_v2"
+CHANGE_MODES = ("same_position", "dominant_translation")
+
+
+def targets_dir(cfg) -> Path:
+    return ROOT / cfg["p1"].get("change_targets_dir", str(Path(cfg["p1"]["out_dir"]) / "targets"))
+
+
+def validate_change_targets(targets, episodes, directory: Path):
+    if targets.shape != (int(frame_offsets(episodes)[-1]), GRID, GRID, len(CHANGE_MODES)):
+        raise ValueError("Full-frame change targets must match the training split and cover all 9x9 cells; regenerate legacy map-only targets")
+    meta = json.loads((directory / "change_targets.json").read_text())
+    expected = hashlib.sha256("\n".join(e.key for e in episodes).encode()).hexdigest()
+    if (meta.get("format") != CHANGE_FORMAT or meta.get("episodes_sha256") != expected
+            or meta.get("semantic_exclusions") != [] or meta.get("modes") != list(CHANGE_MODES)):
+        raise ValueError("Change target format or episode order differs from the configured training split")
 
 
 @dataclass(frozen=True)
@@ -143,7 +159,7 @@ def select(chunk: dict, rows) -> dict:
     return {k: v[rows] for k, v in chunk.items()}
 
 
-# ---- change-map targets (build step 2): the A9b label-free teacher, refit on its own data, frozen ----
+# ---- Full-frame change grounding. A9b supplies the noise-tolerant pair detector, not semantic region masks. ----
 
 def _a9b():
     sys.path.insert(0, str(ROOT / "artifacts/experiments/20261023_system_design"))
@@ -154,6 +170,9 @@ def _a9b():
 def fit_teacher(out_dir: Path):
     """Refit A9b's corrupted-day detector exactly as eda_change_night_v2.fit does (same cells, episode split, Otsu
     threshold, LightGBM settings) and check it against A9b's saved held-out scores (simulator labels, evaluation only)."""
+    if (out_dir / "change_targets.npy").exists():
+        raise FileExistsError("Refusing to replace the teacher of an existing target store; choose a new directory")
+    out_dir.mkdir(parents=True, exist_ok=True)
     import lightgbm as lgb
     from saccade.eval.gates import average_precision
     A9 = _a9b()
@@ -171,7 +190,7 @@ def fit_teacher(out_dir: Path):
     dt = lgb.Dataset(X[t], y[t]); dv = lgb.Dataset(X[v], y[v], reference=dt)
     model = lgb.train(p, dt, 400, valid_sets=[dv], callbacks=[lgb.early_stopping(30, verbose=False)])
     saved = json.loads((A9B / "a9b_results.json").read_text())
-    report = {"tau": tau, "saved_tau": saved["label_free_day_threshold"], "trees": model.best_iteration,
+    report = {"format": CHANGE_FORMAT, "tau": tau, "saved_tau": saved["label_free_day_threshold"], "trees": model.best_iteration,
               "ap_definition": "threshold_grouped", "saved_ap_definition": "legacy_item_ranked"}
     for name, night in (("day", False), ("night", True)):
         te = (nr == night) & np.isin(gr, te_e)
@@ -188,44 +207,84 @@ def fit_teacher(out_dir: Path):
     return model, report
 
 
+def change_correspondence(frames: np.ndarray):
+    """Two full-frame comparison sources, with no region labels or local winner selection.
+
+    Temporal variability supplies soft support for camera estimation at BOTH source and destination: a stationary
+    overlay must not penalize a translation of content behind it. BOTH identity and that translation are supervised
+    at every cell; choosing between them locally would erase some independent changes. This is offline target
+    construction, not an inference input. Identity is available everywhere; translation has geometric validity only.
+    """
+    c = frames.astype(np.float32).reshape(-1, GRID, CELL, GRID, CELL, 3).transpose(0, 1, 3, 2, 4, 5)
+    if len(c) < 2:
+        return c, np.empty((0, GRID, GRID, 2, CELL, CELL, 3), np.float32), np.empty((0, GRID, GRID, 2), bool)
+    prev, cur = c[:-1], c[1:]
+    rr, qq = np.meshgrid(np.arange(GRID), np.arange(GRID), indexing="ij")
+    w = (np.abs(np.diff(c, axis=0)) > 0).mean((0, 3, 4, 5)) + 0.01
+    shifts = np.asarray(_a9b().SHIFTS)
+    cost, valid, support = [], [], []
+    for dr, dc in shifts:
+        r, q = rr - dr, qq - dc
+        ok = (r >= 0) & (r < GRID) & (q >= 0) & (q < GRID)
+        cost.append(np.abs(cur - prev[:, r.clip(0, GRID - 1), q.clip(0, GRID - 1)]).mean((-1, -2, -3)))
+        valid.append(ok)
+        support.append(w * w[r.clip(0, GRID - 1), q.clip(0, GRID - 1)] * ok)
+    cost, valid, support = np.stack(cost, 1), np.stack(valid), np.stack(support)
+    scores = (cost * support).sum((-1, -2)) / support.sum((-1, -2))
+    glob = scores.argmin(1)
+    shift = shifts[glob]
+    sr = rr[None] - shift[:, 0, None, None]
+    sq = qq[None] - shift[:, 1, None, None]
+    source = prev[np.arange(len(prev))[:, None, None], sr.clip(0, GRID - 1), sq.clip(0, GRID - 1)]
+    sources = np.stack([prev, source], axis=3)
+    validity = np.stack([np.ones_like(valid[glob]), valid[glob]], axis=3)
+    return c, sources, validity
+
+
 def pair_features(frames: np.ndarray):
-    """frames uint8 [n + 1, 63, 63, 3] of one episode -> (features [m, F], (pair, row, col) of each feature row) for the
-    map cells of every consecutive pair whose aligned source (estimated camera shift, A9b) is in view; the player's
-    cell and entering cells are excluded, as in A9b."""
-    A9 = _a9b()
-    c = frames[:, :49].astype(np.float32).reshape(-1, 7, 7, 9, 7, 3).transpose(0, 1, 3, 2, 4, 5)   # [n+1, 7, 9, 7, 7, 3]
-    c0, c1 = c[:-1], c[1:]
-    cost = []
-    for dr, dc in A9.SHIFTS:
-        r0, r1 = max(0, -dr), min(7, 7 - dr); q0, q1 = max(0, -dc), min(9, 9 - dc)
-        cost.append(np.abs(c0[:, r0:r1, q0:q1] - c1[:, r0 + dr:r1 + dr, q0 + dc:q1 + dc]).mean((1, 2, 3, 4, 5)))
-    shift = np.array(A9.SHIFTS)[np.argmin(np.stack(cost, 1), 1)]                                    # [n, 2]
-    rr, qq = np.meshgrid(np.arange(7), np.arange(9), indexing="ij")
-    sr, sq = rr[None] - shift[:, 0, None, None], qq[None] - shift[:, 1, None, None]                 # source of each cell
-    ok = (sr >= 0) & (sr < 7) & (sq >= 0) & (sq < 9) & ~((sr == 3) & (sq == 4))
-    ok[:, 3, 4] = False
-    pi, ri, qi = np.nonzero(ok)
-    return A9.feats(c1[pi, ri, qi], c0[pi, sr[pi, ri, qi], sq[pi, ri, qi]]), (pi, ri, qi)
+    """Every consecutive pair and every screen cell, including stationary overlays and the player's location."""
+    c, source, valid = change_correspondence(frames)
+    pi, ri, qi, mode = np.nonzero(valid)
+    return _a9b().feats(c[pi + 1, ri, qi], source[pi, ri, qi, mode]), (pi, ri, qi, mode)
+
+
+def change_probabilities(frames: np.ndarray, model):
+    c, source, valid = change_correspondence(frames)
+    if not len(source):
+        return np.empty((0, GRID, GRID, 2), np.float32)
+    exact = (np.abs(c[1:, :, :, None] - source).max((-1, -2, -3)) == 0) & valid
+    p = np.full(valid.shape, np.nan, np.float32)
+    p[exact] = 0                                                        # the old detector had content-dependent identity bias
+    pi, ri, qi, mode = np.nonzero(valid & ~exact)
+    if len(pi):
+        p[pi, ri, qi, mode] = model.predict(_a9b().feats(c[pi + 1, ri, qi], source[pi, ri, qi, mode]))
+    return p
 
 
 def change_targets(episodes, out_dir: Path, model=None):
-    """Soft change probabilities [frames, 7, 9] float16 for a split's frames (frame_offsets order); the target of frame
-    t + 1 describes the pair (t, t + 1); NaN where undefined (an episode's first frame, the player's cell, cells whose
-    aligned source is out of view). Written once to OUT_DIR/change_targets.npy and memory-mapped by training."""
+    """Soft probabilities [frames,9,9,2]; first frame/geometrically absent sources are undefined. No semantic exclusions.
+    Writes a separate versioned store; old map-only targets must never be silently padded or reused."""
     import lightgbm as lgb
     model = model or lgb.Booster(model_file=str(out_dir / "change_teacher.txt"))
     off = frame_offsets(episodes)
-    out = np.lib.format.open_memmap(out_dir / "change_targets.npy", "w+", np.float16, (int(off[-1]), 7, 9))
+    out_dir.mkdir(parents=True, exist_ok=True)
+    if (out_dir / "change_targets.npy").exists():
+        raise FileExistsError("Refusing to overwrite a target store; choose a new directory")
+    pending = out_dir / "change_targets.pending.npy"
+    out = np.lib.format.open_memmap(pending, "w+", np.float16, (int(off[-1]), GRID, GRID, len(CHANGE_MODES)))
     out[:] = np.nan
     for i, ep in enumerate(episodes):
         frames = RP.episode_fields(ep.shard, ep.slot)["observations"].numpy()
-        X, (pi, ri, qi) = pair_features(frames)
-        block = np.full((ep.T + 1, 7, 9), np.nan, np.float32)
-        block[pi + 1, ri, qi] = model.predict(X)
+        block = np.full((ep.T + 1, GRID, GRID, len(CHANGE_MODES)), np.nan, np.float32)
+        block[1:] = change_probabilities(frames, model)
         out[off[i]:off[i + 1]] = block
         if i % 500 == 0:
             print(f"targets {i}/{len(episodes)}", flush=True)
     out.flush()
+    pending.replace(out_dir / "change_targets.npy")
+    (out_dir / "change_targets.json").write_text(json.dumps({"format": CHANGE_FORMAT, "shape": list(out.shape),
+        "episodes_sha256": hashlib.sha256("\n".join(e.key for e in episodes).encode()).hexdigest(),
+        "semantic_exclusions": [], "modes": list(CHANGE_MODES)}, indent=2))
     return out
 
 

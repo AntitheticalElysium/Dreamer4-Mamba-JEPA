@@ -1,0 +1,40 @@
+{
+  "format": "full_frame_a9b_v2",
+  "shape": [
+    2439791,
+    9,
+    9,
+    2
+  ],
+  "episodes_sha256": "0395a746d6b0d531d801ba1cb023b3e91d86516ebe0a81cca4404a846bf41303",
+  "semantic_exclusions": [],
+  "modes": [
+    "same_position",
+    "dominant_translation"
+  ],
+  "construction": {
+    "exact": 130156484,
+    "reused": 205187902,
+    "predicted": 50985807
+  },
+  "recomputation_checks": [
+    {
+      "episode": "support-v2:20270731:0:0",
+      "bitwise_equal": true,
+      "frames": 311
+    },
+    {
+      "episode": "support-v2:20270731:210:14",
+      "bitwise_equal": true,
+      "frames": 226
+    },
+    {
+      "episode": "support-v2:20270731:419:23",
+      "bitwise_equal": true,
+      "frames": 222
+    }
+  ],
+  "teacher_sha256": "69862f6b98e3ba770395d07bdb516c2cc0e326917c0f848c4a8aedadd109406f",
+  "legacy_cache_sha256": "f1a79ed7dba730db02b5efb537cc8f44fd580406c2da7894005b4e3e84c87b97",
+  "elapsed_seconds": 1688.2174942493439
+}

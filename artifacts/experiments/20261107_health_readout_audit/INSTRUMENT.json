@@ -1,0 +1,17 @@
+{
+  "linear_reconstruction_error_max": 0.012626113713662956,
+  "linear_reconstruction_error_rms": 0.0021036785171373255,
+  "selected_strata": {
+    "0": 6000,
+    "1": 1619,
+    "2": 6000,
+    "3": 4000
+  },
+  "weighted_population_sizes": {
+    "0": 22501.999999999993,
+    "1": 1619.0,
+    "2": 219633.00000000003,
+    "3": 54081.000000000015
+  },
+  "ramp_health_flow_loss": 0.004418206965349746
+}

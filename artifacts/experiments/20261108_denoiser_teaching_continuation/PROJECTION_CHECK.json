@@ -1,0 +1,46 @@
+{
+  "health": {
+    "direct_coarse_block_rank": 16,
+    "weight_rms": 0.07031736458301266,
+    "singular_min_max": [
+      0.09880822061029913,
+      3.9257063372023224
+    ],
+    "on_digit_change_mean_direct_component_norm": 9.036259882109313,
+    "on_digit_change_mean_whole_embedding_delta_norm": 11.383082143530643,
+    "mean_direct_vs_other_component_norm_ratio": 1.6305578878140221
+  },
+  "food": {
+    "direct_coarse_block_rank": 16,
+    "weight_rms": 0.023565395360677616,
+    "singular_min_max": [
+      0.09846962117216725,
+      1.2071962663994085
+    ],
+    "on_digit_change_mean_direct_component_norm": 1.320593715839196,
+    "on_digit_change_mean_whole_embedding_delta_norm": 4.9500436080478325,
+    "mean_direct_vs_other_component_norm_ratio": 0.28682605161459557
+  },
+  "drink": {
+    "direct_coarse_block_rank": 16,
+    "weight_rms": 0.018494262316039043,
+    "singular_min_max": [
+      0.1013462984421823,
+      0.9376009193396533
+    ],
+    "on_digit_change_mean_direct_component_norm": 1.133846545070353,
+    "on_digit_change_mean_whole_embedding_delta_norm": 4.429067751703027,
+    "mean_direct_vs_other_component_norm_ratio": 0.272935328887694
+  },
+  "energy": {
+    "direct_coarse_block_rank": 16,
+    "weight_rms": 0.011950999127257507,
+    "singular_min_max": [
+      0.10006411872933635,
+      0.3916696153269187
+    ],
+    "on_digit_change_mean_direct_component_norm": 0.5806825834423751,
+    "on_digit_change_mean_whole_embedding_delta_norm": 3.693930040815149,
+    "mean_direct_vs_other_component_norm_ratio": 0.1601590658549094
+  }
+}

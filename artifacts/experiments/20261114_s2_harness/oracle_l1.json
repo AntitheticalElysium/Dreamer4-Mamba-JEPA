@@ -1,0 +1,752 @@
+{
+ "starts": 4000,
+ "episodes": 257,
+ "early_terminal_starts": 394,
+ "recorded_terminated": 0.10525,
+ "oracle_terminated": 0.107125,
+ "pit": {
+  "health_drops": {
+   "mean": 0.49532343131691187,
+   "quartile_shares": [
+    0.2547,
+    0.2527,
+    0.2452,
+    0.2472
+   ]
+  },
+  "displacement": {
+   "mean": 0.49807711527422216,
+   "quartile_shares": [
+    0.2595,
+    0.2438,
+    0.2435,
+    0.2532
+   ]
+  },
+  "death_step": {
+   "mean": 0.505109136967927,
+   "quartile_shares": [
+    0.2425,
+    0.2478,
+    0.2585,
+    0.2512
+   ]
+  }
+ },
+ "sanity_recorded_vs_oracle": {
+  "persistence": {
+   "diff": [
+    0.0003,
+    7e-05,
+    -0.00169,
+    -0.00365
+   ],
+   "se": [
+    0.00062,
+    0.00123,
+    0.00185,
+    0.00235
+   ],
+   "beyond_3se": false
+  },
+  "count": {
+   "diff": -0.00573,
+   "se": 0.01077,
+   "beyond_3se": false
+  },
+  "terminated": {
+   "diff": -0.00188,
+   "se": 0.00206,
+   "beyond_3se": false
+  },
+  "death_step": {
+   "diff": 0.00941,
+   "se": 0.01393,
+   "beyond_3se": false
+  }
+ },
+ "energy_score": {
+  "oracle_A": 5.731073159510813,
+  "oracle_B": 5.713012689951631
+ },
+ "null_A_vs_B": {
+  "persistence": {
+   "diff": [
+    -0.00021,
+    0.00042,
+    0.0009,
+    0.00159
+   ],
+   "se": [
+    0.00019,
+    0.00036,
+    0.00055,
+    0.00081
+   ],
+   "rejects": false
+  },
+  "count": {
+   "diff": 0.00421,
+   "se": 0.00298,
+   "rejects": false
+  },
+  "terminated": {
+   "diff": 0.00069,
+   "se": 0.00088,
+   "rejects": false
+  },
+  "death_step": {
+   "diff": -0.00147,
+   "se": 0.00558,
+   "rejects": false
+  },
+  "energy_score": {
+   "diff": 0.01806,
+   "se": 0.01926,
+   "rejects": false
+  },
+  "event_gates_rejecting": [],
+  "event_gates_unmeasured": [],
+  "rejected_by": []
+ },
+ "power": {
+  "flicker": {
+   "persistence": {
+    "diff": [
+     -0.18252,
+     -0.30837,
+     -0.3962,
+     -0.45911
+    ],
+    "se": [
+     0.00149,
+     0.00356,
+     0.0057,
+     0.00756
+    ],
+    "rejects": true
+   },
+   "count": {
+    "diff": -0.23158,
+    "se": 0.00846,
+    "rejects": true
+   },
+   "terminated": {
+    "diff": 0.00069,
+    "se": 0.00088,
+    "rejects": false
+   },
+   "death_step": {
+    "diff": -0.00147,
+    "se": 0.0055,
+    "rejects": false
+   },
+   "energy_score": {
+    "diff": 0.18976,
+    "se": 0.02252,
+    "rejects": true
+   },
+   "event_gates_rejecting": [
+    "appear_interior_zombies_day",
+    "vanish_zombies_day",
+    "appear_interior_zombies_night",
+    "vanish_zombies_night",
+    "diag_move_zombies_night",
+    "appear_edge_cows_day",
+    "appear_interior_cows_day",
+    "vanish_cows_day",
+    "diag_move_cows_day",
+    "count_cows_day",
+    "appear_edge_cows_night",
+    "appear_interior_cows_night",
+    "vanish_cows_night",
+    "diag_move_cows_night",
+    "appear_interior_skeletons_day",
+    "vanish_skeletons_day",
+    "appear_interior_skeletons_night",
+    "vanish_skeletons_night",
+    "drop_given_no_adj"
+   ],
+   "event_gates_unmeasured": [],
+   "rejected_by": [
+    "persistence",
+    "count",
+    "events"
+   ]
+  },
+  "teleport": {
+   "persistence": {
+    "diff": [
+     -0.0917,
+     -0.12341,
+     -0.14397,
+     -0.15993
+    ],
+    "se": [
+     0.00083,
+     0.00138,
+     0.00181,
+     0.0022
+    ],
+    "rejects": true
+   },
+   "count": {
+    "diff": -0.06657,
+    "se": 0.00942,
+    "rejects": true
+   },
+   "terminated": {
+    "diff": 0.00069,
+    "se": 0.00092,
+    "rejects": false
+   },
+   "death_step": {
+    "diff": -0.00147,
+    "se": 0.00573,
+    "rejects": false
+   },
+   "energy_score": {
+    "diff": 0.45357,
+    "se": 0.03651,
+    "rejects": true
+   },
+   "event_gates_rejecting": [
+    "appear_edge_zombies_day",
+    "appear_interior_zombies_day",
+    "vanish_zombies_day",
+    "appear_edge_zombies_night",
+    "appear_interior_zombies_night",
+    "vanish_zombies_night",
+    "diag_move_zombies_night",
+    "appear_edge_cows_day",
+    "appear_interior_cows_day",
+    "vanish_cows_day",
+    "diag_move_cows_day",
+    "appear_edge_cows_night",
+    "appear_interior_cows_night",
+    "vanish_cows_night",
+    "diag_move_cows_night",
+    "appear_edge_skeletons_day",
+    "appear_interior_skeletons_day",
+    "vanish_skeletons_day",
+    "appear_interior_skeletons_night",
+    "vanish_skeletons_night",
+    "drop_given_adj_since6",
+    "drop_given_no_adj",
+    "arrow_given_skel_range"
+   ],
+   "event_gates_unmeasured": [],
+   "rejected_by": [
+    "persistence",
+    "count",
+    "events"
+   ]
+  },
+  "phantom_drift": {
+   "persistence": {
+    "diff": [
+     0.0048,
+     0.01506,
+     0.02339,
+     0.03066
+    ],
+    "se": [
+     0.00093,
+     0.00201,
+     0.00278,
+     0.00336
+    ],
+    "rejects": true
+   },
+   "count": {
+    "diff": 1.63,
+    "se": 0.0041,
+    "rejects": true
+   },
+   "terminated": {
+    "diff": 0.00069,
+    "se": 0.00091,
+    "rejects": false
+   },
+   "death_step": {
+    "diff": -0.00147,
+    "se": 0.00568,
+    "rejects": false
+   },
+   "energy_score": {
+    "diff": 4.23505,
+    "se": 0.08115,
+    "rejects": true
+   },
+   "event_gates_rejecting": [
+    "appear_interior_zombies_day",
+    "vanish_zombies_day",
+    "appear_interior_zombies_night",
+    "vanish_zombies_night",
+    "appear_interior_cows_day",
+    "vanish_cows_day",
+    "diag_move_cows_day",
+    "count_cows_day",
+    "appear_interior_cows_night",
+    "vanish_cows_night",
+    "diag_move_cows_night",
+    "count_cows_night"
+   ],
+   "event_gates_unmeasured": [],
+   "rejected_by": [
+    "persistence",
+    "count",
+    "events"
+   ]
+  },
+  "vanishing_drift": {
+   "persistence": {
+    "diff": [
+     -0.04712,
+     -0.08624,
+     -0.12087,
+     -0.15157
+    ],
+    "se": [
+     0.0006,
+     0.00122,
+     0.00193,
+     0.00257
+    ],
+    "rejects": true
+   },
+   "count": {
+    "diff": -0.3933,
+    "se": 0.01398,
+    "rejects": true
+   },
+   "terminated": {
+    "diff": 0.00069,
+    "se": 0.00088,
+    "rejects": false
+   },
+   "death_step": {
+    "diff": -0.00147,
+    "se": 0.00545,
+    "rejects": false
+   },
+   "energy_score": {
+    "diff": 0.46745,
+    "se": 0.03864,
+    "rejects": true
+   },
+   "event_gates_rejecting": [
+    "appear_edge_zombies_day",
+    "vanish_zombies_day",
+    "count_zombies_day",
+    "appear_edge_zombies_night",
+    "vanish_zombies_night",
+    "count_zombies_night",
+    "appear_edge_cows_day",
+    "appear_interior_cows_day",
+    "vanish_cows_day",
+    "diag_move_cows_day",
+    "count_cows_day",
+    "appear_edge_cows_night",
+    "appear_interior_cows_night",
+    "vanish_cows_night",
+    "diag_move_cows_night",
+    "count_cows_night",
+    "vanish_skeletons_day",
+    "vanish_skeletons_night",
+    "drop_given_no_adj",
+    "arrow_given_skel_range"
+   ],
+   "event_gates_unmeasured": [],
+   "rejected_by": [
+    "persistence",
+    "count",
+    "events"
+   ]
+  },
+  "frozen_time": {
+   "persistence": {
+    "diff": [
+     0.01199,
+     0.03022,
+     0.04456,
+     0.05709
+    ],
+    "se": [
+     0.00151,
+     0.00327,
+     0.00451,
+     0.00548
+    ],
+    "rejects": true
+   },
+   "count": {
+    "diff": -0.13057,
+    "se": 0.01161,
+    "rejects": true
+   },
+   "terminated": {
+    "diff": 0.00069,
+    "se": 0.00088,
+    "rejects": false
+   },
+   "death_step": {
+    "diff": -0.00147,
+    "se": 0.00547,
+    "rejects": false
+   },
+   "energy_score": {
+    "diff": 6.27144,
+    "se": 0.15633,
+    "rejects": true
+   },
+   "event_gates_rejecting": [
+    "appear_edge_zombies_day",
+    "appear_interior_zombies_day",
+    "count_zombies_day",
+    "appear_edge_zombies_night",
+    "appear_interior_zombies_night",
+    "diag_move_zombies_night",
+    "appear_edge_cows_day",
+    "appear_interior_cows_day",
+    "diag_move_cows_day",
+    "appear_edge_cows_night",
+    "appear_interior_cows_night",
+    "diag_move_cows_night",
+    "appear_edge_skeletons_day",
+    "appear_interior_skeletons_day",
+    "appear_edge_skeletons_night",
+    "appear_interior_skeletons_night",
+    "appear_edge_arrows_day",
+    "appear_interior_arrows_day",
+    "vanish_arrows_day",
+    "appear_edge_arrows_night",
+    "appear_interior_arrows_night",
+    "vanish_arrows_night",
+    "drop_given_adj_since1",
+    "drop_given_adj_since2",
+    "drop_given_adj_since3",
+    "drop_given_adj_since4",
+    "drop_given_adj_since5",
+    "drop_given_adj_since6",
+    "drop_given_no_adj",
+    "arrow_given_skel_range",
+    "arrow_given_no_skel_range",
+    "moved_given_move"
+   ],
+   "event_gates_unmeasured": [
+    "dir_ok_given_moved_move"
+   ],
+   "rejected_by": [
+    "persistence",
+    "count",
+    "events"
+   ]
+  },
+  "delayed_consequences": {
+   "persistence": {
+    "diff": [
+     -0.00021,
+     0.00042,
+     0.0009,
+     0.00159
+    ],
+    "se": [
+     0.00019,
+     0.00037,
+     0.00057,
+     0.00085
+    ],
+    "rejects": false
+   },
+   "count": {
+    "diff": 0.00421,
+    "se": 0.00297,
+    "rejects": false
+   },
+   "terminated": {
+    "diff": 0.00069,
+    "se": 0.00086,
+    "rejects": false
+   },
+   "death_step": {
+    "diff": -0.00147,
+    "se": 0.00554,
+    "rejects": false
+   },
+   "energy_score": {
+    "diff": 0.15308,
+    "se": 0.0197,
+    "rejects": true
+   },
+   "event_gates_rejecting": [
+    "drop_given_adj_since6"
+   ],
+   "event_gates_unmeasured": [],
+   "rejected_by": [
+    "events"
+   ]
+  },
+  "diagonal_steps": {
+   "persistence": {
+    "diff": [
+     -0.00091,
+     -0.0119,
+     -0.02636,
+     -0.04028
+    ],
+    "se": [
+     0.00044,
+     0.00083,
+     0.0012,
+     0.00155
+    ],
+    "rejects": true
+   },
+   "count": {
+    "diff": -0.07323,
+    "se": 0.00732,
+    "rejects": true
+   },
+   "terminated": {
+    "diff": 0.00069,
+    "se": 0.00087,
+    "rejects": false
+   },
+   "death_step": {
+    "diff": -0.00147,
+    "se": 0.00548,
+    "rejects": false
+   },
+   "energy_score": {
+    "diff": 0.31991,
+    "se": 0.03165,
+    "rejects": true
+   },
+   "event_gates_rejecting": [
+    "appear_interior_zombies_day",
+    "vanish_zombies_day",
+    "diag_move_zombies_day",
+    "appear_interior_zombies_night",
+    "vanish_zombies_night",
+    "diag_move_zombies_night",
+    "appear_edge_cows_day",
+    "appear_interior_cows_day",
+    "vanish_cows_day",
+    "diag_move_cows_day",
+    "appear_edge_cows_night",
+    "appear_interior_cows_night",
+    "vanish_cows_night",
+    "diag_move_cows_night",
+    "appear_edge_skeletons_day",
+    "appear_interior_skeletons_day",
+    "vanish_skeletons_day",
+    "diag_move_skeletons_day",
+    "appear_interior_skeletons_night",
+    "vanish_skeletons_night",
+    "diag_move_skeletons_night",
+    "diag_move_arrows_day",
+    "diag_move_arrows_night",
+    "drop_given_adj_since6",
+    "drop_given_no_adj",
+    "arrow_given_skel_range"
+   ],
+   "event_gates_unmeasured": [],
+   "rejected_by": [
+    "persistence",
+    "count",
+    "events"
+   ]
+  },
+  "wrong_action": {
+   "persistence": {
+    "diff": [
+     0.00024,
+     0.00124,
+     0.00203,
+     0.00237
+    ],
+    "se": [
+     0.00041,
+     0.00072,
+     0.00107,
+     0.00145
+    ],
+    "rejects": false
+   },
+   "count": {
+    "diff": 0.00763,
+    "se": 0.00703,
+    "rejects": false
+   },
+   "terminated": {
+    "diff": -0.00316,
+    "se": 0.00272,
+    "rejects": false
+   },
+   "death_step": {
+    "diff": 0.01834,
+    "se": 0.02045,
+    "rejects": false
+   },
+   "energy_score": {
+    "diff": 4.57298,
+    "se": 0.08532,
+    "rejects": true
+   },
+   "event_gates_rejecting": [
+    "moved_given_move",
+    "dir_ok_given_moved_move"
+   ],
+   "event_gates_unmeasured": [],
+   "rejected_by": [
+    "events"
+   ]
+  },
+  "fake_consequences": {
+   "persistence": {
+    "diff": [
+     -0.00021,
+     0.00042,
+     0.0009,
+     0.00159
+    ],
+    "se": [
+     0.00018,
+     0.00036,
+     0.00055,
+     0.00081
+    ],
+    "rejects": false
+   },
+   "count": {
+    "diff": 0.00421,
+    "se": 0.00298,
+    "rejects": false
+   },
+   "terminated": {
+    "diff": 0.00069,
+    "se": 0.00089,
+    "rejects": false
+   },
+   "death_step": {
+    "diff": -0.00147,
+    "se": 0.00553,
+    "rejects": false
+   },
+   "energy_score": {
+    "diff": 0.16072,
+    "se": 0.02015,
+    "rejects": true
+   },
+   "event_gates_rejecting": [
+    "drop_given_adj_since1",
+    "drop_given_adj_since2",
+    "drop_given_adj_since3",
+    "drop_given_adj_since4",
+    "drop_given_adj_since5",
+    "drop_given_adj_since6",
+    "drop_given_no_adj"
+   ],
+   "event_gates_unmeasured": [],
+   "rejected_by": [
+    "events"
+   ]
+  },
+  "immortal": {
+   "persistence": {
+    "diff": [
+     2e-05,
+     0.00094,
+     0.00187,
+     0.00339
+    ],
+    "se": [
+     0.00025,
+     0.00058,
+     0.00096,
+     0.00133
+    ],
+    "rejects": false
+   },
+   "count": {
+    "diff": 0.0671,
+    "se": 0.00605,
+    "rejects": true
+   },
+   "terminated": {
+    "diff": -0.10712,
+    "se": 0.00589,
+    "rejects": true
+   },
+   "death_step": {
+    "diff": 0.88166,
+    "se": 0.05509,
+    "rejects": true
+   },
+   "energy_score": {
+    "diff": 1.11351,
+    "se": 0.07818,
+    "rejects": true
+   },
+   "event_gates_rejecting": [
+    "drop_given_adj_since6"
+   ],
+   "event_gates_unmeasured": [],
+   "rejected_by": [
+    "count",
+    "terminated",
+    "death_step",
+    "events"
+   ]
+  },
+  "sudden_death": {
+   "persistence": {
+    "diff": [
+     -0.0002,
+     0.00045,
+     0.0008,
+     0.00131
+    ],
+    "se": [
+     0.00018,
+     0.00035,
+     0.00054,
+     0.00077
+    ],
+    "rejects": false
+   },
+   "count": {
+    "diff": 0.0041,
+    "se": 0.00313,
+    "rejects": false
+   },
+   "terminated": {
+    "diff": 0.09034,
+    "se": 0.002,
+    "rejects": true
+   },
+   "death_step": {
+    "diff": -0.79288,
+    "se": 0.01932,
+    "rejects": true
+   },
+   "energy_score": {
+    "diff": 0.09541,
+    "se": 0.02037,
+    "rejects": true
+   },
+   "event_gates_rejecting": [],
+   "event_gates_unmeasured": [],
+   "rejected_by": [
+    "terminated",
+    "death_step"
+   ]
+  }
+ },
+ "passes": {
+  "null_not_rejected": true,
+  "recorded_exchangeable": true,
+  "every_corruption_rejected": true
+ }
+}

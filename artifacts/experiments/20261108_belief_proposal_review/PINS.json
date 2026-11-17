@@ -1,0 +1,12 @@
+{
+  "at": "2026-11-08T12:17:16.721044+11:00",
+  "sha256": {
+    "saccade/model.py": "50c45359e43d6d7119f07312061bf64f4a8b9677464aaa9e086d8572204fc268",
+    "saccade/train.py": "3b523e43a6e806a475996a005f51aa5926567ea122035b5bbddc6bfd3fd05190",
+    "saccade/m0.yaml": "ec024277ff3f6cd44f97da31f203e1bc876e2410f15bdd2654d2bfadb1d4352a",
+    "saccade/design/STEP_SPEC.md": "9a428c232acb42bb064c3bfc23323beca51e6ac759df1542a0a59e89dee680b5",
+    "artifacts/experiments/20261107_f4_followups/belief_gradient.py": "d2082e5ffb6263a934cca470bc92e99039923282fd238986b1055ce57c9d7786",
+    "artifacts/experiments/20261108_belief_proposal_review/checks.py": "8b815e40e6c1e32064341a9eaf76e57a8bcc841c200f930b7ef578e122cfc83b",
+    "artifacts/experiments/20261108_belief_proposal_review/CHECKS.json": "7716107dca1d1e2fbbbbc06e16d531a2985e9870d6b3dec64fc2b28ab698df16"
+  }
+}

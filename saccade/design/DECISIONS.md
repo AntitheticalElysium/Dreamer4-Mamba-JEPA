@@ -9,7 +9,8 @@ The first build, M0, is defined in STEP_SPEC §7; entries below marked [supersed
 
 ## Canonical recipe (2026-11-07): P1-F4
 User 11-07: "make this canonical" after P1-F4's results (`artifacts/experiments/20261106_p1f4/RESULTS.md`, follow-ups in
-`20261107_f4_followups/RESULTS.md`). `saccade/` now holds exactly P1-F4's system: shortcut forcing (Dreamer 4) with dense
+`20261107_f4_followups/RESULTS.md`). `saccade/` was canonicalized to exactly P1-F4's system on 11-07 (the 11-08
+full-frame grounding correction below supersedes its auxiliary head/targets for future training): shortcut forcing (Dreamer 4) with dense
 long-context attention, decision 1's factorised denoiser and cascade, F1.6's joint spatial fusion, the faithful pixel
 decoder, and the learned fixation controller (`saccade/chooser.py`, F2's head and policy moved from the experiment
 folders, its hyperparameters in `m0.yaml`). Removed, with no switch left behind: EDM (preconditioning, loss, sampler, the
@@ -18,6 +19,51 @@ uniform training gaze. Verified: the canonical trainer reproduces F4's logged fi
 trace bitwise; F4's checkpoint gives bitwise identical monitor and S1 one-step samples under the old and new code. The
 earlier recipes and the experiment scripts written against them run from commit fa6edd1a (they import the removed
 functions). The `edm` config section keeps its name so F4's checkpoints' configurations read unchanged.
+
+## 2026-11-14 — P1-F6.1 recipe (pending Codex's review): no visual forecast, reward forecast at distances 1-8
+User 11-14 night, after F6's negative and the G1-alone test (`artifacts/experiments/20261114_learnability/`): the token
+forecaster is removed and TSP's forecast mode is not restored (`heads.forecast.tsp: false`); the reward forecast reads
+the belief predicted before frame t - d + 1 for d = 1..8, Dreamer 4's MTP (section 3.3: L = 8, unweighted sum, one
+output layer per distance; distance 1 keeps F5's layer), `reward_distances: 8`, its own init seed, weighted
+L1 + mean(L2..L8) (`reward_ahead_reduction: mean`; Codex's review and LOSSES principle 1: Dreamer 4's raw sum is
+scale-neutral only under its per-term RMS normalisation). Bundled by the user's choice. The aim is the sleep clock, priced 2-8 steps ahead (currency EDA); food and drink are not expected to move.
+Plan, preflight and readings: `artifacts/experiments/20261114_p1f61/PLAN.md`; m0.yaml stays the HUD-Change recipe.
+
+## 2026-11-11 — P1-F5 recipe (pending its run): forecast modes, change map removed
+User 11-11, after the research pass and the change-map forecast gate (`artifacts/experiments/20261111_change_forecast_gate/`,
+`artifacts/experiments/20261111_p1f5/PLAN.md`). Three changes bundled in one run by the user's choice ("less clean
+scientifically, but it maximizes our progress chance"): (1) the change map is removed (`heads.change_map: null`): never
+ablated, Craftax-tailored (tile grid, whole-tile shifts, exact pixel equality, a LightGBM teacher), and F4's HUD tokens
+stayed exact without it on those rows; the grounded targets return to the 10-24 list (reward, termination, fovea pixels).
+(2) TSP and (3) the reward/continuation heads gain a training-only forecast mode (Dreamer 4's ahead-predicting heads, one
+step): frame t's inputs replaced by learned mask vectors, read from the belief predicted before frame t, in a fourth
+harmonised group G4, on every valid non-first frame. TSP's forecast window is drawn uniformly per frame from its own seed,
+because the chooser's surprise term reads the target frame. Imagination and the reactive heads are unchanged. Historical
+configurations still build the change map from their own cfg. F5's recipe lives in its launcher
+(`artifacts/experiments/20261111_p1f5/train_p1f5.py`: the HUD-Change control's saved recipe plus these three changes,
+asserted), so m0.yaml stays the validated HUD-Change recipe until F5 is read.
+
+## 2026-11-08 — World-belief role and region-general change supervision
+User clarification: retain the denoiser's recent cache. The immediate criterion for Mamba is history-dependent
+information useful to world prediction; actor-input sufficiency is a separate P3 question. The native denoiser
+cache also contains past Mamba memory tokens, so it is not a memory-free recent-vision control.
+
+The user rejects semantic HUD/player exclusions in change supervision and explicitly requests correction.
+Implemented 11-08: one shared change head outputs two comparisons at EVERY 9x9 screen cell, same-position and
+dominant-translation. Translation is inferred using soft temporal-variability support at source and destination;
+no semantic region chooses a mode. Both modes supervise every geometrically available source; identity covers
+the entire screen. Exact matching patches have target zero, correcting the old detector's static-content bias.
+Local winner selection and two synthetic-detector refits were rejected after map regressions. Historical F4's
+weights remain evaluable without changing its generated samples; new training requires a separate versioned
+9x9x2 target store and cannot resume the historical recipe. This corrects grounding, not a demonstrated timer repair.
+The two-mode target is a changed G2 definition; a causal mask-only comparison would apply the historical mask
+to these SAME new targets/architecture in a separate experimental control, not compare packages and call it a mask
+effect. No new full training is launched. Protocol, failed candidates and tests:
+`artifacts/experiments/20261108_full_frame_change/`.
+
+Acquired current vision plus belief is a P3 actor-input candidate, not an adopted implementation change or raw
+full-resolution bypass of the fovea. Evidence, source checks and discussion:
+`artifacts/experiments/20261108_denoiser_teaching_continuation/FOLLOWUP.md`.
 
 ## Active experiment ownership (2026-11-02)
 At the user's request, Codex owns the P1-F1.5 readiness and emergent-fovea experiment segment. The living evidence
@@ -124,6 +170,16 @@ was not exogenous-filtered. No overnight launch or architecture/loss/corpus chan
   them; whether it counts as full-frame reconstruction must be measured, not argued. (User, 10-24.)
   P1 adds: a 1x1 colour summary finds zombies at night with AP 0.59 only (skeletons 0.32), so as a target it would be
   weak exactly where threats matter.
+- One forecaster for gaze and belief (user, 11-13; return to it later). The chooser (`saccade/chooser.py`) carries its
+  own coarse all-cell forecaster of the next periphery tokens (101,584 parameters, the 8 preceding frames, action and
+  outcomes): its error is the surprise term S, and its taken-minus-NOOP difference is the contingency term C. A
+  belief-side all-cell forecast predicts the same target from the belief. Merging them would give one forecaster that
+  both teaches the belief and aims the eye, close to saccades as experiments (Friston et al. 2012). They are not the
+  same thing today: feeding the belief to the chooser's head gave no reliable gain (`artifacts/experiments/
+  20261103_chooser_history`: one-frame MSE +2.9% in head A, -1.2% in head B; about 0 at eight frames; no consistent
+  gaze gain). A merged forecaster must keep the taken-versus-NOOP contrast (Codex), produce it before the frame is
+  seen, and stay out of the leak (S reads the target frame), while the chooser is kept apart from the world's
+  gradients by design. Revisit only after a belief-side forecast qualifies.
 
 ## Open, in discussion
 - UP FOR DEBATE LATER (user, 11-05; nothing below is decided by a test so far; evidence in

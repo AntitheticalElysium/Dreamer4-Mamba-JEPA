@@ -1,0 +1,166 @@
+{
+ "quiet_bank": {
+  "F6.1": {
+   "scenes": 32,
+   "draws": 8,
+   "scenes_with_varying_simulator_rise": 0,
+   "true_rise_step_mean": 5.125,
+   "generated_rise_step_median_of_scene_medians": 11.0,
+   "hazard_per_step_at_8": 0.07615593834995467,
+   "needed_flat_hazard": 0.16326530612244897,
+   "hazard_by_step_relative_to_due": {
+    "before_due": {
+     "hazard": 0.00920951650038373,
+     "at_risk": 1303
+    },
+    "at_due": {
+     "hazard": 0.04918032786885246,
+     "at_risk": 244
+    },
+    "1-3_after": {
+     "hazard": 0.10708661417322834,
+     "at_risk": 635
+    },
+    "4+_after": {
+     "hazard": 0.1419698314108252,
+     "at_risk": 1127
+    }
+   },
+   "rise_exactly_at_due": 0.046875,
+   "rise_within_1_of_due": 0.15234375,
+   "rise_before_due": 0.046875,
+   "no_rise_within_H": 0.015625,
+   "spearman_true_vs_generated_median": 0.8152242381009687
+  },
+  "F6": {
+   "scenes": 32,
+   "draws": 8,
+   "scenes_with_varying_simulator_rise": 0,
+   "true_rise_step_mean": 5.125,
+   "generated_rise_step_median_of_scene_medians": 11.75,
+   "hazard_per_step_at_8": 0.0639386189258312,
+   "needed_flat_hazard": 0.16326530612244897,
+   "hazard_by_step_relative_to_due": {
+    "before_due": {
+     "hazard": 0.03814262023217247,
+     "at_risk": 1206
+    },
+    "at_due": {
+     "hazard": 0.07177033492822966,
+     "at_risk": 209
+    },
+    "1-3_after": {
+     "hazard": 0.04285714285714286,
+     "at_risk": 560
+    },
+    "4+_after": {
+     "hazard": 0.08527131782945736,
+     "at_risk": 1935
+    }
+   },
+   "rise_exactly_at_due": 0.05859375,
+   "rise_within_1_of_due": 0.14453125,
+   "rise_before_due": 0.1796875,
+   "no_rise_within_H": 0.0234375,
+   "spearman_true_vs_generated_median": 0.2763801192483525
+  },
+  "F5": {
+   "scenes": 32,
+   "draws": 8,
+   "scenes_with_varying_simulator_rise": 0,
+   "true_rise_step_mean": 5.125,
+   "generated_rise_step_median_of_scene_medians": 15.0,
+   "hazard_per_step_at_8": 0.046294456586528906,
+   "needed_flat_hazard": 0.16326530612244897,
+   "hazard_by_step_relative_to_due": {
+    "before_due": {
+     "hazard": 0.029556650246305417,
+     "at_risk": 1218
+    },
+    "at_due": {
+     "hazard": 0.0502283105022831,
+     "at_risk": 219
+    },
+    "1-3_after": {
+     "hazard": 0.04666666666666667,
+     "at_risk": 600
+    },
+    "4+_after": {
+     "hazard": 0.0527369826435247,
+     "at_risk": 2996
+    }
+   },
+   "rise_exactly_at_due": 0.04296875,
+   "rise_within_1_of_due": 0.11328125,
+   "rise_before_due": 0.140625,
+   "no_rise_within_H": 0.08984375,
+   "spearman_true_vs_generated_median": 0.34425279953465454
+  }
+ },
+ "repeat_sleep_bank": {
+  "F6.1": {
+   "scenes": 48,
+   "draws": 8,
+   "scenes_with_varying_simulator_rise": 4,
+   "true_rise_step_mean": 5.145833333333333,
+   "generated_rise_step_median_of_scene_medians": 11.25,
+   "hazard_per_step_at_8": 0.07321428571428572,
+   "needed_flat_hazard": 0.16271186440677968,
+   "hazard_by_step_relative_to_due": {
+    "before_due": {
+     "hazard": 0.017080745341614908,
+     "at_risk": 1932
+    },
+    "at_due": {
+     "hazard": 0.04871060171919771,
+     "at_risk": 349
+    },
+    "1-3_after": {
+     "hazard": 0.08029978586723768,
+     "at_risk": 934
+    },
+    "4+_after": {
+     "hazard": 0.1336986301369863,
+     "at_risk": 1825
+    }
+   },
+   "rise_exactly_at_due": 0.044270833333333336,
+   "rise_within_1_of_due": 0.13020833333333334,
+   "rise_before_due": 0.0859375,
+   "no_rise_within_H": 0.0390625,
+   "spearman_true_vs_generated_median": 0.6122926900012432
+  },
+  "F6": {
+   "scenes": 48,
+   "draws": 8,
+   "scenes_with_varying_simulator_rise": 4,
+   "true_rise_step_mean": 5.145833333333333,
+   "generated_rise_step_median_of_scene_medians": 15.5,
+   "hazard_per_step_at_8": 0.05042016806722689,
+   "needed_flat_hazard": 0.16271186440677968,
+   "hazard_by_step_relative_to_due": {
+    "before_due": {
+     "hazard": 0.029411764705882353,
+     "at_risk": 1836
+    },
+    "at_due": {
+     "hazard": 0.04892966360856269,
+     "at_risk": 327
+    },
+    "1-3_after": {
+     "hazard": 0.03803131991051454,
+     "at_risk": 894
+    },
+    "4+_after": {
+     "hazard": 0.06306760847628658,
+     "at_risk": 3964
+    }
+   },
+   "rise_exactly_at_due": 0.041666666666666664,
+   "rise_within_1_of_due": 0.09895833333333333,
+   "rise_before_due": 0.140625,
+   "no_rise_within_H": 0.078125,
+   "spearman_true_vs_generated_median": 0.47691262194892253
+  }
+ }
+}

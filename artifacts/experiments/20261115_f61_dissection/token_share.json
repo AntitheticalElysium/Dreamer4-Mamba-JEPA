@@ -1,0 +1,72 @@
+{
+ "food_down": {
+  "event": {
+   "frames": 1580,
+   "cell_change": 8.719066619873047,
+   "frame_change": 150.4226531982422,
+   "cell_share_of_frame": 0.20501334965229034
+  },
+  "eligible_no_event": {
+   "frames": 45219,
+   "cell_change": 0.04299890995025635,
+   "frame_change": 137.0578155517578,
+   "cell_share_of_frame": 0.0009466031915508211
+  }
+ },
+ "drink_down": {
+  "event": {
+   "frames": 1837,
+   "cell_change": 11.44843864440918,
+   "frame_change": 150.08169555664062,
+   "cell_share_of_frame": 0.24351073801517487
+  },
+  "eligible_no_event": {
+   "frames": 42683,
+   "cell_change": 0.1873989701271057,
+   "frame_change": 134.26373291015625,
+   "cell_share_of_frame": 0.007962031289935112
+  }
+ },
+ "energy_down_awake": {
+  "event": {
+   "frames": 1252,
+   "cell_change": 6.9058332443237305,
+   "frame_change": 149.45452880859375,
+   "cell_share_of_frame": 0.19410468637943268
+  },
+  "eligible_no_event": {
+   "frames": 45932,
+   "cell_change": 0.0017355140298604965,
+   "frame_change": 137.40802001953125,
+   "cell_share_of_frame": 2.0676110580097884e-05
+  }
+ },
+ "energy_up_asleep": {
+  "event": {
+   "frames": 842,
+   "cell_change": 6.670857906341553,
+   "frame_change": 29.86172866821289,
+   "cell_share_of_frame": 0.4621466398239136
+  },
+  "eligible_no_event": {
+   "frames": 9311,
+   "cell_change": 0.0018980978056788445,
+   "frame_change": 33.862281799316406,
+   "cell_share_of_frame": 2.724671685427893e-05
+  }
+ },
+ "recovery": {
+  "event": {
+   "frames": 703,
+   "cell_change": 23.07366943359375,
+   "frame_change": 179.43702697753906,
+   "cell_share_of_frame": 0.25095564126968384
+  },
+  "eligible_no_event": {
+   "frames": 20493,
+   "cell_change": 0.7773892879486084,
+   "frame_change": 161.5447540283203,
+   "cell_share_of_frame": 0.012263979762792587
+  }
+ }
+}

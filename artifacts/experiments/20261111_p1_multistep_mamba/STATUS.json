@@ -1,0 +1,69 @@
+{
+  "phase": "complete",
+  "started_at": "2026-11-10T11:08:43.685825+00:00",
+  "source_pins_sha256": "46835f8d1dd96b3e4a264c378930a659be2651bb09c284318f81635a33717a3b",
+  "training_completed_at": "2026-11-11T02:26:35.561265+00:00",
+  "selection": {
+    "checkpoint": 10,
+    "monitor_loss": 0.0030008323956280947,
+    "three_increases_triggered": false,
+    "rule": "final unless any three successive strict increases; then global minimum, earliest tie",
+    "monitor_history": [
+      {
+        "checkpoint": 1,
+        "frames": 2560000,
+        "loss": 0.013129360973834991
+      },
+      {
+        "checkpoint": 2,
+        "frames": 5120000,
+        "loss": 0.008432270959019661
+      },
+      {
+        "checkpoint": 3,
+        "frames": 7680000,
+        "loss": 0.004996633157134056
+      },
+      {
+        "checkpoint": 4,
+        "frames": 10240000,
+        "loss": 0.0042949882335960865
+      },
+      {
+        "checkpoint": 5,
+        "frames": 12800000,
+        "loss": 0.0039928993210196495
+      },
+      {
+        "checkpoint": 6,
+        "frames": 15360000,
+        "loss": 0.0034093984868377447
+      },
+      {
+        "checkpoint": 7,
+        "frames": 17920000,
+        "loss": 0.0033909152261912823
+      },
+      {
+        "checkpoint": 8,
+        "frames": 20480000,
+        "loss": 0.0030702983494848013
+      },
+      {
+        "checkpoint": 9,
+        "frames": 23040000,
+        "loss": 0.0031887644436210394
+      },
+      {
+        "checkpoint": 10,
+        "frames": 25600000,
+        "loss": 0.0030008323956280947
+      }
+    ],
+    "checkpoint_path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261111_p1_multistep_mamba/run/ckpt_10.pt",
+    "checkpoint_sha256": "c9c00e53565424ac3ed0f00beeb60a26f1ed40b2d4e381d8d197c405a2cd1e70",
+    "selected_at": "2026-11-11T02:26:37.013498+00:00"
+  },
+  "evaluation_started_at": "2026-11-11T02:26:37.016070+00:00",
+  "evaluation_completed_at": "2026-11-11T03:17:40+00:00"
+}

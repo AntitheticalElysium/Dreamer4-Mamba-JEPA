@@ -1,0 +1,165 @@
+{
+ "mamba3": {
+  "fp32": {
+   "official_vs_wrapper": 0.0,
+   "chunked_vs_contiguous": 0.0006160018965601921,
+   "carry_ssm": 0.00023412831069435924,
+   "carry_angle": 7.591206951929053e-08,
+   "reset_after": 6.827087054261938e-05,
+   "reset_before": 2.7872033570019994e-07,
+   "streams_vs_alone": 0.000592558179050684,
+   "chain8_output": [
+    8.487859304295853e-06,
+    0.0007010511471889913,
+    0.000618261459749192,
+    0.0012533479603007436,
+    0.0016597916837781668,
+    0.001592787099070847,
+    0.0010975641198456287,
+    0.0011946862796321511
+   ],
+   "chain8_angle_mod_2pi": 9.5367431640625e-07,
+   "chain8_state": 0.0002603069588076323
+  },
+  "bf16": {
+   "official_vs_wrapper": 0.0,
+   "chunked_vs_contiguous": 0.0045045046135783195,
+   "carry_ssm": 0.00023746758233755827,
+   "carry_angle": 0.0,
+   "reset_after": 0.0,
+   "reset_before": 0.0,
+   "streams_vs_alone": 0.0,
+   "chain8_output": [
+    0.001497006043791771,
+    0.004739336669445038,
+    0.0043668122962117195,
+    0.004629629664123058,
+    0.004608294926583767,
+    0.004166666883975267,
+    0.0025906735099852085,
+    0.004716981202363968
+   ],
+   "chain8_angle_mod_2pi": 0.0,
+   "chain8_state": 0.0003726632858160883
+  },
+  "grad_finite": true,
+  "grad_params": 8
+ },
+ "units": {
+  "record_equals_test2": 0.0,
+  "harmoniser_fixed_point": 0.0,
+  "harmoniser_no_parameters": true,
+  "gaze_rows": true,
+  "terms": {
+   "reward_forecast_1": 5.536200046539307,
+   "reward_forecast_2": 5.604832649230957,
+   "reward_forecast_3": 5.572729587554932,
+   "reward_forecast_4": 5.466042518615723,
+   "reward_forecast_5": 5.531758785247803,
+   "reward_forecast_6": 5.542827129364014,
+   "reward_forecast_7": 5.554646015167236,
+   "reward_forecast_8": 5.523494720458984,
+   "reward_forecast": 11.078533172607422,
+   "cont_forecast": 0.6703734397888184,
+   "gaze_forecast": 3.9954285621643066,
+   "g1": 0.4861765503883362,
+   "tsp": 0.530507504940033,
+   "rec": 0.5299826264381409,
+   "reward": 5.538675308227539,
+   "cont": 0.6704820394515991,
+   "noise": 10.797842025756836
+  },
+  "encoder_norms": {
+   "reward_forecast_1": 0.0,
+   "reward_forecast_2": 0.0,
+   "reward_forecast_3": 0.0,
+   "reward_forecast_4": 0.0,
+   "reward_forecast_5": 0.0,
+   "reward_forecast_6": 0.0,
+   "reward_forecast_7": 0.0,
+   "reward_forecast_8": 0.0,
+   "reward_forecast": 0.0,
+   "cont_forecast": 0.0,
+   "gaze_forecast": 0.0,
+   "g1": 0.0021920858416706324,
+   "tsp": 0.018377086147665977,
+   "rec": 0.060457345098257065,
+   "reward": 0.0,
+   "cont": 0.0,
+   "noise": 0.0
+  },
+  "mamba_norms": {
+   "g1": 0.005912937223911285,
+   "reward": 1.1905089616775513,
+   "cont": 0.15462927520275116,
+   "reward_forecast": 1.2834031581878662,
+   "gaze_forecast": 0.31112706661224365
+  },
+  "route_by_role_ok": true,
+  "record_state_shape": [
+   2,
+   81,
+   1024
+  ]
+ },
+ "throughput": {
+  "route_True_steps_64": {
+   "sec_per_update": 2.0309740702311196,
+   "peak_gib": 3.08035945892334,
+   "g1": 0.30882231891155243,
+   "sigma": [
+    0.753779947757721,
+    1.535736083984375,
+    7.089518070220947,
+    12.673115730285645,
+    4.804794788360596
+   ]
+  },
+  "route_True_steps_256": {
+   "sec_per_update": 7.653550883134206,
+   "peak_gib": 3.016566276550293,
+   "g1": 0.3086953889578581,
+   "sigma": [
+    0.7621111273765564,
+    1.3802093267440796,
+    7.025794982910156,
+    12.623214721679688,
+    4.769522666931152
+   ]
+  },
+  "route_False_steps_64": {
+   "sec_per_update": 1.9885719915231068,
+   "peak_gib": 2.9377241134643555,
+   "g1": 0.308892622590065,
+   "sigma": [
+    0.7537944316864014,
+    1.535817265510559,
+    7.08947229385376,
+    12.673097610473633,
+    4.804980278015137
+   ]
+  },
+  "route_False_steps_256": {
+   "sec_per_update": 7.440823932488759,
+   "peak_gib": 2.8840384483337402,
+   "g1": 0.309153551235795,
+   "sigma": [
+    0.7623496651649475,
+    1.3803670406341553,
+    7.025311470031738,
+    12.623223304748535,
+    4.773111343383789
+   ]
+  }
+ },
+ "criteria": {
+  "mamba3_exact_wrapper": true,
+  "mamba3_carry_angle": true,
+  "mamba3_no_growth": true,
+  "mamba3_grad_finite": true,
+  "units": true,
+  "peak_under_budget": true,
+  "time_within_15h": true
+ },
+ "passed": true
+}

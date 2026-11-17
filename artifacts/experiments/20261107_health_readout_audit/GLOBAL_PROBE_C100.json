@@ -1,0 +1,47 @@
+{
+  "natural_all": {
+    "rows": 17619,
+    "ap_unweighted_within_stratum": 0.48606649079487063,
+    "true": 0.020475688160670615,
+    "prediction": 0.022392303791141616,
+    "brier": 0.017795167909885185,
+    "recorded_hit": 0.26494866470550643,
+    "recorded_nohit": 0.017321976952450288
+  },
+  "awake_adjacent": {
+    "rows": 6000,
+    "ap_unweighted_within_stratum": 0.578036718157828,
+    "true": 0.1611666666666667,
+    "prediction": 0.12130000108894168,
+    "brier": 0.10309404386505823,
+    "recorded_hit": 0.3875289368257677,
+    "recorded_nohit": 0.070148922039168
+  },
+  "asleep_adjacent": {
+    "rows": 1619,
+    "ap_unweighted_within_stratum": 0.5920955175566365,
+    "true": 0.5040148239654108,
+    "prediction": 0.15326546641496908,
+    "brier": 0.3907434071748317,
+    "recorded_hit": 0.18591426033707695,
+    "recorded_nohit": 0.12008811169462033
+  },
+  "awake_nonadjacent": {
+    "rows": 6000,
+    "ap_unweighted_within_stratum": 0.016938976452642467,
+    "true": 0.005999999999999998,
+    "prediction": 0.01253524101160909,
+    "brier": 0.00855765756253103,
+    "recorded_hit": 0.03952089842136203,
+    "recorded_nohit": 0.012372349719397302
+  },
+  "asleep_nonadjacent": {
+    "rows": 4000,
+    "ap_unweighted_within_stratum": 0.010479866166024775,
+    "true": 0.006249999999999999,
+    "prediction": 0.01735230110210101,
+    "brier": 0.008654501206369809,
+    "recorded_hit": 0.019432820056304576,
+    "recorded_nohit": 0.017339216077231805
+  }
+}

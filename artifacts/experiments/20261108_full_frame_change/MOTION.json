@@ -1,0 +1,299 @@
+{
+  "full_mean": {
+    "all": {
+      "correct": 18274,
+      "n": 25239,
+      "accuracy": 0.7240381948571655
+    },
+    "day": {
+      "correct": 13319,
+      "n": 16680,
+      "accuracy": 0.7985011990407674
+    },
+    "night": {
+      "correct": 4955,
+      "n": 8559,
+      "accuracy": 0.5789227713517935
+    },
+    "moved": {
+      "correct": 2540,
+      "n": 9505,
+      "accuracy": 0.2672277748553393
+    },
+    "still": {
+      "correct": 15734,
+      "n": 15734,
+      "accuracy": 1.0
+    }
+  },
+  "temporal_weight": {
+    "all": {
+      "correct": 23022,
+      "n": 25239,
+      "accuracy": 0.9121597527635802
+    },
+    "day": {
+      "correct": 15815,
+      "n": 16680,
+      "accuracy": 0.9481414868105515
+    },
+    "night": {
+      "correct": 7207,
+      "n": 8559,
+      "accuracy": 0.842037621217432
+    },
+    "moved": {
+      "correct": 7360,
+      "n": 9505,
+      "accuracy": 0.7743293003682272
+    },
+    "still": {
+      "correct": 15662,
+      "n": 15734,
+      "accuracy": 0.9954239227151392
+    }
+  },
+  "temporal_weight2": {
+    "all": {
+      "correct": 23183,
+      "n": 25239,
+      "accuracy": 0.9185387693648718
+    },
+    "day": {
+      "correct": 15801,
+      "n": 16680,
+      "accuracy": 0.9473021582733813
+    },
+    "night": {
+      "correct": 7382,
+      "n": 8559,
+      "accuracy": 0.8624839350391401
+    },
+    "moved": {
+      "correct": 7577,
+      "n": 9505,
+      "accuracy": 0.7971593897948448
+    },
+    "still": {
+      "correct": 15606,
+      "n": 15734,
+      "accuracy": 0.9918647514935808
+    }
+  },
+  "gain": {
+    "all": {
+      "correct": 15031,
+      "n": 25239,
+      "accuracy": 0.5955465747454336
+    },
+    "day": {
+      "correct": 11320,
+      "n": 16680,
+      "accuracy": 0.6786570743405276
+    },
+    "night": {
+      "correct": 3711,
+      "n": 8559,
+      "accuracy": 0.43357868909919384
+    },
+    "moved": {
+      "correct": 9379,
+      "n": 9505,
+      "accuracy": 0.9867438190426091
+    },
+    "still": {
+      "correct": 5652,
+      "n": 15734,
+      "accuracy": 0.35922206686157365
+    }
+  },
+  "gain_trim4": {
+    "all": {
+      "correct": 19909,
+      "n": 25239,
+      "accuracy": 0.7888188913982329
+    },
+    "day": {
+      "correct": 16214,
+      "n": 16680,
+      "accuracy": 0.972062350119904
+    },
+    "night": {
+      "correct": 3695,
+      "n": 8559,
+      "accuracy": 0.4317093118354948
+    },
+    "moved": {
+      "correct": 9240,
+      "n": 9505,
+      "accuracy": 0.9721199368753288
+    },
+    "still": {
+      "correct": 10669,
+      "n": 15734,
+      "accuracy": 0.6780856743358332
+    }
+  },
+  "gain_trim8": {
+    "all": {
+      "correct": 19570,
+      "n": 25239,
+      "accuracy": 0.775387297436507
+    },
+    "day": {
+      "correct": 15930,
+      "n": 16680,
+      "accuracy": 0.9550359712230215
+    },
+    "night": {
+      "correct": 3640,
+      "n": 8559,
+      "accuracy": 0.42528332749152936
+    },
+    "moved": {
+      "correct": 8738,
+      "n": 9505,
+      "accuracy": 0.9193056286165177
+    },
+    "still": {
+      "correct": 10832,
+      "n": 15734,
+      "accuracy": 0.6884454048557265
+    }
+  },
+  "old": {
+    "all": {
+      "correct": 24843,
+      "n": 25239,
+      "accuracy": 0.9843099964340901
+    },
+    "day": {
+      "correct": 16608,
+      "n": 16680,
+      "accuracy": 0.99568345323741
+    },
+    "night": {
+      "correct": 8235,
+      "n": 8559,
+      "accuracy": 0.9621451104100947
+    },
+    "moved": {
+      "correct": 9249,
+      "n": 9505,
+      "accuracy": 0.9730668069437138
+    },
+    "still": {
+      "correct": 15594,
+      "n": 15734,
+      "accuracy": 0.991102071946104
+    }
+  },
+  "pixel_temporal": {
+    "all": {
+      "correct": 16722,
+      "n": 25239,
+      "accuracy": 0.662546059669559
+    },
+    "day": {
+      "correct": 11936,
+      "n": 16680,
+      "accuracy": 0.7155875299760192
+    },
+    "night": {
+      "correct": 4786,
+      "n": 8559,
+      "accuracy": 0.5591774740039724
+    },
+    "moved": {
+      "correct": 988,
+      "n": 9505,
+      "accuracy": 0.10394529195160442
+    },
+    "still": {
+      "correct": 15734,
+      "n": 15734,
+      "accuracy": 1.0
+    }
+  },
+  "pair_temporal": {
+    "all": {
+      "correct": 24820,
+      "n": 25239,
+      "accuracy": 0.9833987083481913
+    },
+    "day": {
+      "correct": 16608,
+      "n": 16680,
+      "accuracy": 0.99568345323741
+    },
+    "night": {
+      "correct": 8212,
+      "n": 8559,
+      "accuracy": 0.9594578805935273
+    },
+    "moved": {
+      "correct": 9220,
+      "n": 9505,
+      "accuracy": 0.9700157811678064
+    },
+    "still": {
+      "correct": 15600,
+      "n": 15734,
+      "accuracy": 0.9914834117198423
+    }
+  },
+  "weighted_trim9": {
+    "all": {
+      "correct": 21270,
+      "n": 25239,
+      "accuracy": 0.8427433733507667
+    },
+    "day": {
+      "correct": 14669,
+      "n": 16680,
+      "accuracy": 0.8794364508393285
+    },
+    "night": {
+      "correct": 6601,
+      "n": 8559,
+      "accuracy": 0.7712349573548312
+    },
+    "moved": {
+      "correct": 5541,
+      "n": 9505,
+      "accuracy": 0.5829563387690689
+    },
+    "still": {
+      "correct": 15729,
+      "n": 15734,
+      "accuracy": 0.999682216855218
+    }
+  },
+  "weighted_trim18": {
+    "all": {
+      "correct": 20989,
+      "n": 25239,
+      "accuracy": 0.8316098102143508
+    },
+    "day": {
+      "correct": 14233,
+      "n": 16680,
+      "accuracy": 0.8532973621103117
+    },
+    "night": {
+      "correct": 6756,
+      "n": 8559,
+      "accuracy": 0.7893445495969156
+    },
+    "moved": {
+      "correct": 5365,
+      "n": 9505,
+      "accuracy": 0.5644397685428721
+    },
+    "still": {
+      "correct": 15624,
+      "n": 15734,
+      "accuracy": 0.993008770814796
+    }
+  }
+}

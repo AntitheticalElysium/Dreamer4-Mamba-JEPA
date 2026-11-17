@@ -510,3 +510,28 @@ learn a deterministic, in-reach, conjunctive rule (post-move adjacency, no recen
   pixel noise, not content.
 -> The failing consequences (timers, damage) are deterministic given the state; what makes them uncertain to the model
 is hidden state recoverable from history (timers: resets visible 98-100%, RESULTS 14; readiness: 97.7% from 5 steps).
+
+
+## 18. Denoiser-teaching run completed; visibility reader corrected (Codex, 11-08)
+
+Claude's PLAN13 run finished after the conversation limit. Its original code, JSON and negative signed-difference
+reader outputs are preserved. Continuation, code audit, raw corrected results and full answers to the user's three
+questions: `../20261108_denoiser_teaching_continuation/ANSWER.md`, `SUMMARY.json`, `VISIBILITY.json`.
+
+- M1 includes both flow and bootstrap students. G1 memory-gradient norms on ordinary frames are4.61/5.49 x1e-6;
+  reward45.21/46.25 and change map18.84/17.80. G1 is active, event-sensitive, and smaller than the reactive terms at
+  this snapshot. These are NOT learning-budget shares.
+- M3 lag10/lag1: food4.74%, recovery1.16%, hit2.50%, wake4.43%. The declared <1%-by-lag10 hard-cutoff condition is
+  not met. Reset-lag gradients are nonzero. Attenuation remains; neither sufficiency nor an immutable credit limit
+  is proved. M2 state-gradient direction agreement is not parameter-update agreement (exact counterexample saved).
+- Corrected M4, same40k DEV transitions/seed2120/folds/logistic protocol: AP for a digit change from the raw HUD
+  token is1.000 for all four. From |delta global input embedding|: health.99865, food.26796, drink.19100, energy.06281.
+  The original signed-health AP reproduces EXACTLY before the correction. This establishes reduced accessibility
+  for this reader, not irreversible erasure. Direct coarse projection blocks remain full rank16 for every digit.
+- Original zero-value probes remain valid: actor-facing b AP food0=.906, drink0=.99998, energy0=.819. Bad exact
+  digit recall alone does not prove the actor cannot recognise starvation.
+- M4 is about visible digit changes, not every hidden reset:21.4% of recovery rises have an invisible previous reset
+  in the existing data report. Health-change visibility is not full recovery-clock observability.
+
+No architecture, production loss or training decision was changed. Predictive heads or next-embedding losses remain
+design candidates; a stronger predictive readout is not itself a repaired generated world.

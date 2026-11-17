@@ -1,0 +1,23 @@
+{
+  "all_health": {
+    "share_of_periphery_only_squared_loss": 0.012863148448450996,
+    "natural_state_share": 1.0
+  },
+  "any_health_drop": {
+    "share_of_periphery_only_squared_loss": 0.00540093037941366,
+    "natural_state_share": 0.02047568816067061
+  },
+  "awake_adjacent_hit": {
+    "share_of_periphery_only_squared_loss": 0.0027256594832650873,
+    "natural_state_share": 0.012176447809469443
+  },
+  "asleep_adjacent_hit": {
+    "share_of_periphery_only_squared_loss": 0.000593090688621477,
+    "natural_state_share": 0.0027397720214212564
+  },
+  "coefficient_mass_not_measured_gradient": {
+    "pure_noise_fine_flow_fraction_within_flow": 0.02531645569620253,
+    "exact_deployed_first_code_probability": 0.020833333333333332,
+    "exact_deployed_first_code_share_of_all_coefficient_mass": 0.004711425206124852
+  }
+}

@@ -3,7 +3,7 @@ shortcut forcing (canonical since P1-F4, 11-07), and the grounding and outcome h
 Shapes: N = 81 periphery cells (9 x 9, rows 7-8 the HUD), G = 9 glimpse cells (a 3 x 3 window), K memory tokens.
 """
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 
 import torch
 import torch.nn.functional as F
@@ -176,6 +176,85 @@ class FunctionalMamba2(nn.Module):
             return torch.stack(outputs, 1), state
 
 
+@dataclass(frozen=True)
+class Mamba3Carry:
+    angle: Tensor                                                        # B, heads, rope angles (cumulative)
+    ssm: Tensor                                                          # B, heads, headdim, d_state; FP32
+    k: Tensor                                                            # B, heads, d_state: the last input's key and value
+    v: Tensor                                                            # B, heads, headdim   (trapezoidal step)
+
+
+class FunctionalMamba3(nn.Module):
+    """Official Mamba-3 (Lahoti et al., ICLR 2026; installed mamba_ssm 2.3.2 modules/mamba3.py, SISO) with
+    FunctionalMamba2's carry (P1.5, user 11-16). The module's forward exposes no initial state; its kernel does
+    (mamba3_siso_combined: Input_States, return_final_states, cu_seqlens), so this is the module's own forward, line for
+    line, with state passing. seq_idx is LOCAL as FunctionalMamba2's: each stream's chunk is split at its episode starts
+    into variable-length segments; the segment with index 0 continues the carried state, every other starts at zero.
+    Mamba-3 has no short convolution (its paper: BC bias + trapezoidal step make it redundant)."""
+
+    def __init__(self, b):
+        super().__init__()
+        from mamba_ssm.modules.mamba3 import Mamba3
+
+        self.core = Mamba3(d_model=b["width"], d_state=b["d_state"], expand=b["expand"], headdim=b["headdim"],
+                           ngroups=b["ngroups"], is_mimo=False, chunk_size=b["mamba3"]["chunk_size"], layer_idx=0)
+
+    def initial(self, batch: int, device=None) -> Mamba3Carry:
+        c, dev = self.core, device or self.core.in_proj.weight.device
+        return Mamba3Carry(torch.zeros(batch, c.nheads, c.num_rope_angles, device=dev),
+                           torch.zeros(batch, c.nheads, c.headdim, c.d_state, device=dev),
+                           torch.zeros(batch, c.nheads, c.d_state, device=dev), torch.zeros(batch, c.nheads, c.headdim, device=dev))
+
+    def forward(self, inputs: Tensor, carry: Mamba3Carry, seq_idx: Tensor | None = None, backend: str | None = None):
+        from einops import rearrange
+        from mamba_ssm.modules.mamba3 import heavy_tail_activation
+        from mamba_ssm.ops.triton.mamba3.mamba3_siso_combined import mamba3_siso_combined
+
+        c = self.core
+        Bn, L, _ = inputs.shape
+        z, x, B, C, dd_dt, dd_A, trap, angles = torch.split(c.in_proj(inputs), [
+            c.d_inner, c.d_inner, c.d_state * c.num_bc_heads, c.d_state * c.num_bc_heads, c.nheads, c.nheads, c.nheads,
+            c.num_rope_angles], dim=-1)
+        z = rearrange(z, "b l (h p) -> b l h p", p=c.headdim)
+        x = rearrange(x, "b l (h p) -> b l h p", p=c.headdim)
+        B = rearrange(B, "b l (r g n) -> b l r g n", r=1, g=c.num_bc_heads)
+        C = rearrange(C, "b l (r g n) -> b l r g n", r=1, g=c.num_bc_heads)
+        A = torch.clamp(-heavy_tail_activation(dd_A.to(torch.float32)), max=-c.A_floor)
+        DT = F.softplus(dd_dt + c.dt_bias)
+        ADT = A * DT
+        angles = angles.unsqueeze(-2).expand(-1, -1, c.nheads, -1).to(torch.float32)
+        B, C = c.B_norm(B), c.C_norm(C)
+        seg = torch.zeros(Bn, L, dtype=torch.long, device=inputs.device) if seq_idx is None else seq_idx.long()
+        new = torch.ones_like(seg, dtype=torch.bool)
+        new[:, 1:] = seg[:, 1:] != seg[:, :-1]
+        stream, start = new.nonzero(as_tuple=True)                       # segments, stream-major
+        cu = torch.cat([stream * L + start, torch.tensor([Bn * L], device=inputs.device)]).to(torch.int32)
+        cont = (seg[stream, start] == 0)[:, None]
+        pick = lambda s: torch.where(cont.view(-1, *[1] * (s.dim() - 1)), s[stream], torch.zeros_like(s[stream]))
+        states = tuple(pick(s) for s in (carry.angle, carry.ssm, carry.k, carry.v))
+        flat = lambda t: t.reshape(1, Bn * L, *t.shape[2:])
+        heads = lambda t: rearrange(t.reshape(1, Bn * L, -1), "b l h -> b h l")
+        y, angle, ssm, k, v = mamba3_siso_combined(
+            Q=flat(C.squeeze(2)), K=flat(B.squeeze(2)), V=flat(x), ADT=heads(ADT), DT=heads(DT), Trap=heads(trap),
+            Q_bias=c.C_bias.squeeze(1), K_bias=c.B_bias.squeeze(1), Angles=flat(angles), D=c.D,
+            Z=flat(z) if not c.is_outproj_norm else None, chunk_size=c.chunk_size, Input_States=states,
+            return_final_states=True, cu_seqlens=cu)
+        y = rearrange(y.reshape(Bn, L, c.nheads, c.headdim), "b l h p -> b l (h p)")
+        if c.is_outproj_norm:
+            y = c.norm(y, rearrange(z, "b l h p -> b l (h p)"))
+        last = torch.cat([stream[1:] != stream[:-1], torch.tensor([True], device=inputs.device)])   # each stream's last
+        # The kernel casts Angles to bf16 and returns the final angle state in that dtype (angle_dt_fwd allocates it as
+        # the input's), so a carried angle in [0, 2 pi) was rounded to ~0.01-0.025 rad at every chunk boundary
+        # (measured: 0.065 rad after 8 chunks, keys rotated wrongly, chunked != contiguous by 0.3-0.55%). The same
+        # angle kernel on fp32 copies of the bf16 values the main kernel used gives the fp32 state it kept internally.
+        from mamba_ssm.ops.triton.mamba3.angle_dt import angle_dt_fwd
+        with torch.no_grad():
+            _, angle = angle_dt_fwd(flat(angles).to(torch.bfloat16).float(), heads(DT).float().contiguous(),
+                                    init_state=states[0].float().contiguous(), chunk_size=c.chunk_size,
+                                    return_output_state=True, cu_seqlens=cu)
+        return c.out_proj(y.to(x.dtype)), Mamba3Carry(angle[last], ssm[last].float(), k[last], v[last])
+
+
 class SpatialFusion(nn.Module):
     """Joint coarse/fine evidence in crop coordinates; replaces the raw fine-to-belief path."""
 
@@ -208,7 +287,8 @@ class Belief(nn.Module):
         self.outcome_in = nn.Linear(2, W)
         self.action = nn.Embedding(cfg["data"]["actions"], W)
         self.norms = nn.ModuleList([nn.RMSNorm(W, eps=b["norm_eps"]) for _ in range(b["layers"])])
-        self.mixers = nn.ModuleList([FunctionalMamba2(b) for _ in range(b["layers"])])
+        mixer = FunctionalMamba3 if b.get("mixer") == "mamba3" else FunctionalMamba2   # P1.5: Mamba-3 (user 11-16)
+        self.mixers = nn.ModuleList([mixer(b) for _ in range(b["layers"])])
         self.final_norm = nn.RMSNorm(W, eps=b["norm_eps"])
         self.memory_out = nn.Linear(W, self.K * Wd)
         fusion = b["spatial_fusion"]                                     # P1-F1.6, canonical since F2
@@ -217,16 +297,24 @@ class Belief(nn.Module):
             torch.random.default_generator.manual_seed(fusion["init_seed"])   # earlier initial draws
             self.spatial_fusion = SpatialFusion(pc["periphery"]["token_dim"], pc["fovea"]["token_dim"],
                                                 pc["lighting"]["dim"], fusion["hidden"], pc["periphery"]["tanh_clamp"])
+        self.record_in = None
+        if r := cfg.get("record"):                                       # P1.5: Mamba reads the spatial history (the split,
+            with torch.random.fork_rng(devices=[]):                      # user 11-16): per cell to a token's width, then
+                torch.random.default_generator.manual_seed(r["init_seed"])   # beside the flattened percept
+                c = pc["periphery"]["token_dim"]
+                self.record_in = nn.Sequential(nn.Linear(2 * c * r["modes"], c), nn.Flatten(-2), nn.Linear(N * c, W))
 
     def initial(self, batch: int, device=None):
         return tuple(m.initial(batch, device) for m in self.mixers)
 
-    def percept_embed(self, P: Percept) -> Tensor:
+    def percept_embed(self, P: Percept, record: Tensor | None = None) -> Tensor:
+        """With the spatial history (P1.5), `record` [.., 81, dim] is its state after this percept's frame."""
         cells = window(P.fix)
         fine = self.spatial_fusion(P, cells)
         canvas = fine.new_zeros(*fine.shape[:-2], N, fine.shape[-1]).scatter(-2, cells[..., None].expand_as(fine), fine)
         mask = P.g.new_zeros(*P.g.shape[:-2], N).scatter(-1, cells, 1.0)
-        return self.percept_in(torch.cat([P.p.flatten(-2), canvas.flatten(-2), mask, P.v], -1))
+        emb = self.percept_in(torch.cat([P.p.flatten(-2), canvas.flatten(-2), mask, P.v], -1))
+        return emb if self.record_in is None else emb + self.record_in(record)
 
     def tokens(self, embed: Tensor, reward: Tensor, terminated: Tensor, action: Tensor) -> Tensor:
         """[B, T, W] percept embeddings + outcomes, actions [B, T] -> interleaved [B, 2T, W]."""
@@ -246,12 +334,13 @@ class Belief(nn.Module):
 
 
 def carry_rows(carry, rows):
-    return tuple(MambaCarry(c.conv[rows], c.ssm[rows]) for c in carry)
+    return tuple(type(c)(*(getattr(c, f.name)[rows] for f in fields(c))) for c in carry)
 
 
 def carry_put(carry, rows, part):
-    for c, p in zip(carry, part):
-        c.conv[rows], c.ssm[rows] = p.conv.detach().to(c.conv.dtype), p.ssm.detach()
+    for c, p in zip(carry, part):                                        # MambaCarry or Mamba3Carry
+        for f in fields(c):
+            getattr(c, f.name)[rows] = getattr(p, f.name).detach().to(getattr(c, f.name).dtype)
 
 
 # ---- denoiser: Dreamer-4-style space-time transformer, adaLN-Zero (DiT), shortcut forcing ----
@@ -417,6 +506,13 @@ class Denoiser(nn.Module):
             torch.random.default_generator.manual_seed(e["shortcut"]["init_seed"])   # their own draws
             self.signal_embed = nn.Embedding(self.k_max + 1, nf)
             self.step_embed = nn.Embedding(self.k_max.bit_length(), nf)
+        self.record_read = None
+        if r := cfg.get("record"):                                       # P1.5: the spatial history's read, test 3's per-cell
+            assert r["read"] == "mlp", "the MLP read (test 3, 20261116_temporal_memory; the user's choice 11-16)"   # MLP:
+            with torch.random.fork_rng(devices=[]):                      # its own draws; the last layer zero-initialised
+                torch.random.default_generator.manual_seed(r["read_init_seed"])   # (inert at the start, as in test 3)
+                self.record_read = nn.Sequential(nn.Linear(2 * dims[0] * r["modes"], W), nn.GELU(), nn.Linear(W, W))
+            nn.init.zeros_(self.record_read[2].weight), nn.init.zeros_(self.record_read[2].bias)
 
     def conds(self, code, prev_action):
         """The (physical, glimpse) conditionings from a pair of codes; one code conditions both groups."""
@@ -427,11 +523,19 @@ class Denoiser(nn.Module):
         a = self.action(prev_action.clamp(min=0)) * (prev_action >= 0)[..., None]
         return self.cond_proj(self.signal_embed(code % (self.k_max + 1)) + self.step_embed(code // (self.k_max + 1)) + a)
 
-    def embed(self, x, memory: Tensor, fix: Tensor):
-        """x = (p, g, v) [B, T, ...] -> tokens [B, T, n, W] and spatial RoPE angles."""
+    def embed(self, x, memory, fix: Tensor):
+        """x = (p, g, v) [B, T, ...] -> tokens [B, T, n, W] and spatial RoPE angles. memory: the memory tokens, or with
+        the spatial history (P1.5) the pair (memory tokens, record [B, T, 81, dim] through the previous frame), whose
+        read is added to each periphery cell's token."""
         p, g, v = x
+        record = None
+        if isinstance(memory, tuple):
+            memory, record = memory
         cells = window(fix)                                                  # [B, T, 9]
-        tok = torch.cat([self.inp[0](p) + self.pos + self.kind[0], self.inp[1](g) + self.pos[cells] + self.kind[1],
+        pt = self.inp[0](p) + self.pos + self.kind[0]
+        if record is not None:
+            pt = pt + self.record_read(record).to(pt.dtype)
+        tok = torch.cat([pt, self.inp[1](g) + self.pos[cells] + self.kind[1],
                          (self.inp[2](v) + self.kind[2]).unsqueeze(-2), memory + self.kind[3]], -2)
         allc = torch.arange(N, device=p.device).expand(*p.shape[:-2], N)
         idx = torch.cat([allc, cells], -1)
@@ -573,7 +677,8 @@ def shortcut_loss(den: Denoiser, x0, prev_action, memory, fix, episode, valid, s
         zr, tr, wr = tuple(sub(z).float() for z in zt), [sub(t) for t in tau], [sub(t) for t in w]
         half = [(sub(l[0]), sub(l[1]) + 1) for l in levels]               # d / 2: the next finer step
         plus = [(s_ + k // 2 ** e_, e_) for s_, e_ in half]                # tau + d / 2 on that grid
-        args = (sub(prev_action), sub(memory).detach(), sub(fix), sub(episode), sub(valid))
+        mem = tuple(sub(m).detach() for m in memory) if isinstance(memory, tuple) else sub(memory).detach()
+        args = (sub(prev_action), mem, sub(fix), sub(episode), sub(valid))
         with torch.no_grad():
             h1 = den(tuple(z.to(t.dtype) for z, t in zip(zr, zt)), code(*zip(*half)), *args)
             b1 = tuple((h.float() - z) / _bcast(1 - t, z) for h, z, t in zip(h1, zr, tr))
@@ -605,7 +710,8 @@ def sample(den: Denoiser, shapes, prev_action, memory, fix, cache, cfg, gen=None
     the finest step; `choose(p, v) -> fix` may set the fixation between the two stages (TEACHING 14), and is then
     returned beside the frame."""
     ladder, e, d = shortcut_ladder(cfg)
-    k, dev, B = den.k_max, memory.device, memory.shape[0]
+    m0 = memory[0] if isinstance(memory, tuple) else memory             # P1.5: (memory tokens, spatial history)
+    k, dev, B = den.k_max, m0.device, m0.shape[0]
     clamp = cfg["perception"]["periphery"]["tanh_clamp"]
     randn = lambda shp: torch.randn(shp, device=dev, generator=gen)
     code = lambda s_, e_: torch.full((B, 1), shortcut_code(s_, e_, k), device=dev)
@@ -681,7 +787,9 @@ class PixelDecoder(nn.Module):
 
 class TSP(nn.Module):
     """Trans-saccadic prediction: the glimpse cells' pixels from (predicted belief, periphery tokens of the window, v)
-    before the glimpse is read. Also the fovea reconstruction adapter (glimpse tokens, v)."""
+    before the glimpse is read. Also the fovea reconstruction adapter (glimpse tokens, v). Forecast mode (P1-F5,
+    heads.forecast): p = v = None, both replaced by one learned mask vector, so only the belief predicted before the
+    frame and the window's positions are read."""
 
     def __init__(self, cfg):
         super().__init__()
@@ -691,9 +799,18 @@ class TSP(nn.Module):
         self.belief = nn.Linear(cfg["belief"]["width"], h["belief_dim"])
         self.tsp = nn.Sequential(mlp([dp + dv + h["position_dim"] + h["belief_dim"], h["hidden"], h["hidden"]]), nn.GELU())
         self.rec = nn.Sequential(mlp([dg + dv + h["position_dim"], h["hidden"], h["hidden"]]), nn.GELU())
+        self.split = (dp, dv)
+        fc = cfg["heads"].get("forecast")
+        if fc and not fc.get("tokens") and fc.get("tsp", True):          # the token forecast replaces this mode; tsp: false drops it
+            self.mask = nn.Parameter(torch.zeros(dp + dv))                # zero init: no random draw
 
     def predict(self, belief, p, v, cells):
-        pw = torch.gather(p, -2, cells[..., None].expand(*cells.shape, p.shape[-1]))
+        if p is None:                                                    # forecast mode: nothing of the frame itself
+            dp, dv = self.split
+            pw = self.mask[:dp].expand(*cells.shape, dp)
+            v = self.mask[dp:].expand(*belief.shape[:-1], dv)
+        else:
+            pw = torch.gather(p, -2, cells[..., None].expand(*cells.shape, p.shape[-1]))
         ctx = torch.cat([v, self.belief(belief)], -1).unsqueeze(-2).expand(*cells.shape, -1)
         return self.tsp(torch.cat([pw, self.cell(cells), ctx], -1))
 
@@ -702,23 +819,37 @@ class TSP(nn.Module):
 
 
 class ChangeMap(nn.Module):
-    """Soft change probability per map cell of frame t from the periphery of t, the 3 x 3 neighbourhood of each cell
-    in t - 1 (the camera moves at most one cell) and the predicted belief (LOSSES G2, A9b target)."""
+    """Two comparison probabilities at EVERY screen cell: identity and dominant translation.
+    Both percepts and predicted belief are inputs. The previous 3x3 neighbourhood accommodates correspondence;
+    no semantic region is excluded and no fixed region chooses a comparison mode."""
 
     def __init__(self, cfg):
         super().__init__()
         h, dp = cfg["heads"]["change_map"], cfg["perception"]["periphery"]["token_dim"]
-        self.cell = nn.Embedding(7 * GRID, h["position_dim"])
+        self.cell = nn.Embedding(N, h["position_dim"])
         self.belief = nn.Linear(cfg["belief"]["width"], h["belief_dim"])
-        self.net = mlp([10 * dp + h["position_dim"] + h["belief_dim"], h["hidden"], h["hidden"], 1])
+        self.net = mlp([10 * dp + h["position_dim"] + h["belief_dim"], h["hidden"], h["hidden"], 2])
 
     def forward(self, p_prev, p, belief):
         lead = p.shape[:-2]
         grid = p_prev.reshape(-1, GRID, GRID, p.shape[-1]).permute(0, 3, 1, 2)
-        nb = F.unfold(grid, 3, padding=1).reshape(-1, p.shape[-1] * 9, GRID, GRID)[:, :, :7].flatten(2).transpose(1, 2)
-        x = torch.cat([p.reshape(-1, N, p.shape[-1])[:, : 7 * GRID], nb, self.cell.weight.expand(len(nb), -1, -1),
-                       self.belief(belief).reshape(-1, 1, self.belief.out_features).expand(-1, 7 * GRID, -1)], -1)
-        return self.net(x).reshape(*lead, 7, GRID)
+        nb = F.unfold(grid, 3, padding=1).flatten(2).transpose(1, 2)
+        x = torch.cat([p.reshape(-1, N, p.shape[-1]), nb, self.cell.weight.expand(len(nb), -1, -1),
+                       self.belief(belief).reshape(-1, 1, self.belief.out_features).expand(-1, N, -1)], -1)
+        return self.net(x).reshape(*lead, GRID, GRID, 2)
+
+    def _load_from_state_dict(self, state_dict, prefix, *args, **kwargs):
+        # Historical checkpoints remain readable for generation. Only this auxiliary's absent position rows are
+        # initialized; existing weights are preserved. Old target arrays are separately rejected by training.
+        key = prefix + "cell.weight"
+        if key in state_dict and state_dict[key].shape == (7 * GRID, self.cell.embedding_dim):
+            old = state_dict[key]
+            state_dict[key] = torch.cat([old, old.new_zeros(N - len(old), old.shape[1])])
+        for name in ("net.4.weight", "net.4.bias"):
+            key = prefix + name
+            if key in state_dict and state_dict[key].shape[0] == 1:
+                state_dict[key] = state_dict[key].repeat_interleave(2, dim=0)
+        super()._load_from_state_dict(state_dict, prefix, *args, **kwargs)
 
 
 class Outcome(nn.Module):
@@ -739,8 +870,22 @@ class Outcome(nn.Module):
         self.register_buffer("edges", torch.linspace(lo, hi, self.bins + 1))
         self.register_buffer("bin_value", torch.sign((self.edges[:-1] + self.edges[1:]) / 2)
                              * torch.expm1(((self.edges[:-1] + self.edges[1:]) / 2).abs()))
+        if cfg["heads"].get("forecast"):
+            self.mask = nn.Parameter(torch.zeros(W))                      # forecast mode's percept stand-in, no draw
+        n = (cfg["heads"].get("forecast") or {}).get("reward_distances", 1)
+        if n > 1:                                                        # Dreamer 4 MTP (Eq. 9): one output layer per further
+            with torch.random.fork_rng(devices=[]):                      # distance, its own draws (every other parameter and
+                torch.random.default_generator.manual_seed(cfg["heads"]["forecast"]["reward_init_seed"])   # the RNG keep F5's)
+                self.ahead = nn.ModuleList(nn.Linear(h["hidden"], self.bins) for _ in range(n - 1))
+
+    def ahead_logp(self, h: Tensor, r: Tensor, d: int) -> Tensor:
+        """Forecast mode at distance d >= 2: log P(bin of r) from that distance's output layer (distance 1 keeps the
+        reactive head's layer, as in F5)."""
+        return self.ahead[d - 2](h).float().log_softmax(-1).gather(-1, self.bin_of(r)[..., None])[..., 0]
 
     def features(self, belief, embed):
+        """embed = None is the forecast mode (P1-F5): the outcome from the belief predicted before the percept."""
+        embed = self.mask.to(belief.dtype).expand_as(belief) if embed is None else embed
         return self.trunk(torch.cat([belief, embed], -1))
 
     def bin_of(self, r: Tensor) -> Tensor:
@@ -763,17 +908,106 @@ class Outcome(nn.Module):
         return self.cont(torch.cat([h, SYMLOG(r.float())[..., None].to(h.dtype)], -1))[..., 0]
 
 
-class Harmoniser(nn.Module):
-    """HarmonyDream: sum over groups of L_g / sigma_g + log(1 + sigma_g), sigma_g learned (LOSSES principle 4)."""
+class TokenForecast(nn.Module):
+    """Change-form forecast of every periphery token (heads.forecast.tokens; 20261113_token_forecast_gate, round 3):
+    the change from frame t - 1's observed tokens to frame t's, from the belief predicted before frame t and the
+    cell's position. The caller adds the observed tokens. Training-only."""
 
-    def __init__(self, groups, init_sigma):
+    def __init__(self, cfg):
         super().__init__()
-        self.groups = list(groups)
-        self.log_sigma = nn.Parameter(torch.full((len(self.groups),), math.log(init_sigma)))
+        h = cfg["heads"]["forecast"]["tokens"]
+        self.cell = nn.Embedding(N, h["position_dim"])
+        self.belief = nn.Linear(cfg["belief"]["width"], h["belief_dim"])
+        self.net = nn.Sequential(mlp([h["position_dim"] + h["belief_dim"], h["hidden"], h["hidden"]]), nn.GELU(),
+                                 nn.Linear(h["hidden"], cfg["perception"]["periphery"]["token_dim"]))
+
+    def forward(self, belief: Tensor) -> Tensor:                         # [..., W] -> [..., 81, token_dim]
+        lead = belief.shape[:-1]
+        return self.net(torch.cat([self.cell.weight.expand(*lead, -1, -1),
+                                   self.belief(belief).unsqueeze(-2).expand(*lead, N, -1)], -1))
+
+
+class Harmoniser(nn.Module):
+    """HarmonyDream: sum over groups of L_g / sigma_g + log(1 + sigma_g), sigma_g learned (LOSSES principle 4). With a
+    fixed-point rate (P1.5, user 11-16; the learned sigma was rate-limited, 10-31 / 11-16): sigma_g is set, at every
+    training call, to the objective's stationary point for the group's running mean loss mu_g, sigma^2 = mu (1 + sigma)
+    (HarmonyDream App. B), mu_g an exponential running mean at that rate (DreamerV3's normalisers: rate 0.01,
+    danijar/dreamerv3 configs.yaml), started at the first loss; no gradient reaches sigma."""
+
+    def __init__(self, groups, init_sigma, fixed_point_rate=None):
+        super().__init__()
+        self.groups, self.rate = list(groups), fixed_point_rate
+        init = torch.full((len(self.groups),), math.log(init_sigma))
+        if fixed_point_rate is None:
+            self.log_sigma = nn.Parameter(init)
+        else:
+            self.register_buffer("log_sigma", init)
+            self.register_buffer("mu", torch.full((len(self.groups),), float("nan")))
 
     def forward(self, losses: dict) -> Tensor:
+        if self.rate is not None and self.training:
+            with torch.no_grad():
+                loss = torch.stack([losses[g].detach().float() for g in self.groups])
+                mu = torch.where(torch.isnan(self.mu), loss, (1 - self.rate) * self.mu + self.rate * loss)
+                self.mu.copy_(mu)
+                self.log_sigma.copy_(((mu + (mu * mu + 4 * mu).sqrt()) / 2).log())
         s = self.log_sigma.exp()
         return sum(losses[g] / s[i] + torch.log1p(s[i]) for i, g in enumerate(self.groups))
+
+
+class Record(nn.Module):
+    """Spatial history (P1.5, user 11-16; 20261116_temporal_memory, tests 2-3): per periphery cell, a fixed S4D-Lin
+    record of every channel of its own coarse token (Gu et al. 2022, S4D: A_n = -1/2 + i pi n for n < modes, B = 1,
+    the S4D listing's bilinear step at dt), reset at episode starts; features = real then imaginary parts (channel-major,
+    then mode). Built from stop-gradient tokens: a denoiser input (LOSSES principle 7a). No parameters."""
+
+    def __init__(self, cfg):
+        super().__init__()
+        r, n = cfg["record"], torch.arange(cfg["record"]["modes"], dtype=torch.float64)
+        A, dt = torch.complex(torch.full_like(n, -0.5), math.pi * n), r["dt"]
+        self.register_buffer("a", ((1 + dt * A / 2) / (1 - dt * A / 2)).to(torch.complex64), persistent=False)
+        self.register_buffer("b", (dt / (1 - dt * A / 2)).to(torch.complex64), persistent=False)
+        self.channels = cfg["perception"]["periphery"]["token_dim"]
+        self.dim = 2 * self.channels * r["modes"]
+
+    def zero(self, batch: int, device=None) -> Tensor:
+        return torch.zeros(batch, N, self.dim, device=device or self.a.device)
+
+    @torch.no_grad()
+    def scan(self, p: Tensor, first: Tensor, state: Tensor):
+        """p [B, L, 81, C] tokens, first [B, L] episode starts, state [B, 81, dim] after the frame before frame 0 ->
+        (the record through the previous frame, for every frame: the denoiser's input; the state after every frame:
+        Mamba's input, the last one carried), both [B, L, 81, dim] fp32."""
+        h = self.dim // 2
+        s = torch.complex(state[..., :h], state[..., h:]).unflatten(-1, (self.channels, -1))
+        feat = lambda z: torch.cat([z.real.flatten(-2), z.imag.flatten(-2)], -1)
+        inp, st = [], []
+        for i in range(p.shape[1]):
+            s = torch.where(first[:, i, None, None, None], torch.zeros_like(s), s)
+            inp.append(feat(s))
+            s = self.a * s + self.b * p[:, i].float()[..., None]
+            st.append(feat(s))
+        return torch.stack(inp, 1), torch.stack(st, 1)
+
+
+class GazeForecast(nn.Module):
+    """The gaze forecast (P1.5, user 11-16; 20261115_gaze_learnability): the chooser's window distribution forecast
+    from the chooser's own inputs and a linear map of the belief predicted before the frame (gaze.py's Gaze: fair.py's
+    forecaster on the chooser head's trunk, a score per cell, a window's logit the sum of its nine cells' plus a bias)."""
+
+    def __init__(self, cfg):
+        super().__init__()
+        from saccade import chooser as C                                 # chooser imports this module
+        self.trunk, self.score = C.Head(cfg["fixation"]["chooser"]["history"]), nn.Linear(64, 1)
+        self.bias = nn.Parameter(torch.zeros(49))
+        self.belief = nn.Linear(cfg["belief"]["width"], 64)
+        self.register_buffer("win", C.WIN.clone(), persistent=False)
+
+    def forward(self, xx, b: Tensor) -> Tensor:
+        ph, ctx, act = xx
+        t = self.trunk
+        x = t.local(ph.transpose(1, 2).flatten(2)) + (t.context(ctx) + t.action(act) + self.belief(b))[:, None] + t.position
+        return self.score(t.blocks(x))[..., 0][:, self.win].sum(-1) + self.bias
 
 
 class M0(nn.Module):
@@ -781,8 +1015,22 @@ class M0(nn.Module):
         super().__init__()
         self.cfg = cfg
         self.perception, self.belief, self.denoiser = Perception(cfg), Belief(cfg), Denoiser(cfg)
-        self.pixels, self.tsp, self.change, self.outcome = PixelDecoder(cfg), TSP(cfg), ChangeMap(cfg), Outcome(cfg)
-        self.harmoniser = Harmoniser(cfg["losses"]["groups"], cfg["losses"]["harmoniser_init_sigma"])
+        self.pixels, self.tsp = PixelDecoder(cfg), TSP(cfg)
+        self.change = ChangeMap(cfg) if cfg["heads"].get("change_map") else None   # P1-F5: removed (historical cfgs build it)
+        self.outcome = Outcome(cfg)
+        self.harmoniser = Harmoniser(cfg["losses"]["groups"], cfg["losses"]["harmoniser_init_sigma"],
+                                     cfg["losses"].get("harmoniser_fixed_point_rate"))
+        self.token_forecast = None
+        if (cfg["heads"].get("forecast") or {}).get("tokens"):
+            with torch.random.fork_rng(devices=[]):                      # its own draws: every other parameter and the
+                torch.random.default_generator.manual_seed(cfg["heads"]["forecast"]["tokens"]["init_seed"])   # training RNG keep F5's
+                self.token_forecast = TokenForecast(cfg)
+        self.record = Record(cfg) if cfg.get("record") else None         # P1.5: spatial history (no parameters)
+        self.gaze_forecast = None
+        if gz := cfg["heads"].get("gaze_forecast"):                      # P1.5: its own draws, as token_forecast's
+            with torch.random.fork_rng(devices=[]):
+                torch.random.default_generator.manual_seed(gz["init_seed"])
+                self.gaze_forecast = GazeForecast(cfg)
 
     def param_groups(self):
         """AdamW groups: encoder (perception) at encoder_lr_scale; weight decay only on Linear / Conv weights, as

@@ -63,8 +63,9 @@ def main(ckpt, out):
     j = np.sort(np.random.default_rng(2115).choice(rows, CAP, replace=False))
     at = lambda key, dt: torch.stack([enc[int(T["ep"][x])][key][int(T["t"][x]) + dt] for x in j])
     P = M.Percept(*(at(k, -1).float().to(CV.DEV) for k in ("p", "g", "v")), at("fix", -1).to(CV.DEV))
+    rd = at("reads", -1).float().to(CV.DEV) if "reads" in enc[0] else None   # P1.5: the belief's input holds the record's read
     with torch.no_grad():
-        embed = torch.cat([model.belief.percept_embed(M.Percept(*(z[a:a + 4096] for z in P.parts()), P.fix[a:a + 4096])).float().cpu()
+        embed = torch.cat([S.embed(model, M.Percept(*(z[a:a + 4096] for z in P.parts()), P.fix[a:a + 4096]), S.at(rd, np.s_[a:a + 4096])).float().cpu()
                            for a in range(0, len(j), 4096)])
     feats = {"hud_tokens": at("p", -1)[:, HUD].flatten(1), "percept_embed": embed, "b_prev": at("b", -1), "bp": at("bp", 0)}
     feats = {k: v.double() for k, v in feats.items()}

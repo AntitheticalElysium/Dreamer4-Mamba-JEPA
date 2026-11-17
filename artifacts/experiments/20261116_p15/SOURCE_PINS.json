@@ -1,0 +1,33 @@
+{
+  "prepared_at_utc": "2026-11-16T11:04:20.612632+00:00",
+  "torch": "2.13.0+cu130",
+  "files": {
+    "artifacts/eda/replay.py": "8b1260907be37a02041eda713c4891e179bcc0dacecf10326bff393b0a41639b",
+    "artifacts/experiments/20261101_p1f15/train_p1f15.py": "5a23bfd2b56a2f6da6cc65a1b46be0f19d58cbd0bdafeffae0535ee52505ab20",
+    "artifacts/experiments/20261102_direct_chooser/direct.py": "f387b1fac424262144c1716926c8c3ff7e362cbacb2f578dfce3c1d4ff8fb95d",
+    "artifacts/experiments/20261102_p1f16/train_p1f16.py": "5589b8427df43e50186417dd1f7f9792df6eb23f7bcbb451ab154d3d4c5dba66",
+    "artifacts/experiments/20261103_p1f2/chooser.py": "01fa841f543107ccfbd8cb63af25c8870bbd1ace48c7869be085d781d3973747",
+    "artifacts/experiments/20261103_p1f2/train_p1f2.py": "44a6ccbdd44a6018217d1fb2bd98675bb1d71899456a1702d6f38dc0585c37b5",
+    "artifacts/experiments/20261103_p1f2/trainer.py": "5a8ebe2bc1d4ec030dbb17c1d482e741d84b34d54ba517c315fd0bd9d9a8cbb8",
+    "artifacts/experiments/20261104_p1f21/run.py": "36ab01a9dca8fc95abee4db2ddca6b84cbee3c20967e8fd0e602d6b42591d2ff",
+    "artifacts/experiments/20261104_p1f21/train_p1f21.py": "818cbded3672f422bd656bfa847cfdeac0d8e8b176b9280d56e6428c7b66bee8",
+    "artifacts/experiments/20261104_p1f21/union.py": "5abbb4aa591b44497f2ca95fb0145084360351e484e92c35ae000dc92e3db6d8",
+    "artifacts/experiments/20261111_p1f5/train_p1f5.py": "8044501754b7c09911060672af34e3477848006deb2c776a1416b3d8ba0756af",
+    "artifacts/experiments/20261114_p1f61/train.py": "d9276e2003e991dec8330a9a3b142c905e76c84cc475306afb49f62bf02c016a",
+    "artifacts/experiments/20261116_p15/checks.json": "81a86326cd319d87ce3f3c399861e224aa805aa441651c94e9c34f53b7d74d7a",
+    "artifacts/experiments/20261116_p15/pin_sources.py": "59898b733db0aaa4acfda81e2257d4606a9853f14a79295443e17a91a24e4a0c",
+    "artifacts/experiments/20261116_p15/run.py": "5cd94612672e52893c66fdabb38c43a8b81bfc71c037aae9ffa84c0a8b72530b",
+    "artifacts/experiments/20261116_p15/train.py": "1cc60c8c9ac45db5f7359d3a16c2899149e43c33c6e8b6ba1f9b6aa3a860ff89",
+    "saccade/__init__.py": "e79adc8fe6b3bc18179009362d5d646cf934f8e5f0db509bf497afd45aa3a465",
+    "saccade/chooser.py": "147a578bb55567775e3917269a44dca3d743a058a8af04cf7e926fb380379fb2",
+    "saccade/data.py": "1177c951165cdbd5af10636ec52026f4e8638a022e31ae0ceab47744ad1e8b06",
+    "saccade/eval/__init__.py": "14c4d8a9b20ed4826c9b537ae1934fff44db4ff912540f233570c9bc450be099",
+    "saccade/eval/after_p1.py": "128278cb60e74a3c3ae39e226e66c1d57403e4ac0ecd5f20e2abd0a54d4c4966",
+    "saccade/eval/gates.py": "a81d816b188ec4b56d4dc98a5cb3934ec21c142fde7ca229a8e833ee01a134c2",
+    "saccade/eval/probe.py": "30c6e190a936b4ae2836f6b0b310427f5d135e7079195f85d1cf3fa81cd3e151",
+    "saccade/eval/s1.py": "3f57cc8bae955fdd102d610a5a953a3cc4a169e21f585b09cff1dfb87cda127c",
+    "saccade/m0.yaml": "9aeb2de10fc7754ed1c9f73f67e8c7f2825f235f079a2818773572d4a8799d74",
+    "saccade/model.py": "55967070ec6c64b1cf7eba74fc699322d3cb230d6a0adc8fe88bf97ca36370e3",
+    "saccade/train.py": "18bc629e3d2f13d91a53a74fca6aae34e17f52b269dc2c290c2f1b75b9985e02"
+  }
+}

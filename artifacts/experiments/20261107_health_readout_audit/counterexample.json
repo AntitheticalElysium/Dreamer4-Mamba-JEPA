@@ -1,0 +1,14 @@
+{
+  "three_mode_counterexample": {
+    "p_no_hit": 0.3,
+    "p_small_hit": 0.5,
+    "p_large_hit": 0.2,
+    "p_any_hit": 0.7,
+    "calibrated_mean": [
+      0.5,
+      0.20000000298023224
+    ],
+    "lean_on_realised_large_hit": 0.20000000298023224
+  },
+  "AP_information_claim": "Average precision is a ranking statistic, not a conserved amount of information."
+}

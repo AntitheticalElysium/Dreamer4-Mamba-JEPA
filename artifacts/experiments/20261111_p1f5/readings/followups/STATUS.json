@@ -1,0 +1,12 @@
+{
+  "identity": {
+    "parent_invocation": "b80685a707f948b0b11743404a22ad9f",
+    "parent_started_at": "2026-11-11T21:57:52.317123+00:00",
+    "source_pins_sha256": "be9515e2e037dbec7114d6dca171f6698f3c471e6f1b0d7e833873974144fbb3"
+  },
+  "phase": "failed",
+  "checkpoint_sha256": "b232d2d7f900700b7ed4fb7c2affae2c1cea1c56bc462fbd806a761dc14b1ead",
+  "movement": "failed",
+  "mining": "failed",
+  "sleep": "complete"
+}

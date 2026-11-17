@@ -1,0 +1,103 @@
+{
+  "checkpoint_sha256": "1b70edcc432daf3fb337c37c67af8d709d3728e25d02ac94523f8a7322ba1379",
+  "rows": 40000,
+  "changed": {
+    "health": {
+      "prevalence": 0.036875,
+      "HUD_abs": {
+        "ap": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "embedding_abs": {
+        "ap": 0.9986455844904325,
+        "ci95": [
+          0.9971876358458159,
+          0.9997088725506135
+        ]
+      },
+      "control_qualified_at_AP_095": true
+    },
+    "food": {
+      "prevalence": 0.0365,
+      "HUD_abs": {
+        "ap": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "embedding_abs": {
+        "ap": 0.2679554494937943,
+        "ci95": [
+          0.24502771627229236,
+          0.29044937795464304
+        ]
+      },
+      "control_qualified_at_AP_095": true
+    },
+    "drink": {
+      "prevalence": 0.051525,
+      "HUD_abs": {
+        "ap": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "embedding_abs": {
+        "ap": 0.1910049792839356,
+        "ci95": [
+          0.17426632872736375,
+          0.20546919966190627
+        ]
+      },
+      "control_qualified_at_AP_095": true
+    },
+    "energy": {
+      "prevalence": 0.03585,
+      "HUD_abs": {
+        "ap": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "embedding_abs": {
+        "ap": 0.06280992422206742,
+        "ci95": [
+          0.05715205950774636,
+          0.0697077570582225
+        ]
+      },
+      "control_qualified_at_AP_095": true
+    }
+  },
+  "zero_values_reused_from_original": {
+    "food == 0": {
+      "prevalence": 0.015075,
+      "HUD token": 1.0,
+      "embedding": 0.9999807208976051,
+      "corrected belief b_t": 0.9062037061896164
+    },
+    "drink == 0": {
+      "prevalence": 0.080725,
+      "HUD token": 1.0,
+      "embedding": 1.0,
+      "corrected belief b_t": 0.9999770160973236
+    },
+    "energy == 0": {
+      "prevalence": 0.008775,
+      "HUD token": 1.0,
+      "embedding": 0.9969206504492684,
+      "corrected belief b_t": 0.8186531830290045
+    }
+  },
+  "signed_health_reproduction": {
+    "ap": 0.5371543984695801,
+    "original": 0.5371543984695801,
+    "absolute_difference": 0.0
+  }
+}

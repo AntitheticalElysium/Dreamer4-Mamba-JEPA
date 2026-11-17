@@ -1,0 +1,1910 @@
+{
+ "curves": {
+  "f4": {
+   "woken_beside_zombie": {
+    "asleep_ready": {
+     "gen": 0.56,
+     "true": 1.0
+    },
+    "asleep_cooling": {
+     "gen": 0.177,
+     "true": 0.007
+    }
+   },
+   "woken_asleep_by_stratum": {
+    "e6": 0.012,
+    "e7_fresh": 0.012,
+    "e7_stale": 0.023,
+    "e8_fresh": 0.006,
+    "e8_stale": 0.016,
+    "e9": 1.0,
+    "e<=5": 0.007
+   },
+   "transitions": {
+    "coal_0": {
+     "next": 0.986,
+     "copy": 0.014,
+     "futures": 1964
+    },
+    "coal_1": {
+     "next": 0.945,
+     "copy": 0.053,
+     "futures": 1192
+    },
+    "coal_2": {
+     "next": 0.845,
+     "copy": 0.152,
+     "futures": 756
+    },
+    "coal_3": {
+     "next": 0.943,
+     "copy": 0.048,
+     "futures": 400
+    },
+    "coal_4": {
+     "next": 0.785,
+     "copy": 0.18,
+     "futures": 200
+    },
+    "coal_5": {
+     "next": 0.023,
+     "copy": 0.977,
+     "futures": 128
+    },
+    "coal_6": {
+     "next": 0.0,
+     "copy": 0.941,
+     "futures": 68
+    },
+    "coal_7": {
+     "next": 0.1,
+     "copy": 0.8,
+     "futures": 20
+    },
+    "coal_8": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 8
+    },
+    "iron_0": {
+     "next": 0.923,
+     "copy": 0.077,
+     "futures": 1528
+    },
+    "iron_1": {
+     "next": 0.932,
+     "copy": 0.061,
+     "futures": 720
+    },
+    "iron_2": {
+     "next": 0.86,
+     "copy": 0.14,
+     "futures": 272
+    },
+    "iron_3": {
+     "next": 0.808,
+     "copy": 0.173,
+     "futures": 104
+    },
+    "iron_4": {
+     "next": 0.556,
+     "copy": 0.444,
+     "futures": 36
+    },
+    "iron_5": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 12
+    },
+    "wood_0": {
+     "next": 1.0,
+     "copy": 0.0,
+     "futures": 600
+    },
+    "wood_1": {
+     "next": 1.0,
+     "copy": 0.0,
+     "futures": 600
+    },
+    "wood_2": {
+     "next": 0.993,
+     "copy": 0.007,
+     "futures": 600
+    },
+    "wood_3": {
+     "next": 0.997,
+     "copy": 0.002,
+     "futures": 600
+    },
+    "wood_4": {
+     "next": 0.9,
+     "copy": 0.062,
+     "futures": 600
+    },
+    "wood_5": {
+     "next": 0.004,
+     "copy": 0.996,
+     "futures": 472
+    },
+    "wood_6": {
+     "next": 0.177,
+     "copy": 0.688,
+     "futures": 192
+    },
+    "wood_7": {
+     "next": 0.27,
+     "copy": 0.53,
+     "futures": 100
+    },
+    "wood_8": {
+     "next": 0.083,
+     "copy": 0.917,
+     "futures": 36
+    },
+    "stone_0": {
+     "next": 0.983,
+     "copy": 0.015,
+     "futures": 600
+    },
+    "stone_1": {
+     "next": 0.965,
+     "copy": 0.01,
+     "futures": 600
+    },
+    "stone_2": {
+     "next": 0.967,
+     "copy": 0.023,
+     "futures": 600
+    },
+    "stone_3": {
+     "next": 0.935,
+     "copy": 0.013,
+     "futures": 600
+    },
+    "stone_4": {
+     "next": 0.912,
+     "copy": 0.045,
+     "futures": 600
+    },
+    "stone_5": {
+     "next": 0.332,
+     "copy": 0.608,
+     "futures": 600
+    },
+    "stone_6": {
+     "next": 0.702,
+     "copy": 0.255,
+     "futures": 600
+    },
+    "stone_7": {
+     "next": 0.91,
+     "copy": 0.052,
+     "futures": 600
+    },
+    "stone_8": {
+     "next": 0.915,
+     "copy": 0.078,
+     "futures": 600
+    }
+   }
+  },
+  "hud": {
+   "woken_beside_zombie": {
+    "asleep_ready": {
+     "gen": 0.441,
+     "true": 1.0
+    },
+    "asleep_cooling": {
+     "gen": 0.064,
+     "true": 0.007
+    }
+   },
+   "woken_asleep_by_stratum": {
+    "e6": 0.009,
+    "e7_fresh": 0.004,
+    "e7_stale": 0.012,
+    "e8_fresh": 0.004,
+    "e8_stale": 0.006,
+    "e9": 1.0,
+    "e<=5": 0.005
+   },
+   "transitions": {
+    "coal_0": {
+     "next": 0.545,
+     "copy": 0.449,
+     "futures": 1964
+    },
+    "coal_1": {
+     "next": 0.161,
+     "copy": 0.838,
+     "futures": 1192
+    },
+    "coal_2": {
+     "next": 0.049,
+     "copy": 0.948,
+     "futures": 756
+    },
+    "coal_3": {
+     "next": 0.068,
+     "copy": 0.922,
+     "futures": 400
+    },
+    "coal_4": {
+     "next": 0.125,
+     "copy": 0.875,
+     "futures": 200
+    },
+    "coal_5": {
+     "next": 0.008,
+     "copy": 0.992,
+     "futures": 128
+    },
+    "coal_6": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 68
+    },
+    "coal_7": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 20
+    },
+    "coal_8": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 8
+    },
+    "iron_0": {
+     "next": 0.105,
+     "copy": 0.895,
+     "futures": 1528
+    },
+    "iron_1": {
+     "next": 0.026,
+     "copy": 0.971,
+     "futures": 720
+    },
+    "iron_2": {
+     "next": 0.048,
+     "copy": 0.952,
+     "futures": 272
+    },
+    "iron_3": {
+     "next": 0.058,
+     "copy": 0.942,
+     "futures": 104
+    },
+    "iron_4": {
+     "next": 0.028,
+     "copy": 0.972,
+     "futures": 36
+    },
+    "iron_5": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 12
+    },
+    "wood_0": {
+     "next": 0.908,
+     "copy": 0.092,
+     "futures": 600
+    },
+    "wood_1": {
+     "next": 0.897,
+     "copy": 0.103,
+     "futures": 600
+    },
+    "wood_2": {
+     "next": 0.953,
+     "copy": 0.045,
+     "futures": 600
+    },
+    "wood_3": {
+     "next": 0.963,
+     "copy": 0.037,
+     "futures": 600
+    },
+    "wood_4": {
+     "next": 0.808,
+     "copy": 0.17,
+     "futures": 600
+    },
+    "wood_5": {
+     "next": 0.388,
+     "copy": 0.61,
+     "futures": 472
+    },
+    "wood_6": {
+     "next": 0.214,
+     "copy": 0.615,
+     "futures": 192
+    },
+    "wood_7": {
+     "next": 0.37,
+     "copy": 0.4,
+     "futures": 100
+    },
+    "wood_8": {
+     "next": 0.167,
+     "copy": 0.833,
+     "futures": 36
+    },
+    "stone_0": {
+     "next": 0.9,
+     "copy": 0.097,
+     "futures": 600
+    },
+    "stone_1": {
+     "next": 0.852,
+     "copy": 0.142,
+     "futures": 600
+    },
+    "stone_2": {
+     "next": 0.76,
+     "copy": 0.235,
+     "futures": 600
+    },
+    "stone_3": {
+     "next": 0.765,
+     "copy": 0.21,
+     "futures": 600
+    },
+    "stone_4": {
+     "next": 0.738,
+     "copy": 0.243,
+     "futures": 600
+    },
+    "stone_5": {
+     "next": 0.605,
+     "copy": 0.385,
+     "futures": 600
+    },
+    "stone_6": {
+     "next": 0.69,
+     "copy": 0.285,
+     "futures": 600
+    },
+    "stone_7": {
+     "next": 0.767,
+     "copy": 0.183,
+     "futures": 600
+    },
+    "stone_8": {
+     "next": 0.82,
+     "copy": 0.18,
+     "futures": 600
+    }
+   }
+  },
+  "ms": {
+   "woken_beside_zombie": {
+    "asleep_ready": {
+     "gen": 0.302,
+     "true": 1.0
+    },
+    "asleep_cooling": {
+     "gen": 0.096,
+     "true": 0.007
+    }
+   },
+   "woken_asleep_by_stratum": {
+    "e6": 0.007,
+    "e7_fresh": 0.014,
+    "e7_stale": 0.014,
+    "e8_fresh": 0.0,
+    "e8_stale": 0.01,
+    "e9": 1.0,
+    "e<=5": 0.004
+   },
+   "transitions": {
+    "coal_0": {
+     "next": 0.821,
+     "copy": 0.179,
+     "futures": 1964
+    },
+    "coal_1": {
+     "next": 0.07,
+     "copy": 0.93,
+     "futures": 1192
+    },
+    "coal_2": {
+     "next": 0.037,
+     "copy": 0.963,
+     "futures": 756
+    },
+    "coal_3": {
+     "next": 0.06,
+     "copy": 0.935,
+     "futures": 400
+    },
+    "coal_4": {
+     "next": 0.03,
+     "copy": 0.97,
+     "futures": 200
+    },
+    "coal_5": {
+     "next": 0.008,
+     "copy": 0.992,
+     "futures": 128
+    },
+    "coal_6": {
+     "next": 0.0,
+     "copy": 0.985,
+     "futures": 68
+    },
+    "coal_7": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 20
+    },
+    "coal_8": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 8
+    },
+    "iron_0": {
+     "next": 0.198,
+     "copy": 0.802,
+     "futures": 1528
+    },
+    "iron_1": {
+     "next": 0.06,
+     "copy": 0.94,
+     "futures": 720
+    },
+    "iron_2": {
+     "next": 0.04,
+     "copy": 0.96,
+     "futures": 272
+    },
+    "iron_3": {
+     "next": 0.106,
+     "copy": 0.885,
+     "futures": 104
+    },
+    "iron_4": {
+     "next": 0.028,
+     "copy": 0.944,
+     "futures": 36
+    },
+    "iron_5": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 12
+    },
+    "wood_0": {
+     "next": 0.987,
+     "copy": 0.013,
+     "futures": 600
+    },
+    "wood_1": {
+     "next": 0.977,
+     "copy": 0.023,
+     "futures": 600
+    },
+    "wood_2": {
+     "next": 0.907,
+     "copy": 0.093,
+     "futures": 600
+    },
+    "wood_3": {
+     "next": 0.835,
+     "copy": 0.162,
+     "futures": 600
+    },
+    "wood_4": {
+     "next": 0.728,
+     "copy": 0.247,
+     "futures": 600
+    },
+    "wood_5": {
+     "next": 0.044,
+     "copy": 0.943,
+     "futures": 472
+    },
+    "wood_6": {
+     "next": 0.193,
+     "copy": 0.766,
+     "futures": 192
+    },
+    "wood_7": {
+     "next": 0.26,
+     "copy": 0.67,
+     "futures": 100
+    },
+    "wood_8": {
+     "next": 0.0,
+     "copy": 0.972,
+     "futures": 36
+    },
+    "stone_0": {
+     "next": 0.927,
+     "copy": 0.07,
+     "futures": 600
+    },
+    "stone_1": {
+     "next": 0.818,
+     "copy": 0.172,
+     "futures": 600
+    },
+    "stone_2": {
+     "next": 0.817,
+     "copy": 0.165,
+     "futures": 600
+    },
+    "stone_3": {
+     "next": 0.733,
+     "copy": 0.202,
+     "futures": 600
+    },
+    "stone_4": {
+     "next": 0.685,
+     "copy": 0.247,
+     "futures": 600
+    },
+    "stone_5": {
+     "next": 0.45,
+     "copy": 0.518,
+     "futures": 600
+    },
+    "stone_6": {
+     "next": 0.708,
+     "copy": 0.253,
+     "futures": 600
+    },
+    "stone_7": {
+     "next": 0.712,
+     "copy": 0.27,
+     "futures": 600
+    },
+    "stone_8": {
+     "next": 0.775,
+     "copy": 0.225,
+     "futures": 600
+    }
+   }
+  },
+  "f5": {
+   "woken_beside_zombie": {
+    "asleep_ready": {
+     "gen": 0.959,
+     "true": 1.0
+    },
+    "asleep_cooling": {
+     "gen": 0.018,
+     "true": 0.007
+    }
+   },
+   "woken_asleep_by_stratum": {
+    "e6": 0.016,
+    "e7_fresh": 0.017,
+    "e7_stale": 0.02,
+    "e8_fresh": 0.011,
+    "e8_stale": 0.021,
+    "e9": 0.906,
+    "e<=5": 0.015
+   },
+   "transitions": {
+    "coal_0": {
+     "next": 0.569,
+     "copy": 0.418,
+     "futures": 1964
+    },
+    "coal_1": {
+     "next": 0.065,
+     "copy": 0.934,
+     "futures": 1192
+    },
+    "coal_2": {
+     "next": 0.026,
+     "copy": 0.968,
+     "futures": 756
+    },
+    "coal_3": {
+     "next": 0.043,
+     "copy": 0.94,
+     "futures": 400
+    },
+    "coal_4": {
+     "next": 0.05,
+     "copy": 0.945,
+     "futures": 200
+    },
+    "coal_5": {
+     "next": 0.016,
+     "copy": 0.984,
+     "futures": 128
+    },
+    "coal_6": {
+     "next": 0.0,
+     "copy": 0.956,
+     "futures": 68
+    },
+    "coal_7": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 20
+    },
+    "coal_8": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 8
+    },
+    "iron_0": {
+     "next": 0.321,
+     "copy": 0.675,
+     "futures": 1528
+    },
+    "iron_1": {
+     "next": 0.042,
+     "copy": 0.957,
+     "futures": 720
+    },
+    "iron_2": {
+     "next": 0.026,
+     "copy": 0.974,
+     "futures": 272
+    },
+    "iron_3": {
+     "next": 0.106,
+     "copy": 0.837,
+     "futures": 104
+    },
+    "iron_4": {
+     "next": 0.0,
+     "copy": 0.972,
+     "futures": 36
+    },
+    "iron_5": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 12
+    },
+    "wood_0": {
+     "next": 0.895,
+     "copy": 0.105,
+     "futures": 600
+    },
+    "wood_1": {
+     "next": 0.827,
+     "copy": 0.17,
+     "futures": 600
+    },
+    "wood_2": {
+     "next": 0.857,
+     "copy": 0.143,
+     "futures": 600
+    },
+    "wood_3": {
+     "next": 0.9,
+     "copy": 0.09,
+     "futures": 600
+    },
+    "wood_4": {
+     "next": 0.687,
+     "copy": 0.232,
+     "futures": 600
+    },
+    "wood_5": {
+     "next": 0.229,
+     "copy": 0.708,
+     "futures": 472
+    },
+    "wood_6": {
+     "next": 0.323,
+     "copy": 0.583,
+     "futures": 192
+    },
+    "wood_7": {
+     "next": 0.36,
+     "copy": 0.55,
+     "futures": 100
+    },
+    "wood_8": {
+     "next": 0.083,
+     "copy": 0.861,
+     "futures": 36
+    },
+    "stone_0": {
+     "next": 0.902,
+     "copy": 0.092,
+     "futures": 600
+    },
+    "stone_1": {
+     "next": 0.735,
+     "copy": 0.255,
+     "futures": 600
+    },
+    "stone_2": {
+     "next": 0.69,
+     "copy": 0.297,
+     "futures": 600
+    },
+    "stone_3": {
+     "next": 0.617,
+     "copy": 0.337,
+     "futures": 600
+    },
+    "stone_4": {
+     "next": 0.607,
+     "copy": 0.33,
+     "futures": 600
+    },
+    "stone_5": {
+     "next": 0.325,
+     "copy": 0.645,
+     "futures": 600
+    },
+    "stone_6": {
+     "next": 0.565,
+     "copy": 0.397,
+     "futures": 600
+    },
+    "stone_7": {
+     "next": 0.628,
+     "copy": 0.338,
+     "futures": 600
+    },
+    "stone_8": {
+     "next": 0.598,
+     "copy": 0.397,
+     "futures": 600
+    }
+   }
+  },
+  "f6": {
+   "woken_beside_zombie": {
+    "asleep_ready": {
+     "gen": 0.944,
+     "true": 1.0
+    },
+    "asleep_cooling": {
+     "gen": 0.02,
+     "true": 0.007
+    }
+   },
+   "woken_asleep_by_stratum": {
+    "e6": 0.016,
+    "e7_fresh": 0.014,
+    "e7_stale": 0.023,
+    "e8_fresh": 0.011,
+    "e8_stale": 0.02,
+    "e9": 0.962,
+    "e<=5": 0.008
+   },
+   "transitions": {
+    "coal_0": {
+     "next": 0.476,
+     "copy": 0.512,
+     "futures": 1964
+    },
+    "coal_1": {
+     "next": 0.114,
+     "copy": 0.885,
+     "futures": 1192
+    },
+    "coal_2": {
+     "next": 0.015,
+     "copy": 0.985,
+     "futures": 756
+    },
+    "coal_3": {
+     "next": 0.14,
+     "copy": 0.845,
+     "futures": 400
+    },
+    "coal_4": {
+     "next": 0.08,
+     "copy": 0.91,
+     "futures": 200
+    },
+    "coal_5": {
+     "next": 0.008,
+     "copy": 0.984,
+     "futures": 128
+    },
+    "coal_6": {
+     "next": 0.0,
+     "copy": 0.971,
+     "futures": 68
+    },
+    "coal_7": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 20
+    },
+    "coal_8": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 8
+    },
+    "iron_0": {
+     "next": 0.187,
+     "copy": 0.803,
+     "futures": 1528
+    },
+    "iron_1": {
+     "next": 0.021,
+     "copy": 0.974,
+     "futures": 720
+    },
+    "iron_2": {
+     "next": 0.004,
+     "copy": 0.996,
+     "futures": 272
+    },
+    "iron_3": {
+     "next": 0.01,
+     "copy": 0.971,
+     "futures": 104
+    },
+    "iron_4": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 36
+    },
+    "iron_5": {
+     "next": 0.0,
+     "copy": 1.0,
+     "futures": 12
+    },
+    "wood_0": {
+     "next": 0.9,
+     "copy": 0.1,
+     "futures": 600
+    },
+    "wood_1": {
+     "next": 0.842,
+     "copy": 0.148,
+     "futures": 600
+    },
+    "wood_2": {
+     "next": 0.925,
+     "copy": 0.075,
+     "futures": 600
+    },
+    "wood_3": {
+     "next": 0.912,
+     "copy": 0.068,
+     "futures": 600
+    },
+    "wood_4": {
+     "next": 0.867,
+     "copy": 0.073,
+     "futures": 600
+    },
+    "wood_5": {
+     "next": 0.167,
+     "copy": 0.797,
+     "futures": 472
+    },
+    "wood_6": {
+     "next": 0.109,
+     "copy": 0.693,
+     "futures": 192
+    },
+    "wood_7": {
+     "next": 0.07,
+     "copy": 0.43,
+     "futures": 100
+    },
+    "wood_8": {
+     "next": 0.083,
+     "copy": 0.306,
+     "futures": 36
+    },
+    "stone_0": {
+     "next": 0.895,
+     "copy": 0.102,
+     "futures": 600
+    },
+    "stone_1": {
+     "next": 0.74,
+     "copy": 0.24,
+     "futures": 600
+    },
+    "stone_2": {
+     "next": 0.82,
+     "copy": 0.165,
+     "futures": 600
+    },
+    "stone_3": {
+     "next": 0.665,
+     "copy": 0.292,
+     "futures": 600
+    },
+    "stone_4": {
+     "next": 0.723,
+     "copy": 0.228,
+     "futures": 600
+    },
+    "stone_5": {
+     "next": 0.315,
+     "copy": 0.643,
+     "futures": 600
+    },
+    "stone_6": {
+     "next": 0.657,
+     "copy": 0.288,
+     "futures": 600
+    },
+    "stone_7": {
+     "next": 0.785,
+     "copy": 0.175,
+     "futures": 600
+    },
+    "stone_8": {
+     "next": 0.645,
+     "copy": 0.348,
+     "futures": 600
+    }
+   }
+  }
+ },
+ "interface": {
+  "random": {
+   "recorded": {
+    "unlock_p": 0.034,
+    "neg_p": 0.02,
+    "term_p": 0.004
+   },
+   "f4": {
+    "unlock_p": 0.032,
+    "neg_p": 0.011,
+    "term_p": 0.001
+   },
+   "hud": {
+    "unlock_p": 0.03,
+    "neg_p": 0.016,
+    "term_p": 0.002
+   },
+   "ms": {
+    "unlock_p": 0.031,
+    "neg_p": 0.014,
+    "term_p": 0.001
+   },
+   "f5": {
+    "unlock_p": 0.031,
+    "neg_p": 0.017,
+    "term_p": 0.002
+   },
+   "f6": {
+    "unlock_p": 0.03,
+    "neg_p": 0.017,
+    "term_p": 0.003
+   }
+  },
+  "sapling_context": {
+   "recorded": {
+    "unlock_p": 0.135,
+    "neg_p": 0.029,
+    "term_p": 0.001
+   },
+   "f4": {
+    "unlock_p": 0.077,
+    "neg_p": 0.017,
+    "term_p": 0.001
+   },
+   "hud": {
+    "unlock_p": 0.09,
+    "neg_p": 0.024,
+    "term_p": 0.001
+   },
+   "ms": {
+    "unlock_p": 0.062,
+    "neg_p": 0.027,
+    "term_p": 0.001
+   },
+   "f5": {
+    "unlock_p": 0.085,
+    "neg_p": 0.028,
+    "term_p": 0.001
+   },
+   "f6": {
+    "unlock_p": 0.086,
+    "neg_p": 0.027,
+    "term_p": 0.001
+   }
+  },
+  "risky": {
+   "recorded": {
+    "unlock_p": 0.018,
+    "neg_p": 0.127,
+    "term_p": 0.128
+   },
+   "f4": {
+    "unlock_p": 0.016,
+    "neg_p": 0.042,
+    "term_p": 0.036
+   },
+   "hud": {
+    "unlock_p": 0.02,
+    "neg_p": 0.089,
+    "term_p": 0.081
+   },
+   "ms": {
+    "unlock_p": 0.017,
+    "neg_p": 0.068,
+    "term_p": 0.055
+   },
+   "f5": {
+    "unlock_p": 0.016,
+    "neg_p": 0.118,
+    "term_p": 0.102
+   },
+   "f6": {
+    "unlock_p": 0.018,
+    "neg_p": 0.116,
+    "term_p": 0.11
+   }
+  },
+  "adjacent": {
+   "recorded": {
+    "unlock_p": 0.03,
+    "neg_p": 0.159,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.026,
+    "neg_p": 0.054,
+    "term_p": 0.0
+   },
+   "hud": {
+    "unlock_p": 0.031,
+    "neg_p": 0.091,
+    "term_p": 0.001
+   },
+   "ms": {
+    "unlock_p": 0.028,
+    "neg_p": 0.095,
+    "term_p": 0.001
+   },
+   "f5": {
+    "unlock_p": 0.027,
+    "neg_p": 0.143,
+    "term_p": 0.002
+   },
+   "f6": {
+    "unlock_p": 0.028,
+    "neg_p": 0.148,
+    "term_p": 0.002
+   }
+  },
+  "ach_COLLECT_WOOD": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.003
+   },
+   "f4": {
+    "unlock_p": 0.997,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   },
+   "hud": {
+    "unlock_p": 0.959,
+    "neg_p": 0.003,
+    "term_p": 0.0
+   },
+   "ms": {
+    "unlock_p": 0.98,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   },
+   "f5": {
+    "unlock_p": 0.937,
+    "neg_p": 0.009,
+    "term_p": 0.0
+   },
+   "f6": {
+    "unlock_p": 0.936,
+    "neg_p": 0.004,
+    "term_p": 0.003
+   }
+  },
+  "ach_PLACE_TABLE": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.987,
+    "neg_p": 0.001,
+    "term_p": 0.001
+   },
+   "hud": {
+    "unlock_p": 0.977,
+    "neg_p": 0.001,
+    "term_p": 0.001
+   },
+   "ms": {
+    "unlock_p": 0.985,
+    "neg_p": 0.001,
+    "term_p": 0.002
+   },
+   "f5": {
+    "unlock_p": 0.966,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   },
+   "f6": {
+    "unlock_p": 0.985,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   }
+  },
+  "ach_EAT_COW": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.235,
+    "neg_p": 0.024,
+    "term_p": 0.0
+   },
+   "hud": {
+    "unlock_p": 0.229,
+    "neg_p": 0.059,
+    "term_p": 0.001
+   },
+   "ms": {
+    "unlock_p": 0.224,
+    "neg_p": 0.041,
+    "term_p": 0.0
+   },
+   "f5": {
+    "unlock_p": 0.292,
+    "neg_p": 0.013,
+    "term_p": 0.0
+   },
+   "f6": {
+    "unlock_p": 0.362,
+    "neg_p": 0.015,
+    "term_p": 0.0
+   }
+  },
+  "ach_COLLECT_SAPLING": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.059,
+    "neg_p": 0.004,
+    "term_p": 0.0
+   },
+   "hud": {
+    "unlock_p": 0.068,
+    "neg_p": 0.002,
+    "term_p": 0.0
+   },
+   "ms": {
+    "unlock_p": 0.025,
+    "neg_p": 0.006,
+    "term_p": 0.0
+   },
+   "f5": {
+    "unlock_p": 0.062,
+    "neg_p": 0.007,
+    "term_p": 0.0
+   },
+   "f6": {
+    "unlock_p": 0.063,
+    "neg_p": 0.007,
+    "term_p": 0.0
+   }
+  },
+  "ach_COLLECT_DRINK": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.003
+   },
+   "f4": {
+    "unlock_p": 0.932,
+    "neg_p": 0.0,
+    "term_p": 0.002
+   },
+   "hud": {
+    "unlock_p": 0.969,
+    "neg_p": 0.0,
+    "term_p": 0.002
+   },
+   "ms": {
+    "unlock_p": 0.877,
+    "neg_p": 0.0,
+    "term_p": 0.001
+   },
+   "f5": {
+    "unlock_p": 0.889,
+    "neg_p": 0.006,
+    "term_p": 0.004
+   },
+   "f6": {
+    "unlock_p": 0.92,
+    "neg_p": 0.005,
+    "term_p": 0.003
+   }
+  },
+  "ach_MAKE_WOOD_PICKAXE": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.972,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   },
+   "hud": {
+    "unlock_p": 0.926,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   },
+   "ms": {
+    "unlock_p": 0.944,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f5": {
+    "unlock_p": 0.989,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f6": {
+    "unlock_p": 0.995,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   }
+  },
+  "ach_MAKE_WOOD_SWORD": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.914,
+    "neg_p": 0.003,
+    "term_p": 0.002
+   },
+   "hud": {
+    "unlock_p": 0.916,
+    "neg_p": 0.002,
+    "term_p": 0.001
+   },
+   "ms": {
+    "unlock_p": 0.917,
+    "neg_p": 0.001,
+    "term_p": 0.001
+   },
+   "f5": {
+    "unlock_p": 0.988,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f6": {
+    "unlock_p": 0.97,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   }
+  },
+  "ach_PLACE_PLANT": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.939,
+    "neg_p": 0.003,
+    "term_p": 0.0
+   },
+   "hud": {
+    "unlock_p": 0.931,
+    "neg_p": 0.002,
+    "term_p": 0.0
+   },
+   "ms": {
+    "unlock_p": 0.874,
+    "neg_p": 0.002,
+    "term_p": 0.0
+   },
+   "f5": {
+    "unlock_p": 0.872,
+    "neg_p": 0.004,
+    "term_p": 0.0
+   },
+   "f6": {
+    "unlock_p": 0.932,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   }
+  },
+  "ach_DEFEAT_ZOMBIE": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.293,
+    "neg_p": 0.034,
+    "term_p": 0.0
+   },
+   "hud": {
+    "unlock_p": 0.344,
+    "neg_p": 0.051,
+    "term_p": 0.003
+   },
+   "ms": {
+    "unlock_p": 0.259,
+    "neg_p": 0.059,
+    "term_p": 0.001
+   },
+   "f5": {
+    "unlock_p": 0.48,
+    "neg_p": 0.071,
+    "term_p": 0.008
+   },
+   "f6": {
+    "unlock_p": 0.549,
+    "neg_p": 0.058,
+    "term_p": 0.009
+   }
+  },
+  "ach_COLLECT_STONE": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.974,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   },
+   "hud": {
+    "unlock_p": 0.909,
+    "neg_p": 0.002,
+    "term_p": 0.0
+   },
+   "ms": {
+    "unlock_p": 0.96,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   },
+   "f5": {
+    "unlock_p": 0.923,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f6": {
+    "unlock_p": 0.918,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   }
+  },
+  "ach_PLACE_STONE": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.962,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "hud": {
+    "unlock_p": 0.978,
+    "neg_p": 0.002,
+    "term_p": 0.001
+   },
+   "ms": {
+    "unlock_p": 0.951,
+    "neg_p": 0.001,
+    "term_p": 0.001
+   },
+   "f5": {
+    "unlock_p": 0.938,
+    "neg_p": 0.002,
+    "term_p": 0.0
+   },
+   "f6": {
+    "unlock_p": 0.941,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   }
+  },
+  "ach_EAT_PLANT": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.312,
+    "neg_p": 0.01,
+    "term_p": 0.0
+   },
+   "hud": {
+    "unlock_p": 0.284,
+    "neg_p": 0.027,
+    "term_p": 0.0
+   },
+   "ms": {
+    "unlock_p": 0.182,
+    "neg_p": 0.056,
+    "term_p": 0.0
+   },
+   "f5": {
+    "unlock_p": 0.247,
+    "neg_p": 0.059,
+    "term_p": 0.02
+   },
+   "f6": {
+    "unlock_p": 0.285,
+    "neg_p": 0.046,
+    "term_p": 0.0
+   }
+  },
+  "ach_DEFEAT_SKELETON": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.454,
+    "neg_p": 0.063,
+    "term_p": 0.002
+   },
+   "hud": {
+    "unlock_p": 0.454,
+    "neg_p": 0.134,
+    "term_p": 0.003
+   },
+   "ms": {
+    "unlock_p": 0.421,
+    "neg_p": 0.086,
+    "term_p": 0.0
+   },
+   "f5": {
+    "unlock_p": 0.414,
+    "neg_p": 0.027,
+    "term_p": 0.0
+   },
+   "f6": {
+    "unlock_p": 0.466,
+    "neg_p": 0.032,
+    "term_p": 0.0
+   }
+  },
+  "ach_MAKE_STONE_PICKAXE": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.958,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   },
+   "hud": {
+    "unlock_p": 0.863,
+    "neg_p": 0.003,
+    "term_p": 0.0
+   },
+   "ms": {
+    "unlock_p": 0.915,
+    "neg_p": 0.002,
+    "term_p": 0.0
+   },
+   "f5": {
+    "unlock_p": 0.982,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f6": {
+    "unlock_p": 0.988,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   }
+  },
+  "ach_MAKE_STONE_SWORD": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.948,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   },
+   "hud": {
+    "unlock_p": 0.839,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   },
+   "ms": {
+    "unlock_p": 0.875,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f5": {
+    "unlock_p": 0.974,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f6": {
+    "unlock_p": 0.973,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   }
+  },
+  "ach_WAKE_UP": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.077
+   },
+   "f4": {
+    "unlock_p": 0.882,
+    "neg_p": 0.015,
+    "term_p": 0.016
+   },
+   "hud": {
+    "unlock_p": 0.858,
+    "neg_p": 0.016,
+    "term_p": 0.035
+   },
+   "ms": {
+    "unlock_p": 0.854,
+    "neg_p": 0.019,
+    "term_p": 0.015
+   },
+   "f5": {
+    "unlock_p": 0.85,
+    "neg_p": 0.045,
+    "term_p": 0.07
+   },
+   "f6": {
+    "unlock_p": 0.851,
+    "neg_p": 0.026,
+    "term_p": 0.074
+   }
+  },
+  "ach_PLACE_FURNACE": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.914,
+    "neg_p": 0.0,
+    "term_p": 0.001
+   },
+   "hud": {
+    "unlock_p": 0.974,
+    "neg_p": 0.001,
+    "term_p": 0.002
+   },
+   "ms": {
+    "unlock_p": 0.901,
+    "neg_p": 0.003,
+    "term_p": 0.001
+   },
+   "f5": {
+    "unlock_p": 0.805,
+    "neg_p": 0.008,
+    "term_p": 0.0
+   },
+   "f6": {
+    "unlock_p": 0.906,
+    "neg_p": 0.006,
+    "term_p": 0.0
+   }
+  },
+  "ach_COLLECT_COAL": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.981,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "hud": {
+    "unlock_p": 0.611,
+    "neg_p": 0.004,
+    "term_p": 0.0
+   },
+   "ms": {
+    "unlock_p": 0.881,
+    "neg_p": 0.001,
+    "term_p": 0.0
+   },
+   "f5": {
+    "unlock_p": 0.815,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f6": {
+    "unlock_p": 0.74,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   }
+  },
+  "ach_COLLECT_IRON": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.896,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "hud": {
+    "unlock_p": 0.126,
+    "neg_p": 0.003,
+    "term_p": 0.0
+   },
+   "ms": {
+    "unlock_p": 0.246,
+    "neg_p": 0.003,
+    "term_p": 0.0
+   },
+   "f5": {
+    "unlock_p": 0.513,
+    "neg_p": 0.012,
+    "term_p": 0.0
+   },
+   "f6": {
+    "unlock_p": 0.397,
+    "neg_p": 0.008,
+    "term_p": 0.001
+   }
+  },
+  "ach_COLLECT_DIAMOND": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.051,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "hud": {
+    "unlock_p": 0.064,
+    "neg_p": 0.027,
+    "term_p": 0.0
+   },
+   "ms": {
+    "unlock_p": 0.047,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f5": {
+    "unlock_p": 0.038,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f6": {
+    "unlock_p": 0.095,
+    "neg_p": 0.016,
+    "term_p": 0.0
+   }
+  },
+  "ach_MAKE_IRON_PICKAXE": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.9,
+    "neg_p": 0.004,
+    "term_p": 0.0
+   },
+   "hud": {
+    "unlock_p": 0.888,
+    "neg_p": 0.007,
+    "term_p": 0.0
+   },
+   "ms": {
+    "unlock_p": 0.916,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f5": {
+    "unlock_p": 0.964,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f6": {
+    "unlock_p": 0.94,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   }
+  },
+  "ach_MAKE_IRON_SWORD": {
+   "recorded": {
+    "unlock_p": 1.0,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f4": {
+    "unlock_p": 0.919,
+    "neg_p": 0.0,
+    "term_p": 0.002
+   },
+   "hud": {
+    "unlock_p": 0.929,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "ms": {
+    "unlock_p": 0.948,
+    "neg_p": 0.0,
+    "term_p": 0.002
+   },
+   "f5": {
+    "unlock_p": 0.962,
+    "neg_p": 0.0,
+    "term_p": 0.0
+   },
+   "f6": {
+    "unlock_p": 0.956,
+    "neg_p": 0.0,
+    "term_p": 0.006
+   }
+  }
+ },
+ "recursion_steps_1_4_8_16": {
+  "f4": {
+   "truth": [
+    1.109,
+    1.219,
+    1.328,
+    1.273
+   ],
+   "teacher": [
+    1.02,
+    1.094,
+    1.146,
+    1.203
+   ],
+   "free": [
+    1.02,
+    0.973,
+    0.891,
+    0.861
+   ],
+   "free_terminated_by_16": 0.016,
+   "reward_per_step": {
+    "truth": 0.014,
+    "teacher": 0.015,
+    "free": 0.007
+   }
+  },
+  "hud": {
+   "truth": [
+    1.109,
+    1.219,
+    1.328,
+    1.273
+   ],
+   "teacher": [
+    1.02,
+    1.078,
+    1.102,
+    1.203
+   ],
+   "free": [
+    1.02,
+    0.893,
+    0.762,
+    0.617
+   ],
+   "free_terminated_by_16": 0.02,
+   "reward_per_step": {
+    "truth": 0.014,
+    "teacher": 0.014,
+    "free": 0.009
+   }
+  },
+  "ms": {
+   "truth": [
+    1.109,
+    1.219,
+    1.328,
+    1.273
+   ],
+   "teacher": [
+    0.998,
+    1.096,
+    1.111,
+    1.166
+   ],
+   "free": [
+    0.998,
+    0.924,
+    0.832,
+    0.756
+   ],
+   "free_terminated_by_16": 0.012,
+   "reward_per_step": {
+    "truth": 0.014,
+    "teacher": 0.013,
+    "free": 0.01
+   }
+  },
+  "f5": {
+   "truth": [
+    1.109,
+    1.219,
+    1.328,
+    1.273
+   ],
+   "teacher": [
+    0.951,
+    1.021,
+    1.072,
+    1.086
+   ],
+   "free": [
+    0.951,
+    0.852,
+    0.729,
+    0.65
+   ],
+   "free_terminated_by_16": 0.018,
+   "reward_per_step": {
+    "truth": 0.014,
+    "teacher": 0.015,
+    "free": 0.009
+   }
+  },
+  "f6": {
+   "truth": [
+    1.109,
+    1.219,
+    1.328,
+    1.273
+   ],
+   "teacher": [
+    0.941,
+    1.068,
+    1.051,
+    1.09
+   ],
+   "free": [
+    0.941,
+    0.861,
+    0.785,
+    0.703
+   ],
+   "free_terminated_by_16": 0.023,
+   "reward_per_step": {
+    "truth": 0.014,
+    "teacher": 0.014,
+    "free": 0.008
+   }
+  }
+ }
+}

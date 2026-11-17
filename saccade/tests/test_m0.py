@@ -28,6 +28,14 @@ def cfg():
 
 
 @pytest.fixture(scope="module")
+def forecast_cfg(cfg):
+    c = copy.deepcopy(cfg)
+    c["heads"].update(change_map=None, forecast={"seed": 615001})
+    c["losses"]["groups"].append("G4")
+    return c
+
+
+@pytest.fixture(scope="module")
 def split(cfg):
     return D.load_split(cfg)
 
@@ -232,7 +240,8 @@ def test_reward_decoding_and_bin_probabilities(cfg):
 # ---- gradient routes, per loss ----
 
 @gpu
-def test_gradient_routes_per_loss(cfg, split, monkeypatch):
+def test_gradient_routes_per_loss(forecast_cfg, split, monkeypatch):
+    cfg = forecast_cfg
     torch.manual_seed(0)
     model = M.M0(cfg).cuda()
     for blk in model.denoiser.blocks:
@@ -243,7 +252,7 @@ def test_gradient_routes_per_loss(cfg, split, monkeypatch):
     s = D.Streams(eps, 2, 8, seed=0, targets_offsets=D.frame_offsets(eps))
     s.next(8)
     chunk = s.next(16)
-    targets = np.random.default_rng(0).random((int(D.frame_offsets(eps)[-1]), 7, 9)).astype(np.float16)
+    targets = np.random.default_rng(0).random((int(D.frame_offsets(eps)[-1]), 9, 9, 2)).astype(np.float16)
     W = cfg["belief"]["width"]
 
     def grads(term, detach_memory=False):
@@ -257,7 +266,7 @@ def test_gradient_routes_per_loss(cfg, split, monkeypatch):
         if detach_memory:
             monkeypatch.undo()
         norm = lambda mod: sum(float(p.grad.norm()) for p in mod.parameters() if p.grad is not None)
-        return {k: norm(getattr(model, k)) for k in ("perception", "belief", "denoiser", "tsp", "pixels", "change", "outcome")}
+        return {k: norm(getattr(model, k)) for k in ("perception", "belief", "denoiser", "tsp", "pixels", "outcome")}
 
     g = grads("g1")
     assert g["perception"] > 0 and g["belief"] > 0 and g["denoiser"] > 0
@@ -269,11 +278,60 @@ def test_gradient_routes_per_loss(cfg, split, monkeypatch):
     assert g["perception"] > 0 and g["belief"] == 0 and g["denoiser"] == 0
     fovea = sum(float(p.grad.norm()) for p in model.perception.fovea.parameters() if p.grad is not None)
     assert fovea > 0
-    g = grads("change")
-    assert g["perception"] > 0 and g["belief"] > 0 and g["change"] > 0 and g["denoiser"] == 0
+    assert model.change is None and "change" not in TR.p1_losses(model, chunk, model.belief.initial(2, "cuda"),
+        torch.zeros(2, 9, W, device="cuda"), None, cfg, np.zeros(2, bool), 0)[0]   # P1-F5: no change map
     for term in ("reward", "cont"):
         g = grads(term)
         assert g["perception"] > 0 and g["belief"] > 0 and g["outcome"] > 0 and g["denoiser"] == 0
+    g = grads("tsp_forecast")                                           # P1-F5: belief (and past percepts), never the denoiser
+    assert g["perception"] > 0 and g["belief"] > 0 and g["tsp"] > 0 and g["pixels"] > 0 and g["denoiser"] == 0
+    assert g["outcome"] == 0 and float(model.tsp.mask.grad.norm()) > 0
+    for term in ("reward_forecast", "cont_forecast"):
+        g = grads(term)
+        assert g["perception"] > 0 and g["belief"] > 0 and g["outcome"] > 0 and g["denoiser"] == 0 and g["tsp"] == 0
+    assert float(model.outcome.mask.grad.norm()) > 0
+
+
+@gpu
+def test_forecasts_never_read_the_frame_they_forecast(forecast_cfg, split, monkeypatch):
+    """Changing a frame changes its forecast targets, never its forecasts (Codex, 11-11); reactive readers do change."""
+    cfg = forecast_cfg
+    torch.manual_seed(0)
+    model = M.M0(cfg).cuda()
+    eps = split["train"][:4]
+    s = D.Streams(eps, 2, 8, seed=0, targets_offsets=D.frame_offsets(eps))
+    s.next(8)
+    chunk = s.next(16)
+    fw = np.random.default_rng(0).integers(49, size=(2, 16))
+    seen = []
+
+    def record(name, fn):
+        def wrapped(*a):
+            out = fn(*a)
+            seen.append((name, a[1] is None, out.detach().float().clone()))
+            return out
+        return wrapped
+    monkeypatch.setattr(model.tsp, "predict", record("tsp", model.tsp.predict))
+    monkeypatch.setattr(model.outcome, "features", record("outcome", model.outcome.features))
+
+    def run(frames):
+        seen.clear()
+        with torch.no_grad():
+            terms, _, _ = TR.p1_losses(model, {**chunk, "frames": frames}, model.belief.initial(2, "cuda"),
+                                       torch.zeros(2, 9, cfg["belief"]["width"], device="cuda"), None, cfg,
+                                       np.zeros(2, bool), 0, fw)
+        return {k: float(v) for k, v in terms.items()}, list(seen)
+    t0, a = run(chunk["frames"])
+    other = chunk["frames"].copy()
+    other[:, -1] = 255 - other[:, -1]                                   # only the last frame: its targets and readers
+    t1, b = run(other)
+    assert [(n, f) for n, f, _ in a] == [(n, f) for n, f, _ in b] and {f for _, f, _ in a} == {True, False}
+    for (name, forecast, x), (_, _, y) in zip(a, b):
+        if forecast:
+            assert torch.equal(x, y), name                               # forecasts never read the frame
+        else:
+            assert not torch.equal(x[:, -1], y[:, -1]), name             # reactive readers do
+    assert t0["tsp_forecast"] != t1["tsp_forecast"] and t0["reward_forecast"] == t1["reward_forecast"]
 
 
 # ---- resume ----
@@ -331,8 +389,19 @@ def test_periodic_diagnostics_preserve_gradients_rng_and_mode(cfg, split, monkey
     assert not model.training and [len(m._forward_hooks) for m in modules] == hooks_before
 
 @gpu
-def test_resumed_run_equals_uninterrupted(cfg, tmp_path):
+def test_resumed_run_equals_uninterrupted(forecast_cfg, tmp_path, monkeypatch):
+    cfg = forecast_cfg
     c = copy.deepcopy(cfg)
+    split = D.load_split(c)
+    split = {**split, "train": split["train"][:20], "monitor": split["monitor"][:2]}
+    monkeypatch.setattr(D, "load_split", lambda cfg: split)
+    # Exercise the real new target constructor and metadata, without depending on a multi-million-frame side file.
+    if c["heads"].get("change_map"):                                    # historical recipes only (P1-F5 removed it)
+        import lightgbm as lgb
+        directory = tmp_path / "targets"
+        teacher = lgb.Booster(model_file=str(D.ROOT / "artifacts/saccade_m0/targets/change_teacher.txt"))
+        D.change_targets(split["train"], directory, teacher)
+        c["p1"]["change_targets_dir"] = str(directory)
     c["p1"]["frames"] = 4 * 256
     c["p1"]["monitor"]["windows"] = 4
     c["optimizer"]["warmup_frames"] = 256

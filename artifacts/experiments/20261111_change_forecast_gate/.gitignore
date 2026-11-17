@@ -1,0 +1,7 @@
+/smoke/
+/run/*
+!/run/SUMMARY.json
+!/run/guards.json
+!/run/STATUS.json
+*.log
+*.pt

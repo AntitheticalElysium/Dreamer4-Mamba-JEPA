@@ -1,0 +1,4381 @@
+{
+ "classes": {
+  "random": 0,
+  "sapling_context": 0,
+  "risky": 442,
+  "adjacent": 2523,
+  "ach_COLLECT_WOOD": 0,
+  "ach_PLACE_TABLE": 0,
+  "ach_EAT_COW": 0,
+  "ach_COLLECT_SAPLING": 0,
+  "ach_COLLECT_DRINK": 0,
+  "ach_MAKE_WOOD_PICKAXE": 0,
+  "ach_MAKE_WOOD_SWORD": 0,
+  "ach_PLACE_PLANT": 0,
+  "ach_DEFEAT_ZOMBIE": 0,
+  "ach_COLLECT_STONE": 0,
+  "ach_PLACE_STONE": 0,
+  "ach_EAT_PLANT": 0,
+  "ach_DEFEAT_SKELETON": 0,
+  "ach_MAKE_STONE_PICKAXE": 0,
+  "ach_MAKE_STONE_SWORD": 0,
+  "ach_WAKE_UP": 0,
+  "ach_PLACE_FURNACE": 0,
+  "ach_COLLECT_COAL": 48,
+  "ach_COLLECT_IRON": 44,
+  "ach_COLLECT_DIAMOND": 0,
+  "ach_MAKE_IRON_PICKAXE": 0,
+  "ach_MAKE_IRON_SWORD": 0
+ },
+ "policy": "random",
+ "checkpoints": {
+  "parent": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261109_p1_hud_change/run/ckpt_10.pt",
+   "sha256": "967d1a15979049fa332c3832cf05f3021b50b8f7067cf1413648775ffcc68cfa",
+   "classes": {
+    "risky": {
+     "futures": 1768,
+     "histories": 442,
+     "recorded": {
+      "event": {
+       "est": 0.01809954751131222,
+       "se": 0.006101054433031786,
+       "n_cond": 1768
+      },
+      "achievement_unlock": {
+       "est": 0.01809954751131222,
+       "se": 0.006101054433031786,
+       "n_cond": 1768
+      },
+      "exp_reward": {
+       "est": -0.0027149323694306803,
+       "se": 0.006519901462288951,
+       "n_cond": 1768
+      },
+      "pos": {
+       "est": 0.02036199105136535,
+       "se": 0.005866816630085967,
+       "n_cond": 1768
+      },
+      "neg": {
+       "est": -0.02307692342079603,
+       "se": 0.001978353450686303,
+       "n_cond": 1768
+      },
+      "neg_p": {
+       "est": 0.1425339366515837,
+       "se": 0.010867360342207089,
+       "n_cond": 1768
+      },
+      "term_p": {
+       "est": 0.14705882352941177,
+       "se": 0.010664971230506947,
+       "n_cond": 1768
+      }
+     },
+     "rec_head": {
+      "unlock_p": {
+       "est": 0.021333009712468105,
+       "se": 0.006715615169228471,
+       "n_cond": 1768
+      },
+      "exp_reward": {
+       "est": 0.00047895762816270947,
+       "se": 0.00718628937472242,
+       "n_cond": 1768
+      },
+      "pos": {
+       "est": 0.023250787270370072,
+       "se": 0.006544258086019618,
+       "n_cond": 1768
+      },
+      "neg": {
+       "est": -0.02277182991114689,
+       "se": 0.001969629836666672,
+       "n_cond": 1768
+      },
+      "neg_p": {
+       "est": 0.14095191657360828,
+       "se": 0.010828911827079724,
+       "n_cond": 1768
+      },
+      "term_p": {
+       "est": 0.14705755403138934,
+       "se": 0.010664804955639613,
+       "n_cond": 1768
+      }
+     },
+     "gen": {
+      "unlock_p": {
+       "est": 0.01825262576323216,
+       "se": 0.005333578740255007,
+       "n_cond": 1768
+      },
+      "exp_reward": {
+       "est": 0.006984441655774985,
+       "se": 0.005581653627838267,
+       "n_cond": 1768
+      },
+      "pos": {
+       "est": 0.02055202168684296,
+       "se": 0.0053791184076076625,
+       "n_cond": 1768
+      },
+      "neg": {
+       "est": -0.013567580264053369,
+       "se": 0.0014475353772532098,
+       "n_cond": 1768
+      },
+      "neg_p": {
+       "est": 0.09005913343209933,
+       "se": 0.008231587055808039,
+       "n_cond": 1768
+      },
+      "term_p": {
+       "est": 0.08120586166824151,
+       "se": 0.008308593994499607,
+       "n_cond": 1768
+      }
+     },
+     "reliability": {
+      "unlock": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 420,
+         "mean_predicted_heldout": 0.006565471691825465,
+         "recorded": 0.004761904761904762,
+         "recorded_se": 0.003359148497881183
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 6,
+         "mean_predicted_heldout": 0.08695306366765483,
+         "recorded": 0.16666666666666666,
+         "recorded_se": 0.15214515486254615
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 0.00950231046098185,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 11,
+         "mean_predicted_heldout": 0.2634049491377226,
+         "recorded": 0.2727272727272727,
+         "recorded_se": 0.13428162652290843
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.9661731123924255,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 0.9739777147769928,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 423,
+         "mean_predicted_heldout": 0.0001516670678939238,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 5,
+         "mean_predicted_heldout": 0.025564008764922617,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 3,
+         "mean_predicted_heldout": 0.1142805740237236,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 0.29835474491119385,
+         "recorded": 0.5,
+         "recorded_se": 0.3535533905932738
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.6243730783462524,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 8,
+         "mean_predicted_heldout": 0.9591613486409187,
+         "recorded": 0.875,
+         "recorded_se": 0.11692679333668567
+        }
+       ]
+      },
+      "death": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 379,
+         "mean_predicted_heldout": 0.047489717484778655,
+         "recorded": 0.08970976253298153,
+         "recorded_se": 0.014678787760914294
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 41,
+         "mean_predicted_heldout": 0.1463398344633056,
+         "recorded": 0.4146341463414634,
+         "recorded_se": 0.07694037460666148
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 10,
+         "mean_predicted_heldout": 0.4499999463558197,
+         "recorded": 0.4,
+         "recorded_se": 0.15491933384829668
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 12,
+         "mean_predicted_heldout": 0.49999914566675824,
+         "recorded": 0.8333333333333334,
+         "recorded_se": 0.1075828707279838
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 377,
+         "mean_predicted_heldout": 0.0,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 65,
+         "mean_predicted_heldout": 0.9999913674134474,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ]
+      },
+      "damage": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 365,
+         "mean_predicted_heldout": 0.05008465072506888,
+         "recorded": 0.07123287671232877,
+         "recorded_se": 0.013463166798344323
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 0.06561738790236582,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 0.24995223739238698,
+         "recorded": 0.5,
+         "recorded_se": 0.3535533905932738
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 56,
+         "mean_predicted_heldout": 0.21176017156505514,
+         "recorded": 0.39285714285714285,
+         "recorded_se": 0.06526325921156138
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 5,
+         "mean_predicted_heldout": 0.20000520164856858,
+         "recorded": 0.8,
+         "recorded_se": 0.17888543819998315
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 12,
+         "mean_predicted_heldout": 0.4998996702474697,
+         "recorded": 0.8333333333333334,
+         "recorded_se": 0.1075828707279838
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 377,
+         "mean_predicted_heldout": 3.321985907949417e-05,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.02716957964003086,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.11750290542840958,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.3747560381889343,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 62,
+         "mean_predicted_heldout": 0.9962708825065244,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ]
+      }
+     },
+     "outcome_split_descriptive": {
+      "event": {
+       "rec_head": {
+        "est": 0.8894290141761303,
+        "se": 0.07885135867928975,
+        "n_cond": 32
+       },
+       "gen": {
+        "est": 0.4057211769907874,
+        "se": 0.15778140220330458,
+        "n_cond": 32
+       }
+      },
+      "no_event": {
+       "rec_head": {
+        "est": 0.005331240044935164,
+        "se": 0.002514511170928412,
+        "n_cond": 1736
+       },
+       "gen": {
+        "est": 0.011110348321249576,
+        "se": 0.002981159920978416,
+        "n_cond": 1736
+       }
+      }
+     }
+    },
+    "adjacent": {
+     "futures": 10092,
+     "histories": 2523,
+     "recorded": {
+      "event": {
+       "est": 0.027348394768133173,
+       "se": 0.003397959609455204,
+       "n_cond": 10092
+      },
+      "achievement_unlock": {
+       "est": 0.027348394768133173,
+       "se": 0.003397959609455204,
+       "n_cond": 10092
+      },
+      "exp_reward": {
+       "est": -0.0021799449121200796,
+       "se": 0.0027408289510658856,
+       "n_cond": 10092
+      },
+      "pos": {
+       "est": 0.02929052722050092,
+       "se": 0.0034120983912336814,
+       "n_cond": 10092
+      },
+      "neg": {
+       "est": -0.031470472132621,
+       "se": 0.002028542949640378,
+       "n_cond": 10092
+      },
+      "neg_p": {
+       "est": 0.15695600475624258,
+       "se": 0.009893038087063027,
+       "n_cond": 10092
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 10092
+      }
+     },
+     "rec_head": {
+      "unlock_p": {
+       "est": 0.02853627477571314,
+       "se": 0.003548768548307819,
+       "n_cond": 10092
+      },
+      "exp_reward": {
+       "est": -0.0009873129962318244,
+       "se": 0.003011503706281265,
+       "n_cond": 10092
+      },
+      "pos": {
+       "est": 0.03049434971418994,
+       "se": 0.0035602473712948706,
+       "n_cond": 10092
+      },
+      "neg": {
+       "est": -0.03148166226802009,
+       "se": 0.0020066969081421835,
+       "n_cond": 10092
+      },
+      "neg_p": {
+       "est": 0.1572822677903183,
+       "se": 0.00992811080393358,
+       "n_cond": 10092
+      },
+      "term_p": {
+       "est": 2.437813434154799e-07,
+       "se": 2.286165025028137e-07,
+       "n_cond": 10092
+      }
+     },
+     "gen": {
+      "unlock_p": {
+       "est": 0.027931992292935307,
+       "se": 0.0035405756599142285,
+       "n_cond": 10092
+      },
+      "exp_reward": {
+       "est": 0.013177675247093488,
+       "se": 0.003218576360361288,
+       "n_cond": 10092
+      },
+      "pos": {
+       "est": 0.029140923246128627,
+       "se": 0.003539503191795197,
+       "n_cond": 10092
+      },
+      "neg": {
+       "est": -0.015963248074462328,
+       "se": 0.0013960475166772328,
+       "n_cond": 10092
+      },
+      "neg_p": {
+       "est": 0.08409833774176548,
+       "se": 0.0071825341722491776,
+       "n_cond": 10092
+      },
+      "term_p": {
+       "est": 0.0005945354948145882,
+       "se": 0.00026362458270917644,
+       "n_cond": 10092
+      }
+     },
+     "reliability": {
+      "unlock": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 2309,
+         "mean_predicted_heldout": 0.006262484637658713,
+         "recorded": 0.00563014291901256,
+         "recorded_se": 0.0015571186939317742
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 67,
+         "mean_predicted_heldout": 0.08773327326522896,
+         "recorded": 0.14925373134328357,
+         "recorded_se": 0.04353366428090158
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 36,
+         "mean_predicted_heldout": 0.1785021593054239,
+         "recorded": 0.08333333333333333,
+         "recorded_se": 0.04606423319938055
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 54,
+         "mean_predicted_heldout": 0.23919052474973845,
+         "recorded": 0.16666666666666666,
+         "recorded_se": 0.05071505162084872
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 28,
+         "mean_predicted_heldout": 0.3634743884769835,
+         "recorded": 0.4642857142857143,
+         "recorded_se": 0.09424976123424064
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 29,
+         "mean_predicted_heldout": 0.7448846400123776,
+         "recorded": 0.7241379310344828,
+         "recorded_se": 0.08299609211231937
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 2370,
+         "mean_predicted_heldout": 0.0002134135988485374,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 51,
+         "mean_predicted_heldout": 0.022588407036428358,
+         "recorded": 0.0784313725490196,
+         "recorded_se": 0.037646418038888574
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 19,
+         "mean_predicted_heldout": 0.10554193136723418,
+         "recorded": 0.21052631578947367,
+         "recorded_se": 0.09352877017248827
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 13,
+         "mean_predicted_heldout": 0.329651972422233,
+         "recorded": 0.15384615384615385,
+         "recorded_se": 0.10006825162892168
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 13,
+         "mean_predicted_heldout": 0.6068999079557565,
+         "recorded": 0.38461538461538464,
+         "recorded_se": 0.1349320029703122
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 57,
+         "mean_predicted_heldout": 0.9852412478965625,
+         "recorded": 0.9473684210526315,
+         "recorded_se": 0.029576394049948242
+        }
+       ]
+      },
+      "death": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 2521,
+         "mean_predicted_heldout": 0.0007933410729079528,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 0.0,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 2523,
+         "mean_predicted_heldout": 2.437813434154799e-07,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ]
+      },
+      "damage": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 2173,
+         "mean_predicted_heldout": 0.037702903625013336,
+         "recorded": 0.09249884951679706,
+         "recorded_se": 0.006215297116703504
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 13,
+         "mean_predicted_heldout": 0.1264789182998453,
+         "recorded": 0.23076923076923078,
+         "recorded_se": 0.11685454235580768
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 5,
+         "mean_predicted_heldout": 0.11697002311151619,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 210,
+         "mean_predicted_heldout": 0.32147826433522436,
+         "recorded": 0.4666666666666667,
+         "recorded_se": 0.03442651863295482
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 33,
+         "mean_predicted_heldout": 0.2901226613028332,
+         "recorded": 0.6666666666666666,
+         "recorded_se": 0.08206099398622183
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 89,
+         "mean_predicted_heldout": 0.6176248750392936,
+         "recorded": 0.8089887640449438,
+         "recorded_se": 0.0416682920019444
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 2114,
+         "mean_predicted_heldout": 4.262203110246181e-05,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 8,
+         "mean_predicted_heldout": 0.02474423125386238,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 4,
+         "mean_predicted_heldout": 0.07419668138027191,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 397,
+         "mean_predicted_heldout": 0.9980814057573564,
+         "recorded": 0.9974811083123426,
+         "recorded_se": 0.0025157172797325034
+        }
+       ]
+      }
+     },
+     "outcome_split_descriptive": {
+      "event": {
+       "rec_head": {
+        "est": 0.8365140279242094,
+        "se": 0.03926468352406697,
+        "n_cond": 276
+       },
+       "gen": {
+        "est": 0.43098586907019165,
+        "se": 0.04548533526220829,
+        "n_cond": 276
+       }
+      },
+      "no_event": {
+       "rec_head": {
+        "est": 0.005818073892564716,
+        "se": 0.0012724532027167316,
+        "n_cond": 9816
+       },
+       "gen": {
+        "est": 0.01659918157670438,
+        "se": 0.0022944827627661567,
+        "n_cond": 9816
+       }
+      }
+     }
+    },
+    "ach_COLLECT_COAL": {
+     "futures": 192,
+     "histories": 48,
+     "recorded": {
+      "event": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 192
+      },
+      "achievement_unlock": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 192
+      },
+      "exp_reward": {
+       "est": 1.0020833338300388,
+       "se": 0.0021479313235698897,
+       "n_cond": 192
+      },
+      "pos": {
+       "est": 1.0020833338300388,
+       "se": 0.0021479313235698897,
+       "n_cond": 192
+      },
+      "neg": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 192
+      },
+      "neg_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 192
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 192
+      }
+     },
+     "rec_head": {
+      "unlock_p": {
+       "est": 0.992565706372261,
+       "se": 0.004028789506902028,
+       "n_cond": 192
+      },
+      "exp_reward": {
+       "est": 0.9946514951686064,
+       "se": 0.004631814916081344,
+       "n_cond": 192
+      },
+      "pos": {
+       "est": 0.9946518701811632,
+       "se": 0.004631785229977596,
+       "n_cond": 192
+      },
+      "neg": {
+       "est": -3.801216100663297e-07,
+       "se": 1.4722125164069257e-07,
+       "n_cond": 192
+      },
+      "neg_p": {
+       "est": 2.239405326400426e-06,
+       "se": 8.659787656963379e-07,
+       "n_cond": 192
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 192
+      }
+     },
+     "gen": {
+      "unlock_p": {
+       "est": 0.6175269182184281,
+       "se": 0.04279208042824671,
+       "n_cond": 192
+      },
+      "exp_reward": {
+       "est": 0.618033506374651,
+       "se": 0.04278588610853491,
+       "n_cond": 192
+      },
+      "pos": {
+       "est": 0.6180415051594585,
+       "se": 0.042785831447953324,
+       "n_cond": 192
+      },
+      "neg": {
+       "est": -8.00099126598669e-06,
+       "se": 7.35302858857063e-06,
+       "n_cond": 192
+      },
+      "neg_p": {
+       "est": 7.949367166815026e-05,
+       "se": 7.340742919983741e-05,
+       "n_cond": 192
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 192
+      }
+     },
+     "reliability": {
+      "unlock": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 8,
+         "mean_predicted_heldout": 0.3125430665405826,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 9,
+         "mean_predicted_heldout": 0.6048991553355907,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 8,
+         "mean_predicted_heldout": 0.5733042358574398,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 23,
+         "mean_predicted_heldout": 0.6739349615825275,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 48,
+         "mean_predicted_heldout": 0.992565706372261,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ]
+      },
+      "death": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 48,
+         "mean_predicted_heldout": 0.0,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 48,
+         "mean_predicted_heldout": 0.0,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ]
+      },
+      "damage": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 48,
+         "mean_predicted_heldout": 1.3344674377498637e-06,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 48,
+         "mean_predicted_heldout": 2.239405326400426e-06,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ]
+      }
+     },
+     "outcome_split_descriptive": {
+      "event": {
+       "rec_head": {
+        "est": 0.992565706372261,
+        "se": 0.004028789506902028,
+        "n_cond": 192
+       },
+       "gen": {
+        "est": 0.6175269182184281,
+        "se": 0.04279208042824671,
+        "n_cond": 192
+       }
+      }
+     }
+    },
+    "ach_COLLECT_IRON": {
+     "futures": 176,
+     "histories": 44,
+     "recorded": {
+      "event": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 176
+      },
+      "achievement_unlock": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 176
+      },
+      "exp_reward": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 176
+      },
+      "pos": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 176
+      },
+      "neg": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 176
+      },
+      "neg_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 176
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 176
+      }
+     },
+     "rec_head": {
+      "unlock_p": {
+       "est": 0.9959895204414021,
+       "se": 0.0023837800631847264,
+       "n_cond": 176
+      },
+      "exp_reward": {
+       "est": 0.9959263015877117,
+       "se": 0.002386417934176956,
+       "n_cond": 176
+      },
+      "pos": {
+       "est": 0.9959489323876121,
+       "se": 0.0023858144942852932,
+       "n_cond": 176
+      },
+      "neg": {
+       "est": -2.263368540804957e-05,
+       "se": 2.2775443506035768e-05,
+       "n_cond": 176
+      },
+      "neg_p": {
+       "est": 0.00011639562504202969,
+       "se": 0.00011509117725490064,
+       "n_cond": 176
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 176
+      }
+     },
+     "gen": {
+      "unlock_p": {
+       "est": 0.16446700525175015,
+       "se": 0.04102755244871935,
+       "n_cond": 176
+      },
+      "exp_reward": {
+       "est": 0.1651741768789978,
+       "se": 0.04121155371616837,
+       "n_cond": 176
+      },
+      "pos": {
+       "est": 0.1651938786782191,
+       "se": 0.04121149015486641,
+       "n_cond": 176
+      },
+      "neg": {
+       "est": -1.9703464071361377e-05,
+       "se": 1.9525007279139934e-05,
+       "n_cond": 176
+      },
+      "neg_p": {
+       "est": 0.0001008892766791239,
+       "se": 9.833562645100301e-05,
+       "n_cond": 176
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 176
+      }
+     },
+     "reliability": {
+      "unlock": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 31,
+         "mean_predicted_heldout": 0.11262161631429465,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 2.0780165868927725e-05,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 7,
+         "mean_predicted_heldout": 3.8811609105745705e-05,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.4999825429588327,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 4,
+         "mean_predicted_heldout": 0.6244467914905343,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 44,
+         "mean_predicted_heldout": 0.9959895204414021,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ]
+      },
+      "death": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 44,
+         "mean_predicted_heldout": 0.0,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 44,
+         "mean_predicted_heldout": 0.0,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ]
+      },
+      "damage": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 44,
+         "mean_predicted_heldout": 4.149354856726083e-06,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 44,
+         "mean_predicted_heldout": 0.00011639562504202969,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ]
+      }
+     },
+     "outcome_split_descriptive": {
+      "event": {
+       "rec_head": {
+        "est": 0.9959895204414021,
+        "se": 0.0023837800631847264,
+        "n_cond": 176
+       },
+       "gen": {
+        "est": 0.16446700525175015,
+        "se": 0.04102755244871935,
+        "n_cond": 176
+       }
+      }
+     }
+    }
+   }
+  },
+  "endpoint": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261111_dense_mse_2k/run/endpoint/eval.pt",
+   "sha256": "01e106b2d683420514bd5cb1c3f4d959257aaffcb2fe8f43f2080f8e72d24934",
+   "classes": {
+    "risky": {
+     "futures": 1768,
+     "histories": 442,
+     "recorded": {
+      "event": {
+       "est": 0.01809954751131222,
+       "se": 0.006101054433031786,
+       "n_cond": 1768
+      },
+      "achievement_unlock": {
+       "est": 0.01809954751131222,
+       "se": 0.006101054433031786,
+       "n_cond": 1768
+      },
+      "exp_reward": {
+       "est": -0.0027149323694306803,
+       "se": 0.006519901462288951,
+       "n_cond": 1768
+      },
+      "pos": {
+       "est": 0.02036199105136535,
+       "se": 0.005866816630085967,
+       "n_cond": 1768
+      },
+      "neg": {
+       "est": -0.02307692342079603,
+       "se": 0.001978353450686303,
+       "n_cond": 1768
+      },
+      "neg_p": {
+       "est": 0.1425339366515837,
+       "se": 0.010867360342207089,
+       "n_cond": 1768
+      },
+      "term_p": {
+       "est": 0.14705882352941177,
+       "se": 0.010664971230506947,
+       "n_cond": 1768
+      }
+     },
+     "rec_head": {
+      "unlock_p": {
+       "est": 0.02042715505031644,
+       "se": 0.006571105748180903,
+       "n_cond": 1768
+      },
+      "exp_reward": {
+       "est": -0.0004393427769825531,
+       "se": 0.007047859037596056,
+       "n_cond": 1768
+      },
+      "pos": {
+       "est": 0.022411353502767857,
+       "se": 0.006453173045421463,
+       "n_cond": 1768
+      },
+      "neg": {
+       "est": -0.022850696129350263,
+       "se": 0.0019587075027459352,
+       "n_cond": 1768
+      },
+      "neg_p": {
+       "est": 0.14132057970112671,
+       "se": 0.010765592835463782,
+       "n_cond": 1768
+      },
+      "term_p": {
+       "est": 0.1470587574518644,
+       "se": 0.01066496612394783,
+       "n_cond": 1768
+      }
+     },
+     "gen": {
+      "unlock_p": {
+       "est": 0.020924270522590997,
+       "se": 0.005488177076321635,
+       "n_cond": 1768
+      },
+      "exp_reward": {
+       "est": 0.001264082050069474,
+       "se": 0.005936502801322575,
+       "n_cond": 1768
+      },
+      "pos": {
+       "est": 0.022068271103249694,
+       "se": 0.0053583967875106215,
+       "n_cond": 1768
+      },
+      "neg": {
+       "est": -0.02080418918297538,
+       "se": 0.002338580285248851,
+       "n_cond": 1768
+      },
+      "neg_p": {
+       "est": 0.12446956346229222,
+       "se": 0.01212058170480037,
+       "n_cond": 1768
+      },
+      "term_p": {
+       "est": 0.11340611036951186,
+       "se": 0.011298249908242785,
+       "n_cond": 1768
+      }
+     },
+     "reliability": {
+      "unlock": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 412,
+         "mean_predicted_heldout": 0.0042741670309555556,
+         "recorded": 0.0048543689320388345,
+         "recorded_se": 0.003424215605136796
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 8,
+         "mean_predicted_heldout": 0.10400041034792584,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 5,
+         "mean_predicted_heldout": 0.2295568386791274,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 11,
+         "mean_predicted_heldout": 0.25471275000440746,
+         "recorded": 0.2727272727272727,
+         "recorded_se": 0.13428162652290843
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 4,
+         "mean_predicted_heldout": 0.588235734612681,
+         "recorded": 0.5,
+         "recorded_se": 0.25
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 0.25786536213969247,
+         "recorded": 0.5,
+         "recorded_se": 0.3535533905932738
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 422,
+         "mean_predicted_heldout": 8.21186938077079e-05,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 7,
+         "mean_predicted_heldout": 0.02657026198825666,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 3,
+         "mean_predicted_heldout": 0.11172059178352356,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.3345981538295746,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 0.641894668340683,
+         "recorded": 0.5,
+         "recorded_se": 0.3535533905932738
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 7,
+         "mean_predicted_heldout": 0.9792296205248151,
+         "recorded": 0.8571428571428571,
+         "recorded_se": 0.13226001425322165
+        }
+       ]
+      },
+      "death": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 353,
+         "mean_predicted_heldout": 0.041076482524277466,
+         "recorded": 0.0764872521246459,
+         "recorded_se": 0.01414583617122692
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 29,
+         "mean_predicted_heldout": 0.25861890357116174,
+         "recorded": 0.3448275862068966,
+         "recorded_se": 0.0882632273954608
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 37,
+         "mean_predicted_heldout": 0.16216216618950302,
+         "recorded": 0.32432432432432434,
+         "recorded_se": 0.07695875641236478
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 23,
+         "mean_predicted_heldout": 0.7173912382644155,
+         "recorded": 0.6956521739130435,
+         "recorded_se": 0.09594387554215139
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 377,
+         "mean_predicted_heldout": 0.0,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 65,
+         "mean_predicted_heldout": 0.9999995506726779,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ]
+      },
+      "damage": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 337,
+         "mean_predicted_heldout": 0.031222547246735944,
+         "recorded": 0.050445103857566766,
+         "recorded_se": 0.011922150463514405
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 3,
+         "mean_predicted_heldout": 0.08464847526893256,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 5,
+         "mean_predicted_heldout": 0.4665832244429421,
+         "recorded": 0.8,
+         "recorded_se": 0.17888543819998315
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 67,
+         "mean_predicted_heldout": 0.23647047620708128,
+         "recorded": 0.34328358208955223,
+         "recorded_se": 0.058006685713137024
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 3,
+         "mean_predicted_heldout": 6.24983990805313e-05,
+         "recorded": 0.6666666666666666,
+         "recorded_se": 0.2721655269759087
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 27,
+         "mean_predicted_heldout": 0.7016184923760973,
+         "recorded": 0.6296296296296297,
+         "recorded_se": 0.09293489539618284
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 376,
+         "mean_predicted_heldout": 2.561488190071179e-05,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 0.031785521656274796,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 0.35754141211509705,
+         "recorded": 0.5,
+         "recorded_se": 0.3535533905932738
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 62,
+         "mean_predicted_heldout": 0.994764696205816,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ]
+      }
+     },
+     "outcome_split_descriptive": {
+      "event": {
+       "rec_head": {
+        "est": 0.8780232928693295,
+        "se": 0.0851074715603288,
+        "n_cond": 32
+       },
+       "gen": {
+        "est": 0.37980653833660377,
+        "se": 0.1302491192653678,
+        "n_cond": 32
+       }
+      },
+      "no_event": {
+       "rec_head": {
+        "est": 0.004618931311717122,
+        "se": 0.0023269642282861503,
+        "n_cond": 1736
+       },
+       "gen": {
+        "est": 0.014308929180397218,
+        "se": 0.00414644264882638,
+        "n_cond": 1736
+       }
+      }
+     }
+    },
+    "adjacent": {
+     "futures": 10092,
+     "histories": 2523,
+     "recorded": {
+      "event": {
+       "est": 0.027348394768133173,
+       "se": 0.003397959609455204,
+       "n_cond": 10092
+      },
+      "achievement_unlock": {
+       "est": 0.027348394768133173,
+       "se": 0.003397959609455204,
+       "n_cond": 10092
+      },
+      "exp_reward": {
+       "est": -0.0021799449121200796,
+       "se": 0.0027408289510658856,
+       "n_cond": 10092
+      },
+      "pos": {
+       "est": 0.02929052722050092,
+       "se": 0.0034120983912336814,
+       "n_cond": 10092
+      },
+      "neg": {
+       "est": -0.031470472132621,
+       "se": 0.002028542949640378,
+       "n_cond": 10092
+      },
+      "neg_p": {
+       "est": 0.15695600475624258,
+       "se": 0.009893038087063027,
+       "n_cond": 10092
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 10092
+      }
+     },
+     "rec_head": {
+      "unlock_p": {
+       "est": 0.027119085789145066,
+       "se": 0.0035719789260286097,
+       "n_cond": 10092
+      },
+      "exp_reward": {
+       "est": -0.002425703617425747,
+       "se": 0.0029805090859986575,
+       "n_cond": 10092
+      },
+      "pos": {
+       "est": 0.02907490073494628,
+       "se": 0.0035802385242400692,
+       "n_cond": 10092
+      },
+      "neg": {
+       "est": -0.031500604179743374,
+       "se": 0.001991305440056096,
+       "n_cond": 10092
+      },
+      "neg_p": {
+       "est": 0.15730216911403253,
+       "se": 0.009875066166137798,
+       "n_cond": 10092
+      },
+      "term_p": {
+       "est": 2.8172231032363586e-07,
+       "se": 2.4453415988918203e-07,
+       "n_cond": 10092
+      }
+     },
+     "gen": {
+      "unlock_p": {
+       "est": 0.030759039885138666,
+       "se": 0.003985365578149739,
+       "n_cond": 10092
+      },
+      "exp_reward": {
+       "est": 0.016704931662082423,
+       "se": 0.003625535189237193,
+       "n_cond": 10092
+      },
+      "pos": {
+       "est": 0.03161185261673707,
+       "se": 0.003966800435063657,
+       "n_cond": 10092
+      },
+      "neg": {
+       "est": -0.014906921140166564,
+       "se": 0.0012405074248775525,
+       "n_cond": 10092
+      },
+      "neg_p": {
+       "est": 0.07938417411718113,
+       "se": 0.00629040876515868,
+       "n_cond": 10092
+      },
+      "term_p": {
+       "est": 9.909680897973144e-05,
+       "se": 9.151363273652781e-05,
+       "n_cond": 10092
+      }
+     },
+     "reliability": {
+      "unlock": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 2305,
+         "mean_predicted_heldout": 0.0046803665481306685,
+         "recorded": 0.0039045553145336228,
+         "recorded_se": 0.0012989750276605116
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 58,
+         "mean_predicted_heldout": 0.10757258242099083,
+         "recorded": 0.15517241379310345,
+         "recorded_se": 0.04754198431127886
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 43,
+         "mean_predicted_heldout": 0.24332561656097712,
+         "recorded": 0.11627906976744186,
+         "recorded_se": 0.04888483088578331
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 55,
+         "mean_predicted_heldout": 0.3022331700917396,
+         "recorded": 0.18181818181818182,
+         "recorded_se": 0.052007050322486856
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 23,
+         "mean_predicted_heldout": 0.3583338580422645,
+         "recorded": 0.43478260869565216,
+         "recorded_se": 0.10336652638557517
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 39,
+         "mean_predicted_heldout": 0.6621186923120286,
+         "recorded": 0.6666666666666666,
+         "recorded_se": 0.07548513560963972
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 2387,
+         "mean_predicted_heldout": 0.00019820246357509438,
+         "recorded": 0.0008378718056137411,
+         "recorded_se": 0.0005922165787110041
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 45,
+         "mean_predicted_heldout": 0.02245290093123913,
+         "recorded": 0.022222222222222223,
+         "recorded_se": 0.02197392144324641
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 14,
+         "mean_predicted_heldout": 0.10512748493679933,
+         "recorded": 0.35714285714285715,
+         "recorded_se": 0.12806020814297073
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 11,
+         "mean_predicted_heldout": 0.3168831467628479,
+         "recorded": 0.36363636363636365,
+         "recorded_se": 0.14504073367590284
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 9,
+         "mean_predicted_heldout": 0.6725746724340651,
+         "recorded": 0.4444444444444444,
+         "recorded_se": 0.16563466499998442
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 57,
+         "mean_predicted_heldout": 0.9811805643533406,
+         "recorded": 0.9298245614035088,
+         "recorded_se": 0.03383417933803951
+        }
+       ]
+      },
+      "death": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 2523,
+         "mean_predicted_heldout": 0.00019818093159630618,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 2523,
+         "mean_predicted_heldout": 2.8172231032363586e-07,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ]
+      },
+      "damage": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 2205,
+         "mean_predicted_heldout": 0.0364447789708342,
+         "recorded": 0.09251700680272108,
+         "recorded_se": 0.006170576449658674
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 14,
+         "mean_predicted_heldout": 0.04353628650777403,
+         "recorded": 0.21428571428571427,
+         "recorded_se": 0.10966421051124835
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 9,
+         "mean_predicted_heldout": 0.07005292453518684,
+         "recorded": 0.3333333333333333,
+         "recorded_se": 0.15713484026367724
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 190,
+         "mean_predicted_heldout": 0.3628310507119237,
+         "recorded": 0.5526315789473685,
+         "recorded_se": 0.036072289765611595
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 18,
+         "mean_predicted_heldout": 0.3106733759255099,
+         "recorded": 0.6666666666666666,
+         "recorded_se": 0.11111111111111112
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 87,
+         "mean_predicted_heldout": 0.6239146684023665,
+         "recorded": 0.7931034482758621,
+         "recorded_se": 0.043429208960165694
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 2114,
+         "mean_predicted_heldout": 2.449624540346922e-05,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 8,
+         "mean_predicted_heldout": 0.022391471662558615,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 3,
+         "mean_predicted_heldout": 0.07824417700370152,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.30733972787857056,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 397,
+         "mean_predicted_heldout": 0.9977339636769043,
+         "recorded": 0.9974811083123426,
+         "recorded_se": 0.0025157172797325034
+        }
+       ]
+      }
+     },
+     "outcome_split_descriptive": {
+      "event": {
+       "rec_head": {
+        "est": 0.8285256194025008,
+        "se": 0.0417933470598311,
+        "n_cond": 276
+       },
+       "gen": {
+        "est": 0.47895664081572276,
+        "se": 0.04646591532765588,
+        "n_cond": 276
+       }
+      },
+      "no_event": {
+       "rec_head": {
+        "est": 0.004585650247449256,
+        "se": 0.0012038856115382205,
+        "n_cond": 9816
+       },
+       "gen": {
+        "est": 0.01815690685163812,
+        "se": 0.0026897831514584862,
+        "n_cond": 9816
+       }
+      }
+     }
+    },
+    "ach_COLLECT_COAL": {
+     "futures": 192,
+     "histories": 48,
+     "recorded": {
+      "event": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 192
+      },
+      "achievement_unlock": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 192
+      },
+      "exp_reward": {
+       "est": 1.0020833338300388,
+       "se": 0.0021479313235698897,
+       "n_cond": 192
+      },
+      "pos": {
+       "est": 1.0020833338300388,
+       "se": 0.0021479313235698897,
+       "n_cond": 192
+      },
+      "neg": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 192
+      },
+      "neg_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 192
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 192
+      }
+     },
+     "rec_head": {
+      "unlock_p": {
+       "est": 0.9737657097478708,
+       "se": 0.014880467586442625,
+       "n_cond": 192
+      },
+      "exp_reward": {
+       "est": 0.975845206528902,
+       "se": 0.01517369142988,
+       "n_cond": 192
+      },
+      "pos": {
+       "est": 0.9758481538544098,
+       "se": 0.015173628442059385,
+       "n_cond": 192
+      },
+      "neg": {
+       "est": -2.9504530709599172e-06,
+       "se": 1.6733092495994248e-06,
+       "n_cond": 192
+      },
+      "neg_p": {
+       "est": 1.540374549162769e-05,
+       "se": 8.37910647781681e-06,
+       "n_cond": 192
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 192
+      }
+     },
+     "gen": {
+      "unlock_p": {
+       "est": 0.73143277636565,
+       "se": 0.0447532072555664,
+       "n_cond": 192
+      },
+      "exp_reward": {
+       "est": 0.7314335411398561,
+       "se": 0.04475322202200353,
+       "n_cond": 192
+      },
+      "pos": {
+       "est": 0.7314341750690225,
+       "se": 0.044753241885624795,
+       "n_cond": 192
+      },
+      "neg": {
+       "est": -6.359005591129373e-07,
+       "se": 3.51752118904209e-07,
+       "n_cond": 192
+      },
+      "neg_p": {
+       "est": 3.6852095051247992e-06,
+       "se": 1.8462885777793423e-06,
+       "n_cond": 192
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 192
+      }
+     },
+     "reliability": {
+      "unlock": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 5,
+         "mean_predicted_heldout": 0.20075855632526046,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 0.36721193866947033,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 3,
+         "mean_predicted_heldout": 0.4971886737036281,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 6,
+         "mean_predicted_heldout": 0.7339063464799741,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 32,
+         "mean_predicted_heldout": 0.8126058803130618,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.30738365650177,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.7432172894477844,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 46,
+         "mean_predicted_heldout": 0.9932641983032227,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ]
+      },
+      "death": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 48,
+         "mean_predicted_heldout": 0.0,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 48,
+         "mean_predicted_heldout": 0.0,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ]
+      },
+      "damage": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 48,
+         "mean_predicted_heldout": 2.981776090026111e-06,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 48,
+         "mean_predicted_heldout": 1.540374549162769e-05,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ]
+      }
+     },
+     "outcome_split_descriptive": {
+      "event": {
+       "rec_head": {
+        "est": 0.9737657097478708,
+        "se": 0.014880467586442625,
+        "n_cond": 192
+       },
+       "gen": {
+        "est": 0.73143277636565,
+        "se": 0.0447532072555664,
+        "n_cond": 192
+       }
+      }
+     }
+    },
+    "ach_COLLECT_IRON": {
+     "futures": 176,
+     "histories": 44,
+     "recorded": {
+      "event": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 176
+      },
+      "achievement_unlock": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 176
+      },
+      "exp_reward": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 176
+      },
+      "pos": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 176
+      },
+      "neg": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 176
+      },
+      "neg_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 176
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 176
+      }
+     },
+     "rec_head": {
+      "unlock_p": {
+       "est": 0.9488912580365484,
+       "se": 0.025846128632520924,
+       "n_cond": 176
+      },
+      "exp_reward": {
+       "est": 0.9487191858616743,
+       "se": 0.02583560267494067,
+       "n_cond": 176
+      },
+      "pos": {
+       "est": 0.9487941844219511,
+       "se": 0.02584038685131662,
+       "n_cond": 176
+      },
+      "neg": {
+       "est": -7.500419690632745e-05,
+       "se": 7.149067456555571e-05,
+       "n_cond": 176
+      },
+      "neg_p": {
+       "est": 0.0004135940631791331,
+       "se": 0.000371235871191253,
+       "n_cond": 176
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 176
+      }
+     },
+     "gen": {
+      "unlock_p": {
+       "est": 0.2366235007956796,
+       "se": 0.044390914726031724,
+       "n_cond": 176
+      },
+      "exp_reward": {
+       "est": 0.23662298949588434,
+       "se": 0.04439143841559949,
+       "n_cond": 176
+      },
+      "pos": {
+       "est": 0.23662363097031347,
+       "se": 0.04439142914536053,
+       "n_cond": 176
+      },
+      "neg": {
+       "est": -6.431186243196898e-07,
+       "se": 4.171566244571492e-07,
+       "n_cond": 176
+      },
+      "neg_p": {
+       "est": 4.380119443142969e-06,
+       "se": 2.3148072670326993e-06,
+       "n_cond": 176
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 176
+      }
+     },
+     "reliability": {
+      "unlock": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 26,
+         "mean_predicted_heldout": 0.19590512142505542,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.0019514134910423309,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 9,
+         "mean_predicted_heldout": 0.05549791392723022,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 0.0001159021305738861,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 6,
+         "mean_predicted_heldout": 0.6637034769476288,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.18245486915111542,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.42256543040275574,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.5000166296958923,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 41,
+         "mean_predicted_heldout": 0.9913702054721553,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ]
+      },
+      "death": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 44,
+         "mean_predicted_heldout": 0.0,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 44,
+         "mean_predicted_heldout": 0.0,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ]
+      },
+      "damage": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 44,
+         "mean_predicted_heldout": 3.112513088519463e-06,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 43,
+         "mean_predicted_heldout": 5.935770842648433e-05,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.01564575731754303,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ]
+      }
+     },
+     "outcome_split_descriptive": {
+      "event": {
+       "rec_head": {
+        "est": 0.9488912580365484,
+        "se": 0.025846128632520924,
+        "n_cond": 176
+       },
+       "gen": {
+        "est": 0.2366235007956796,
+        "se": 0.044390914726031724,
+        "n_cond": 176
+       }
+      }
+     }
+    }
+   }
+  },
+  "dense": {
+   "path": "/home/antithetical/EPITA/PERSO/DynamicHorizons-Mamba-JEPA/artifacts/experiments/20261111_dense_mse_2k/run/dense/eval.pt",
+   "sha256": "3ba5a7ed0d7a5b4b0ec09209c402f0c4af236727189b699632c463d1dd719caf",
+   "classes": {
+    "risky": {
+     "futures": 1768,
+     "histories": 442,
+     "recorded": {
+      "event": {
+       "est": 0.01809954751131222,
+       "se": 0.006101054433031786,
+       "n_cond": 1768
+      },
+      "achievement_unlock": {
+       "est": 0.01809954751131222,
+       "se": 0.006101054433031786,
+       "n_cond": 1768
+      },
+      "exp_reward": {
+       "est": -0.0027149323694306803,
+       "se": 0.006519901462288951,
+       "n_cond": 1768
+      },
+      "pos": {
+       "est": 0.02036199105136535,
+       "se": 0.005866816630085967,
+       "n_cond": 1768
+      },
+      "neg": {
+       "est": -0.02307692342079603,
+       "se": 0.001978353450686303,
+       "n_cond": 1768
+      },
+      "neg_p": {
+       "est": 0.1425339366515837,
+       "se": 0.010867360342207089,
+       "n_cond": 1768
+      },
+      "term_p": {
+       "est": 0.14705882352941177,
+       "se": 0.010664971230506947,
+       "n_cond": 1768
+      }
+     },
+     "rec_head": {
+      "unlock_p": {
+       "est": 0.020869858919241178,
+       "se": 0.006634313215376133,
+       "n_cond": 1768
+      },
+      "exp_reward": {
+       "est": 4.0673597376285816e-05,
+       "se": 0.007109801179030355,
+       "n_cond": 1768
+      },
+      "pos": {
+       "est": 0.022866172091091035,
+       "se": 0.00652896291362002,
+       "n_cond": 1768
+      },
+      "neg": {
+       "est": -0.02282549891329623,
+       "se": 0.0019578868151559265,
+       "n_cond": 1768
+      },
+      "neg_p": {
+       "est": 0.14120359517263703,
+       "se": 0.010768971629995835,
+       "n_cond": 1768
+      },
+      "term_p": {
+       "est": 0.1470587714764867,
+       "se": 0.010664966669233063,
+       "n_cond": 1768
+      }
+     },
+     "gen": {
+      "unlock_p": {
+       "est": 0.018504754924430326,
+       "se": 0.005045186551931027,
+       "n_cond": 1768
+      },
+      "exp_reward": {
+       "est": 0.003170755313554225,
+       "se": 0.005750595678245744,
+       "n_cond": 1768
+      },
+      "pos": {
+       "est": 0.020676832016791435,
+       "se": 0.005110092923729849,
+       "n_cond": 1768
+      },
+      "neg": {
+       "est": -0.017506076855181987,
+       "se": 0.0021759195574682687,
+       "n_cond": 1768
+      },
+      "neg_p": {
+       "est": 0.10543777038245894,
+       "se": 0.011293949553148747,
+       "n_cond": 1768
+      },
+      "term_p": {
+       "est": 0.09614667373949586,
+       "se": 0.010782921043024741,
+       "n_cond": 1768
+      }
+     },
+     "reliability": {
+      "unlock": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 416,
+         "mean_predicted_heldout": 0.004114536772060601,
+         "recorded": 0.004807692307692308,
+         "recorded_se": 0.0033913699872330297
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 7,
+         "mean_predicted_heldout": 0.1545197462429595,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 7,
+         "mean_predicted_heldout": 0.30160355937155126,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 7,
+         "mean_predicted_heldout": 0.24578227271942693,
+         "recorded": 0.2857142857142857,
+         "recorded_se": 0.17074694419062766
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 4,
+         "mean_predicted_heldout": 0.5355167058296502,
+         "recorded": 0.75,
+         "recorded_se": 0.21650635094610965
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.5127890985459089,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 421,
+         "mean_predicted_heldout": 8.70012461310953e-05,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 7,
+         "mean_predicted_heldout": 0.027177864951746806,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 4,
+         "mean_predicted_heldout": 0.10006340779364109,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.4378305673599243,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 0.6523512601852417,
+         "recorded": 0.5,
+         "recorded_se": 0.3535533905932738
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 7,
+         "mean_predicted_heldout": 0.979259763445173,
+         "recorded": 0.8571428571428571,
+         "recorded_se": 0.13226001425322165
+        }
+       ]
+      },
+      "death": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 371,
+         "mean_predicted_heldout": 0.041778967708268895,
+         "recorded": 0.09164420485175202,
+         "recorded_se": 0.014979369871556701
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 27,
+         "mean_predicted_heldout": 0.2592591411537594,
+         "recorded": 0.2962962962962963,
+         "recorded_se": 0.08787718725951697
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 25,
+         "mean_predicted_heldout": 0.17975554943084718,
+         "recorded": 0.32,
+         "recorded_se": 0.0932952303175248
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 19,
+         "mean_predicted_heldout": 0.6842104918078372,
+         "recorded": 0.7894736842105263,
+         "recorded_se": 0.09352877017248827
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 377,
+         "mean_predicted_heldout": 3.162050120710378e-10,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 65,
+         "mean_predicted_heldout": 0.9999996442061204,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ]
+      },
+      "damage": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 355,
+         "mean_predicted_heldout": 0.0325163635206714,
+         "recorded": 0.0676056338028169,
+         "recorded_se": 0.013325302848439788
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 4.444946206660916e-07,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 5,
+         "mean_predicted_heldout": 0.2857092223940607,
+         "recorded": 0.6,
+         "recorded_se": 0.21908902300206645
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 58,
+         "mean_predicted_heldout": 0.26789683306664724,
+         "recorded": 0.3275862068965517,
+         "recorded_se": 0.06162644471939888
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 7.966373276602212e-07,
+         "recorded": 0.5,
+         "recorded_se": 0.3535533905932738
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 21,
+         "mean_predicted_heldout": 0.666275969402143,
+         "recorded": 0.7619047619047619,
+         "recorded_se": 0.0929428640903365
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 377,
+         "mean_predicted_heldout": 4.097302659941399e-05,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.015183701179921627,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 0.347103551030159,
+         "recorded": 0.5,
+         "recorded_se": 0.3535533905932738
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 62,
+         "mean_predicted_heldout": 0.9949540553554412,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ]
+      }
+     },
+     "outcome_split_descriptive": {
+      "event": {
+       "rec_head": {
+        "est": 0.8842188268899918,
+        "se": 0.07433737200920365,
+        "n_cond": 32
+       },
+       "gen": {
+        "est": 0.4063439853974163,
+        "se": 0.12130854344638134,
+        "n_cond": 32
+       }
+      },
+      "no_event": {
+       "rec_head": {
+        "est": 0.004955592228536101,
+        "se": 0.002400977001502331,
+        "n_cond": 1736
+       },
+       "gen": {
+        "est": 0.011355644685296944,
+        "se": 0.0030040409371385576,
+        "n_cond": 1736
+       }
+      }
+     }
+    },
+    "adjacent": {
+     "futures": 10092,
+     "histories": 2523,
+     "recorded": {
+      "event": {
+       "est": 0.027348394768133173,
+       "se": 0.003397959609455204,
+       "n_cond": 10092
+      },
+      "achievement_unlock": {
+       "est": 0.027348394768133173,
+       "se": 0.003397959609455204,
+       "n_cond": 10092
+      },
+      "exp_reward": {
+       "est": -0.0021799449121200796,
+       "se": 0.0027408289510658856,
+       "n_cond": 10092
+      },
+      "pos": {
+       "est": 0.02929052722050092,
+       "se": 0.0034120983912336814,
+       "n_cond": 10092
+      },
+      "neg": {
+       "est": -0.031470472132621,
+       "se": 0.002028542949640378,
+       "n_cond": 10092
+      },
+      "neg_p": {
+       "est": 0.15695600475624258,
+       "se": 0.009893038087063027,
+       "n_cond": 10092
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 10092
+      }
+     },
+     "rec_head": {
+      "unlock_p": {
+       "est": 0.02822055582778151,
+       "se": 0.0036383085833099067,
+       "n_cond": 10092
+      },
+      "exp_reward": {
+       "est": -0.0012911565773022315,
+       "se": 0.0030560116710444175,
+       "n_cond": 10092
+      },
+      "pos": {
+       "est": 0.03018096202823566,
+       "se": 0.003648311164076356,
+       "n_cond": 10092
+      },
+      "neg": {
+       "est": -0.0314721184544569,
+       "se": 0.001989256325104856,
+       "n_cond": 10092
+      },
+      "neg_p": {
+       "est": 0.15721576533127452,
+       "se": 0.009869338950069858,
+       "n_cond": 10092
+      },
+      "term_p": {
+       "est": 3.058193129676701e-07,
+       "se": 2.3365882788025458e-07,
+       "n_cond": 10092
+      }
+     },
+     "gen": {
+      "unlock_p": {
+       "est": 0.031345479600755906,
+       "se": 0.003973702537490501,
+       "n_cond": 10092
+      },
+      "exp_reward": {
+       "est": 0.020034568675307767,
+       "se": 0.0036190747696626,
+       "n_cond": 10092
+      },
+      "pos": {
+       "est": 0.03230514479851038,
+       "se": 0.003953733209546101,
+       "n_cond": 10092
+      },
+      "neg": {
+       "est": -0.012270576103709,
+       "se": 0.0011376914881974494,
+       "n_cond": 10092
+      },
+      "neg_p": {
+       "est": 0.06530349882440316,
+       "se": 0.005850771465155997,
+       "n_cond": 10092
+      },
+      "term_p": {
+       "est": 4.297939619751521e-05,
+       "se": 3.966915539103908e-05,
+       "n_cond": 10092
+      }
+     },
+     "reliability": {
+      "unlock": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 2304,
+         "mean_predicted_heldout": 0.004448191650380988,
+         "recorded": 0.00390625,
+         "recorded_se": 0.0012995377134335376
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 56,
+         "mean_predicted_heldout": 0.10429799689157448,
+         "recorded": 0.17857142857142858,
+         "recorded_se": 0.05117959859117061
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 44,
+         "mean_predicted_heldout": 0.21048055337395358,
+         "recorded": 0.11363636363636363,
+         "recorded_se": 0.047845190813675255
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 49,
+         "mean_predicted_heldout": 0.326267152231021,
+         "recorded": 0.14285714285714285,
+         "recorded_se": 0.049989586587411795
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 30,
+         "mean_predicted_heldout": 0.3658909892148586,
+         "recorded": 0.4,
+         "recorded_se": 0.08944271909999159
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 40,
+         "mean_predicted_heldout": 0.6362342284617967,
+         "recorded": 0.65,
+         "recorded_se": 0.07541551564499178
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 2378,
+         "mean_predicted_heldout": 0.00020642566738348115,
+         "recorded": 0.0008410428931875525,
+         "recorded_se": 0.0005944569933321658
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 46,
+         "mean_predicted_heldout": 0.024489231812565224,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 20,
+         "mean_predicted_heldout": 0.0979724396020174,
+         "recorded": 0.3,
+         "recorded_se": 0.10246950765959598
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 11,
+         "mean_predicted_heldout": 0.32814948531714355,
+         "recorded": 0.2727272727272727,
+         "recorded_se": 0.13428162652290843
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 9,
+         "mean_predicted_heldout": 0.6858052412668864,
+         "recorded": 0.4444444444444444,
+         "recorded_se": 0.16563466499998442
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 59,
+         "mean_predicted_heldout": 0.980368426290609,
+         "recorded": 0.9152542372881356,
+         "recorded_se": 0.03625800166842165
+        }
+       ]
+      },
+      "death": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 2523,
+         "mean_predicted_heldout": 8.592063880751069e-05,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 2523,
+         "mean_predicted_heldout": 3.058193129676701e-07,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ]
+      },
+      "damage": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 2246,
+         "mean_predicted_heldout": 0.03050500882855401,
+         "recorded": 0.1006233303650935,
+         "recorded_se": 0.006347683675641578
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 9,
+         "mean_predicted_heldout": 0.006980426414509664,
+         "recorded": 0.1111111111111111,
+         "recorded_se": 0.10475656017578482
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 15,
+         "mean_predicted_heldout": 0.040274339869416795,
+         "recorded": 0.4,
+         "recorded_se": 0.12649110640673517
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 172,
+         "mean_predicted_heldout": 0.33057607263196204,
+         "recorded": 0.563953488372093,
+         "recorded_se": 0.03781149321742837
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 17,
+         "mean_predicted_heldout": 0.3531325798924117,
+         "recorded": 0.5882352941176471,
+         "recorded_se": 0.11936462498726878
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 64,
+         "mean_predicted_heldout": 0.6132164439946481,
+         "recorded": 0.875,
+         "recorded_se": 0.04133986423538423
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 2116,
+         "mean_predicted_heldout": 2.2672001595024096e-05,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 7,
+         "mean_predicted_heldout": 0.016765233794493333,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 0.06719359755516052,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.2793073356151581,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 397,
+         "mean_predicted_heldout": 0.9976734277283215,
+         "recorded": 0.9974811083123426,
+         "recorded_se": 0.0025157172797325034
+        }
+       ]
+      }
+     },
+     "outcome_split_descriptive": {
+      "event": {
+       "rec_head": {
+        "est": 0.8348166437421426,
+        "se": 0.0412642254358115,
+        "n_cond": 276
+       },
+       "gen": {
+        "est": 0.4727098329630992,
+        "se": 0.04559499942627724,
+        "n_cond": 276
+       }
+      },
+      "no_event": {
+       "rec_head": {
+        "est": 0.005541203722609992,
+        "se": 0.0013184971489341453,
+        "n_cond": 9816
+       },
+       "gen": {
+        "est": 0.018935479445090986,
+        "se": 0.0027160142991616947,
+        "n_cond": 9816
+       }
+      }
+     }
+    },
+    "ach_COLLECT_COAL": {
+     "futures": 192,
+     "histories": 48,
+     "recorded": {
+      "event": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 192
+      },
+      "achievement_unlock": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 192
+      },
+      "exp_reward": {
+       "est": 1.0020833338300388,
+       "se": 0.0021479313235698897,
+       "n_cond": 192
+      },
+      "pos": {
+       "est": 1.0020833338300388,
+       "se": 0.0021479313235698897,
+       "n_cond": 192
+      },
+      "neg": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 192
+      },
+      "neg_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 192
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 192
+      }
+     },
+     "rec_head": {
+      "unlock_p": {
+       "est": 0.9759136736392975,
+       "se": 0.012476725944857782,
+       "n_cond": 192
+      },
+      "exp_reward": {
+       "est": 0.9779930524528027,
+       "se": 0.01266655754545505,
+       "n_cond": 192
+      },
+      "pos": {
+       "est": 0.9779957557717959,
+       "se": 0.01266633181064222,
+       "n_cond": 192
+      },
+      "neg": {
+       "est": -2.708040452307006e-06,
+       "se": 1.4739714392192581e-06,
+       "n_cond": 192
+      },
+      "neg_p": {
+       "est": 1.3902699864956162e-05,
+       "se": 7.380975407993678e-06,
+       "n_cond": 192
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 192
+      }
+     },
+     "gen": {
+      "unlock_p": {
+       "est": 0.6296568189124195,
+       "se": 0.0473481877001182,
+       "n_cond": 192
+      },
+      "exp_reward": {
+       "est": 0.6296596629198706,
+       "se": 0.04734786180825664,
+       "n_cond": 192
+      },
+      "pos": {
+       "est": 0.6296679673594966,
+       "se": 0.04734706168092991,
+       "n_cond": 192
+      },
+      "neg": {
+       "est": -8.305563143462419e-06,
+       "se": 7.2308088447173155e-06,
+       "n_cond": 192
+      },
+      "neg_p": {
+       "est": 7.870147740772567e-05,
+       "se": 7.08996501466882e-05,
+       "n_cond": 192
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 192
+      }
+     },
+     "reliability": {
+      "unlock": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 6,
+         "mean_predicted_heldout": 0.1676256928345358,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.05,
+          0.2
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 0.5016780690721134,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 7,
+         "mean_predicted_heldout": 0.4825498986073095,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 11,
+         "mean_predicted_heldout": 0.6218063287197825,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 22,
+         "mean_predicted_heldout": 0.7593818725426084,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 0.5774687230587006,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 46,
+         "mean_predicted_heldout": 0.9932373671428018,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ]
+      },
+      "death": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 48,
+         "mean_predicted_heldout": 0.0,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 48,
+         "mean_predicted_heldout": 0.0,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ]
+      },
+      "damage": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 48,
+         "mean_predicted_heldout": 3.4677291529582985e-06,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 48,
+         "mean_predicted_heldout": 1.3902699864956162e-05,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ]
+      }
+     },
+     "outcome_split_descriptive": {
+      "event": {
+       "rec_head": {
+        "est": 0.9759136736392975,
+        "se": 0.012476725944857782,
+        "n_cond": 192
+       },
+       "gen": {
+        "est": 0.6296568189124195,
+        "se": 0.0473481877001182,
+        "n_cond": 192
+       }
+      }
+     }
+    },
+    "ach_COLLECT_IRON": {
+     "futures": 176,
+     "histories": 44,
+     "recorded": {
+      "event": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 176
+      },
+      "achievement_unlock": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 176
+      },
+      "exp_reward": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 176
+      },
+      "pos": {
+       "est": 1.0,
+       "se": 0.0,
+       "n_cond": 176
+      },
+      "neg": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 176
+      },
+      "neg_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 176
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 176
+      }
+     },
+     "rec_head": {
+      "unlock_p": {
+       "est": 0.9504303712059151,
+       "se": 0.026420661271589818,
+       "n_cond": 176
+      },
+      "exp_reward": {
+       "est": 0.9503565660931848,
+       "se": 0.02641626651658392,
+       "n_cond": 176
+      },
+      "pos": {
+       "est": 0.9503836577588861,
+       "se": 0.026418044648982543,
+       "n_cond": 176
+      },
+      "neg": {
+       "est": -2.7092671527801194e-05,
+       "se": 2.5668291977920444e-05,
+       "n_cond": 176
+      },
+      "neg_p": {
+       "est": 0.00014973017747511484,
+       "se": 0.00013294444475616546,
+       "n_cond": 176
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 176
+      }
+     },
+     "gen": {
+      "unlock_p": {
+       "est": 0.2242673730174648,
+       "se": 0.0434815728577327,
+       "n_cond": 176
+      },
+      "exp_reward": {
+       "est": 0.22426733625269388,
+       "se": 0.04348125120889152,
+       "n_cond": 176
+      },
+      "pos": {
+       "est": 0.2242682256651947,
+       "se": 0.04348121689668259,
+       "n_cond": 176
+      },
+      "neg": {
+       "est": -8.908617559929282e-07,
+       "se": 6.245877908948562e-07,
+       "n_cond": 176
+      },
+      "neg_p": {
+       "est": 5.866576107727604e-06,
+       "se": 3.387544589669533e-06,
+       "n_cond": 176
+      },
+      "term_p": {
+       "est": 0.0,
+       "se": 0.0,
+       "n_cond": 176
+      }
+     },
+     "reliability": {
+      "unlock": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 25,
+         "mean_predicted_heldout": 0.1483637663569985,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.01,
+          0.05
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 0.25535242567821115,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 7,
+         "mean_predicted_heldout": 0.00011898798498030263,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 4,
+         "mean_predicted_heldout": 0.12525456757066422,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 6,
+         "mean_predicted_heldout": 0.58191946780693,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.2,
+          0.5
+         ],
+         "histories": 2,
+         "mean_predicted_heldout": 0.26970361918210983,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.5,
+          0.8
+         ],
+         "histories": 1,
+         "mean_predicted_heldout": 0.5000211596488953,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        },
+        {
+         "bin": [
+          0.8,
+          1.0
+         ],
+         "histories": 41,
+         "mean_predicted_heldout": 0.9946221447572475,
+         "recorded": 1.0,
+         "recorded_se": 0.0
+        }
+       ]
+      },
+      "death": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 44,
+         "mean_predicted_heldout": 0.0,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 44,
+         "mean_predicted_heldout": 0.0,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ]
+      },
+      "damage": {
+       "gen": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 44,
+         "mean_predicted_heldout": 4.262212811001602e-06,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ],
+       "rec_head": [
+        {
+         "bin": [
+          0.0,
+          0.01
+         ],
+         "histories": 44,
+         "mean_predicted_heldout": 0.00014973017747511484,
+         "recorded": 0.0,
+         "recorded_se": 0.0
+        }
+       ]
+      }
+     },
+     "outcome_split_descriptive": {
+      "event": {
+       "rec_head": {
+        "est": 0.9504303712059151,
+        "se": 0.026420661271589818,
+        "n_cond": 176
+       },
+       "gen": {
+        "est": 0.2242673730174648,
+        "se": 0.0434815728577327,
+        "n_cond": 176
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "differences": {
+  "endpoint-parent": {
+   "risky": {
+    "unlock_p": {
+     "est": 0.0026716447228117123,
+     "se": 0.003197902358917025,
+     "n_cond": 1768,
+     "ci95": [
+      -0.0035962439006656565,
+      0.00893953334628908
+     ]
+    },
+    "exp_reward": {
+     "est": -0.005720359621041771,
+     "se": 0.003115795435583745,
+     "n_cond": 1768,
+     "ci95": [
+      -0.011827318674785911,
+      0.0003865994327023692
+     ]
+    },
+    "neg_p": {
+     "est": 0.03441043015552391,
+     "se": 0.009047751795506811,
+     "n_cond": 1768,
+     "ci95": [
+      0.01667683663633056,
+      0.052144023674717266
+     ]
+    },
+    "term_p": {
+     "est": 0.03220024870127035,
+     "se": 0.008447120135559576,
+     "n_cond": 1768,
+     "ci95": [
+      0.015643893235573577,
+      0.048756604166967116
+     ]
+    }
+   },
+   "adjacent": {
+    "unlock_p": {
+     "est": 0.0028270475987181034,
+     "se": 0.0011577818350566942,
+     "n_cond": 10092,
+     "ci95": [
+      0.0005577952020069826,
+      0.005096299995429224
+     ]
+    },
+    "exp_reward": {
+     "est": 0.003527256434644678,
+     "se": 0.001268817830503216,
+     "n_cond": 10092,
+     "ci95": [
+      0.0010403734868583746,
+      0.006014139382430982
+     ]
+    },
+    "neg_p": {
+     "est": -0.004714163622227144,
+     "se": 0.002332248861406426,
+     "n_cond": 10092,
+     "ci95": [
+      -0.00928537139058374,
+      -0.00014295585387054908
+     ]
+    },
+    "term_p": {
+     "est": -0.0004954386858348566,
+     "se": 0.0002442657549092275,
+     "n_cond": 10092,
+     "ci95": [
+      -0.0009741995654569426,
+      -1.667780621277074e-05
+     ]
+    }
+   },
+   "ach_COLLECT_COAL": {
+    "unlock_p": {
+     "est": 0.1139058587776034,
+     "se": 0.034757279219918086,
+     "n_cond": 192,
+     "ci95": [
+      0.045781591506563954,
+      0.18203012604864283
+     ]
+    },
+    "exp_reward": {
+     "est": 0.11340003404380865,
+     "se": 0.034894778826678845,
+     "n_cond": 192,
+     "ci95": [
+      0.04500626754351811,
+      0.1817938005440992
+     ]
+    },
+    "neg_p": {
+     "est": -7.580846295584337e-05,
+     "se": 7.273064497481107e-05,
+     "n_cond": 192,
+     "ci95": [
+      -0.00021836052710647307,
+      6.674360119478632e-05
+     ]
+    },
+    "term_p": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 192,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "ach_COLLECT_IRON": {
+    "unlock_p": {
+     "est": 0.07215649539103358,
+     "se": 0.025074493115674376,
+     "n_cond": 176,
+     "ci95": [
+      0.023010488884311807,
+      0.12130250189775535
+     ]
+    },
+    "exp_reward": {
+     "est": 0.07144881337227571,
+     "se": 0.025060011407120584,
+     "n_cond": 176,
+     "ci95": [
+      0.022331191014319365,
+      0.12056643573023205
+     ]
+    },
+    "neg_p": {
+     "est": -9.650915938160354e-05,
+     "se": 9.622049022043637e-05,
+     "n_cond": 176,
+     "ci95": [
+      -0.0002851013202136588,
+      9.208300145045174e-05
+     ]
+    },
+    "term_p": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 176,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    }
+   }
+  },
+  "dense-parent": {
+   "risky": {
+    "unlock_p": {
+     "est": 0.000252129167248333,
+     "se": 0.0018331058373774562,
+     "n_cond": 1768,
+     "ci95": [
+      -0.003340758274011481,
+      0.0038450166085081472
+     ]
+    },
+    "exp_reward": {
+     "est": -0.0038136863242076696,
+     "se": 0.0022327587899907807,
+     "n_cond": 1768,
+     "ci95": [
+      -0.0081898935525896,
+      0.000562520904174261
+     ]
+    },
+    "neg_p": {
+     "est": 0.015378636970955185,
+     "se": 0.007263225273756255,
+     "n_cond": 1768,
+     "ci95": [
+      0.0011427154343929252,
+      0.029614558507517444
+     ]
+    },
+    "term_p": {
+     "est": 0.014940812071254351,
+     "se": 0.006923169560742857,
+     "n_cond": 1768,
+     "ci95": [
+      0.0013713997321983511,
+      0.02851022441031035
+     ]
+    }
+   },
+   "adjacent": {
+    "unlock_p": {
+     "est": 0.0034134873286260675,
+     "se": 0.001079558001294094,
+     "n_cond": 10092,
+     "ci95": [
+      0.0012975536460896435,
+      0.005529421011162492
+     ]
+    },
+    "exp_reward": {
+     "est": 0.006856893436000806,
+     "se": 0.001247679121506527,
+     "n_cond": 10092,
+     "ci95": [
+      0.004411442357848013,
+      0.009302344514153599
+     ]
+    },
+    "neg_p": {
+     "est": -0.018794838905562078,
+     "se": 0.002451353014180063,
+     "n_cond": 10092,
+     "ci95": [
+      -0.023599490813355002,
+      -0.013990186997769154
+     ]
+    },
+    "term_p": {
+     "est": -0.0005515560986170729,
+     "se": 0.0002513531151671642,
+     "n_cond": 10092,
+     "ci95": [
+      -0.0010442082043447148,
+      -5.890399288943106e-05
+     ]
+    }
+   },
+   "ach_COLLECT_COAL": {
+    "unlock_p": {
+     "est": 0.012129900734511354,
+     "se": 0.038487401481166014,
+     "n_cond": 192,
+     "ci95": [
+      -0.06330540616857404,
+      0.08756520763759675
+     ]
+    },
+    "exp_reward": {
+     "est": 0.011626156664997838,
+     "se": 0.03854956382842535,
+     "n_cond": 192,
+     "ci95": [
+      -0.06393098843871585,
+      0.08718330176871152
+     ]
+    },
+    "neg_p": {
+     "est": -7.921942818789077e-07,
+     "se": 3.181568655303768e-06,
+     "n_cond": 192,
+     "ci95": [
+      -7.0280688462742925e-06,
+      5.443680282516478e-06
+     ]
+    },
+    "term_p": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 192,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "ach_COLLECT_IRON": {
+    "unlock_p": {
+     "est": 0.05980036774809398,
+     "se": 0.025540147919344443,
+     "n_cond": 176,
+     "ci95": [
+      0.009741677826178873,
+      0.10985905767000909
+     ]
+    },
+    "exp_reward": {
+     "est": 0.05909315954292274,
+     "se": 0.025538152989207946,
+     "n_cond": 176,
+     "ci95": [
+      0.009038379684075164,
+      0.10914793940177031
+     ]
+    },
+    "neg_p": {
+     "est": -9.502269623780746e-05,
+     "se": 9.512449961516655e-05,
+     "n_cond": 176,
+     "ci95": [
+      -0.0002814667154835339,
+      9.142132300791896e-05
+     ]
+    },
+    "term_p": {
+     "est": 0.0,
+     "se": 0.0,
+     "n_cond": 176,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    }
+   }
+  }
+ }
+}
